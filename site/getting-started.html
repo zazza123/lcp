@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started - Library Context Protocol</title>
+  <meta name="description" content="Get started with the LCP Python SDK. Install, scan your first library, and generate LCP manifests in minutes.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232563eb' rx='20' width='100' height='100'/><text x='50' y='68' font-size='50' font-weight='bold' fill='white' text-anchor='middle' font-family='system-ui'>L</text></svg>">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- Page Content -->
+  <main class="page-content">
+    <div class="container container--narrow">
+      <!-- Page Header -->
+      <div class="page-header" data-animate="fade-up">
+        <h1 class="page-header__title">Getting <span class="text-gradient">Started</span></h1>
+        <p class="page-header__text">
+          Generate your first LCP manifest in under 5 minutes.
+        </p>
+      </div>
+
+      <!-- Steps -->
+      <div class="docs-content">
+        <!-- Step 1: Installation -->
+        <section data-animate="fade-up">
+          <h2 id="installation">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">1</span>
+            Installation
+          </h2>
+          
+          <p>Install the LCP Python SDK from PyPI:</p>
+          
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">bash</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code>pip install lcp-python-sdk</code></pre>
+          </div>
+          
+          <p>This installs both the Python library and the <code>lcp-python</code> CLI tool.</p>
+        </section>
+
+        <!-- Step 2: First Scan -->
+        <section data-animate="fade-up" data-delay="100">
+          <h2 id="first-scan">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">2</span>
+            Your First Scan
+          </h2>
+          
+          <p>Scan any installed Python package to generate its LCP manifest:</p>
+          
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">bash</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code># Scan the requests library
+lcp-python scan requests -o requests.lcp.json
+
+# Scan with private symbols included
+lcp-python scan mypackage --include-private -o mypackage.lcp.json
+
+# Skip validation (faster for large packages)
+lcp-python scan numpy --no-validate -o numpy.lcp.json</code></pre>
+          </div>
+          
+          <p>The output is a JSON file containing the complete API surface of the library.</p>
+        </section>
+
+        <!-- Step 3: Understanding Output -->
+        <section data-animate="fade-up" data-delay="200">
+          <h2 id="output">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">3</span>
+            Understanding the Output
+          </h2>
+          
+          <p>An LCP file has two main sections:</p>
+          
+          <div class="card mb-lg">
+            <h4 class="mb-sm">
+              <span class="badge badge--module">manifest</span>
+            </h4>
+            <p class="text-muted mb-md">Metadata about the library: name, version, language, and generation info.</p>
+            
+            <div class="code-block" style="margin-bottom: 0;">
+              <pre><code>{
+  "manifest": {
+    "schema_version": "1.0",
+    "library": {
+      "name": "requests",
+      "version": "2.31.0",
+      "language": "python"
+    },
+    "distribution": "pypi"
+  }
+}</code></pre>
+            </div>
+          </div>
+          
+          <div class="card mb-lg">
+            <h4 class="mb-sm">
+              <span class="badge badge--function">symbols</span>
+            </h4>
+            <p class="text-muted mb-md">All public symbols: functions, classes, methods, constants, and modules.</p>
+            
+            <div class="code-block" style="margin-bottom: 0;">
+              <pre><code>{
+  "symbols": {
+    "requests:get": {
+      "kind": "function",
+      "semantics": {
+        "summary": "Sends a GET request."
+      },
+      "signatures": [{
+        "params": [
+          {"name": "url", "type": "string", "required": true},
+          {"name": "timeout", "type": "float", "required": false}
+        ],
+        "returns": "Response"
+      }]
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 4: Python API -->
+        <section data-animate="fade-up" data-delay="300">
+          <h2 id="python-api">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">4</span>
+            Using the Python API
+          </h2>
+          
+          <p>You can also use the SDK programmatically:</p>
+          
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">python</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code>from lcp_python_sdk import scan
+
+# Scan a package
+lcp_doc = scan("requests")
+
+# Save to file
+lcp_doc.to_file("requests.lcp.json")
+
+# Get as dictionary
+data = lcp_doc.to_dict()
+
+# Access symbols programmatically
+for symbol_id, symbol in lcp_doc.symbols.items():
+    print(f"{symbol_id}: {symbol.kind}")
+
+# Include private symbols (prefixed with _)
+lcp_doc = scan("mypackage", include_private=True)</code></pre>
+          </div>
+        </section>
+
+        <!-- Step 5: MCP Server -->
+        <section data-animate="fade-up" data-delay="400">
+          <h2 id="mcp-server">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">5</span>
+            Expose to AI via MCP Server
+          </h2>
+          
+          <p>The SDK includes an MCP (Model Context Protocol) server that exposes LCP data to AI agents:</p>
+          
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">bash</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code># Start MCP server for a library manifest
+lcp-python serve requests.lcp.json
+
+# With custom server name
+lcp-python serve numpy.lcp.json --name numpy-docs</code></pre>
+          </div>
+          
+          <p>Add to your MCP client configuration (e.g., Claude Desktop):</p>
+          
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">json</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code>{
+  "mcpServers": {
+    "requests-api": {
+      "command": "lcp-python",
+      "args": ["serve", "/path/to/requests.lcp.json"]
+    }
+  }
+}</code></pre>
+          </div>
+          
+          <div class="card card--highlight mt-xl">
+            <h4 class="mb-md">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              Available MCP Tools
+            </h4>
+            <table style="width: 100%;">
+              <tbody>
+                <tr>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>get_manifest</code></td>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Get library metadata</td>
+                </tr>
+                <tr>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>list_modules</code></td>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">List all modules</td>
+                </tr>
+                <tr>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>list_symbols</code></td>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Browse symbols with filtering</td>
+                </tr>
+                <tr>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>get_symbol</code></td>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Get full symbol details</td>
+                </tr>
+                <tr>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>search_symbols</code></td>
+                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Text search across symbols</td>
+                </tr>
+                <tr>
+                  <td style="padding: var(--space-sm) 0;"><code>get_class_members</code></td>
+                  <td style="padding: var(--space-sm) 0; color: var(--color-text-secondary);">Get methods and attributes of a class</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Validation -->
+        <section data-animate="fade-up" data-delay="500">
+          <h2 id="validation">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">6</span>
+            Validating LCP Files
+          </h2>
+          
+          <p>Validate any LCP file against the official schema:</p>
+          
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">bash</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code>lcp-python validate mypackage.lcp.json</code></pre>
+          </div>
+          
+          <p>This ensures your LCP file conforms to the v1 specification and can be consumed by any LCP-compatible tool.</p>
+        </section>
+
+        <!-- Next Steps -->
+        <section class="mt-3xl" data-animate="fade-up">
+          <h2 id="next-steps">Next Steps</h2>
+          
+          <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top: var(--space-xl);">
+            <a href="docs.html" class="feature-card" style="text-decoration: none;">
+              <div class="feature-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <h4 class="feature-card__title">Read the Spec</h4>
+              <p class="feature-card__text">
+                Dive deep into the LCP v1 specification.
+              </p>
+            </a>
+            
+            <a href="examples.html" class="feature-card" style="text-decoration: none;">
+              <div class="feature-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+              </div>
+              <h4 class="feature-card__title">See Examples</h4>
+              <p class="feature-card__text">
+                Browse real-world LCP files.
+              </p>
+            </a>
+            
+            <a href="https://github.com/zazza123/lcp-python-sdk" class="feature-card" style="text-decoration: none;" target="_blank">
+              <div class="feature-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </div>
+              <h4 class="feature-card__title">Star on GitHub</h4>
+              <p class="feature-card__text">
+                Contribute and stay updated.
+              </p>
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

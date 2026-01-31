@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LCP - Library Context Protocol</title>
+  <meta name="description" content="The universal format for AI-powered code understanding. Machine-readable library descriptions for LLMs, IDEs, and developer tools.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232563eb' rx='20' width='100' height='100'/><text x='50' y='68' font-size='50' font-weight='bold' fill='white' text-anchor='middle' font-family='system-ui'>L</text></svg>">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="LCP - Library Context Protocol">
+  <meta property="og:description" content="The universal format for AI-powered code understanding.">
+  <meta property="og:type" content="website">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__grid"></div>
+    
+    <div class="container hero__content">
+      <div class="hero__badge">
+        <span class="hero__badge-dot"></span>
+        <span>Version 1.0 — Now Available</span>
+      </div>
+      
+      <h1 class="hero__title">
+        <span class="hero__title-gradient">Library Context Protocol</span>
+      </h1>
+      
+      <p class="hero__subtitle">
+        The universal, machine-readable format for describing software libraries. 
+        Built for AI systems, tooling, and documentation generators.
+      </p>
+      
+      <div class="hero__actions">
+        <a href="getting-started.html" class="btn btn--primary btn--lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Get Started
+        </a>
+        <a href="docs.html" class="btn btn--secondary btn--lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Read Docs
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive JSON Viewer Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">See It In Action</span>
+        <h2 class="section-header__title">Explore an LCP Document</h2>
+        <p class="section-header__text">
+          Click to expand sections and discover how LCP captures library APIs 
+          with semantic richness for AI understanding.
+        </p>
+      </div>
+      
+      <div class="json-viewer" data-animate="zoom-in" data-delay="200">
+        <div class="json-viewer__header">
+          <div class="json-viewer__dots">
+            <span class="json-viewer__dot json-viewer__dot--red"></span>
+            <span class="json-viewer__dot json-viewer__dot--yellow"></span>
+            <span class="json-viewer__dot json-viewer__dot--green"></span>
+          </div>
+          <div class="json-viewer__title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span>requests.lcp.json</span>
+          </div>
+          <div class="json-viewer__actions">
+            <button class="json-viewer__btn" data-action="expand">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+              </svg>
+              Expand
+            </button>
+            <button class="json-viewer__btn" data-action="collapse">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 14 10 14 10 20"></polyline>
+                <polyline points="20 10 14 10 14 4"></polyline>
+              </svg>
+              Collapse
+            </button>
+            <button class="json-viewer__btn" data-action="copy">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+        </div>
+        <div class="json-viewer__content">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section section--muted">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Features</span>
+        <h2 class="section-header__title">Built for AI-First Development</h2>
+        <p class="section-header__text">
+          LCP provides high-fidelity context about libraries so AI systems can reason 
+          about APIs accurately without parsing source code at runtime.
+        </p>
+      </div>
+      
+      <div class="features">
+        <div class="feature-card" data-animate="fade-up" data-delay="100">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Symbol-Centric</h3>
+          <p class="feature-card__text">
+            Everything revolves around well-defined symbols with stable identifiers 
+            that don't change across refactors.
+          </p>
+        </div>
+        
+        <div class="feature-card" data-animate="fade-up" data-delay="200">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+              <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+              <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Language-Agnostic</h3>
+          <p class="feature-card__text">
+            Works across Python, JavaScript, TypeScript, Java, C#, Rust, Go, and more. 
+            One format for all ecosystems.
+          </p>
+        </div>
+        
+        <div class="feature-card" data-animate="fade-up" data-delay="300">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7m0-18H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7m0-18v18"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Tool-Friendly</h3>
+          <p class="feature-card__text">
+            Easy to diff, index, validate, and generate. Designed for integration with 
+            IDEs, linters, and documentation tools.
+          </p>
+        </div>
+        
+        <div class="feature-card" data-animate="fade-up" data-delay="100">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Semantic Rich</h3>
+          <p class="feature-card__text">
+            Captures not just signatures, but effects, stability, deprecations, and 
+            behavior semantics.
+          </p>
+        </div>
+        
+        <div class="feature-card" data-animate="fade-up" data-delay="200">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="21" x2="4" y2="14"></line>
+              <line x1="4" y1="10" x2="4" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12" y2="3"></line>
+              <line x1="20" y1="21" x2="20" y2="16"></line>
+              <line x1="20" y1="12" x2="20" y2="3"></line>
+              <line x1="1" y1="14" x2="7" y2="14"></line>
+              <line x1="9" y1="8" x2="15" y2="8"></line>
+              <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Extensible</h3>
+          <p class="feature-card__text">
+            Vendor or ecosystem-specific data via <code>x-*</code> fields. Your custom 
+            metadata, our standard format.
+          </p>
+        </div>
+        
+        <div class="feature-card" data-animate="fade-up" data-delay="300">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Validated</h3>
+          <p class="feature-card__text">
+            JSON Schema ensures correctness. Every LCP document can be validated 
+            against the official spec.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Use Cases</span>
+        <h2 class="section-header__title">Powering the Future of Development</h2>
+      </div>
+      
+      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+        <div class="card card--highlight" data-animate="fade-up" data-delay="100">
+          <h3 class="mb-md">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+              <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+              <path d="M12 12 20 4"></path>
+              <circle cx="12" cy="12" r="6"></circle>
+            </svg>
+            AI Code Assistants
+          </h3>
+          <p class="text-muted">
+            Feed LLMs accurate, structured library context to generate correct API calls 
+            without hallucinations. LCP provides the ground truth AI needs.
+          </p>
+        </div>
+        
+        <div class="card" data-animate="fade-up" data-delay="200">
+          <h3 class="mb-md">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            Documentation Generators
+          </h3>
+          <p class="text-muted">
+            Generate beautiful, consistent documentation from LCP files. All the semantic 
+            richness you need in one portable format.
+          </p>
+        </div>
+        
+        <div class="card" data-animate="fade-up" data-delay="300">
+          <h3 class="mb-md">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+              <polyline points="4 17 10 11 4 5"></polyline>
+              <line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+            IDE Integration
+          </h3>
+          <p class="text-muted">
+            Provide rich autocomplete, inline documentation, and intelligent suggestions 
+            using pre-computed library context.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section section--muted">
+    <div class="container">
+      <div class="text-center" data-animate="fade-up">
+        <h2 class="mb-lg">Ready to Get Started?</h2>
+        <p class="text-muted mb-xl" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+          Install the Python SDK and generate your first LCP manifest in minutes.
+        </p>
+        
+        <div class="code-block" style="max-width: 500px; margin: 0 auto var(--space-xl); text-align: left;">
+          <div class="code-block__header">
+            <span class="code-block__lang">bash</span>
+            <button class="code-block__copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code>pip install lcp-python-sdk
+lcp-python scan requests -o requests.lcp.json</code></pre>
+        </div>
+        
+        <div class="flex justify-center gap-md">
+          <a href="getting-started.html" class="btn btn--primary btn--lg">
+            Get Started
+          </a>
+          <a href="docs.html" class="btn btn--secondary btn--lg">
+            Read the Spec
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>

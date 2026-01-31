@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why LCP - Library Context Protocol</title>
+  <meta name="description" content="Learn why the Library Context Protocol matters for AI code generation and how it prevents hallucinations.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%232563eb' rx='20' width='100' height='100'/><text x='50' y='68' font-size='50' font-weight='bold' fill='white' text-anchor='middle' font-family='system-ui'>L</text></svg>">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- Page Content -->
+  <main class="page-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header" data-animate="fade-up">
+        <h1 class="page-header__title">Why <span class="text-gradient">LCP</span>?</h1>
+        <p class="page-header__text">
+          Understanding the problem LCP solves and why it matters for the future of AI-assisted development.
+        </p>
+      </div>
+
+      <!-- The Problem -->
+      <section class="section" style="padding-top: 0;">
+        <div class="container--narrow">
+          <div class="card card--highlight mb-2xl" data-animate="fade-up">
+            <h2 class="mb-lg">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 12px;">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              The Problem
+            </h2>
+            <p class="text-muted" style="font-size: 1.125rem; line-height: 1.8;">
+              AI code assistants are transforming software development. But they have a fundamental limitation: 
+              <strong style="color: var(--color-text);">they often don't know what APIs actually exist</strong>.
+            </p>
+            <p class="text-muted mt-lg" style="font-size: 1.125rem; line-height: 1.8;">
+              LLMs are trained on massive datasets, but libraries evolve constantly. New versions ship, 
+              APIs change, and functions get deprecated. Without accurate, up-to-date context, 
+              AI assistants are left guessing—leading to frustrating bugs and wasted time.
+            </p>
+          </div>
+
+          <!-- Hallucination Section -->
+          <div data-animate="fade-up" data-delay="100">
+            <h2 class="mb-lg" id="hallucinations">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 12px;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              The Hallucination Problem
+            </h2>
+            
+            <p class="text-muted mb-xl" style="font-size: 1.125rem;">
+              AI hallucinations in code generation are more than an inconvenience—they're a productivity killer.
+            </p>
+
+            <div class="features" style="grid-template-columns: 1fr 1fr; margin-bottom: var(--space-2xl);">
+              <div class="card" style="border-color: #fecaca; background: #fef2f2;">
+                <h4 style="color: #b91c1c; margin-bottom: var(--space-md);">
+                  ❌ Without LCP
+                </h4>
+                <div class="code-block" style="margin: 0;">
+                  <pre style="font-size: 0.8125rem;"><code><span style="color: #94a3b8;"># AI generates this...</span>
+response = requests.fetch(
+    "https://api.example.com",
+    verify_ssl=True,  <span style="color: #f87171;">← doesn't exist</span>
+    retry_count=3     <span style="color: #f87171;">← doesn't exist</span>
+)
+
+<span style="color: #94a3b8;"># Runtime error:</span>
+<span style="color: #f87171;">TypeError: fetch() got unexpected 
+keyword argument 'verify_ssl'</span></code></pre>
+                </div>
+              </div>
+              
+              <div class="card" style="border-color: #bbf7d0; background: #f0fdf4;">
+                <h4 style="color: #166534; margin-bottom: var(--space-md);">
+                  ✓ With LCP
+                </h4>
+                <div class="code-block" style="margin: 0;">
+                  <pre style="font-size: 0.8125rem;"><code><span style="color: #94a3b8;"># AI knows the exact API</span>
+response = requests.get(
+    "https://api.example.com",
+    verify=True,      <span style="color: #34d399;">← correct param</span>
+    timeout=30        <span style="color: #34d399;">← correct param</span>
+)
+
+<span style="color: #94a3b8;"># Works perfectly!</span>
+<span style="color: #34d399;">print(response.json())</span></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-2xl">
+              <h4 class="mb-md">Common AI Hallucination Patterns</h4>
+              <ul style="list-style: none; padding: 0;">
+                <li style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);">
+                  <strong style="color: #b91c1c;">Invented Methods</strong>
+                  <span class="text-muted"> — Calling functions that don't exist in the library</span>
+                </li>
+                <li style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);">
+                  <strong style="color: #b91c1c;">Wrong Parameters</strong>
+                  <span class="text-muted"> — Using parameter names from similar libraries or older versions</span>
+                </li>
+                <li style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);">
+                  <strong style="color: #b91c1c;">Deprecated APIs</strong>
+                  <span class="text-muted"> — Suggesting code that worked in v1.x but breaks in v2.x</span>
+                </li>
+                <li style="padding: var(--space-sm) 0;">
+                  <strong style="color: #b91c1c;">Mixed Signatures</strong>
+                  <span class="text-muted"> — Combining patterns from different libraries</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- The Solution -->
+          <div data-animate="fade-up" data-delay="200">
+            <h2 class="mb-lg">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 12px;">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              The LCP Solution
+            </h2>
+            
+            <p class="text-muted mb-xl" style="font-size: 1.125rem; line-height: 1.8;">
+              LCP provides AI systems with <strong style="color: var(--color-text);">ground truth</strong> about library APIs. 
+              Instead of guessing from training data, AI assistants can reference authoritative, 
+              version-specific API descriptions.
+            </p>
+
+            <div class="features" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="feature-card">
+                <div class="feature-card__icon" style="background: var(--color-success-bg); color: var(--color-success);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <polyline points="9 12 11 14 15 10"></polyline>
+                  </svg>
+                </div>
+                <h4 class="feature-card__title">Accurate Signatures</h4>
+                <p class="feature-card__text">
+                  Every function, method, and class with exact parameter names, types, and defaults.
+                </p>
+              </div>
+              
+              <div class="feature-card">
+                <div class="feature-card__icon" style="background: var(--color-success-bg); color: var(--color-success);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <h4 class="feature-card__title">Version Aware</h4>
+                <p class="feature-card__text">
+                  Generate LCP for any version. AI knows exactly what's available in your environment.
+                </p>
+              </div>
+              
+              <div class="feature-card">
+                <div class="feature-card__icon" style="background: var(--color-success-bg); color: var(--color-success);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                </div>
+                <h4 class="feature-card__title">Rich Semantics</h4>
+                <p class="feature-card__text">
+                  Not just signatures—examples, deprecations, effects, and behavioral documentation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Benefits Section -->
+      <section class="section section--muted">
+        <div class="container">
+          <div class="section-header" data-animate="fade-up">
+            <span class="section-header__label">Benefits</span>
+            <h2 class="section-header__title">Who Benefits from LCP?</h2>
+          </div>
+          
+          <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            <div class="card" data-animate="fade-up" data-delay="100">
+              <h3 class="mb-md">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+                  <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                  <rect x="9" y="9" width="6" height="6"></rect>
+                  <line x1="9" y1="1" x2="9" y2="4"></line>
+                  <line x1="15" y1="1" x2="15" y2="4"></line>
+                  <line x1="9" y1="20" x2="9" y2="23"></line>
+                  <line x1="15" y1="20" x2="15" y2="23"></line>
+                </svg>
+                AI Tool Builders
+              </h3>
+              <ul style="padding-left: var(--space-lg); color: var(--color-text-secondary);">
+                <li style="margin-bottom: var(--space-sm);">Feed structured context to LLMs for accurate code generation</li>
+                <li style="margin-bottom: var(--space-sm);">Build IDE plugins with rich autocomplete</li>
+                <li style="margin-bottom: var(--space-sm);">Create documentation generators from a single source</li>
+                <li>Enable cross-language API understanding</li>
+              </ul>
+            </div>
+            
+            <div class="card" data-animate="fade-up" data-delay="200">
+              <h3 class="mb-md">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  <path d="M9 14l2 2 4-4"></path>
+                </svg>
+                Developers
+              </h3>
+              <ul style="padding-left: var(--space-lg); color: var(--color-text-secondary);">
+                <li style="margin-bottom: var(--space-sm);">Get accurate code suggestions that actually work</li>
+                <li style="margin-bottom: var(--space-sm);">Stop debugging hallucinated API calls</li>
+                <li style="margin-bottom: var(--space-sm);">Trust AI-generated code with verified signatures</li>
+                <li>Work with any library, any version</li>
+              </ul>
+            </div>
+            
+            <div class="card" data-animate="fade-up" data-delay="300">
+              <h3 class="mb-md">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                Library Authors
+              </h3>
+              <ul style="padding-left: var(--space-lg); color: var(--color-text-secondary);">
+                <li style="margin-bottom: var(--space-sm);">Ensure AI tools represent your API correctly</li>
+                <li style="margin-bottom: var(--space-sm);">Ship LCP alongside your library</li>
+                <li style="margin-bottom: var(--space-sm);">Control how AI understands your code</li>
+                <li>Reduce support issues from hallucinated APIs</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparison Section -->
+      <section class="section">
+        <div class="container container--narrow">
+          <div class="section-header" data-animate="fade-up">
+            <span class="section-header__label">Comparison</span>
+            <h2 class="section-header__title">LCP vs. Alternatives</h2>
+          </div>
+          
+          <div class="card" data-animate="fade-up" data-delay="100">
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                <thead>
+                  <tr>
+                    <th style="text-align: left; padding: var(--space-md); border-bottom: 2px solid var(--color-border); background: var(--color-bg-subtle);">Approach</th>
+                    <th style="text-align: center; padding: var(--space-md); border-bottom: 2px solid var(--color-border); background: var(--color-bg-subtle);">Accurate</th>
+                    <th style="text-align: center; padding: var(--space-md); border-bottom: 2px solid var(--color-border); background: var(--color-bg-subtle);">Portable</th>
+                    <th style="text-align: center; padding: var(--space-md); border-bottom: 2px solid var(--color-border); background: var(--color-bg-subtle);">Semantic</th>
+                    <th style="text-align: center; padding: var(--space-md); border-bottom: 2px solid var(--color-border); background: var(--color-bg-subtle);">Versioned</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><strong>LCP</strong></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);">Training Data</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-text-muted);">~</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);">Source Parsing</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);">Type Stubs</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: var(--space-md);">Inline Docs</td>
+                    <td style="text-align: center; padding: var(--space-md); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); color: var(--color-text-muted);">~</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="section section--muted">
+        <div class="container">
+          <div class="text-center" data-animate="fade-up">
+            <h2 class="mb-lg">Ready to Eliminate Hallucinations?</h2>
+            <p class="text-muted mb-xl" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+              Start generating accurate LCP manifests for your libraries today.
+            </p>
+            <div class="flex justify-center gap-md">
+              <a href="getting-started.html" class="btn btn--primary btn--lg">
+                Get Started
+              </a>
+              <a href="docs.html" class="btn btn--secondary btn--lg">
+                Read the Spec
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
