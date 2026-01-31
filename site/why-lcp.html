@@ -67,8 +67,13 @@
 
             <div class="features" style="grid-template-columns: 1fr 1fr; margin-bottom: var(--space-2xl);">
               <div class="card" style="border-color: #fecaca; background: #fef2f2;">
-                <h4 style="color: #b91c1c; margin-bottom: var(--space-md);">
-                  ❌ Without LCP
+                <h4 style="color: #b91c1c; margin-bottom: var(--space-md); display: flex; align-items: center; gap: var(--space-sm);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                  Without LCP
                 </h4>
                 <div class="code-block" style="margin: 0;">
                   <pre style="font-size: 0.8125rem;"><code><span style="color: #94a3b8;"># AI generates this...</span>
@@ -85,8 +90,11 @@ keyword argument 'verify_ssl'</span></code></pre>
               </div>
               
               <div class="card" style="border-color: #bbf7d0; background: #f0fdf4;">
-                <h4 style="color: #166534; margin-bottom: var(--space-md);">
-                  ✓ With LCP
+                <h4 style="color: #166534; margin-bottom: var(--space-md); display: flex; align-items: center; gap: var(--space-sm);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  With LCP
                 </h4>
                 <div class="code-block" style="margin: 0;">
                   <pre style="font-size: 0.8125rem;"><code><span style="color: #94a3b8;"># AI knows the exact API</span>
@@ -272,38 +280,38 @@ response = requests.get(
                 <tbody>
                   <tr>
                     <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><strong>LCP</strong></td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
                   </tr>
                   <tr>
                     <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);">Training Data</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-text-muted);">~</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
                   </tr>
                   <tr>
                     <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);">Source Parsing</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
                   </tr>
                   <tr>
                     <td style="padding: var(--space-md); border-bottom: 1px solid var(--color-border);">Type Stubs</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: #f87171;">✗</td>
-                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border); color: var(--color-success);">✓</td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md); border-bottom: 1px solid var(--color-border);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
                   </tr>
                   <tr>
                     <td style="padding: var(--space-md);">Inline Docs</td>
-                    <td style="text-align: center; padding: var(--space-md); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); color: #f87171;">✗</td>
-                    <td style="text-align: center; padding: var(--space-md); color: var(--color-success);">✓</td>
-                    <td style="text-align: center; padding: var(--space-md); color: var(--color-text-muted);">~</td>
+                    <td style="text-align: center; padding: var(--space-md);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></td>
+                    <td style="text-align: center; padding: var(--space-md);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></td>
+                    <td style="text-align: center; padding: var(--space-md);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"></line></svg></td>
                   </tr>
                 </tbody>
               </table>

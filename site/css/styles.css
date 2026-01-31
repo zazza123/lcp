@@ -157,6 +157,8 @@ pre code {
 
 .container--narrow {
   max-width: var(--max-width-narrow);
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
 }
 
 .section {

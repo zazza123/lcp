@@ -309,6 +309,61 @@
       border-radius: var(--radius-md);
       font-size: 1.25rem;
     }
+    
+    /* Client Tabs */
+    .client-tabs {
+      margin-top: var(--space-lg);
+    }
+    
+    .client-tabs__nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .client-tabs__btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      font-family: var(--font-display);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .client-tabs__btn:hover {
+      background: var(--color-bg-subtle);
+      color: var(--color-text);
+    }
+    
+    .client-tabs__btn.active {
+      background: var(--color-primary-bg);
+      border-color: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    
+    .client-tabs__content {
+      display: none;
+    }
+    
+    .client-tabs__content.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -422,7 +477,13 @@
       
       <div class="mcp-flow" data-animate="fade-up" data-delay="100">
         <div class="mcp-flow__step">
-          <div class="mcp-flow__icon">📦</div>
+          <div class="mcp-flow__icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
           <div class="mcp-flow__title">1. Generate LCP</div>
           <div class="mcp-flow__text">
             Scan your Python packages to create LCP manifest files with complete API information.
@@ -431,7 +492,11 @@
         </div>
         
         <div class="mcp-flow__step">
-          <div class="mcp-flow__icon">🔌</div>
+          <div class="mcp-flow__icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+            </svg>
+          </div>
           <div class="mcp-flow__title">2. Start MCP Server</div>
           <div class="mcp-flow__text">
             Launch the LCP-MCP server to expose manifests via the Model Context Protocol.
@@ -440,7 +505,13 @@
         </div>
         
         <div class="mcp-flow__step">
-          <div class="mcp-flow__icon">🤖</div>
+          <div class="mcp-flow__icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+          </div>
           <div class="mcp-flow__title">3. AI Queries APIs</div>
           <div class="mcp-flow__text">
             AI agents query the server for accurate function signatures and documentation.
@@ -460,7 +531,12 @@
         </div>
         <div class="conversation-demo__content">
           <div class="conversation-msg">
-            <div class="conversation-msg__avatar conversation-msg__avatar--user">👤</div>
+            <div class="conversation-msg__avatar conversation-msg__avatar--user">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
             <div class="conversation-msg__content">
               <div class="conversation-msg__role">User</div>
               <div class="conversation-msg__text">
@@ -470,7 +546,14 @@
           </div>
           
           <div class="conversation-msg">
-            <div class="conversation-msg__avatar conversation-msg__avatar--agent">🤖</div>
+            <div class="conversation-msg__avatar conversation-msg__avatar--agent">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <circle cx="15.5" cy="8.5" r="1.5"></circle>
+                <path d="M9 15h6"></path>
+              </svg>
+            </div>
             <div class="conversation-msg__content">
               <div class="conversation-msg__role">AI Agent</div>
               <div class="conversation-msg__text">
@@ -483,7 +566,11 @@
           </div>
           
           <div class="conversation-msg">
-            <div class="conversation-msg__avatar conversation-msg__avatar--tool">⚡</div>
+            <div class="conversation-msg__avatar conversation-msg__avatar--tool">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
             <div class="conversation-msg__content">
               <div class="conversation-msg__role">MCP Server Response</div>
               <div class="conversation-msg__tool-result">
@@ -502,7 +589,14 @@
           </div>
           
           <div class="conversation-msg">
-            <div class="conversation-msg__avatar conversation-msg__avatar--agent">🤖</div>
+            <div class="conversation-msg__avatar conversation-msg__avatar--agent">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <circle cx="15.5" cy="8.5" r="1.5"></circle>
+                <path d="M9 15h6"></path>
+              </svg>
+            </div>
             <div class="conversation-msg__content">
               <div class="conversation-msg__role">AI Agent</div>
               <div class="conversation-msg__text">
@@ -598,46 +692,256 @@ lcp-python serve requests.lcp.json --name requests-api</code></pre>
           Configure Your AI Client
         </h3>
         
-        <p class="text-muted mb-lg">Add the server to your MCP client configuration. Here's an example for Claude Desktop:</p>
+        <p class="text-muted mb-lg">Add the server to your MCP client configuration. Select your client below:</p>
         
-        <div class="code-block">
-          <div class="code-block__header">
-            <span class="code-block__lang">json</span>
-            <button class="code-block__copy">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        <!-- Client Tabs -->
+        <div class="client-tabs">
+          <div class="client-tabs__nav">
+            <button class="client-tabs__btn active" data-tab="claude-desktop">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
               </svg>
-              Copy
+              Claude Desktop
+            </button>
+            <button class="client-tabs__btn" data-tab="claude-code">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              Claude Code
+            </button>
+            <button class="client-tabs__btn" data-tab="copilot-cli">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+              Copilot CLI
+            </button>
+            <button class="client-tabs__btn" data-tab="codex-cli">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 17l6-6-6-6M12 19h8"></path>
+              </svg>
+              Codex CLI
+            </button>
+            <button class="client-tabs__btn" data-tab="opencode">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              OpenCode
             </button>
           </div>
-          <pre><code>{
+          
+          <!-- Claude Desktop Tab -->
+          <div class="client-tabs__content active" id="tab-claude-desktop">
+            <p class="text-muted mb-md">Edit your Claude Desktop configuration file:</p>
+            <div class="code-block">
+              <div class="code-block__header">
+                <span class="code-block__lang">json</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code>{
   "mcpServers": {
-    "requests-api": {
+    "lcp-requests": {
       "command": "lcp-python",
       "args": ["serve", "/path/to/requests.lcp.json"]
-    },
-    "pandas-api": {
-      "command": "lcp-python",
-      "args": ["serve", "/path/to/pandas.lcp.json"]
     }
   }
 }</code></pre>
-        </div>
-        
-        <div class="card card--highlight mt-lg">
-          <p style="display: flex; align-items: flex-start; gap: var(--space-md); margin: 0;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            <span>
-              <strong>Config file locations:</strong><br>
-              <code style="font-size: 0.8125rem;">macOS: ~/Library/Application Support/Claude/claude_desktop_config.json</code><br>
-              <code style="font-size: 0.8125rem;">Windows: %APPDATA%\Claude\claude_desktop_config.json</code>
-            </span>
-          </p>
+            </div>
+            <div class="card card--highlight mt-md">
+              <p style="display: flex; align-items: flex-start; gap: var(--space-md); margin: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>
+                  <strong>Config file location:</strong><br>
+                  <code style="font-size: 0.8125rem;">macOS: ~/Library/Application Support/Claude/claude_desktop_config.json</code><br>
+                  <code style="font-size: 0.8125rem;">Windows: %APPDATA%\Claude\claude_desktop_config.json</code>
+                </span>
+              </p>
+            </div>
+          </div>
+          
+          <!-- Claude Code Tab -->
+          <div class="client-tabs__content" id="tab-claude-code">
+            <p class="text-muted mb-md">Configure MCP in Claude Code using the CLI or settings file:</p>
+            <div class="code-block mb-lg">
+              <div class="code-block__header">
+                <span class="code-block__lang">bash</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code># Add MCP server via CLI
+claude mcp add lcp-requests -- lcp-python serve /path/to/requests.lcp.json
+
+# Or for project-specific config, add to your project's settings.json
+claude mcp add lcp-requests --scope project -- lcp-python serve ./requests.lcp.json</code></pre>
+            </div>
+            <p class="text-muted mb-md">Alternatively, edit <code>~/.claude/settings.json</code>:</p>
+            <div class="code-block">
+              <div class="code-block__header">
+                <span class="code-block__lang">json</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code>{
+  "mcpServers": {
+    "lcp-requests": {
+      "command": "lcp-python",
+      "args": ["serve", "/path/to/requests.lcp.json"]
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+          
+          <!-- Copilot CLI Tab -->
+          <div class="client-tabs__content" id="tab-copilot-cli">
+            <p class="text-muted mb-md">Configure MCP servers for GitHub Copilot CLI in your settings:</p>
+            <div class="code-block mb-lg">
+              <div class="code-block__header">
+                <span class="code-block__lang">bash</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code># Add MCP server to Copilot CLI
+copilot mcp add lcp-requests lcp-python serve /path/to/requests.lcp.json
+
+# List configured servers
+copilot mcp list</code></pre>
+            </div>
+            <p class="text-muted mb-md">Or edit the config file directly at <code>~/.copilot/mcp.json</code>:</p>
+            <div class="code-block">
+              <div class="code-block__header">
+                <span class="code-block__lang">json</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code>{
+  "servers": {
+    "lcp-requests": {
+      "command": "lcp-python",
+      "args": ["serve", "/path/to/requests.lcp.json"]
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+          
+          <!-- Codex CLI Tab -->
+          <div class="client-tabs__content" id="tab-codex-cli">
+            <p class="text-muted mb-md">Configure MCP servers for OpenAI Codex CLI:</p>
+            <div class="code-block mb-lg">
+              <div class="code-block__header">
+                <span class="code-block__lang">bash</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code># Start Codex CLI with MCP server
+codex --mcp-server "lcp-python serve /path/to/requests.lcp.json"
+
+# Or configure in ~/.codex/config.yaml</code></pre>
+            </div>
+            <p class="text-muted mb-md">Add to your <code>~/.codex/config.yaml</code>:</p>
+            <div class="code-block">
+              <div class="code-block__header">
+                <span class="code-block__lang">yaml</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code>mcp_servers:
+  lcp-requests:
+    command: lcp-python
+    args:
+      - serve
+      - /path/to/requests.lcp.json</code></pre>
+            </div>
+          </div>
+          
+          <!-- OpenCode Tab -->
+          <div class="client-tabs__content" id="tab-opencode">
+            <p class="text-muted mb-md">Configure MCP servers for OpenCode:</p>
+            <div class="code-block mb-lg">
+              <div class="code-block__header">
+                <span class="code-block__lang">bash</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code># Add MCP server to OpenCode
+opencode config set mcp.servers.lcp-requests.command "lcp-python"
+opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.lcp.json"]'</code></pre>
+            </div>
+            <p class="text-muted mb-md">Or edit <code>~/.opencode/config.json</code>:</p>
+            <div class="code-block">
+              <div class="code-block__header">
+                <span class="code-block__lang">json</span>
+                <button class="code-block__copy">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <pre><code>{
+  "mcp": {
+    "servers": {
+      "lcp-requests": {
+        "command": "lcp-python",
+        "args": ["serve", "/path/to/requests.lcp.json"]
+      }
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -813,19 +1117,36 @@ lcp-python serve requests.lcp.json --name requests-api</code></pre>
       <!-- Compatible Clients -->
       <div class="client-logos" data-animate="fade-up" data-delay="200">
         <div class="client-logo">
-          <div class="client-logo__icon" style="background: linear-gradient(135deg, #d97706, #f59e0b);">🤖</div>
+          <div class="client-logo__icon" style="background: linear-gradient(135deg, #d97706, #f59e0b);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
           Claude Desktop
         </div>
         <div class="client-logo">
-          <div class="client-logo__icon" style="background: linear-gradient(135deg, #059669, #10b981);">💬</div>
+          <div class="client-logo__icon" style="background: linear-gradient(135deg, #059669, #10b981);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
           ChatGPT
         </div>
         <div class="client-logo">
-          <div class="client-logo__icon" style="background: linear-gradient(135deg, #7c3aed, #8b5cf6);">⚡</div>
+          <div class="client-logo__icon" style="background: linear-gradient(135deg, #7c3aed, #8b5cf6);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
           Cursor
         </div>
         <div class="client-logo">
-          <div class="client-logo__icon" style="background: linear-gradient(135deg, #2563eb, #3b82f6);">🔧</div>
+          <div class="client-logo__icon" style="background: linear-gradient(135deg, #2563eb, #3b82f6);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+          </div>
           Custom Agents
         </div>
       </div>
@@ -903,5 +1224,26 @@ run_server("/tmp/requests.lcp.json")</code></pre>
   <div id="footer-placeholder"></div>
 
   <script src="js/main.js"></script>
+  <script>
+    // Client tabs functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.client-tabs__btn');
+      const tabContents = document.querySelectorAll('.client-tabs__content');
+      
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          
+          // Remove active from all buttons and contents
+          tabButtons.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+          
+          // Add active to clicked button and corresponding content
+          this.classList.add('active');
+          document.getElementById('tab-' + tabId).classList.add('active');
+        });
+      });
+    });
+  </script>
 </body>
 </html>
