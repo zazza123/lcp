@@ -7,6 +7,7 @@ import sys
 import click
 
 from .generator import generate_lcp
+from .mcp_server import run_server as run_mcp_server
 from .scanner import scan_package
 from .validator import LCPValidationError, validate_document
 
@@ -137,6 +138,38 @@ def validate_cmd(file: str):
 
 # Alias for validate command
 main.add_command(validate_cmd, name="validate")
+
+
+@main.command()
+@click.argument("manifest", type=click.Path(exists=True))
+@click.option(
+    "--name",
+    type=str,
+    default=None,
+    help="Server name for MCP identification (default: lcp-{library-name}).",
+)
+def serve(manifest: str, name: str | None):
+    """Start an MCP server for an LCP manifest.
+
+    MANIFEST is the path to an LCP JSON file to serve.
+
+    The server uses stdio transport and exposes tools for exploring
+    and querying the library's API.
+
+    Examples:
+
+        lcp-python serve requests.lcp.json
+
+        lcp-python serve numpy.lcp.json --name numpy-docs
+    """
+    try:
+        run_mcp_server(manifest, name=name)
+    except FileNotFoundError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
