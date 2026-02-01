@@ -18,8 +18,16 @@
 
   <!-- Docs Layout -->
   <div class="docs-layout container">
+    <!-- Mobile Sidebar Toggle -->
+    <button class="docs-sidebar-toggle" aria-expanded="false" aria-controls="docs-sidebar">
+      <span>Navigation</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
     <!-- Sidebar -->
-    <aside class="docs-sidebar">
+    <aside class="docs-sidebar" id="docs-sidebar">
       <div class="docs-sidebar__section">
         <h3 class="docs-sidebar__heading">Overview</h3>
         <ul class="docs-sidebar__list">
@@ -556,6 +564,25 @@
         }
       });
     });
+    
+    // Mobile sidebar toggle
+    const sidebarToggle = document.querySelector('.docs-sidebar-toggle');
+    const sidebar = document.getElementById('docs-sidebar');
+    
+    if (sidebarToggle && sidebar) {
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = sidebar.classList.toggle('docs-sidebar--open');
+        sidebarToggle.setAttribute('aria-expanded', isOpen);
+      });
+      
+      // Close sidebar when clicking a link
+      sidebar.querySelectorAll('.docs-sidebar__link').forEach(link => {
+        link.addEventListener('click', () => {
+          sidebar.classList.remove('docs-sidebar--open');
+          sidebarToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
   </script>
 </body>
 </html>
