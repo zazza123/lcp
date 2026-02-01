@@ -184,7 +184,6 @@ pre code {
   border-bottom: 1px solid var(--color-border-light);
   z-index: 1000;
   transition: box-shadow var(--transition-base);
-  overflow-x: hidden;
 }
 
 .header--scrolled {
@@ -320,11 +319,12 @@ pre code {
   }
   
   .header__nav {
-    position: fixed;
-    top: var(--header-height);
+    position: absolute;
+    top: 100%;
     left: 0;
     right: 0;
-    bottom: 0;
+    height: calc(100vh - var(--header-height));
+    max-height: calc(100vh - var(--header-height));
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -336,10 +336,16 @@ pre code {
     transition: transform var(--transition-base);
     overflow-y: auto;
     z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
   
   .header__nav--open {
     transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
   
   .nav__list {
