@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from lcp_python_sdk.models import (
+from lcp.models import (
     LCPDocument,
     Library,
     Manifest,
@@ -12,7 +12,7 @@ from lcp_python_sdk.models import (
     Symbol,
     SymbolKind,
 )
-from lcp_python_sdk.validator import (
+from lcp.validator import (
     LCPValidationError,
     is_valid,
     validate_dict,

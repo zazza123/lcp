@@ -71,7 +71,7 @@ def scan(
         LCPValidationError: If validation is enabled and the output is invalid.
 
     Example:
-        >>> from lcp_python_sdk import scan
+        >>> from lcp import scan
         >>> doc = scan("json")
         >>> doc.to_file("json.lcp.json")
     """

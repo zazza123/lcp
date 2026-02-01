@@ -5,7 +5,7 @@ import json
 import pytest
 from click.testing import CliRunner
 
-from lcp_python_sdk.cli import main, scan, validate_cmd
+from lcp.cli import main, scan, validate_cmd
 
 
 @pytest.fixture

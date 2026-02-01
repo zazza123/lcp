@@ -1,10 +1,10 @@
-"""Integration tests for the lcp-python-sdk."""
+"""Integration tests for the lcp."""
 
 import json
 
 import pytest
 
-from lcp_python_sdk import (
+from lcp import (
     LCPDocument,
     LCPValidationError,
     generate_lcp,

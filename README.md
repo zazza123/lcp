@@ -1,11 +1,11 @@
-# lcp-python-sdk
+# lcp
 
 Python SDK for generating [Library Context Protocol (LCP)](https://lcp.dev) files from Python packages.
 
 ## Installation
 
 ```bash
-pip install lcp-python-sdk
+pip install lcp
 ```
 
 ## Usage
@@ -14,22 +14,22 @@ pip install lcp-python-sdk
 
 ```bash
 # Scan a package and output LCP JSON
-lcp-python scan requests -o requests.lcp.json
+lcp scan requests -o requests.lcp.json
 
 # Include private symbols
-lcp-python scan mypackage --include-private
+lcp scan mypackage --include-private
 
 # Skip validation
-lcp-python scan mypackage --no-validate
+lcp scan mypackage --no-validate
 
 # Start an MCP server for a library manifest
-lcp-python serve requests.lcp.json
+lcp serve requests.lcp.json
 ```
 
 ### Python API
 
 ```python
-from lcp_python_sdk import scan
+from lcp import scan
 
 # Scan a package
 lcp_doc = scan("requests")
@@ -52,10 +52,10 @@ The SDK includes an MCP (Model Context Protocol) server that exposes LCP manifes
 
 ```bash
 # Start MCP server for a library
-lcp-python serve requests.lcp.json
+lcp serve requests.lcp.json
 
 # With custom server name
-lcp-python serve numpy.lcp.json --name numpy-docs
+lcp serve numpy.lcp.json --name numpy-docs
 ```
 
 ### MCP Client Configuration
@@ -66,7 +66,7 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 {
   "mcpServers": {
     "requests-api": {
-      "command": "lcp-python",
+      "command": "lcp",
       "args": ["serve", "/path/to/requests.lcp.json"]
     }
   }
@@ -87,7 +87,7 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 ### Programmatic Usage
 
 ```python
-from lcp_python_sdk.mcp_server import create_server, run_server
+from lcp.mcp_server import create_server, run_server
 
 # Create and customize server
 server = create_server("path/to/manifest.lcp.json", name="my-server")

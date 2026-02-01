@@ -2,7 +2,7 @@
 
 import pytest
 
-from lcp_python_sdk.generator import (
+from lcp.generator import (
     _build_symbol_id,
     _convert_param,
     _convert_signature,
@@ -11,12 +11,12 @@ from lcp_python_sdk.generator import (
     _symbol_kind_to_lcp,
     generate_lcp,
 )
-from lcp_python_sdk.models import (
+from lcp.models import (
     LCPDocument,
     ParamKind,
     SymbolKind,
 )
-from lcp_python_sdk.scanner import (
+from lcp.scanner import (
     ScannedModule,
     ScannedParam,
     ScannedSignature,
@@ -303,7 +303,7 @@ class TestGenerateLcp:
         assert doc.manifest.library.language == "python"
         assert doc.manifest.symbol_resolution == "fully-qualified"
         assert doc.manifest.generation is not None
-        assert doc.manifest.generation.tool == "lcp-python-sdk"
+        assert doc.manifest.generation.tool == "lcp"
 
     def test_detailed_index(self):
         scanned = ScannedModule(

@@ -7,7 +7,7 @@ from types import ModuleType
 
 import pytest
 
-from lcp_python_sdk.scanner import (
+from lcp.scanner import (
     ScannedModule,
     ScannedParam,
     ScannedSignature,

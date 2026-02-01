@@ -177,7 +177,7 @@ function initJsonViewer() {
       distribution: 'pypi',
       license: 'Apache-2.0',
       generation: {
-        tool: 'lcp-python-sdk',
+        tool: 'lcp',
         version: '0.1.0',
       },
     },

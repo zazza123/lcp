@@ -1,4 +1,4 @@
-# Copilot Instructions for lcp-python-sdk
+# Copilot Instructions for lcp
 
 Python SDK for generating [Library Context Protocol (LCP)](https://lcp.dev) files from Python packages by introspecting installed modules using `inspect` and `ast`.
 
@@ -22,8 +22,8 @@ pytest tests/test_scanner.py::TestScanClass::test_scan_class
 pytest -v
 
 # CLI usage (after installation)
-lcp-python scan <package> -o output.lcp.json
-lcp-python validate <file.lcp.json>
+lcp scan <package> -o output.lcp.json
+lcp validate <file.lcp.json>
 ```
 
 ## Architecture
@@ -55,7 +55,7 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 
 ## Conventions
 
-- Use `src/` layout with `lcp_python_sdk` package
+- Use `src/` layout with `lcp` package
 - Tests use a `sample_module.py` fixture (in `tests/`) for testing introspection
 - Private symbols (prefixed with `_`) are excluded by default; controlled via `include_private` flag
 - Public dunder methods (`__init__`, `__call__`, etc.) are considered public API

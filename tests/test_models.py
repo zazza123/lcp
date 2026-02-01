@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from lcp_python_sdk.models import (
+from lcp.models import (
     Artifact,
     DetailedIndexEntry,
     Distribution,
@@ -190,14 +190,14 @@ class TestManifest:
             distribution=Distribution.PYPI,
             license="MIT",
             generation=Generation(
-                tool="lcp-python-sdk",
+                tool="lcp",
                 version="0.1.0",
                 date=datetime.now(timezone.utc),
             ),
         )
         assert manifest.distribution == Distribution.PYPI
         assert manifest.license == "MIT"
-        assert manifest.generation.tool == "lcp-python-sdk"
+        assert manifest.generation.tool == "lcp"
 
 
 class TestLCPDocument:

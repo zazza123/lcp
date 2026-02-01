@@ -1,4 +1,4 @@
-"""CLI for lcp-python-sdk."""
+"""CLI for lcp."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from .validator import LCPValidationError, validate_document
 
 
 @click.group()
-@click.version_option(version="0.1.0", prog_name="lcp-python")
+@click.version_option(version="0.1.0", prog_name="lcp")
 def main():
     """LCP Python SDK - Generate Library Context Protocol files from Python packages."""
     pass
@@ -64,11 +64,11 @@ def scan(
 
     Examples:
 
-        lcp-python scan requests -o requests.lcp.json
+        lcp scan requests -o requests.lcp.json
 
-        lcp-python scan numpy --include-private
+        lcp scan numpy --include-private
 
-        lcp-python scan mypackage --no-validate
+        lcp scan mypackage --no-validate
     """
     try:
         # Scan the package
@@ -158,9 +158,9 @@ def serve(manifest: str, name: str | None):
 
     Examples:
 
-        lcp-python serve requests.lcp.json
+        lcp serve requests.lcp.json
 
-        lcp-python serve numpy.lcp.json --name numpy-docs
+        lcp serve numpy.lcp.json --name numpy-docs
     """
     try:
         run_mcp_server(manifest, name=name)

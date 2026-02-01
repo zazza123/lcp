@@ -157,7 +157,7 @@ def generate_lcp(scanned_module: ScannedModule) -> LCPDocument:
         ),
         distribution=Distribution.PYPI,
         generation=Generation(
-            tool="lcp-python-sdk",
+            tool="lcp",
             version="0.1.0",
             date=datetime.now(timezone.utc),
         ),

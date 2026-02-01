@@ -651,11 +651,11 @@ response = requests.get(
             </button>
           </div>
           <pre><code># Install the SDK
-pip install lcp-python-sdk
+pip install lcp
 
 # Generate LCP for your libraries
-lcp-python scan requests -o requests.lcp.json
-lcp-python scan pandas -o pandas.lcp.json</code></pre>
+lcp scan requests -o requests.lcp.json
+lcp scan pandas -o pandas.lcp.json</code></pre>
         </div>
       </div>
       
@@ -678,10 +678,10 @@ lcp-python scan pandas -o pandas.lcp.json</code></pre>
             </button>
           </div>
           <pre><code># Start MCP server for a single library
-lcp-python serve requests.lcp.json
+lcp serve requests.lcp.json
 
 # With a custom name
-lcp-python serve requests.lcp.json --name requests-api</code></pre>
+lcp serve requests.lcp.json --name requests-api</code></pre>
         </div>
       </div>
       
@@ -752,7 +752,7 @@ lcp-python serve requests.lcp.json --name requests-api</code></pre>
               <pre><code>{
   "mcpServers": {
     "lcp-requests": {
-      "command": "lcp-python",
+      "command": "lcp",
       "args": ["serve", "/path/to/requests.lcp.json"]
     }
   }
@@ -789,10 +789,10 @@ lcp-python serve requests.lcp.json --name requests-api</code></pre>
                 </button>
               </div>
               <pre><code># Add MCP server via CLI
-claude mcp add lcp-requests -- lcp-python serve /path/to/requests.lcp.json
+claude mcp add lcp-requests -- lcp serve /path/to/requests.lcp.json
 
 # Or for project-specific config, add to your project's settings.json
-claude mcp add lcp-requests --scope project -- lcp-python serve ./requests.lcp.json</code></pre>
+claude mcp add lcp-requests --scope project -- lcp serve ./requests.lcp.json</code></pre>
             </div>
             <p class="text-muted mb-md">Alternatively, edit <code>~/.claude/settings.json</code>:</p>
             <div class="code-block">
@@ -809,7 +809,7 @@ claude mcp add lcp-requests --scope project -- lcp-python serve ./requests.lcp.j
               <pre><code>{
   "mcpServers": {
     "lcp-requests": {
-      "command": "lcp-python",
+      "command": "lcp",
       "args": ["serve", "/path/to/requests.lcp.json"]
     }
   }
@@ -832,7 +832,7 @@ claude mcp add lcp-requests --scope project -- lcp-python serve ./requests.lcp.j
                 </button>
               </div>
               <pre><code># Add MCP server to Copilot CLI
-copilot mcp add lcp-requests lcp-python serve /path/to/requests.lcp.json
+copilot mcp add lcp-requests lcp serve /path/to/requests.lcp.json
 
 # List configured servers
 copilot mcp list</code></pre>
@@ -852,7 +852,7 @@ copilot mcp list</code></pre>
               <pre><code>{
   "servers": {
     "lcp-requests": {
-      "command": "lcp-python",
+      "command": "lcp",
       "args": ["serve", "/path/to/requests.lcp.json"]
     }
   }
@@ -875,7 +875,7 @@ copilot mcp list</code></pre>
                 </button>
               </div>
               <pre><code># Start Codex CLI with MCP server
-codex --mcp-server "lcp-python serve /path/to/requests.lcp.json"
+codex --mcp-server "lcp serve /path/to/requests.lcp.json"
 
 # Or configure in ~/.codex/config.yaml</code></pre>
             </div>
@@ -893,7 +893,7 @@ codex --mcp-server "lcp-python serve /path/to/requests.lcp.json"
               </div>
               <pre><code>mcp_servers:
   lcp-requests:
-    command: lcp-python
+    command: lcp
     args:
       - serve
       - /path/to/requests.lcp.json</code></pre>
@@ -915,7 +915,7 @@ codex --mcp-server "lcp-python serve /path/to/requests.lcp.json"
                 </button>
               </div>
               <pre><code># Add MCP server to OpenCode
-opencode config set mcp.servers.lcp-requests.command "lcp-python"
+opencode config set mcp.servers.lcp-requests.command "lcp"
 opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.lcp.json"]'</code></pre>
             </div>
             <p class="text-muted mb-md">Or edit <code>~/.opencode/config.json</code>:</p>
@@ -934,7 +934,7 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
   "mcp": {
     "servers": {
       "lcp-requests": {
-        "command": "lcp-python",
+        "command": "lcp",
         "args": ["serve", "/path/to/requests.lcp.json"]
       }
     }
@@ -1177,7 +1177,7 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
               Copy
             </button>
           </div>
-          <pre><code>from lcp_python_sdk.mcp_server import create_server, run_server
+          <pre><code>from lcp.mcp_server import create_server, run_server
 
 # Create a customized server
 server = create_server(
@@ -1189,7 +1189,7 @@ server = create_server(
 run_server("path/to/manifest.lcp.json")
 
 # You can also load multiple manifests
-from lcp_python_sdk import scan
+from lcp import scan
 
 # Generate and serve on-the-fly
 lcp_doc = scan("requests")
@@ -1212,7 +1212,7 @@ run_server("/tmp/requests.lcp.json")</code></pre>
           <a href="getting-started.html" class="btn btn--primary btn--lg">
             Get Started
           </a>
-          <a href="https://github.com/zazza123/lcp-python-sdk" class="btn btn--secondary btn--lg" target="_blank">
+          <a href="https://github.com/zazza123/lcp" class="btn btn--secondary btn--lg" target="_blank">
             View on GitHub
           </a>
         </div>

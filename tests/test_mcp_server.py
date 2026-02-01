@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from lcp_python_sdk.generator import generate_lcp
-from lcp_python_sdk.mcp_server import LCPIndex, create_server, load_lcp_document
-from lcp_python_sdk.scanner import scan_package
+from lcp.generator import generate_lcp
+from lcp.mcp_server import LCPIndex, create_server, load_lcp_document
+from lcp.scanner import scan_package
 
 
 @pytest.fixture
