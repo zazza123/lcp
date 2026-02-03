@@ -544,27 +544,49 @@
 
   <script src="js/main.js"></script>
   <script>
-    // Highlight active sidebar link on scroll
     const sections = document.querySelectorAll('h2[id]');
     const sidebarLinks = document.querySelectorAll('.docs-sidebar__link');
-    
-    window.addEventListener('scroll', () => {
-      let current = '';
+    const header = document.querySelector('.header');
+    const getHeaderHeight = () => (header ? header.offsetHeight : 0);
+
+    function updateActiveLink() {
+      const headerHeight = getHeaderHeight();
+      const TOLERANCE = 12; // pixels threshold when anchors land slightly below the header
+
+      let current = sections[0] ? sections[0].id : '';
+      let bestScore = Infinity; // minimal absolute distance to header
+
       sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        if (window.scrollY >= sectionTop) {
-          current = section.getAttribute('id');
+        const rect = section.getBoundingClientRect();
+        const offset = rect.top - headerHeight;
+        const absOffset = Math.abs(offset);
+
+        // Prefer the section with the smallest absolute offset (closest to header)
+        // If offsets are almost equal, prefer a section that has passed the header (offset <= TOLERANCE)
+        const score = absOffset - (offset <= TOLERANCE ? 0.5 : 0);
+        if (score < bestScore) {
+          bestScore = score;
+          current = section.id;
         }
       });
-      
+
+      // Update classes
       sidebarLinks.forEach(link => {
-        link.classList.remove('docs-sidebar__link--active');
-        if (link.getAttribute('href') === `#${current}`) {
-          link.classList.add('docs-sidebar__link--active');
-        }
+        link.classList.toggle('docs-sidebar__link--active', link.getAttribute('href') === `#${current}`);
       });
+    }
+
+    // Update on scroll, resize and load
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    window.addEventListener('resize', updateActiveLink);
+    window.addEventListener('DOMContentLoaded', updateActiveLink);
+    // Also update on hash change (when user clicks a nav link)
+    window.addEventListener('hashchange', () => {
+      // Allow browser to jump to anchor, then update
+      requestAnimationFrame(() => requestAnimationFrame(updateActiveLink));
+      setTimeout(updateActiveLink, 250);
     });
-    
+
     // Mobile sidebar toggle
     const sidebarToggle = document.querySelector('.docs-sidebar-toggle');
     const sidebar = document.getElementById('docs-sidebar');
@@ -575,14 +597,71 @@
         sidebarToggle.setAttribute('aria-expanded', isOpen);
       });
       
-      // Close sidebar when clicking a link
+      // Close sidebar when clicking a link and mark clicked link as active
       sidebar.querySelectorAll('.docs-sidebar__link').forEach(link => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (e) => {
           sidebar.classList.remove('docs-sidebar--open');
           sidebarToggle.setAttribute('aria-expanded', 'false');
+
+          // Immediately mark clicked link active for instant feedback
+          sidebar.querySelectorAll('.docs-sidebar__link').forEach(l => {
+            l.classList.toggle('docs-sidebar__link--active', l === link);
+          });
+
+          // After the browser handles the anchor navigation, re-run detection to be safe
+          requestAnimationFrame(() => requestAnimationFrame(updateActiveLink));
+          setTimeout(updateActiveLink, 250);
         });
       });
     }
+
+    // Prevent fixed sidebar from overlapping footer on large screens
+    (function initSidebarFooterCollision() {
+      const GAP = 16; // px gap between sidebar bottom and footer
+      const sidebarEl = document.getElementById('docs-sidebar');
+
+      function adjust() {
+        const footer = document.querySelector('.footer');
+        if (!footer || !sidebarEl) return;
+
+        const isFixedLayout = window.matchMedia('(min-width: 1100px)').matches;
+        // reset first
+        sidebarEl.style.transform = '';
+
+        if (!isFixedLayout) return;
+
+        const sidebarRect = sidebarEl.getBoundingClientRect();
+        const footerRect = footer.getBoundingClientRect();
+
+        const overlap = (sidebarRect.bottom + GAP) - footerRect.top;
+        if (overlap > 0) {
+          sidebarEl.style.transform = `translateY(-${overlap}px)`;
+        } else {
+          sidebarEl.style.transform = '';
+        }
+      }
+
+      // Poll briefly for footer (loaded asynchronously) then attach observers
+      let attempts = 0;
+      const maxAttempts = 30;
+      const poll = setInterval(() => {
+        attempts++;
+        const footer = document.querySelector('.footer');
+        if (footer || attempts >= maxAttempts) {
+          clearInterval(poll);
+          // Initial adjust
+          adjust();
+
+          window.addEventListener('scroll', adjust, { passive: true });
+          window.addEventListener('resize', adjust);
+
+          if (footer && 'IntersectionObserver' in window) {
+            const io = new IntersectionObserver(() => adjust(), { threshold: [0, 0.1, 1] });
+            io.observe(footer);
+          }
+        }
+      }, 150);
+    })();
   </script>
 </body>
 </html>

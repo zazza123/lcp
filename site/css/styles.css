@@ -1139,6 +1139,7 @@ pre code {
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--color-border);
+  scroll-margin-top: calc(var(--header-height) + var(--space-lg));
 }
 
 .docs-content h2:first-child {
@@ -1148,6 +1149,7 @@ pre code {
 .docs-content h3 {
   margin-top: var(--space-2xl);
   margin-bottom: var(--space-md);
+  scroll-margin-top: calc(var(--header-height) + var(--space-md));
 }
 
 .docs-content ul, .docs-content ol {
@@ -1175,6 +1177,29 @@ pre code {
 .docs-content th {
   font-weight: 600;
   background: var(--color-bg-subtle);
+}
+
+/* Fixed sidebar on wide screens */
+@media (min-width: 1100px) {
+  /* Switch layout to single column so content can expand while sidebar is fixed */
+  .docs-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-sidebar {
+    position: fixed;
+    top: calc(var(--header-height) + var(--space-xl));
+    left: calc((100% - var(--max-width)) / 2 + var(--space-xl));
+    width: 260px; /* matches the original grid column */
+    max-height: calc(100vh - var(--header-height) - var(--space-2xl));
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  /* Preserve the original horizontal gap between sidebar and content (only when using the docs layout) */
+  .docs-layout .docs-content {
+    margin-left: calc(260px + var(--space-3xl));
+  }
 }
 
 /* Docs sidebar mobile toggle */
