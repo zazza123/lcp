@@ -74,6 +74,97 @@
       font-size: 0.9375rem;
     }
     
+    /* Tools Table (Desktop) */
+    .tools-table-wrapper {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .tools-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .tools-table th,
+    .tools-table td {
+      padding: var(--space-md) var(--space-lg);
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .tools-table th {
+      background: var(--color-primary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .tools-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tools-table tr:hover td {
+      background: var(--color-bg-subtle);
+    }
+
+    .tools-table__name {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+
+    .tools-table__name--new::after {
+      content: "NEW";
+      margin-left: var(--space-sm);
+      font-size: 0.625rem;
+      font-family: var(--font-display);
+      color: var(--color-accent);
+      background: rgba(245, 158, 11, 0.15);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      vertical-align: middle;
+    }
+
+    .tools-table__desc {
+      color: var(--color-text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    .tools-table__output {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      background: var(--color-bg-muted);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-sm);
+      color: var(--color-accent);
+      white-space: nowrap;
+    }
+
+    /* Tools Cards (Mobile) */
+    .tools-cards {
+      display: none;
+    }
+
+    @media (max-width: 968px) {
+      .tools-table-wrapper {
+        display: none;
+      }
+
+      .tools-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+      }
+    }
+
     .tool-card {
       background: var(--color-bg);
       border: 1px solid var(--color-border);
@@ -81,12 +172,17 @@
       padding: var(--space-lg);
       transition: all var(--transition-base);
     }
-    
+
     .tool-card:hover {
       border-color: var(--color-primary-light);
       box-shadow: var(--shadow-md);
     }
-    
+
+    .tool-card--new {
+      border: 2px solid var(--color-accent);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), transparent);
+    }
+
     .tool-card__name {
       font-family: var(--font-mono);
       font-size: 1rem;
@@ -94,33 +190,35 @@
       color: var(--color-primary);
       margin-bottom: var(--space-sm);
     }
-    
+
+    .tool-card__name--new::after {
+      content: "NEW";
+      margin-left: var(--space-sm);
+      font-size: 0.625rem;
+      font-family: var(--font-display);
+      color: var(--color-accent);
+    }
+
     .tool-card__desc {
       color: var(--color-text-secondary);
       font-size: 0.9375rem;
       margin-bottom: var(--space-md);
     }
-    
-    .tool-card__params {
+
+    .tool-card__output {
       background: var(--color-bg-subtle);
       border-radius: var(--radius-sm);
       padding: var(--space-md);
       font-family: var(--font-mono);
       font-size: 0.8125rem;
-    }
-    
-    .tool-card__param {
-      display: flex;
-      gap: var(--space-sm);
-      padding: var(--space-xs) 0;
-    }
-    
-    .tool-card__param-name {
       color: var(--color-accent);
     }
-    
-    .tool-card__param-type {
+
+    .tool-card__output-label {
       color: var(--color-text-muted);
+      margin-bottom: var(--space-xs);
+      font-family: var(--font-display);
+      font-size: 0.75rem;
     }
     
     .conversation-demo {
@@ -958,137 +1056,147 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
           New strategic guidance tools help agents explore APIs without hallucinations or excessive token usage.
         </p>
       </div>
-      
-      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));">
-        <div class="tool-card" data-animate="fade-up" data-delay="100">
+
+      <!-- Desktop: Table View -->
+      <div class="tools-table-wrapper" data-animate="fade-up" data-delay="100">
+        <table class="tools-table">
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Description</th>
+              <th>Example Output</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tools-table__name">get_manifest</span></td>
+              <td class="tools-table__desc">Get library metadata including name, version, language, and distribution information.</td>
+              <td><code class="tools-table__output">{ name, version, language, distribution }</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">list_modules</span></td>
+              <td class="tools-table__desc">List all modules in the library. Useful for discovering available submodules.</td>
+              <td><code class="tools-table__output">["requests", "requests.api", ...]</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">list_symbols</span></td>
+              <td class="tools-table__desc">Browse symbols with optional filtering by module or kind (function, class, method).</td>
+              <td><code class="tools-table__output">[{ id, kind, summary }, ...]</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">get_symbol</span></td>
+              <td class="tools-table__desc">Get full details for a specific symbol including signatures, semantics, and effects.</td>
+              <td><code class="tools-table__output">{ kind, params, returns, summary }</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">search_symbols</span></td>
+              <td class="tools-table__desc">Find symbols by text search across names, summaries, and descriptions.</td>
+              <td><code class="tools-table__output">[{ id, kind, summary }, ...]</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">get_class_members</span></td>
+              <td class="tools-table__desc">Get all methods and attributes of a class. Essential for understanding class APIs.</td>
+              <td><code class="tools-table__output">{ methods: [...], attributes: [...] }</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">get_usage_guide</span></td>
+              <td class="tools-table__desc">Get strategic guidance on how to efficiently use the LCP manifest.</td>
+              <td><code class="tools-table__output">{ workflow, tips, mistakes }</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">explore_return_type</span></td>
+              <td class="tools-table__desc">Analyze return type of a function and find related classes.</td>
+              <td><code class="tools-table__output">{ return_type, related_classes }</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name">get_suggestions</span></td>
+              <td class="tools-table__desc">Get smart suggestions for exploring the library based on your task.</td>
+              <td><code class="tools-table__output">{ modules, symbols, next_steps }</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile: Card View -->
+      <div class="tools-cards">
+        <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">get_manifest</div>
-          <div class="tool-card__desc">
-            Get library metadata including name, version, language, and distribution information.
-          </div>
-          <div class="tool-card__params">
-            <div style="color: var(--color-text-muted); margin-bottom: var(--space-sm);">Returns:</div>
-            <code class="tool-card__param-name">{ name, version, language, distribution }</code>
+          <div class="tool-card__desc">Get library metadata including name, version, language, and distribution information.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ name, version, language, distribution }</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="150">
+
+        <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">list_modules</div>
-          <div class="tool-card__desc">
-            List all modules in the library. Useful for discovering available submodules.
-          </div>
-          <div class="tool-card__params">
-            <div style="color: var(--color-text-muted); margin-bottom: var(--space-sm);">Returns:</div>
-            <code class="tool-card__param-name">["requests", "requests.api", "requests.models"]</code>
+          <div class="tool-card__desc">List all modules in the library. Useful for discovering available submodules.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>["requests", "requests.api", ...]</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="200">
+
+        <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">list_symbols</div>
-          <div class="tool-card__desc">
-            Browse symbols with optional filtering by module or kind.
-          </div>
-          <div class="tool-card__params">
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">module</span>
-              <span class="tool-card__param-type">string (optional)</span>
-            </div>
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">kind</span>
-              <span class="tool-card__param-type">"function" | "class" | "method" | ...</span>
-            </div>
+          <div class="tool-card__desc">Browse symbols with optional filtering by module or kind (function, class, method).</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>[{ id, kind, summary }, ...]</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="250">
+
+        <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">get_symbol</div>
-          <div class="tool-card__desc">
-            Get full details for a specific symbol including signatures, semantics, effects, and usage hints. 
-            Now includes required/optional parameters and return type guidance.
-          </div>
-          <div class="tool-card__params">
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">symbol_id</span>
-              <span class="tool-card__param-type">string (required)</span>
-            </div>
-            <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
-              Example: "requests:get", "pandas:DataFrame#merge"
-            </div>
+          <div class="tool-card__desc">Get full details for a specific symbol including signatures, semantics, and effects.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ kind, params, returns, summary }</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="300">
+
+        <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">search_symbols</div>
-          <div class="tool-card__desc">
-            Find symbols by text search across names, summaries, and descriptions.
-          </div>
-          <div class="tool-card__params">
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">query</span>
-              <span class="tool-card__param-type">string (required)</span>
-            </div>
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">limit</span>
-              <span class="tool-card__param-type">number (default: 10)</span>
-            </div>
+          <div class="tool-card__desc">Find symbols by text search across names, summaries, and descriptions.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>[{ id, kind, summary }, ...]</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="350">
+
+        <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">get_class_members</div>
-          <div class="tool-card__desc">
-            Get all methods and attributes of a class. Essential for understanding class APIs.
-          </div>
-          <div class="tool-card__params">
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">class_id</span>
-              <span class="tool-card__param-type">string (required)</span>
-            </div>
-            <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
-              Example: "requests:Response", "pandas:DataFrame"
-            </div>
+          <div class="tool-card__desc">Get all methods and attributes of a class. Essential for understanding class APIs.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ methods: [...], attributes: [...] }</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="400" style="border: 2px solid var(--color-accent); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);">
-          <div class="tool-card__name">get_usage_guide <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: normal;">NEW</span></div>
-          <div class="tool-card__desc">
-            Get strategic guidance on how to efficiently use the LCP manifest. Returns recommended workflow, cost optimization tips, and common mistakes to avoid.
-          </div>
-          <div class="tool-card__params">
-            <div style="color: var(--color-text-muted); margin-bottom: var(--space-sm);">Returns:</div>
-            <code class="tool-card__param-name">{ recommended_workflow, cost_optimization, common_mistakes }</code>
+
+        <div class="tool-card tool-card--new" data-animate="fade-up">
+          <div class="tool-card__name tool-card__name--new">get_usage_guide</div>
+          <div class="tool-card__desc">Get strategic guidance on how to efficiently use the LCP manifest.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ workflow, tips, mistakes }</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="450" style="border: 2px solid var(--color-accent); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);">
-          <div class="tool-card__name">explore_return_type <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: normal;">NEW</span></div>
-          <div class="tool-card__desc">
-            Analyze the return type of a function/method and find related classes. Helps avoid inventing methods on returned objects.
-          </div>
-          <div class="tool-card__params">
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">symbol_id</span>
-              <span class="tool-card__param-type">string (required)</span>
-            </div>
-            <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
-              Returns matching classes and suggestions for exploration
-            </div>
+
+        <div class="tool-card tool-card--new" data-animate="fade-up">
+          <div class="tool-card__name tool-card__name--new">explore_return_type</div>
+          <div class="tool-card__desc">Analyze return type of a function and find related classes.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ return_type, related_classes }</code>
           </div>
         </div>
-        
-        <div class="tool-card" data-animate="fade-up" data-delay="500" style="border: 2px solid var(--color-accent); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);">
-          <div class="tool-card__name">get_suggestions <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: normal;">NEW</span></div>
-          <div class="tool-card__desc">
-            Get smart suggestions for exploring the library based on your task description. Suggests relevant modules, symbols, and next steps.
-          </div>
-          <div class="tool-card__params">
-            <div class="tool-card__param">
-              <span class="tool-card__param-name">task_description</span>
-              <span class="tool-card__param-type">string (required)</span>
-            </div>
-            <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
-              Example: "I need to make HTTP requests with authentication"
-            </div>
+
+        <div class="tool-card tool-card--new" data-animate="fade-up">
+          <div class="tool-card__name tool-card__name--new">get_suggestions</div>
+          <div class="tool-card__desc">Get smart suggestions for exploring the library based on your task.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ modules, symbols, next_steps }</code>
           </div>
         </div>
       </div>
