@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initMobileMenu();
   initCopyButtons();
   initJsonViewer();
+  initSchemaSection();
   highlightCurrentPage();
 });
 
@@ -496,6 +497,47 @@ function initJsonViewer() {
   if (collapseBtn) {
     collapseBtn.addEventListener('click', () => toggleAll(false));
   }
+}
+
+function initSchemaSection() {
+  const codeEl = document.getElementById('lcp-schema-code');
+  const spinner = document.getElementById('lcp-schema-spinner');
+  const msg = document.getElementById('lcp-schema-message');
+  const retryBtn = document.getElementById('lcp-schema-retry');
+  if (!codeEl) return;
+
+  const load = async () => {
+    try {
+      // show loading state
+      if (spinner) spinner.style.display = 'inline-block';
+      if (msg) msg.textContent = 'Fetching schema…';
+      if (retryBtn) retryBtn.style.display = 'none';
+
+      // Resolve absolute URL to avoid relative path issues
+      const url = new URL('asset/schema.json', window.location.href).toString();
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+
+      codeEl.textContent = JSON.stringify(json, null, 2);
+      if (msg) msg.textContent = '';
+    } catch (err) {
+      console.error('Schema load failed:', err);
+      if (codeEl) codeEl.textContent = `Failed to load schema: ${err.message}`;
+      if (msg) msg.textContent = 'Failed to load schema';
+      if (retryBtn) retryBtn.style.display = 'inline-block';
+    } finally {
+      if (spinner) spinner.style.display = 'none';
+    }
+  };
+
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      load();
+    });
+  }
+
+  load();
 }
 
 /**

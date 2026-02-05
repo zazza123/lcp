@@ -863,6 +863,40 @@ pre code {
   border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
+/* Spinner for schema loader */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.code-block__status {
+  margin-top: 0.5rem;
+}
+
+.code-block__status #lcp-schema-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+/* Limit height for the LCP schema block and enable internal scrolling */
+#lcp-schema-block pre {
+  max-height: 420px;
+  overflow: auto;
+  /* Preserve code block styling */
+  padding: var(--space-lg);
+  background: var(--color-bg-code);
+}
+
+#lcp-schema-block pre:focus {
+  outline: 3px solid rgba(234,88,12,0.12);
+  outline-offset: 4px;
+}
+
 /* --- Cards --- */
 .card {
   background: var(--color-bg);

@@ -34,6 +34,7 @@
           <li><a href="#overview" class="docs-sidebar__link docs-sidebar__link--active">Introduction</a></li>
           <li><a href="#design-principles" class="docs-sidebar__link">Design Principles</a></li>
           <li><a href="#document-structure" class="docs-sidebar__link">Document Structure</a></li>
+          <li><a href="#schema" class="docs-sidebar__link">Schema</a></li>
         </ul>
       </div>
       
@@ -121,6 +122,30 @@
 }</code></pre>
       </div>
       <p>Only <code>manifest</code> and <code>symbols</code> are required.</p>
+
+      <!-- Schema (LCP JSON Schema) -->
+      <h2 id="schema">Schema</h2>
+      <p>The authoritative JSON Schema for LCP v1. You can <a href="asset/schema.json" download>download the schema</a> or copy it below to build custom validators.</p>
+
+      <div class="code-block" id="lcp-schema-block">
+        <div class="code-block__header">
+          <span class="code-block__lang">json</span>
+          <button class="code-block__copy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy
+          </button>
+          <a href="asset/schema.json" class="btn" download style="margin-left: 12px; padding: 6px 10px; font-size: 0.875rem; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-bg);">Download</a>
+        </div>
+        <pre><code id="lcp-schema-code" class="language-json" role="region" aria-label="LCP JSON Schema" tabindex="0" aria-describedby="lcp-schema-message">Loading schema…</code></pre>
+        <div class="code-block__status" id="lcp-schema-status" style="margin-top: 8px; display:flex; align-items:center; gap:8px;">
+          <span id="lcp-schema-spinner" style="display:inline-block; width:14px; height:14px; border:2px solid var(--color-border); border-top-color:var(--color-primary); border-radius:50%; animation: spin 1s linear infinite;"></span>
+          <span id="lcp-schema-message" class="text-muted">Fetching schema…</span>
+          <button id="lcp-schema-retry" class="btn" style="padding:6px 10px; font-size:0.875rem; border-radius:6px; border:1px solid var(--color-border); background:var(--color-bg); display:none;">Retry</button>
+        </div>
+      </div>
 
       <!-- Manifest -->
       <h2 id="manifest">Manifest</h2>
