@@ -192,87 +192,20 @@ lcp_doc = scan("mypackage", include_private=True)</code></pre>
             <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">5</span>
             Expose to AI via MCP Server
           </h2>
-          
-          <p>The SDK includes an MCP (Model Context Protocol) server that exposes LCP data to AI agents:</p>
-          
-          <div class="code-block">
-            <div class="code-block__header">
-              <span class="code-block__lang">bash</span>
-              <button class="code-block__copy">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                Copy
-              </button>
-            </div>
-            <pre><code># Start MCP server for a library manifest
-lcp serve requests.lcp.json
 
-# With custom server name
-lcp serve numpy.lcp.json --name numpy-docs</code></pre>
-          </div>
-          
-          <p>Add to your MCP client configuration (e.g., Claude Desktop):</p>
-          
-          <div class="code-block">
-            <div class="code-block__header">
-              <span class="code-block__lang">json</span>
-              <button class="code-block__copy">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          <p>Want to serve your LCP manifests to AI agents? Full documentation and examples are available on the dedicated <a href="mcp.html">MCP Server page</a>.</p>
+
+          <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: var(--space-md);">
+            <a href="mcp.html" class="feature-card" style="text-decoration: none;">
+              <div class="feature-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  <polyline points="9 12 11 14 15 10"></polyline>
                 </svg>
-                Copy
-              </button>
-            </div>
-            <pre><code>{
-  "mcpServers": {
-    "requests-api": {
-      "command": "lcp",
-      "args": ["serve", "/path/to/requests.lcp.json"]
-    }
-  }
-}</code></pre>
-          </div>
-          
-          <div class="card card--highlight mt-xl">
-            <h4 class="mb-md">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 8px;">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-              </svg>
-              Available MCP Tools
-            </h4>
-            <table style="width: 100%;">
-              <tbody>
-                <tr>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>get_manifest</code></td>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Get library metadata</td>
-                </tr>
-                <tr>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>list_modules</code></td>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">List all modules</td>
-                </tr>
-                <tr>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>list_symbols</code></td>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Browse symbols with filtering</td>
-                </tr>
-                <tr>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>get_symbol</code></td>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Get full symbol details</td>
-                </tr>
-                <tr>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border);"><code>search_symbols</code></td>
-                  <td style="padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">Text search across symbols</td>
-                </tr>
-                <tr>
-                  <td style="padding: var(--space-sm) 0;"><code>get_class_members</code></td>
-                  <td style="padding: var(--space-sm) 0; color: var(--color-text-secondary);">Get methods and attributes of a class</td>
-                </tr>
-              </tbody>
-            </table>
+              </div>
+              <h4 class="feature-card__title">MCP Server Docs</h4>
+              <p class="feature-card__text">Run an MCP server to expose LCP manifests to AI applications.</p>
+            </a>
           </div>
         </section>
 
