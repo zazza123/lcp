@@ -954,7 +954,8 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
         <span class="section-header__label">API Reference</span>
         <h2 class="section-header__title">Available MCP Tools</h2>
         <p class="section-header__text">
-          The LCP-MCP server exposes these tools for AI agents to query library information.
+          The LCP-MCP server exposes these tools for AI agents to query library information efficiently.
+          New strategic guidance tools help agents explore APIs without hallucinations or excessive token usage.
         </p>
       </div>
       
@@ -1001,7 +1002,8 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
         <div class="tool-card" data-animate="fade-up" data-delay="250">
           <div class="tool-card__name">get_symbol</div>
           <div class="tool-card__desc">
-            Get full details for a specific symbol including signatures, semantics, and effects.
+            Get full details for a specific symbol including signatures, semantics, effects, and usage hints. 
+            Now includes required/optional parameters and return type guidance.
           </div>
           <div class="tool-card__params">
             <div class="tool-card__param">
@@ -1043,6 +1045,49 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
             </div>
             <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
               Example: "requests:Response", "pandas:DataFrame"
+            </div>
+          </div>
+        </div>
+        
+        <div class="tool-card" data-animate="fade-up" data-delay="400" style="border: 2px solid var(--color-accent); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);">
+          <div class="tool-card__name">get_usage_guide <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: normal;">NEW</span></div>
+          <div class="tool-card__desc">
+            Get strategic guidance on how to efficiently use the LCP manifest. Returns recommended workflow, cost optimization tips, and common mistakes to avoid.
+          </div>
+          <div class="tool-card__params">
+            <div style="color: var(--color-text-muted); margin-bottom: var(--space-sm);">Returns:</div>
+            <code class="tool-card__param-name">{ recommended_workflow, cost_optimization, common_mistakes }</code>
+          </div>
+        </div>
+        
+        <div class="tool-card" data-animate="fade-up" data-delay="450" style="border: 2px solid var(--color-accent); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);">
+          <div class="tool-card__name">explore_return_type <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: normal;">NEW</span></div>
+          <div class="tool-card__desc">
+            Analyze the return type of a function/method and find related classes. Helps avoid inventing methods on returned objects.
+          </div>
+          <div class="tool-card__params">
+            <div class="tool-card__param">
+              <span class="tool-card__param-name">symbol_id</span>
+              <span class="tool-card__param-type">string (required)</span>
+            </div>
+            <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
+              Returns matching classes and suggestions for exploration
+            </div>
+          </div>
+        </div>
+        
+        <div class="tool-card" data-animate="fade-up" data-delay="500" style="border: 2px solid var(--color-accent); background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), transparent);">
+          <div class="tool-card__name">get_suggestions <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: normal;">NEW</span></div>
+          <div class="tool-card__desc">
+            Get smart suggestions for exploring the library based on your task description. Suggests relevant modules, symbols, and next steps.
+          </div>
+          <div class="tool-card__params">
+            <div class="tool-card__param">
+              <span class="tool-card__param-name">task_description</span>
+              <span class="tool-card__param-type">string (required)</span>
+            </div>
+            <div style="color: var(--color-text-muted); margin-top: var(--space-sm); font-size: 0.75rem;">
+              Example: "I need to make HTTP requests with authentication"
             </div>
           </div>
         </div>

@@ -180,6 +180,7 @@ class TestListSymbolsTool:
             if tool.name == "list_symbols":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(module="tests.sample_module")
         assert isinstance(result, list)
@@ -192,6 +193,7 @@ class TestListSymbolsTool:
             if tool.name == "list_symbols":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(kind="function")
         assert isinstance(result, list)
@@ -204,6 +206,7 @@ class TestListSymbolsTool:
             if tool.name == "list_symbols":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(kind="invalid_kind")
         assert len(result) == 1
@@ -220,6 +223,7 @@ class TestGetSymbolTool:
             if tool.name == "get_symbol":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         # Get a known symbol ID
         symbol_id = list(lcp_index.symbols_by_id.keys())[0]
@@ -237,6 +241,7 @@ class TestGetSymbolTool:
             if tool.name == "get_symbol":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(symbol_id="nonexistent:symbol")
         assert "error" in result
@@ -253,6 +258,7 @@ class TestSearchSymbolsTool:
             if tool.name == "search_symbols":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(query="simple")
         assert isinstance(result, list)
@@ -267,6 +273,7 @@ class TestSearchSymbolsTool:
             if tool.name == "search_symbols":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(query="add two numbers")
         assert isinstance(result, list)
@@ -279,6 +286,7 @@ class TestSearchSymbolsTool:
             if tool.name == "search_symbols":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(query="xyznonexistent123")
         assert result == []
@@ -301,6 +309,7 @@ class TestGetClassMembersTool:
             if symbol.kind.value == "class" and "SimpleClass" in sid:
                 class_id = sid
                 break
+        assert tool_fn is not None
 
         if class_id and class_id in lcp_index.class_members:
             result = tool_fn(class_id=class_id)
@@ -318,6 +327,7 @@ class TestGetClassMembersTool:
             if tool.name == "get_class_members":
                 tool_fn = tool.fn
                 break
+        assert tool_fn is not None
 
         result = tool_fn(class_id="nonexistent:Class")
         assert len(result) == 1
@@ -337,9 +347,151 @@ class TestGetClassMembersTool:
             if symbol.kind.value == "function":
                 func_id = sid
                 break
+        assert tool_fn is not None
 
         if func_id:
             result = tool_fn(class_id=func_id)
             assert len(result) == 1
             assert "error" in result[0]
             assert "not a class" in result[0]["error"]
+
+
+class TestGetUsageGuideTool:
+    """Tests for get_usage_guide tool."""
+
+    def test_returns_workflow(self, mcp_server):
+        """Should return recommended workflow and tips."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "get_usage_guide":
+                tool_fn = tool.fn
+                break
+
+        assert tool_fn is not None
+        result = tool_fn()
+
+        assert "recommended_workflow" in result
+        assert isinstance(result["recommended_workflow"], list)
+        assert len(result["recommended_workflow"]) > 0
+
+        # Check workflow structure
+        first_step = result["recommended_workflow"][0]
+        assert "step" in first_step
+        assert "action" in first_step
+        assert "purpose" in first_step
+
+        assert "cost_optimization" in result
+        assert "common_mistakes" in result
+        assert isinstance(result["common_mistakes"], list)
+
+
+class TestExploreReturnTypeTool:
+    """Tests for explore_return_type tool."""
+
+    def test_returns_type_info(self, mcp_server, lcp_index):
+        """Should return return type information."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "explore_return_type":
+                tool_fn = tool.fn
+                break
+
+        assert tool_fn is not None
+
+        # Find a function with a return type
+        func_id = None
+        for sid, symbol in lcp_index.symbols_by_id.items():
+            if symbol.kind.value == "function" and symbol.signatures:
+                sig = symbol.signatures[0]
+                if sig.returns:
+                    func_id = sid
+                    break
+
+        if func_id:
+            result = tool_fn(symbol_id=func_id)
+            assert "symbol_id" in result
+            assert "return_type" in result or "error" in result or "message" in result
+
+    def test_symbol_not_found(self, mcp_server):
+        """Should return error for unknown symbol."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "explore_return_type":
+                tool_fn = tool.fn
+                break
+        assert tool_fn is not None
+
+        result = tool_fn(symbol_id="nonexistent:func")
+        assert "error" in result
+        assert "not found" in result["error"].lower()
+
+    def test_no_signature(self, mcp_server, lcp_index):
+        """Should handle symbols without signatures."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "explore_return_type":
+                tool_fn = tool.fn
+                break
+
+        # Find a module symbol (no signature)
+        module_id = None
+        for sid, symbol in lcp_index.symbols_by_id.items():
+            if symbol.kind.value == "module":
+                module_id = sid
+                break
+        assert tool_fn is not None
+
+        if module_id:
+            result = tool_fn(symbol_id=module_id)
+            assert "error" in result
+
+
+class TestGetSuggestionsTool:
+    """Tests for get_suggestions tool."""
+
+    def test_returns_suggestions(self, mcp_server):
+        """Should return suggestions based on task."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "get_suggestions":
+                tool_fn = tool.fn
+                break
+
+        assert tool_fn is not None
+        result = tool_fn(task_description="sample module function")
+
+        assert "task" in result
+        assert "suggested_modules" in result
+        assert "suggested_symbols" in result
+        assert "next_steps" in result
+        assert isinstance(result["next_steps"], list)
+
+    def test_no_matches(self, mcp_server):
+        """Should provide fallback suggestions when no matches."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "get_suggestions":
+                tool_fn = tool.fn
+                break
+        assert tool_fn is not None
+
+        result = tool_fn(task_description="xyznonexistent123")
+
+        assert "next_steps" in result
+        assert len(result["next_steps"]) > 0
+        # Should suggest browsing modules/symbols
+        assert any("list_modules" in step or "list_symbols" in step for step in result["next_steps"])
+
+    def test_finds_matching_modules(self, mcp_server):
+        """Should find modules matching task keywords."""
+        tool_fn = None
+        for tool in mcp_server._tool_manager._tools.values():
+            if tool.name == "get_suggestions":
+                tool_fn = tool.fn
+                break
+        assert tool_fn is not None
+
+        result = tool_fn(task_description="sample")
+
+        # Should find tests.sample_module
+        assert "tests.sample_module" in result["suggested_modules"]

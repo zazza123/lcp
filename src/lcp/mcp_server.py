@@ -83,9 +83,89 @@ def create_server(
             "summary": symbol.semantics.summary,
         }
 
+    def _normalize_return_type(returns: Any) -> str | None:
+        """Convert returns field (TypeRef or str) to a string representation."""
+        if returns is None:
+            return None
+        if isinstance(returns, str):
+            return returns
+        # It's a TypeRef object
+        if hasattr(returns, 'name') and returns.name:
+            return returns.name
+        if hasattr(returns, 'kind') and returns.kind:
+            return returns.kind
+        return str(returns)
+
+    @mcp.tool()
+    def get_usage_guide() -> dict[str, Any]:
+        """Get strategic guidance on how to efficiently use this LCP manifest.
+
+        CALL THIS FIRST to understand the recommended workflow for exploring
+        this library and avoiding common mistakes.
+
+        Returns:
+            Recommended workflow, cost optimization tips, and common mistakes to avoid
+        """
+        return {
+            "recommended_workflow": [
+                {
+                    "step": 1,
+                    "action": "get_manifest",
+                    "purpose": "Check if this library can help with your task",
+                    "description": "Start by understanding what this library does and its version",
+                },
+                {
+                    "step": 2,
+                    "action": "list_modules",
+                    "purpose": "Identify relevant modules for your use case",
+                    "description": "Browse module structure to find areas that match your needs",
+                },
+                {
+                    "step": 3,
+                    "action": "list_symbols",
+                    "purpose": "Browse symbols in promising modules",
+                    "description": "Use module and kind filters to narrow down to relevant symbols",
+                },
+                {
+                    "step": 4,
+                    "action": "get_symbol",
+                    "purpose": "Get complete details before implementation",
+                    "description": "Always check full signature, required parameters, and return types",
+                },
+                {
+                    "step": 5,
+                    "action": "get_class_members",
+                    "purpose": "Explore class methods and attributes",
+                    "description": "When working with classes, check all available methods",
+                },
+                {
+                    "step": 6,
+                    "action": "explore_return_type",
+                    "purpose": "Understand what methods are available on returned objects",
+                    "description": "Check return type classes to avoid inventing non-existent methods",
+                },
+            ],
+            "cost_optimization": {
+                "prefer_browsing": "Use list_modules + list_symbols instead of search_symbols when possible",
+                "filter_early": "Always use module and kind parameters in list_symbols to reduce results",
+                "validate_before_use": "Always call get_symbol to verify required parameters and return types",
+                "check_return_types": "Use explore_return_type or get_class_members on return type classes",
+            },
+            "common_mistakes": [
+                "Starting with search_symbols without first exploring modules (expensive!)",
+                "Using symbols without checking required parameters via get_symbol",
+                "Assuming return types instead of verifying with get_symbol",
+                "Inventing methods on returned objects without checking get_class_members",
+                "Not exploring class members with get_class_members before using a class",
+            ],
+        }
+
     @mcp.tool()
     def get_manifest() -> dict[str, Any]:
-        """Get library metadata including name, version, and compatibility info."""
+        """Get library metadata including name, version, and compatibility info.
+
+        Use this early to confirm the library matches your needs before exploring further.
+        """
         manifest = doc.manifest
         result: dict[str, Any] = {
             "name": manifest.library.name,
@@ -146,6 +226,11 @@ def create_server(
     def get_symbol(symbol_id: str) -> dict[str, Any]:
         """Get full details for a specific symbol.
 
+        IMPORTANT: Always call this before using a symbol to verify:
+        - Required parameters and their types
+        - Return type (use explore_return_type for complex types)
+        - Whether the function is async
+
         Args:
             symbol_id: Symbol identifier (e.g., "json:loads", "pathlib:Path#resolve")
 
@@ -158,6 +243,31 @@ def create_server(
 
         result = symbol.model_dump(exclude_none=True)
         result["id"] = symbol_id
+
+        # Add usage hints to help agents use the symbol correctly
+        if symbol.signatures:
+            sig = symbol.signatures[0]
+            required_params = [
+                {"name": p.name, "type": p.type}
+                for p in (sig.params or [])
+                if p.required
+            ]
+            optional_params = [
+                {"name": p.name, "type": p.type, "default": p.default}
+                for p in (sig.params or [])
+                if not p.required
+            ]
+            return_type_str = _normalize_return_type(sig.returns)
+            result["usage_hints"] = {
+                "required_parameters": required_params,
+                "optional_parameters": optional_params,
+                "is_async": sig.async_ if sig.async_ is not None else False,
+                "return_type": return_type_str,
+            }
+            # Add suggestion to explore return type if it looks like a class
+            if return_type_str and not return_type_str.startswith(("str", "int", "float", "bool", "None", "list", "dict", "tuple", "set")):
+                result["usage_hints"]["suggestion"] = f"Consider using explore_return_type('{symbol_id}') to see available methods on the returned object"
+
         return result
 
     @mcp.tool()
@@ -166,6 +276,15 @@ def create_server(
         fields: str | None = None,
     ) -> list[dict[str, Any]]:
         """Find symbols by text search.
+
+        ⚠️  EXPENSIVE OPERATION: This searches ALL symbols and can return large results.
+
+        💡 RECOMMENDED: Try this more efficient workflow first:
+           1. list_modules() - find relevant modules
+           2. list_symbols(module="...", kind="...") - browse with filters
+           3. get_symbol() - get full details
+
+        Only use search_symbols when you need fuzzy text matching across the entire library.
 
         Args:
             query: Search text (case-insensitive)
@@ -236,6 +355,143 @@ def create_server(
             results.append(_symbol_summary(member_id, symbol))
 
         return results
+
+    @mcp.tool()
+    def explore_return_type(symbol_id: str) -> dict[str, Any]:
+        """Analyze the return type of a function/method and find related classes.
+
+        Use this to avoid inventing methods on returned objects - check what's actually available.
+
+        Args:
+            symbol_id: Function or method identifier (e.g., "module:func", "module:Class#method")
+
+        Returns:
+            Return type information and suggested classes to explore with get_class_members
+        """
+        symbol = index.symbols_by_id.get(symbol_id)
+        if symbol is None:
+            return {"error": f"Symbol not found: {symbol_id}"}
+
+        if not symbol.signatures:
+            return {"error": f"No signature information available for {symbol_id}"}
+
+        sig = symbol.signatures[0]
+        return_type_str = _normalize_return_type(sig.returns)
+        if not return_type_str:
+            return {"message": "No return type information available", "symbol_id": symbol_id}
+
+        result: dict[str, Any] = {
+            "symbol_id": symbol_id,
+            "return_type": return_type_str,
+            "matching_classes": [],
+            "suggestions": [],
+        }
+
+        # Look for classes that match the return type
+        # Handle generic types like List[SomeClass] or Optional[SomeClass]
+        type_parts = return_type_str.replace("[", " ").replace("]", " ").replace(",", " ").split()
+
+        for type_part in type_parts:
+            # Skip common built-in types
+            if type_part.lower() in ("str", "int", "float", "bool", "none", "list", "dict", "tuple", "set", "optional", "any", "union"):
+                continue
+
+            # Find matching classes in the index
+            for sid, sym in index.symbols_by_id.items():
+                if sym.kind == SymbolKind.CLASS:
+                    # Match by class name (last part of the ID)
+                    class_name = sid.split(":")[-1] if ":" in sid else sid
+                    if type_part == class_name or type_part.endswith(class_name):
+                        result["matching_classes"].append({
+                            "class_id": sid,
+                            "summary": sym.semantics.summary,
+                        })
+
+        if result["matching_classes"]:
+            result["suggestions"].append({
+                "action": "get_class_members",
+                "targets": [c["class_id"] for c in result["matching_classes"][:3]],
+                "reason": f"Explore methods available on {return_type_str} objects",
+            })
+        else:
+            result["suggestions"].append({
+                "action": "search_symbols",
+                "query": type_parts[0] if type_parts else return_type_str,
+                "reason": f"Could not find exact class match for {return_type_str}, try searching",
+            })
+
+        return result
+
+    @mcp.tool()
+    def get_suggestions(task_description: str) -> dict[str, Any]:
+        """Get smart suggestions for exploring this library based on your task.
+
+        Provide a brief description of what you're trying to accomplish,
+        and get suggestions for which modules and symbols to explore first.
+
+        Args:
+            task_description: Brief description of what you're trying to accomplish
+
+        Returns:
+            Suggested modules, symbols, and next exploration steps
+        """
+        task_lower = task_description.lower()
+        task_words = set(task_lower.split())
+
+        suggestions: dict[str, Any] = {
+            "task": task_description,
+            "suggested_modules": [],
+            "suggested_symbols": [],
+            "next_steps": [],
+        }
+
+        # Find modules with matching names
+        for module_name in sorted(index.modules):
+            module_lower = module_name.lower()
+            # Check if any task word appears in the module name
+            if any(word in module_lower for word in task_words if len(word) > 2):
+                suggestions["suggested_modules"].append(module_name)
+
+        # Find symbols with matching summaries or names
+        for symbol_id, symbol in index.symbols_by_id.items():
+            name_part = symbol_id.split(":")[-1] if ":" in symbol_id else symbol_id
+            name_lower = name_part.lower()
+            summary_lower = symbol.semantics.summary.lower()
+
+            # Check matches in name or summary
+            if any(word in name_lower or word in summary_lower for word in task_words if len(word) > 2):
+                # Prefer classes and functions over methods
+                if symbol.kind in (SymbolKind.CLASS, SymbolKind.FUNCTION):
+                    suggestions["suggested_symbols"].append({
+                        "id": symbol_id,
+                        "kind": symbol.kind.value,
+                        "summary": symbol.semantics.summary,
+                    })
+
+        # Limit results
+        suggestions["suggested_modules"] = suggestions["suggested_modules"][:5]
+        suggestions["suggested_symbols"] = suggestions["suggested_symbols"][:10]
+
+        # Generate next steps
+        if suggestions["suggested_modules"]:
+            for module in suggestions["suggested_modules"][:2]:
+                suggestions["next_steps"].append(
+                    f"Explore module with: list_symbols(module='{module}')"
+                )
+        elif suggestions["suggested_symbols"]:
+            for sym in suggestions["suggested_symbols"][:2]:
+                suggestions["next_steps"].append(
+                    f"Get details with: get_symbol('{sym['id']}')"
+                )
+        else:
+            suggestions["next_steps"] = [
+                "No direct matches found. Try:",
+                "1. list_modules() - browse all available modules",
+                "2. list_symbols(kind='class') - see all classes",
+                "3. list_symbols(kind='function') - see all functions",
+            ]
+
+        return suggestions
 
     return mcp
 
