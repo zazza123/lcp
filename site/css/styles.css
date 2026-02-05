@@ -73,6 +73,39 @@
   --header-height: 72px;
 }
 
+/* --- Dark Theme --- */
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-bg-subtle: #1e293b;
+  --color-bg-muted: #334155;
+  --color-bg-code: #0c1222;
+
+  --color-text: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #f8fafc;
+
+  --color-primary: #fb923c;
+  --color-primary-dark: #f97316;
+  --color-primary-light: #fdba74;
+  --color-primary-bg: rgba(251, 146, 60, 0.15);
+
+  --color-accent: #fbbf24;
+  --color-accent-dark: #f59e0b;
+
+  --color-success: #34d399;
+  --color-success-bg: rgba(52, 211, 153, 0.15);
+
+  --color-border: #334155;
+  --color-border-light: #1e293b;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 40px rgba(251, 146, 60, 0.2);
+}
+
 /* --- Reset & Base --- */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -95,6 +128,7 @@ body {
   background: var(--color-bg);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 /* --- Typography --- */
@@ -183,7 +217,11 @@ pre code {
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-border-light);
   z-index: 1000;
-  transition: box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base), background var(--transition-base);
+}
+
+[data-theme="dark"] .header {
+  background: rgba(15, 23, 42, 0.85);
 }
 
 .header--scrolled {
@@ -293,6 +331,41 @@ pre code {
   height: 18px;
 }
 
+/* Theme Toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-muted);
+  background: var(--color-bg-subtle);
+}
+
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.theme-toggle__icon--moon,
+[data-theme="dark"] .theme-toggle__icon--sun {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle__icon--moon {
+  display: block;
+}
+
 /* Mobile Menu */
 .mobile-toggle {
   display: none;
@@ -333,12 +406,16 @@ pre code {
     padding: var(--space-xl) var(--space-lg);
     gap: var(--space-lg);
     transform: translateX(100%);
-    transition: transform var(--transition-base);
+    transition: transform var(--transition-base), background var(--transition-base);
     overflow-y: auto;
     z-index: 999;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+  }
+
+  [data-theme="dark"] .header__nav {
+    background: rgba(15, 23, 42, 0.98);
   }
   
   .header__nav--open {
@@ -468,16 +545,27 @@ pre code {
   pointer-events: none;
 }
 
+[data-theme="dark"] .hero__bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(251, 146, 60, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(245, 158, 11, 0.1), transparent),
+    radial-gradient(ellipse 50% 30% at 20% 80%, rgba(234, 88, 12, 0.08), transparent);
+}
+
 .hero__grid {
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     linear-gradient(var(--color-border-light) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-border-light) 1px, transparent 1px);
   background-size: 60px 60px;
   opacity: 0.5;
   mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
   -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+}
+
+[data-theme="dark"] .hero__grid {
+  opacity: 0.3;
 }
 
 .hero__content {
@@ -555,7 +643,7 @@ pre code {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  transition: all var(--transition-base);
+  transition: all var(--transition-base), background-color var(--transition-base);
 }
 
 .feature-card:hover {
@@ -827,6 +915,10 @@ pre code {
   background: var(--color-bg-code);
   color: var(--color-text-inverse);
   padding: var(--space-4xl) 0 var(--space-xl);
+}
+
+[data-theme="dark"] .footer {
+  border-top: 1px solid var(--color-border);
 }
 
 .footer__grid {

@@ -2,10 +2,21 @@
  * LCP Website - Main JavaScript
  */
 
+// Apply theme immediately to prevent flash
+(function() {
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+})();
+
 // Load components and initialize
 document.addEventListener('DOMContentLoaded', async () => {
   await loadComponents();
   initHeader();
+  initThemeToggle();
   initAnimations();
   initMobileMenu();
   initCopyButtons();
@@ -48,6 +59,35 @@ function highlightCurrentPage() {
   navLinks.forEach(link => {
     if (link.dataset.page === currentPage) {
       link.classList.add('nav__link--active');
+    }
+  });
+}
+
+/**
+ * Theme toggle functionality
+ */
+function initThemeToggle() {
+  const toggle = document.querySelector('.theme-toggle');
+  if (!toggle) return;
+
+  const setTheme = (theme) => {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    localStorage.setItem('theme', theme);
+  };
+
+  toggle.addEventListener('click', () => {
+    const isDark = document.documentElement.hasAttribute('data-theme');
+    setTheme(isDark ? 'light' : 'dark');
+  });
+
+  // Listen for system theme changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      setTheme(e.matches ? 'dark' : 'light');
     }
   });
 }
