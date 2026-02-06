@@ -1,5 +1,12 @@
 """LCP Python SDK - Generate Library Context Protocol files from Python packages."""
 
+from .coverage import (
+    CoverageReport,
+    CoverageSummary,
+    UndocumentedSymbol,
+    generate_coverage,
+    generate_coverage_from_scanned,
+)
 from .generator import generate_lcp
 from .models import (
     LCPDocument,
@@ -22,9 +29,15 @@ from .validator import (
 
 __version__ = "0.1.0"
 __all__ = [
-    # Main function
+    # Main functions
     "scan",
-    # Models
+    "generate_coverage",
+    "generate_coverage_from_scanned",
+    # Coverage models
+    "CoverageReport",
+    "CoverageSummary",
+    "UndocumentedSymbol",
+    # LCP Models
     "LCPDocument",
     "Library",
     "Manifest",
