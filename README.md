@@ -44,6 +44,44 @@ data = lcp_doc.to_dict()
 lcp_doc = scan("mypackage", include_private=True)
 ```
 
+## Documentation Coverage
+
+Analyze documentation completeness of a package to identify missing docstrings.
+
+### CLI
+
+```bash
+# Generate coverage report (JSON)
+lcp coverage requests -o coverage.json
+
+# Generate coverage report (Markdown)
+lcp coverage requests -o coverage.md --format markdown
+
+# Generate both LCP manifest and coverage report in one scan
+lcp scan requests -o requests.lcp.json --coverage coverage.json
+```
+
+### Python API
+
+```python
+from lcp import generate_coverage
+
+# Generate coverage report
+report = generate_coverage("requests")
+
+# Check coverage percentage
+print(f"Coverage: {report.summary.coverage_percent}%")
+print(f"Documented: {report.summary.documented}/{report.summary.total_symbols}")
+
+# List undocumented symbols
+for symbol in report.undocumented:
+    print(f"  - {symbol.module}:{symbol.entity} ({symbol.kind})")
+
+# Save report
+report.to_file("coverage.json")      # JSON format
+report.to_file("coverage.md")        # Markdown format
+```
+
 ## MCP Server
 
 The SDK includes an MCP (Model Context Protocol) server that exposes LCP manifest data to AI agents. This allows agents to explore library APIs and generate accurate code.
@@ -104,6 +142,7 @@ run_server("path/to/manifest.lcp.json")
 - Parses docstrings for summaries and descriptions
 - Extracts type hints from function signatures
 - Validates output against LCP JSON schema
+- Documentation coverage analysis with JSON/Markdown reports
 - Both CLI and Python API interfaces
 - MCP server for AI agent integration
 

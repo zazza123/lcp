@@ -29,6 +29,7 @@ pytest -v
 lcp scan <package> -o output.lcp.json
 lcp validate <file.lcp.json>
 lcp serve <manifest.lcp.json>  # Start MCP server
+lcp coverage <package> -o coverage.json  # Documentation coverage report
 ```
 
 ## Architecture
@@ -47,12 +48,13 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 | Module | Purpose |
 |--------|---------|
 | `__init__.py` | Public API exports and main `scan()` function |
-| `cli.py` | Click-based CLI (`scan`, `validate`, `serve` commands) |
+| `cli.py` | Click-based CLI (`scan`, `validate`, `serve`, `coverage` commands) |
 | `models.py` | Pydantic models matching LCP v1 spec |
 | `scanner.py` | Python introspection logic |
 | `generator.py` | Scanned data → LCP conversion |
 | `validator.py` | JSON Schema validation |
 | `mcp_server.py` | MCP server for AI agent integration |
+| `coverage.py` | Documentation coverage analysis |
 
 ### Key Data Structures
 
