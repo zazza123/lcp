@@ -314,6 +314,24 @@ def serve(manifest: str, name: str | None):
     default=False,
     help="Show what would be modified without writing.",
 )
+@click.option(
+    "--workers",
+    type=int,
+    default=4,
+    help="Max concurrent LLM calls (default: 4).",
+)
+@click.option(
+    "--flat",
+    is_flag=True,
+    default=False,
+    help="Use legacy sequential mode instead of hierarchical.",
+)
+@click.option(
+    "--failure-threshold",
+    type=float,
+    default=0.5,
+    help="Failure ratio (0.0-1.0) to skip parent symbols (default: 0.5).",
+)
 def docgen(
     coverage_json: str,
     provider: str,
@@ -323,6 +341,9 @@ def docgen(
     description: str | None,
     reasoning: bool,
     dry_run: bool,
+    workers: int,
+    flat: bool,
+    failure_threshold: float,
 ):
     """Generate docstrings for undocumented symbols using AI.
 
@@ -338,7 +359,8 @@ def docgen(
         lcp docgen coverage.json --kinds class,function
     """
     try:
-        from .ai import DocGenAgent, DocGenConfig
+        from .ai import DocGenAgent
+        from .ai.models import HierarchicalConfig
 
         # Build provider
         if provider == "openai":
@@ -364,19 +386,26 @@ def docgen(
 
         # Build config
         parsed_kinds = [k.strip() for k in kinds.split(",")] if kinds else None
-        config = DocGenConfig(
+        config = HierarchicalConfig(
             kinds=parsed_kinds,
             description=description,
             dry_run=dry_run,
+            max_workers=workers,
+            flat_mode=flat,
+            failure_threshold=failure_threshold,
         )
 
         agent = DocGenAgent(provider=llm_provider, config=config)
 
         click.echo(f"Loading coverage from {coverage_json}...", err=True)
+        if flat:
+            click.echo("Mode: flat (legacy sequential)", err=True)
+        else:
+            click.echo(f"Mode: hierarchical (workers={workers})", err=True)
         if dry_run:
             click.echo("DRY RUN: no files will be modified.", err=True)
 
-        result = agent.run(coverage_json)
+        result = agent.run_sync(coverage_json)
 
         # Print per-symbol results
         for r in result.results:
@@ -386,9 +415,10 @@ def docgen(
                 "skipped": "-",
                 "failed": "!",
             }.get(r.status, "?")
-            click.echo(f"  [{status_icon}] {r.symbol_id} ({r.kind}): {r.status}", err=True)
+            line = f"  [{status_icon}] {r.symbol_id} ({r.kind}): {r.status}"
             if r.error:
-                click.echo(f"      Error: {r.error}", err=True)
+                line += f"  [{r.error}]"
+            click.echo(line, err=True)
 
         # Summary
         click.echo("", err=True)
