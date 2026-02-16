@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
+import textwrap
+
 import pytest
 
-from lcp.ai.hierarchy import ModuleTree, SymbolNode, build_hierarchy
+from lcp.ai.hierarchy import (
+    ModuleTree,
+    SymbolNode,
+    build_context,
+    build_hierarchy,
+    LEVEL_LEAF,
+    LEVEL_CLASS,
+    LEVEL_MODULE,
+)
 
 
 class TestSymbolNode:
@@ -132,3 +142,154 @@ class TestBuildHierarchy:
         child_kinds = {c.kind for c in root.children}
         assert "function" in child_kinds
         assert "class" in child_kinds
+
+
+SAMPLE_MODULE_SOURCE = textwrap.dedent('''\
+    """Existing module docstring."""
+
+    import os
+    from pathlib import Path
+
+    MAX_SIZE = 100
+
+    def helper(x: int) -> int:
+        """Add one to x."""
+        return x + 1
+
+    class MyClass:
+        """A sample class."""
+
+        name: str
+
+        def __init__(self, name: str):
+            self.name = name
+
+        def greet(self) -> str:
+            return f"Hello {self.name}"
+
+        def farewell(self) -> str:
+            """Say goodbye."""
+            return f"Bye {self.name}"
+''')
+
+
+class TestBuildContext:
+    """Tests for build_context function."""
+
+    def _make_tree(self, source_file: str) -> ModuleTree:
+        """Helper to create a ModuleTree."""
+        root = SymbolNode(
+            symbol={"kind": "module", "module": "pkg.mod", "entity": "pkg.mod", "source_file": source_file},
+            kind="module",
+            level=LEVEL_MODULE,
+        )
+        tree = ModuleTree(
+            module_name="pkg.mod",
+            source_file=source_file,
+            root=root,
+        )
+        return tree
+
+    def test_level0_function_context(self, tmp_path):
+        """Level 0 context returns source code of the function."""
+        src = tmp_path / "mod.py"
+        src.write_text(SAMPLE_MODULE_SOURCE, encoding="utf-8")
+
+        tree = self._make_tree(str(src))
+        node = SymbolNode(
+            symbol={"kind": "function", "module": "pkg.mod", "entity": "helper", "source_file": str(src)},
+            kind="function",
+            level=LEVEL_LEAF,
+        )
+        context = build_context(node, tree)
+        assert "def helper(x: int) -> int:" in context
+        assert "return x + 1" in context
+
+    def test_level1_class_context_with_child_docstrings(self, tmp_path):
+        """Level 1 context includes child docstrings for documented methods."""
+        src = tmp_path / "mod.py"
+        src.write_text(SAMPLE_MODULE_SOURCE, encoding="utf-8")
+
+        tree = self._make_tree(str(src))
+
+        child_greet = SymbolNode(
+            symbol={"kind": "method", "module": "pkg.mod", "entity": "MyClass#greet", "source_file": str(src)},
+            kind="method",
+            level=LEVEL_LEAF,
+            docstring="Return a greeting message with the instance name.",
+            status="updated",
+        )
+        child_farewell = SymbolNode(
+            symbol={"kind": "method", "module": "pkg.mod", "entity": "MyClass#farewell", "source_file": str(src)},
+            kind="method",
+            level=LEVEL_LEAF,
+            docstring="Say goodbye.",
+            status="skipped",
+        )
+
+        class_node = SymbolNode(
+            symbol={"kind": "class", "module": "pkg.mod", "entity": "MyClass", "source_file": str(src)},
+            kind="class",
+            level=LEVEL_CLASS,
+            children=[child_greet, child_farewell],
+        )
+
+        context = build_context(class_node, tree)
+        assert "class MyClass" in context
+        assert "Return a greeting message" in context
+        assert "Say goodbye" in context
+
+    def test_level1_class_context_failed_child_shows_signature(self, tmp_path):
+        """Failed children show only their signature, not docstring."""
+        src = tmp_path / "mod.py"
+        src.write_text(SAMPLE_MODULE_SOURCE, encoding="utf-8")
+
+        tree = self._make_tree(str(src))
+
+        child_greet = SymbolNode(
+            symbol={"kind": "method", "module": "pkg.mod", "entity": "MyClass#greet", "source_file": str(src)},
+            kind="method",
+            level=LEVEL_LEAF,
+            status="failed",
+        )
+        class_node = SymbolNode(
+            symbol={"kind": "class", "module": "pkg.mod", "entity": "MyClass", "source_file": str(src)},
+            kind="class",
+            level=LEVEL_CLASS,
+            children=[child_greet],
+        )
+
+        context = build_context(class_node, tree)
+        assert "class MyClass" in context
+        assert "greet" in context
+
+    def test_level2_module_context_uses_summaries(self, tmp_path):
+        """Level 2 context uses only summary lines, not full docstrings."""
+        src = tmp_path / "mod.py"
+        src.write_text(SAMPLE_MODULE_SOURCE, encoding="utf-8")
+
+        tree = self._make_tree(str(src))
+
+        child_class = SymbolNode(
+            symbol={"kind": "class", "module": "pkg.mod", "entity": "MyClass", "source_file": str(src)},
+            kind="class",
+            level=LEVEL_CLASS,
+            docstring="A sample class that greets people.\n\nIt supports multiple languages.",
+            status="updated",
+        )
+        child_func = SymbolNode(
+            symbol={"kind": "function", "module": "pkg.mod", "entity": "helper", "source_file": str(src)},
+            kind="function",
+            level=LEVEL_LEAF,
+            docstring="Add one to x.",
+            status="updated",
+        )
+        tree.root.children = [child_class, child_func]
+
+        context = build_context(tree.root, tree)
+        # Should include top-of-file
+        assert "import os" in context
+        # Should use summary line only (first line of docstring)
+        assert "A sample class that greets people." in context
+        assert "It supports multiple languages." not in context
+        assert "Add one to x." in context
