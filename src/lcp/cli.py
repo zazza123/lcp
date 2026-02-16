@@ -321,12 +321,6 @@ def serve(manifest: str, name: str | None):
     help="Max concurrent LLM calls (default: 4).",
 )
 @click.option(
-    "--flat",
-    is_flag=True,
-    default=False,
-    help="Use legacy sequential mode instead of hierarchical.",
-)
-@click.option(
     "--failure-threshold",
     type=float,
     default=0.5,
@@ -342,7 +336,6 @@ def docgen(
     reasoning: bool,
     dry_run: bool,
     workers: int,
-    flat: bool,
     failure_threshold: float,
 ):
     """Generate docstrings for undocumented symbols using AI.
@@ -391,17 +384,13 @@ def docgen(
             description=description,
             dry_run=dry_run,
             max_workers=workers,
-            flat_mode=flat,
             failure_threshold=failure_threshold,
         )
 
         agent = DocGenAgent(provider=llm_provider, config=config)
 
         click.echo(f"Loading coverage from {coverage_json}...", err=True)
-        if flat:
-            click.echo("Mode: flat (legacy sequential)", err=True)
-        else:
-            click.echo(f"Mode: hierarchical (workers={workers})", err=True)
+        click.echo(f"Mode: hierarchical (workers={workers})", err=True)
         if dry_run:
             click.echo("DRY RUN: no files will be modified.", err=True)
 

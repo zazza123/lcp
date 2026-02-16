@@ -978,9 +978,6 @@ lcp docgen coverage.json --provider openai --dry-run
 # Generate for real (hierarchical mode is the default)
 lcp docgen coverage.json --provider openai --workers 4
 
-# Or use flat sequential mode for debugging
-lcp docgen coverage.json --provider openai --flat
-
 # Review the changes
 git diff</code></pre>
         </div>
@@ -1036,11 +1033,6 @@ git diff</code></pre>
               <td><code class="options-table__default">4</code></td>
             </tr>
             <tr>
-              <td><span class="options-table__flag">--flat</span></td>
-              <td class="options-table__desc">Use legacy sequential mode instead of hierarchical bottom-up processing</td>
-              <td><code class="options-table__default">off</code></td>
-            </tr>
-            <tr>
               <td><span class="options-table__flag">--failure-threshold</span></td>
               <td class="options-table__desc">Ratio of child failures that causes a parent symbol to be skipped (0.0&ndash;1.0)</td>
               <td><code class="options-table__default">0.5</code></td>
@@ -1090,11 +1082,6 @@ git diff</code></pre>
           <div class="option-card__flag">--workers</div>
           <div class="option-card__desc">Maximum concurrent LLM calls in hierarchical mode</div>
           <span class="option-card__default">4</span>
-        </div>
-        <div class="option-card" data-animate="fade-up">
-          <div class="option-card__flag">--flat</div>
-          <div class="option-card__desc">Use legacy sequential mode instead of hierarchical processing</div>
-          <span class="option-card__default">off</span>
         </div>
         <div class="option-card" data-animate="fade-up">
           <div class="option-card__flag">--failure-threshold</div>

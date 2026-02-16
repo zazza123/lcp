@@ -63,7 +63,7 @@ Each `ModuleTree` contains a `levels` dict that pre-groups nodes by level, so th
 
 The context builder `build_context()` in `src/lcp/ai/hierarchy.py` assembles different context depending on the symbol's level.
 
-**Level 0 (functions/methods):** The raw source code of the symbol, capped at 50 lines. This is identical to the legacy flat mode.
+**Level 0 (functions/methods):** The raw source code of the symbol, capped at 50 lines.
 
 **Level 1 (classes):** A composite view including:
 - The class signature and decorators
@@ -83,7 +83,7 @@ Pre-existing docstrings (symbols not in the undocumented list) are included in t
 
 `DocGenAgent` in `src/lcp/ai/agent.py` orchestrates the hierarchical processing.
 
-The entry point `run_sync()` dispatches based on the config type: if the config is a `HierarchicalConfig` with `flat_mode=False`, it calls `asyncio.run()` on the async engine `run_async()`. Otherwise it delegates to the legacy `run()` method.
+The entry point `run_sync()` calls `asyncio.run()` on the async engine `run_async()` when using `HierarchicalConfig`.
 
 The async engine creates an `asyncio.Semaphore` with the configured `max_workers` to limit concurrent LLM calls. For each level (0, 1, 2), it collects all pending nodes and processes them in parallel using `asyncio.gather()`. Each node is handled by `_process_node()`, which acquires the semaphore, builds context, constructs the prompt, and calls `agenerate()` on the provider.
 
@@ -91,7 +91,7 @@ After each level completes, `_propagate_failures()` checks whether parent nodes 
 
 ## Provider Interface
 
-`LLMProvider` in `src/lcp/ai/provider.py` defines two abstract methods: `generate()` (synchronous, used by flat mode) and `agenerate()` (async, used by hierarchical mode). Both accept a system prompt and user prompt, returning an `LLMResponse` with content and token usage.
+`LLMProvider` in `src/lcp/ai/provider.py` defines two abstract methods: `generate()` (synchronous) and `agenerate()` (async, used by the hierarchical engine). Both accept a system prompt and user prompt, returning an `LLMResponse` with content and token usage.
 
 `OpenAIProvider` and `AnthropicProvider` each maintain both a sync and an async client (lazy-initialized). The async clients (`AsyncOpenAI`, `AsyncAnthropic`) enable true concurrent I/O without threading.
 
@@ -107,15 +107,12 @@ The system prompt is shared across all levels and configures the docstring style
 
 ## CLI Integration
 
-The `lcp docgen` command in `src/lcp/cli.py` uses `HierarchicalConfig` by default with three additional flags:
+The `lcp docgen` command in `src/lcp/cli.py` uses `HierarchicalConfig` with two additional flags:
 
 | Flag | Default | Purpose |
 |------|---------|---------|
 | `--workers` | 4 | Maximum concurrent LLM calls |
-| `--flat` | off | Use legacy sequential mode |
 | `--failure-threshold` | 0.5 | Ratio of child failures to skip parent |
-
-Hierarchical mode is the default. The `--flat` flag restores the original sequential behavior for backward compatibility or debugging.
 
 ## Failure Propagation
 

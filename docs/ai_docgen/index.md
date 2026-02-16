@@ -10,7 +10,6 @@ The AI DocGen module (`lcp[ai]`) generates missing docstrings for Python symbols
 - Async parallel LLM calls with configurable concurrency
 - Failure propagation: if too many children fail, the parent is skipped
 - Support for OpenAI and Anthropic providers
-- Flat (legacy sequential) mode available via `--flat` flag
 - Dry-run mode to preview changes without writing
 
 ## Documents
@@ -22,7 +21,7 @@ The AI DocGen module (`lcp[ai]`) generates missing docstrings for Python symbols
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | DocGenAgent | `src/lcp/ai/agent.py` | Orchestrator: loads coverage, dispatches processing, writes results |
-| HierarchicalConfig | `src/lcp/ai/models.py` | Configuration for parallelism, flat mode, failure threshold |
+| HierarchicalConfig | `src/lcp/ai/models.py` | Configuration for parallelism and failure threshold |
 | Hierarchy Builder | `src/lcp/ai/hierarchy.py` | Builds symbol trees from flat coverage data, assembles level-adaptive context |
 | LLMProvider | `src/lcp/ai/provider.py` | Abstract base class with sync `generate()` and async `agenerate()` |
 | OpenAIProvider | `src/lcp/ai/connectors/openai.py` | OpenAI connector with standard and reasoning mode |

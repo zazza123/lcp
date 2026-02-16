@@ -50,7 +50,6 @@ class HierarchicalConfig(DocGenConfig):
     """
 
     max_workers: int = 4
-    flat_mode: bool = False
     failure_threshold: float = 0.5
 
 

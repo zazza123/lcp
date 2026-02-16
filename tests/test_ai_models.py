@@ -59,7 +59,6 @@ class TestHierarchicalConfig:
         assert config.dry_run is False
         # New fields
         assert config.max_workers == 4
-        assert config.flat_mode is False
         assert config.failure_threshold == 0.5
 
     def test_custom(self):
@@ -67,13 +66,11 @@ class TestHierarchicalConfig:
             kinds=["class"],
             dry_run=True,
             max_workers=8,
-            flat_mode=True,
             failure_threshold=0.75,
         )
         assert config.kinds == ["class"]
         assert config.dry_run is True
         assert config.max_workers == 8
-        assert config.flat_mode is True
         assert config.failure_threshold == 0.75
 
     def test_is_subclass_of_docgen_config(self):

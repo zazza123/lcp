@@ -297,7 +297,10 @@ class DocGenAgent:
     # ------------------------------------------------------------------
 
     def run_sync(self, coverage_input: str | dict) -> DocGenResult:
-        """Dispatch to flat run() or hierarchical run_async().
+        """Execute documentation generation synchronously.
+
+        Uses hierarchical async engine if config is HierarchicalConfig,
+        otherwise falls back to basic sequential processing.
 
         Args:
             coverage_input: Path to coverage JSON file or parsed dict.
@@ -305,7 +308,7 @@ class DocGenAgent:
         Returns:
             DocGenResult with statistics and per-symbol results.
         """
-        if not isinstance(self._config, HierarchicalConfig) or self._config.flat_mode:
+        if not isinstance(self._config, HierarchicalConfig):
             return self.run(coverage_input)
         return asyncio.run(self.run_async(coverage_input))
 

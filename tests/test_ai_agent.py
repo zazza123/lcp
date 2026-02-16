@@ -303,14 +303,6 @@ class TestDocGenAgentHierarchical:
         assert result.symbols_processed == 4
         assert provider.call_count == 4
 
-    def test_flat_mode_behaves_like_legacy(self, hier_coverage_data):
-        provider = MockProvider()
-        config = HierarchicalConfig(flat_mode=True, dry_run=True)
-        agent = DocGenAgent(provider=provider, config=config)
-        result = agent.run_sync(hier_coverage_data)
-        assert isinstance(result, DocGenResult)
-        assert result.symbols_processed == 4
-
     def test_hierarchical_writes_docstrings(self, hier_coverage_data, hier_source_file):
         provider = MockProvider(response_text="A test docstring.")
         config = HierarchicalConfig()
