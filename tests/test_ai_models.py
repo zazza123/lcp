@@ -3,6 +3,7 @@
 from lcp.ai.models import (
     DocGenConfig,
     DocGenResult,
+    HierarchicalConfig,
     LLMResponse,
     SymbolResult,
     TokenUsage,
@@ -44,6 +45,40 @@ class TestLLMResponse:
         response = LLMResponse(content="Hello", usage=usage)
         assert response.content == "Hello"
         assert response.usage.input_tokens == 100
+
+
+class TestHierarchicalConfig:
+    """Tests for HierarchicalConfig dataclass."""
+
+    def test_defaults(self):
+        config = HierarchicalConfig()
+        # Inherited from DocGenConfig
+        assert config.kinds is None
+        assert config.description is None
+        assert config.docstring_style == "google"
+        assert config.dry_run is False
+        # New fields
+        assert config.max_workers == 4
+        assert config.flat_mode is False
+        assert config.failure_threshold == 0.5
+
+    def test_custom(self):
+        config = HierarchicalConfig(
+            kinds=["class"],
+            dry_run=True,
+            max_workers=8,
+            flat_mode=True,
+            failure_threshold=0.75,
+        )
+        assert config.kinds == ["class"]
+        assert config.dry_run is True
+        assert config.max_workers == 8
+        assert config.flat_mode is True
+        assert config.failure_threshold == 0.75
+
+    def test_is_subclass_of_docgen_config(self):
+        config = HierarchicalConfig()
+        assert isinstance(config, DocGenConfig)
 
 
 class TestDocGenConfig:

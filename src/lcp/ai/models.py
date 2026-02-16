@@ -42,6 +42,19 @@ class DocGenConfig:
 
 
 @dataclass
+class HierarchicalConfig(DocGenConfig):
+    """Configuration for hierarchical documentation generation.
+
+    Extends DocGenConfig with parameters controlling the hierarchical
+    bottom-up processing mode and async parallelism.
+    """
+
+    max_workers: int = 4
+    flat_mode: bool = False
+    failure_threshold: float = 0.5
+
+
+@dataclass
 class SymbolResult:
     """Result of processing a single symbol."""
 
