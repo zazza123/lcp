@@ -7,6 +7,21 @@ import pytest
 from lcp.ai.connectors.openai import OpenAIProvider
 from lcp.ai.connectors.anthropic import AnthropicProvider
 from lcp.ai.models import LLMResponse, TokenUsage
+from lcp.ai.provider import LLMProvider
+
+
+class TestProviderABC:
+    """Tests for the async abstract method on LLMProvider."""
+
+    def test_agenerate_is_abstract(self):
+        """LLMProvider requires agenerate to be implemented."""
+        class IncompleteProvider(LLMProvider):
+            @property
+            def name(self): return "incomplete"
+            def generate(self, system, prompt): ...
+
+        with pytest.raises(TypeError, match="agenerate"):
+            IncompleteProvider()
 
 
 class TestOpenAIProvider:

@@ -12,19 +12,16 @@ class LLMProvider(ABC):
 
     @abstractmethod
     def generate(self, system: str, prompt: str) -> LLMResponse:
-        """Generate text from the LLM.
+        """Generate text from the LLM (synchronous)."""
+        ...
 
-        Args:
-            system: System prompt with instructions.
-            prompt: User prompt with the specific request.
-
-        Returns:
-            LLMResponse with generated content and token usage.
-        """
+    @abstractmethod
+    async def agenerate(self, system: str, prompt: str) -> LLMResponse:
+        """Generate text from the LLM (async)."""
         ...
 
     @property
     @abstractmethod
     def name(self) -> str:
-        """Name of the provider (e.g. 'openai', 'anthropic')."""
+        """Name of the provider."""
         ...

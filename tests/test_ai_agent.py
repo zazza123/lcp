@@ -31,6 +31,13 @@ class MockProvider(LLMProvider):
             usage=TokenUsage(input_tokens=100, output_tokens=50),
         )
 
+    async def agenerate(self, system: str, prompt: str) -> LLMResponse:
+        self.call_count += 1
+        return LLMResponse(
+            content=self._response_text,
+            usage=TokenUsage(input_tokens=100, output_tokens=50),
+        )
+
 
 SAMPLE_SOURCE = '''\
 def undocumented_func(x, y):
