@@ -33,7 +33,9 @@ lcp scan <package> -o output.lcp.json
 lcp validate <file.lcp.json>
 lcp serve <manifest.lcp.json>  # Start MCP server
 lcp coverage <package> -o coverage.json  # Documentation coverage report
-lcp docgen <coverage.json> --provider openai  # AI docstring generation
+lcp docgen <coverage.json> --provider openai  # AI docstring generation (hierarchical)
+lcp docgen <coverage.json> --flat             # AI docstring generation (legacy sequential)
+lcp docgen <coverage.json> --workers 8        # Configure parallel LLM calls
 ```
 
 ## Architecture
@@ -61,12 +63,13 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 | `mcp_server.py` | MCP server for AI agent integration |
 | `coverage.py` | Documentation coverage analysis |
 | `ai/` | Optional AI module for docstring generation (`lcp[ai]`) |
-| `ai/agent.py` | `DocGenAgent` orchestrator: loads coverage, generates docstrings, writes files |
-| `ai/models.py` | Dataclasses: `TokenUsage`, `LLMResponse`, `DocGenConfig`, `SymbolResult`, `DocGenResult` |
-| `ai/provider.py` | `LLMProvider` abstract base class for LLM connectors |
-| `ai/connectors/openai.py` | `OpenAIProvider` with standard and reasoning mode support |
-| `ai/connectors/anthropic.py` | `AnthropicProvider` with cache token tracking |
-| `ai/prompts.py` | System and user prompt templates for docstring generation |
+| `ai/agent.py` | `DocGenAgent` orchestrator: flat mode via `run()`, hierarchical mode via `run_sync()`/`run_async()` |
+| `ai/models.py` | Dataclasses: `TokenUsage`, `LLMResponse`, `DocGenConfig`, `HierarchicalConfig`, `SymbolResult`, `DocGenResult` |
+| `ai/hierarchy.py` | `SymbolNode`, `ModuleTree`, `build_hierarchy()`, `build_context()` for bottom-up processing |
+| `ai/provider.py` | `LLMProvider` ABC with sync `generate()` and async `agenerate()` |
+| `ai/connectors/openai.py` | `OpenAIProvider` with standard and reasoning mode, sync and async clients |
+| `ai/connectors/anthropic.py` | `AnthropicProvider` with cache token tracking, sync and async clients |
+| `ai/prompts.py` | System prompt and level-specific user prompts (L0 flat, L1 class, L2 module) |
 | `ai/writer.py` | AST-based docstring injection into Python source files |
 
 ### Key Data Structures
@@ -74,7 +77,8 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 - `ScannedSymbol` / `ScannedModule` (dataclasses in scanner.py) - Internal representation of Python symbols
 - `Symbol` / `LCPDocument` (Pydantic models in models.py) - LCP v1 specification models
 - `LCPIndex` (in mcp_server.py) - In-memory index for fast symbol lookups
-- `DocGenAgent` / `DocGenConfig` / `DocGenResult` (in ai/) - AI docstring generation orchestrator and results
+- `DocGenAgent` / `DocGenConfig` / `HierarchicalConfig` / `DocGenResult` (in ai/) - AI docstring generation orchestrator and results
+- `SymbolNode` / `ModuleTree` (in ai/hierarchy.py) - Hierarchical symbol tree for bottom-up processing
 
 ### Symbol ID Format
 
@@ -90,5 +94,7 @@ Symbol IDs use the format: `module_path:entity_path`
 - Public dunder methods (`__init__`, `__call__`, `__iter__`, `__getitem__`, operators) are considered public API
 - Pydantic models use `ConfigDict(extra="allow")` for forward compatibility with LCP spec extensions
 - The `ai` module is optional; its dependencies (`openai`, `anthropic`) are lazy-imported with clear error messages
-- LLM connectors extend `LLMProvider` ABC; new providers only need `generate()` and `name`
+- LLM connectors extend `LLMProvider` ABC; new providers need `generate()`, `agenerate()`, and `name`
 - The AI writer injects docstrings bottom-up (by descending line number) to avoid line offset issues in batch operations
+- AI DocGen uses hierarchical bottom-up processing by default: L0 (methods) → L1 (classes) → L2 (modules), with `--flat` for legacy sequential mode
+- `HierarchicalConfig` extends `DocGenConfig` with `max_workers`, `flat_mode`, and `failure_threshold`
