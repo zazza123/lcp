@@ -9,7 +9,7 @@ import pytest
 
 from lcp.ai.agent import DocGenAgent
 from lcp.ai.models import DocGenConfig, DocGenResult, LLMResponse, TokenUsage
-from lcp.ai.prompts import build_system_prompt, build_user_prompt
+from lcp.ai.prompts import build_system_prompt, build_user_prompt, build_user_prompt_hierarchical
 from lcp.ai.provider import LLMProvider
 
 
@@ -244,3 +244,52 @@ class TestBuildPrompts:
         assert "mymod" in prompt
         assert "my_func" in prompt
         assert "def my_func(x): return x" in prompt
+
+
+class TestHierarchicalPrompts:
+    """Tests for hierarchical prompt building."""
+
+    def test_level0_delegates_to_existing(self):
+        from lcp.ai.hierarchy import SymbolNode, LEVEL_LEAF
+
+        node = SymbolNode(
+            symbol={"kind": "function", "module": "mod", "entity": "func", "source_file": "/p.py"},
+            kind="function",
+            level=LEVEL_LEAF,
+        )
+        context = "def func(x): return x"
+        prompt = build_user_prompt_hierarchical(node, context)
+        assert "function" in prompt
+        assert "mod" in prompt
+        assert "func" in prompt
+        assert "def func(x): return x" in prompt
+
+    def test_level1_class_prompt(self):
+        from lcp.ai.hierarchy import SymbolNode, LEVEL_CLASS
+
+        node = SymbolNode(
+            symbol={"kind": "class", "module": "mod", "entity": "MyClass", "source_file": "/p.py"},
+            kind="class",
+            level=LEVEL_CLASS,
+        )
+        context = "class MyClass:\n    def method(self): ..."
+        prompt = build_user_prompt_hierarchical(node, context)
+        assert "class" in prompt
+        assert "MyClass" in prompt
+        assert "Class structure:" in prompt
+        assert "members" in prompt.lower()
+
+    def test_level2_module_prompt(self):
+        from lcp.ai.hierarchy import SymbolNode, LEVEL_MODULE
+
+        node = SymbolNode(
+            symbol={"kind": "module", "module": "pkg.mod", "entity": "pkg.mod", "source_file": "/p.py"},
+            kind="module",
+            level=LEVEL_MODULE,
+        )
+        context = "import os\n\n# Module components:\n- class Foo: \"A foo.\""
+        prompt = build_user_prompt_hierarchical(node, context)
+        assert "module" in prompt
+        assert "pkg.mod" in prompt
+        assert "import os" in prompt
+        assert "components" in prompt.lower()
