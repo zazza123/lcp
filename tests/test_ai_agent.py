@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from lcp.ai.agent import DocGenAgent
-from lcp.ai.models import DocGenConfig, DocGenResult, LLMResponse, TokenUsage
+from lcp.ai.models import DocGenConfig, DocGenResult, HierarchicalConfig, LLMResponse, TokenUsage
 from lcp.ai.prompts import build_system_prompt, build_user_prompt, build_user_prompt_hierarchical
 from lcp.ai.provider import LLMProvider
 
@@ -251,6 +251,114 @@ class TestBuildPrompts:
         assert "mymod" in prompt
         assert "my_func" in prompt
         assert "def my_func(x): return x" in prompt
+
+
+HIERARCHICAL_SOURCE = '''\
+def undocumented_func(x, y):
+    return x + y
+
+
+class MyClass:
+    name: str
+
+    def __init__(self, name):
+        self.name = name
+
+    def undocumented_method(self, val):
+        return val * 2
+
+    def other_method(self):
+        return self.name
+'''
+
+
+class TestDocGenAgentHierarchical:
+    """Tests for hierarchical docgen mode."""
+
+    @pytest.fixture
+    def hier_source_file(self, tmp_path):
+        path = tmp_path / "sample.py"
+        path.write_text(HIERARCHICAL_SOURCE, encoding="utf-8")
+        return path
+
+    @pytest.fixture
+    def hier_coverage_data(self, hier_source_file):
+        return {
+            "package": "test_pkg",
+            "undocumented": [
+                {"kind": "function", "module": "test_pkg", "entity": "undocumented_func", "source_file": str(hier_source_file)},
+                {"kind": "method", "module": "test_pkg", "entity": "MyClass#undocumented_method", "source_file": str(hier_source_file)},
+                {"kind": "method", "module": "test_pkg", "entity": "MyClass#other_method", "source_file": str(hier_source_file)},
+                {"kind": "class", "module": "test_pkg", "entity": "MyClass", "source_file": str(hier_source_file)},
+            ],
+        }
+
+    def test_hierarchical_processes_all_levels(self, hier_coverage_data):
+        provider = MockProvider()
+        config = HierarchicalConfig(dry_run=True)
+        agent = DocGenAgent(provider=provider, config=config)
+        result = agent.run_sync(hier_coverage_data)
+        assert isinstance(result, DocGenResult)
+        # 3 L0 (func + 2 methods) + 1 L1 (class) = 4
+        assert result.symbols_processed == 4
+        assert provider.call_count == 4
+
+    def test_flat_mode_behaves_like_legacy(self, hier_coverage_data):
+        provider = MockProvider()
+        config = HierarchicalConfig(flat_mode=True, dry_run=True)
+        agent = DocGenAgent(provider=provider, config=config)
+        result = agent.run_sync(hier_coverage_data)
+        assert isinstance(result, DocGenResult)
+        assert result.symbols_processed == 4
+
+    def test_hierarchical_writes_docstrings(self, hier_coverage_data, hier_source_file):
+        provider = MockProvider(response_text="A test docstring.")
+        config = HierarchicalConfig()
+        agent = DocGenAgent(provider=provider, config=config)
+        result = agent.run_sync(hier_coverage_data)
+        content = hier_source_file.read_text(encoding="utf-8")
+        assert '"""A test docstring."""' in content
+        assert result.symbols_updated >= 1
+
+    def test_failure_propagation(self, hier_coverage_data):
+        """If all methods fail, the class should be skipped."""
+        call_count = 0
+
+        class FailingProvider(LLMProvider):
+            @property
+            def name(self):
+                return "failing"
+
+            def generate(self, system, prompt):
+                return LLMResponse(content="ok", usage=TokenUsage())
+
+            async def agenerate(self, system, prompt):
+                nonlocal call_count
+                call_count += 1
+                if call_count <= 3:  # 3 L0 symbols
+                    raise RuntimeError("API error")
+                return LLMResponse(content="ok", usage=TokenUsage())
+
+        config = HierarchicalConfig(dry_run=True, failure_threshold=0.5)
+        agent = DocGenAgent(provider=FailingProvider(), config=config)
+        result = agent.run_sync(hier_coverage_data)
+        class_results = [r for r in result.results if r.kind == "class"]
+        assert len(class_results) == 1
+        assert class_results[0].status == "skipped"
+
+    def test_max_workers_respected(self, hier_coverage_data):
+        provider = MockProvider()
+        config = HierarchicalConfig(max_workers=1, dry_run=True)
+        agent = DocGenAgent(provider=provider, config=config)
+        result = agent.run_sync(hier_coverage_data)
+        assert result.symbols_processed == 4
+
+    def test_empty_coverage_hierarchical(self):
+        provider = MockProvider()
+        config = HierarchicalConfig()
+        agent = DocGenAgent(provider=provider, config=config)
+        result = agent.run_sync({"undocumented": []})
+        assert result.symbols_processed == 0
 
 
 class TestHierarchicalPrompts:
