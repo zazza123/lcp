@@ -347,3 +347,34 @@ class TestScanPackage:
         """Test recursive scanning of a package."""
         result = scan_package("json", recursive=True)
         assert len(result.symbols) > 0
+
+    def test_scan_package_includes_namespace_submodules(self, tmp_path, monkeypatch):
+        """Test recursive scanning includes namespace package submodules."""
+        package_name = "scan_namespace_pkg"
+        package_dir = tmp_path / package_name
+        package_dir.mkdir()
+        (package_dir / "__init__.py").write_text('"""Root package."""\n')
+
+        namespace_dir = package_dir / "templates"
+        namespace_dir.mkdir()
+        (namespace_dir / "adk.py").write_text(
+            '"""Template module."""\n\n'
+            "def important_template_function():\n"
+            '    """Important function."""\n'
+            '    return "ok"\n'
+        )
+
+        monkeypatch.syspath_prepend(str(tmp_path))
+        result = scan_package(package_name, recursive=True)
+
+        module_paths = {s.module_path for s in result.symbols if s.kind == "module"}
+        assert f"{package_name}.templates" in module_paths
+        assert f"{package_name}.templates.adk" in module_paths
+
+        function_symbols = {
+            (s.module_path, s.name) for s in result.symbols if s.kind == "function"
+        }
+        assert (
+            f"{package_name}.templates.adk",
+            "important_template_function",
+        ) in function_symbols

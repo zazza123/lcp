@@ -420,21 +420,67 @@ def _get_package_version(package_name: str) -> str:
 
 
 def _iter_submodules(package: ModuleType) -> list[ModuleType]:
-    """Iterate over all submodules of a package."""
-    submodules = []
-
+    """Iterate over all submodules of a package, including namespace packages."""
     if not hasattr(package, "__path__"):
-        return submodules
+        return []
 
-    for importer, modname, ispkg in pkgutil.walk_packages(
-        package.__path__, prefix=package.__name__ + "."
-    ):
-        try:
-            submod = importlib.import_module(modname)
-            submodules.append(submod)
-        except Exception:
-            # Skip modules that fail to import
+    submodules: list[ModuleType] = []
+    discovered: set[str] = set()
+    pending_packages: list[ModuleType] = [package]
+    visited_packages: set[str] = set()
+
+    while pending_packages:
+        current = pending_packages.pop()
+        current_name = current.__name__
+        if current_name in visited_packages or not hasattr(current, "__path__"):
             continue
+        visited_packages.add(current_name)
+
+        for module_info in pkgutil.iter_modules(
+            current.__path__, prefix=current_name + "."
+        ):
+            try:
+                submod = importlib.import_module(module_info.name)
+            except Exception:
+                # Skip modules that fail to import
+                continue
+
+            if submod.__name__ in discovered:
+                continue
+
+            discovered.add(submod.__name__)
+            submodules.append(submod)
+            if hasattr(submod, "__path__"):
+                pending_packages.append(submod)
+
+        # Discover namespace package directories not exposed by pkgutil.iter_modules.
+        for path_str in current.__path__:
+            package_path = Path(path_str)
+            if not package_path.is_dir():
+                continue
+
+            for child in package_path.iterdir():
+                if (
+                    not child.is_dir()
+                    or child.name == "__pycache__"
+                    or not child.name.isidentifier()
+                    or (child / "__init__.py").exists()
+                ):
+                    continue
+
+                module_name = f"{current_name}.{child.name}"
+                if module_name in discovered:
+                    continue
+
+                try:
+                    namespace_mod = importlib.import_module(module_name)
+                except Exception:
+                    continue
+
+                discovered.add(namespace_mod.__name__)
+                submodules.append(namespace_mod)
+                if hasattr(namespace_mod, "__path__"):
+                    pending_packages.append(namespace_mod)
 
     return submodules
 

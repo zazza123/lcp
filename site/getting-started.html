@@ -215,9 +215,9 @@ lcp_doc = scan("mypackage", include_private=True)</code></pre>
             <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">6</span>
             Validating LCP Files
           </h2>
-          
+
           <p>Validate any LCP file against the official schema:</p>
-          
+
           <div class="code-block">
             <div class="code-block__header">
               <span class="code-block__lang">bash</span>
@@ -231,8 +231,85 @@ lcp_doc = scan("mypackage", include_private=True)</code></pre>
             </div>
             <pre><code>lcp validate mypackage.lcp.json</code></pre>
           </div>
-          
+
           <p>This ensures your LCP file conforms to the v1 specification and can be consumed by any LCP-compatible tool.</p>
+        </section>
+
+        <!-- Documentation Coverage -->
+        <section data-animate="fade-up" data-delay="600">
+          <h2 id="coverage">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">7</span>
+            Documentation Coverage
+          </h2>
+
+          <p>Analyze documentation completeness to identify missing docstrings:</p>
+
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">bash</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code># Generate coverage report (JSON)
+lcp coverage requests -o coverage.json
+
+# Generate coverage report (Markdown)
+lcp coverage requests -o coverage.md --format markdown
+
+# Generate both LCP manifest and coverage in one scan
+lcp scan requests -o requests.lcp.json --coverage coverage.json</code></pre>
+          </div>
+
+          <p>The coverage report shows statistics by symbol kind and lists all undocumented symbols:</p>
+
+          <div class="card mb-lg">
+            <h4 class="mb-sm">
+              <span class="badge badge--module">summary</span>
+            </h4>
+            <p class="text-muted mb-md">High-level coverage statistics with breakdown by symbol kind.</p>
+
+            <div class="code-block" style="margin-bottom: 0;">
+              <pre><code>{
+  "summary": {
+    "total_symbols": 150,
+    "documented": 120,
+    "undocumented": 30,
+    "coverage_percent": 80.0,
+    "by_kind": {
+      "function": { "total": 60, "documented": 50, "undocumented": 10 },
+      "class": { "total": 25, "documented": 20, "undocumented": 5 }
+    }
+  }
+}</code></pre>
+            </div>
+          </div>
+
+          <p>Or use the Python API:</p>
+
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__lang">python</span>
+              <button class="code-block__copy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <pre><code>from lcp import generate_coverage
+
+report = generate_coverage("mypackage")
+print(f"Coverage: {report.summary.coverage_percent}%")
+
+for symbol in report.undocumented:
+    print(f"  Missing: {symbol.module}:{symbol.entity}")</code></pre>
+          </div>
         </section>
 
         <!-- Next Steps -->
