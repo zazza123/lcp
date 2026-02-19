@@ -8,7 +8,6 @@ Static marketing and documentation site for the Library Context Protocol.
 site/
 ├── index.html          # Homepage
 ├── docs.html           # API documentation
-├── examples.html       # Usage examples
 ├── getting-started.html # Quick start guide
 ├── mcp.html            # MCP server configuration guide
 ├── why-lcp.html        # Benefits and use cases
