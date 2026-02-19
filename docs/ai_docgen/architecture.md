@@ -123,7 +123,6 @@ This prevents wasting LLM calls on parent symbols that lack sufficient context f
 ## Related Documentation
 
 - [AI DocGen Overview](index.md)
-- [Hierarchical DocGen Design](../plans/2026-02-16-hierarchical-docgen-design.md) - Original design decisions
 
 ---
 **Last Updated:** February 2026

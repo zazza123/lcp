@@ -29,10 +29,6 @@ The AI DocGen module (`lcp[ai]`) generates missing docstrings for Python symbols
 | Prompt Templates | `src/lcp/ai/prompts.py` | System prompt and level-specific user prompts |
 | Writer | `src/lcp/ai/writer.py` | AST-based docstring injection into source files |
 
-## Related Documentation
-
-- [Design Document](../plans/2026-02-16-hierarchical-docgen-design.md) - Original design decisions and trade-offs
-
 ---
 **Last Updated:** February 2026
 **Status:** Implemented

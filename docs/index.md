@@ -8,11 +8,10 @@ Documentation for the LCP Python SDK, a tool for generating Library Context Prot
 
 ### Features
 
+- [Manifest Generation](manifest/index.md) - Scans an installed Python package and produces a structured `.lcp.json` manifest via a scan → generate → validate pipeline
+- [MCP Server](mcp_server/index.md) - Serves LCP manifests to AI agents via the Model Context Protocol, with guided exploration tools
+- [Coverage](coverage/index.md) - Measures documentation completeness across a package; produces JSON and Markdown reports
 - [AI Documentation Generation](ai_docgen/index.md) - Automatic docstring generation using LLM providers, with hierarchical bottom-up processing
-
-### Internal
-
-- [Design Documents](plans/) - Architecture and design plans for major features
 
 ## Key Components
 
