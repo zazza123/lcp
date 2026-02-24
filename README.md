@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="site/asset/logo.png" alt="LCP Logo" width="80">
+</p>
+
 # lcp
 
 Python SDK for generating [Library Context Protocol (LCP)](https://lcp.dev) files from Python packages.

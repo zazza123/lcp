@@ -258,6 +258,33 @@ pre code {
   font-weight: 800;
 }
 
+.header__logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.hero__title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.hero__title-wrapper .hero__title {
+  margin-bottom: 0;
+  animation: none;
+}
+
+.hero__logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .header__nav {
   display: flex;
   align-items: center;

@@ -221,3 +221,4 @@ __marimo__/
 doc/
 gitignore/
 output/
+.vscode/
