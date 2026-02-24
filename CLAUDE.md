@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Python SDK for generating [Library Context Protocol (LCP)](https://lcp.dev) files from Python packages by introspecting installed modules using `inspect` and `ast`.
+Python SDK for generating [Library Context Protocol (LCP)](https://github.com/zazza123/lcp) files from Python packages by introspecting installed modules using `inspect` and `ast`.
 
 ## Development Commands
 

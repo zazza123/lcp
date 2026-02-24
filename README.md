@@ -1,16 +1,35 @@
-<p align="center">
+<p align="center" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
   <img src="site/asset/logo.png" alt="LCP Logo" width="80">
+  <span style="font-size: 2rem; font-weight: bold;">Library Context Protocol</span>
 </p>
 
-# lcp
+---
 
-Python SDK for generating [Library Context Protocol (LCP)](https://lcp.dev) files from Python packages.
+<p class="readme">
+    <b>Documentation</b>: <a href="https://zazza123.github.io/lcp">https://zazza123.github.io/lcp</a>
+</p>
+<hr class="readme">
+
+**lcp** (*Library Context Protocol*) is primarly a protocol designed to solve the problem of AI agents not having access to up-to-date library documentation, which leads to hallucinations and inaccurate code generation. The LCP SDK provides tools to scan Python packages, extract API information, and generate LCP-compliant JSON manifests. It also includes features for analyzing documentation coverage and generating missing docstrings using AI.
 
 ## Installation
 
 ```bash
 pip install lcp
 ```
+
+## Features
+
+- Scans installed Python packages using `inspect` and `ast` modules
+- Generates LCP v1 compliant JSON files
+- Extracts functions, classes, methods, attributes, and constants
+- Parses docstrings for summaries and descriptions
+- Extracts type hints from function signatures
+- Validates output against LCP JSON schema
+- Documentation coverage analysis with JSON/Markdown reports
+- AI-powered docstring generation via OpenAI and Anthropic (`lcp[ai]`)
+- Both CLI and Python API interfaces
+- MCP server for AI agent integration
 
 ## Usage
 
@@ -193,19 +212,6 @@ print(f"Tokens: {result.total_usage.input_tokens} in / {result.total_usage.outpu
 for r in result.results:
     print(f"  {r.symbol_id}: {r.status}")
 ```
-
-## Features
-
-- Scans installed Python packages using `inspect` and `ast` modules
-- Generates LCP v1 compliant JSON files
-- Extracts functions, classes, methods, attributes, and constants
-- Parses docstrings for summaries and descriptions
-- Extracts type hints from function signatures
-- Validates output against LCP JSON schema
-- Documentation coverage analysis with JSON/Markdown reports
-- AI-powered docstring generation via OpenAI and Anthropic (`lcp[ai]`)
-- Both CLI and Python API interfaces
-- MCP server for AI agent integration
 
 ## License
 

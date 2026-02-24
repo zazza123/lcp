@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lcp.dev/schema/lcp-v1.json",
+  "$id": "https://github.com/zazza123/lcp/schema/lcp-v1.json",
   "title": "Library Context Protocol (LCP) v1",
   "type": "object",
   "required": ["manifest", "symbols"],
