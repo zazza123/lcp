@@ -222,3 +222,4 @@ doc/
 gitignore/
 output/
 .vscode/
+.claude/settings.local.json
