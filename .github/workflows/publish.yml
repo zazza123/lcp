@@ -1,0 +1,42 @@
+name: publish
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: read
+  id-token: write # required for OIDC trusted publisher
+
+jobs:
+  publish:
+    name: build and publish to pypi
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/lcp/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install build tools
+        run: |
+          pip install --upgrade pip
+          pip install build hatch
+
+      - name: set version from release tag
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          hatch version "$VERSION"
+
+      - name: build package
+        run: python -m build --sdist --wheel --outdir dist/
+
+      - name: publish to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
