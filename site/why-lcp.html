@@ -62,9 +62,10 @@
               AI hallucinations in code generation are more than an inconvenience, sometimes they can introduce critical bugs. When an AI assistant fabricates API calls, it leads to code that looks plausible but fails at runtime.
             </p>
 
-            <div class="features" style="grid-template-columns: repeat(2, minmax(280px, 360px)); justify-content: center; gap: var(--space-xl); margin-bottom: var(--space-2xl);">
-              <div class="card" style="border-color: #fecaca; background: #fef2f2;">
-                <h4 style="color: #b91c1c; margin-bottom: var(--space-md); display: flex; align-items: center; gap: var(--space-sm);">
+            <!-- comparison cards refactored -->
+            <div class="comparison">
+              <div class="comparison__cell without" data-animate="fade-up">
+                <h4>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="15" y1="9" x2="9" y2="15"></line>
@@ -72,8 +73,8 @@
                   </svg>
                   Without LCP
                 </h4>
-                <div class="code-block" style="margin: 0;">
-                  <pre style="font-size: 0.8125rem;"><code><span style="color: #94a3b8;"># AI generates this...</span>
+                <div class="code-block">
+                  <pre><code><span style="color: #94a3b8;"># AI generates this...</span>
 response = requests.fetch(
     "https://api.example.com",
     verify_ssl=True,  <span style="color: #f87171;">← doesn't exist</span>
@@ -85,16 +86,16 @@ response = requests.fetch(
 keyword argument 'verify_ssl'</span></code></pre>
                 </div>
               </div>
-              
-              <div class="card" style="border-color: #bbf7d0; background: #f0fdf4;">
-                <h4 style="color: #166534; margin-bottom: var(--space-md); display: flex; align-items: center; gap: var(--space-sm);">
+
+              <div class="comparison__cell with" data-animate="fade-up">
+                <h4>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                   With LCP
                 </h4>
-                <div class="code-block" style="margin: 0;">
-                  <pre style="font-size: 0.8125rem;"><code><span style="color: #94a3b8;"># AI knows the exact API</span>
+                <div class="code-block">
+                  <pre><code><span style="color: #94a3b8;"># AI knows the exact API</span>
 response = requests.get(
     "https://api.example.com",
     verify=True,      <span style="color: #34d399;">← correct param</span>
@@ -321,9 +322,8 @@ response = requests.get(
       <section class="section section--muted">
         <div class="container">
           <div class="text-center" data-animate="fade-up">
-            <h2 class="mb-lg">Ready to Eliminate Hallucinations?</h2>
             <p class="text-muted mb-xl" style="max-width: 500px; margin-left: auto; margin-right: auto;">
-              Start generating accurate LCP manifests for your libraries today.
+              Start generating accurate LCP manifests for your libraries.
             </p>
             <div class="flex justify-center gap-md">
               <a href="getting-started.html" class="btn btn--primary btn--lg">

@@ -665,6 +665,39 @@ pre code {
   gap: var(--space-xl);
 }
 
+/* --- Comparison cards --- */
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 360px));
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.comparison__cell {
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.comparison__cell.without {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.comparison__cell.with {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.comparison__cell h4 {
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
 .feature-card {
   padding: var(--space-xl);
   background: var(--color-bg);
