@@ -795,14 +795,7 @@ lcp serve requests.lcp.json --name requests-api</code></pre>
         <!-- Client Tabs -->
         <div class="client-tabs">
           <div class="client-tabs__nav">
-            <button class="client-tabs__btn active" data-tab="claude-desktop">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"></path>
-              </svg>
-              Claude Desktop
-            </button>
-            <button class="client-tabs__btn" data-tab="claude-code">
+            <button class="client-tabs__btn active" data-tab="claude-code">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16 18 22 12 16 6"></polyline>
                 <polyline points="8 6 2 12 8 18"></polyline>
@@ -833,48 +826,9 @@ lcp serve requests.lcp.json --name requests-api</code></pre>
             </button>
           </div>
           
-          <!-- Claude Desktop Tab -->
-          <div class="client-tabs__content active" id="tab-claude-desktop">
-            <p class="text-muted mb-md">Edit your Claude Desktop configuration file:</p>
-            <div class="code-block">
-              <div class="code-block__header">
-                <span class="code-block__lang">json</span>
-                <button class="code-block__copy">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                  </svg>
-                  Copy
-                </button>
-              </div>
-              <pre><code>{
-  "mcpServers": {
-    "lcp-requests": {
-      "command": "lcp",
-      "args": ["serve", "/path/to/requests.lcp.json"]
-    }
-  }
-}</code></pre>
-            </div>
-            <div class="card card--highlight mt-md">
-              <p style="display: flex; align-items: flex-start; gap: var(--space-md); margin: 0;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="16" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
-                <span>
-                  <strong>Config file location:</strong><br>
-                  <code style="font-size: 0.8125rem;">macOS: ~/Library/Application Support/Claude/claude_desktop_config.json</code><br>
-                  <code style="font-size: 0.8125rem;">Windows: %APPDATA%\Claude\claude_desktop_config.json</code>
-                </span>
-              </p>
-            </div>
-          </div>
-          
           <!-- Claude Code Tab -->
-          <div class="client-tabs__content" id="tab-claude-code">
-            <p class="text-muted mb-md">Configure MCP in Claude Code using the CLI or settings file:</p>
+          <div class="client-tabs__content active" id="tab-claude-code">
+            <p class="text-muted mb-md">Configure MCP in Claude Code using the CLI or by editing a JSON config file. You can choose a scope for the server (`local` default, `project`, or `user`) depending on whether you want the configuration to be private, shared with the project, or available across all projects.</p>
             <div class="code-block mb-lg">
               <div class="code-block__header">
                 <span class="code-block__lang">bash</span>
@@ -886,13 +840,16 @@ lcp serve requests.lcp.json --name requests-api</code></pre>
                   Copy
                 </button>
               </div>
-              <pre><code># Add MCP server via CLI
+              <pre><code># Add a server in the default (local) scope
 claude mcp add lcp-requests -- lcp serve /path/to/requests.lcp.json
 
-# Or for project-specific config, add to your project's settings.json
-claude mcp add lcp-requests --scope project -- lcp serve ./requests.lcp.json</code></pre>
+# Add a server scoped to the current project
+claude mcp add --scope project lcp-requests -- lcp serve ./requests.lcp.json
+
+# Add a server for your user account (available in all projects)
+claude mcp add --scope user lcp-requests -- lcp serve /path/to/requests.lcp.json</code></pre>
             </div>
-            <p class="text-muted mb-md">Alternatively, edit <code>~/.claude/settings.json</code>:</p>
+            <p class="text-muted mb-md">Alternatively, edit the configuration file manually (<code>~/.claude.json</code> for user/local scopes or <code>.mcp.json</code> in the project root for project scope):</p>
             <div class="code-block">
               <div class="code-block__header">
                 <span class="code-block__lang">json</span>
@@ -917,7 +874,7 @@ claude mcp add lcp-requests --scope project -- lcp serve ./requests.lcp.json</co
           
           <!-- Copilot CLI Tab -->
           <div class="client-tabs__content" id="tab-copilot-cli">
-            <p class="text-muted mb-md">Configure MCP servers for GitHub Copilot CLI in your settings:</p>
+            <p class="text-muted mb-md">Configure MCP servers for GitHub Copilot CLI by using the interactive `/mcp` commands or by editing the JSON configuration file.</p>
             <div class="code-block mb-lg">
               <div class="code-block__header">
                 <span class="code-block__lang">bash</span>
@@ -929,13 +886,16 @@ claude mcp add lcp-requests --scope project -- lcp serve ./requests.lcp.json</co
                   Copy
                 </button>
               </div>
-              <pre><code># Add MCP server to Copilot CLI
-copilot mcp add lcp-requests lcp serve /path/to/requests.lcp.json
+              <pre><code># Start the CLI and add the server with a slash command
+copilot
+# inside the interactive session:
+/mcp add
+# follow the prompts to enter a name and the command
 
-# List configured servers
-copilot mcp list</code></pre>
+# view configured servers
+/mcp list</code></pre>
             </div>
-            <p class="text-muted mb-md">Or edit the config file directly at <code>~/.copilot/mcp.json</code>:</p>
+            <p class="text-muted mb-md">Alternatively, edit your JSON config (usually <code>~/.copilot/mcp-config.json</code>):</p>
             <div class="code-block">
               <div class="code-block__header">
                 <span class="code-block__lang">json</span>
@@ -948,7 +908,7 @@ copilot mcp list</code></pre>
                 </button>
               </div>
               <pre><code>{
-  "servers": {
+  "mcpServers": {
     "lcp-requests": {
       "command": "lcp",
       "args": ["serve", "/path/to/requests.lcp.json"]
@@ -972,12 +932,12 @@ copilot mcp list</code></pre>
                   Copy
                 </button>
               </div>
-              <pre><code># Start Codex CLI with MCP server
-codex --mcp-server "lcp serve /path/to/requests.lcp.json"
+              <pre><code># Add an MCP server using the CLI
+codex mcp add lcp-requests -- lcp serve /path/to/requests.lcp.json
 
-# Or configure in ~/.codex/config.yaml</code></pre>
+# Or configure in ~/.codex/config.toml</code></pre>
             </div>
-            <p class="text-muted mb-md">Add to your <code>~/.codex/config.yaml</code>:</p>
+            <p class="text-muted mb-md">Add to your <code>~/.codex/config.toml</code>:</p>
             <div class="code-block">
               <div class="code-block__header">
                 <span class="code-block__lang">yaml</span>
@@ -989,18 +949,15 @@ codex --mcp-server "lcp serve /path/to/requests.lcp.json"
                   Copy
                 </button>
               </div>
-              <pre><code>mcp_servers:
-  lcp-requests:
-    command: lcp
-    args:
-      - serve
-      - /path/to/requests.lcp.json</code></pre>
+              <pre><code>[mcp_servers.lcp-requests]
+command = "lcp"
+args = ["serve", "/path/to/requests.lcp.json"]</code></pre>
             </div>
           </div>
           
           <!-- OpenCode Tab -->
           <div class="client-tabs__content" id="tab-opencode">
-            <p class="text-muted mb-md">Configure MCP servers for OpenCode:</p>
+            <p class="text-muted mb-md">Configure MCP servers for OpenCode using the `mcp` sub‑commands or by editing your configuration file.</p>
             <div class="code-block mb-lg">
               <div class="code-block__header">
                 <span class="code-block__lang">bash</span>
@@ -1012,11 +969,13 @@ codex --mcp-server "lcp serve /path/to/requests.lcp.json"
                   Copy
                 </button>
               </div>
-              <pre><code># Add MCP server to OpenCode
-opencode config set mcp.servers.lcp-requests.command "lcp"
-opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.lcp.json"]'</code></pre>
+              <pre><code># Run the interactive wizard to add a server
+opencode mcp add
+
+# list configured servers
+opencode mcp list</code></pre>
             </div>
-            <p class="text-muted mb-md">Or edit <code>~/.opencode/config.json</code>:</p>
+            <p class="text-muted mb-md">Alternatively, add a section in your OpenCode config (e.g. <code>~/.opencode/config.json</code>):</p>
             <div class="code-block">
               <div class="code-block__header">
                 <span class="code-block__lang">json</span>
@@ -1029,12 +988,12 @@ opencode config set mcp.servers.lcp-requests.args '["serve", "/path/to/requests.
                 </button>
               </div>
               <pre><code>{
+  "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "servers": {
-      "lcp-requests": {
-        "command": "lcp",
-        "args": ["serve", "/path/to/requests.lcp.json"]
-      }
+    "lcp-requests": {
+      "type": "local",
+      "command": ["lcp", "serve", "/path/to/requests.lcp.json"],
+      "enabled": true
     }
   }
 }</code></pre>
