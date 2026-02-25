@@ -1,7 +1,7 @@
-<p align="center" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+<p align="center">
   <img src="site/asset/logo.png" alt="LCP Logo" width="80">
-  <span style="font-size: 2rem; font-weight: bold;">Library Context Protocol</span>
 </p>
+<h1 align="center">Library Context Protocol</h1>
 
 ---
 
