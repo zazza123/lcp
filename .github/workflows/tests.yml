@@ -1,0 +1,101 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: cache python environment
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-lint-${{ hashFiles('pyproject.toml') }}
+
+      - name: install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install --upgrade pip
+          pip install ruff
+          pip install -e ".[dev]"
+
+      - name: lint src
+        run: ruff check src/lcp
+
+      - name: lint tests
+        run: ruff check tests
+
+  test:
+    name: test (python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: setup python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: cache python environment
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-test-${{ hashFiles('pyproject.toml') }}
+
+      - name: install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[ai,dev]"
+
+      - name: run tests with coverage
+        run: coverage run -m pytest -v tests
+        env:
+          CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
+
+      - name: show coverage report
+        run: coverage report -m
+
+      - name: generate coverage xml
+        run: coverage xml
+
+      - name: upload coverage report
+        uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.12'
+        with:
+          name: coverage-xml
+          path: coverage.xml
