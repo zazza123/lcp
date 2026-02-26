@@ -1004,6 +1004,92 @@ opencode mcp list</code></pre>
     </div>
   </section>
 
+  <!-- Copilot Skill -->
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Bonus</span>
+        <h2 class="section-header__title">Supercharge Your AI Agent with a Skill</h2>
+        <p class="section-header__text">
+          Pair the LCP-MCP server with the <code>lcp-usage</code> skill to give your AI agent a built-in workflow for exploring library APIs — no guessing, no hallucinations.
+        </p>
+      </div>
+
+      <div class="card card--highlight" data-animate="fade-up" data-delay="100">
+        <div style="display: flex; gap: var(--space-lg); align-items: flex-start;">
+          <div style="flex-shrink: 0; width: 48px; height: 48px; background: var(--color-primary-bg); border: 2px solid var(--color-primary-light); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13c0 .55-.45 1-1 1s-1-.45-1-1v-6h-2v6c0 .55-.45 1-1 1s-1-.45-1-1V9H3c-.55 0-1-.45-1-1s.45-1 1-1h6V3c0-.55.45-1 1-1s1 .45 1 1v4h6c.55 0 1 .45 1 1s-.45 1-1 1z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin-bottom: var(--space-sm);">What is the <code>lcp-usage</code> skill?</h3>
+            <p style="color: var(--color-text-secondary); margin-bottom: var(--space-md);">
+              A reusable prompt skill that teaches your AI coding assistant (e.g. GitHub Copilot) the optimal workflow for using LCP MCP servers: when to query them, which tools to call, and common mistakes to avoid. It turns the MCP server from a passive resource into an always-consulted source of truth.
+            </p>
+            <ul style="color: var(--color-text-secondary); padding-left: var(--space-lg); line-height: 2;">
+              <li>Automatically activates when coding against a library that has an LCP server connected</li>
+              <li>Enforces the <strong>browse-first</strong> workflow: <code>list_modules</code> → <code>list_symbols</code> → <code>get_symbol</code></li>
+              <li>Prevents common mistakes like calling <code>search_symbols</code> first or skipping signature verification</li>
+              <li>Works with any MCP-enabled AI client following the <code>lcp-&lt;library-name&gt;</code> naming convention</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2xl" data-animate="fade-up" data-delay="200">
+        <h3 class="mb-md">Install the skill</h3>
+        <p class="text-muted mb-lg">Download the skill folder and place it in your skills directory:</p>
+        <div class="code-block">
+          <div class="code-block__header">
+            <span class="code-block__lang">bash</span>
+            <button class="code-block__copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code># Download the lcp-usage skill folder
+mkdir -p ~/.copilot/skills/lcp-usage
+curl -o ~/.copilot/skills/lcp-usage/SKILL.md \
+  https://raw.githubusercontent.com/zazza123/lcp/main/skill/lcp-usage/SKILL.md
+
+# Or clone and symlink
+git clone https://github.com/zazza123/lcp.git
+ln -s $(pwd)/lcp/skill/lcp-usage ~/.copilot/skills/lcp-usage</code></pre>
+        </div>
+
+        <div class="card" style="margin-top: var(--space-xl); border-left: 3px solid var(--color-primary);">
+          <h4 style="margin-bottom: var(--space-md);">Skill workflow at a glance</h4>
+          <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+            <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">1</div>
+              <code style="font-size: 0.875rem; flex-shrink: 0;">get_usage_guide</code>
+              <span style="font-size: 0.875rem; color: var(--color-text-muted);">— Get oriented with the recommended exploration workflow</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">2</div>
+              <code style="font-size: 0.875rem; flex-shrink: 0;">list_modules</code>
+              <span style="font-size: 0.875rem; color: var(--color-text-muted);">— Explore the library structure and find the relevant area</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">3</div>
+              <code style="font-size: 0.875rem; flex-shrink: 0;">list_symbols</code>
+              <span style="font-size: 0.875rem; color: var(--color-text-muted);">— Browse symbol candidates filtered by module or kind</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+              <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">4</div>
+              <code style="font-size: 0.875rem; flex-shrink: 0;">get_symbol</code>
+              <span style="font-size: 0.875rem; color: var(--color-text-muted);">— Verify the exact signature, params, and return type before writing any call</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Available Tools -->
   <section class="section section--muted">
     <div class="container">
