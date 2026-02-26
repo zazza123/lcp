@@ -62,6 +62,26 @@ class TestValidateDict:
         errors = validate_dict(data)
         assert len(errors) > 0
 
+    @pytest.mark.parametrize("version", [
+        "1.0.0b1",    # PEP 440 beta
+        "1.0.0a2",    # PEP 440 alpha
+        "1.0.0rc1",   # PEP 440 release candidate
+        "1.0.0.post1",# PEP 440 post-release
+        "1.0.0.dev0", # PEP 440 dev release
+        "1.0.0-beta.1",  # semver pre-release
+        "1.0.0+build.1", # semver build metadata
+    ])
+    def test_valid_version_formats(self, version):
+        data = {
+            "manifest": {
+                "schema_version": "1.0",
+                "library": {"name": "test", "version": version, "language": "python"},
+            },
+            "symbols": {},
+        }
+        errors = validate_dict(data)
+        assert errors == [], f"Version '{version}' should be valid but got errors: {errors}"
+
     def test_invalid_symbol_missing_kind(self):
         data = {
             "manifest": {
