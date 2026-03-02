@@ -79,7 +79,7 @@ By default the scanner includes:
 - All **public** symbols — names that do not start with `_`
 - **Public dunder methods** that form part of the Python data model: `__init__`, `__call__`, `__iter__`, `__getitem__`, `__setitem__`, `__delitem__`, `__len__`, `__contains__`, `__str__`, `__repr__`, `__eq__`, `__hash__`, `__bool__`, and arithmetic/comparison operators
 - If a module defines `__all__`, only those names are included (re-exports from other modules are otherwise skipped)
-- **Class members**: methods and `property` descriptors defined directly on the class (not inherited from `object`)
+- **Class members**: methods and `property` descriptors belonging to the scanned package (members inherited from external packages are excluded; members inherited from classes within the same package are kept)
 - **Constants**: `UPPER_CASE` names bound to simple immutable types
 
 With `--include-private`, names starting with `_` (except `__dunder__`) are also included.

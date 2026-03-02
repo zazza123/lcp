@@ -129,6 +129,14 @@ class ChildClass(SimpleClass):
         return "child"
 
 
+class DictSubclass(dict):
+    """A class inheriting from built-in dict."""
+
+    def custom_method(self) -> str:
+        """A method defined on DictSubclass."""
+        return "custom"
+
+
 class ClassWithoutDocstring:
     def method_without_docstring(self, x):
         return x

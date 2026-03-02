@@ -243,10 +243,36 @@ def _get_source_info(obj: Any) -> tuple[str | None, tuple[int, int] | None]:
         return None, None
 
 
+def _is_member_from_package(cls: type, name: str, package_root: str) -> bool:
+    """Check if a class member belongs to the scanned package.
+
+    A member belongs to the package if it is defined directly on the class
+    (present in cls.__dict__) or if the base class that defines it has a
+    __module__ within the package root.
+    """
+    if name in cls.__dict__:
+        return True
+
+    for base in cls.__mro__:
+        if name in base.__dict__:
+            base_module = getattr(base, "__module__", None) or ""
+            return base_module == package_root or base_module.startswith(
+                package_root + "."
+            )
+
+    return False
+
+
 def _scan_class(
-    cls: type, module_path: str, include_private: bool = False
+    cls: type,
+    module_path: str,
+    include_private: bool = False,
+    package_root: str | None = None,
 ) -> ScannedSymbol:
     """Scan a class and its members."""
+    if package_root is None:
+        package_root = module_path.split(".")[0]
+
     summary, description = _parse_docstring(cls.__doc__)
     source_file, source_lines = _get_source_info(cls)
 
@@ -262,10 +288,9 @@ def _scan_class(
         if not _is_public(name, include_private):
             continue
 
-        # Skip inherited members from object/type
-        if name in dir(object) or name in dir(type):
-            if name not in cls.__dict__:
-                continue
+        # Skip members inherited from outside the scanned package
+        if not _is_member_from_package(cls, name, package_root):
+            continue
 
         member_summary, member_desc = _parse_docstring(getattr(obj, "__doc__", None))
 
@@ -341,11 +366,17 @@ def _is_constant(name: str, value: Any) -> bool:
 
 
 def scan_module(
-    module: ModuleType, include_private: bool = False, _visited: set | None = None
+    module: ModuleType,
+    include_private: bool = False,
+    _visited: set | None = None,
+    _package_root: str | None = None,
 ) -> list[ScannedSymbol]:
     """Scan a module for symbols."""
     if _visited is None:
         _visited = set()
+
+    if _package_root is None:
+        _package_root = module.__name__.split(".")[0]
 
     module_id = id(module)
     if module_id in _visited:
@@ -394,7 +425,9 @@ def scan_module(
             continue
 
         if inspect.isclass(obj):
-            symbols.append(_scan_class(obj, module_path, include_private))
+            symbols.append(
+                _scan_class(obj, module_path, include_private, package_root=_package_root)
+            )
         elif inspect.isfunction(obj):
             symbols.append(_scan_function(obj, module_path, name))
         elif _is_constant(name, obj):
@@ -496,13 +529,16 @@ def scan_package(
 
     version = _get_package_version(package_name)
     visited: set = set()
+    package_root = package_name.split(".")[0]
 
     # Scan main module
-    symbols = scan_module(module, include_private, visited)
+    symbols = scan_module(module, include_private, visited, _package_root=package_root)
 
     # Scan submodules if it's a package
     if recursive and hasattr(module, "__path__"):
         for submod in _iter_submodules(module):
-            symbols.extend(scan_module(submod, include_private, visited))
+            symbols.extend(
+                scan_module(submod, include_private, visited, _package_root=package_root)
+            )
 
     return ScannedModule(name=package_name, version=version, symbols=symbols)

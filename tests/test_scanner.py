@@ -14,6 +14,7 @@ from lcp.scanner import (
     ScannedSymbol,
     _get_param_kind,
     _is_constant,
+    _is_member_from_package,
     _is_public,
     _parse_docstring,
     _scan_class,
@@ -378,3 +379,61 @@ class TestScanPackage:
             f"{package_name}.templates.adk",
             "important_template_function",
         ) in function_symbols
+
+
+class TestInheritedMemberFiltering:
+    """Tests for filtering inherited members from external packages."""
+
+    def test_child_class_keeps_same_package_members(self, sample_module):
+        """ChildClass inherits from SimpleClass (same package) -- inherited members kept."""
+        symbol = _scan_class(
+            sample_module.ChildClass,
+            "sample_module",
+            package_root="sample_module",
+        )
+        member_names = [m.name for m in symbol.members]
+        assert "child_method" in member_names
+        assert "instance_method" in member_names
+        assert "__init__" in member_names
+
+    def test_dict_subclass_excludes_external_methods(self, sample_module):
+        """DictSubclass inherits from dict (builtins) -- dict methods excluded."""
+        symbol = _scan_class(
+            sample_module.DictSubclass,
+            "sample_module",
+            package_root="sample_module",
+        )
+        member_names = [m.name for m in symbol.members]
+        assert "custom_method" in member_names
+        assert "get" not in member_names
+        assert "keys" not in member_names
+        assert "values" not in member_names
+        assert "items" not in member_names
+        assert "pop" not in member_names
+
+    def test_scan_module_filters_external_inherited(self, sample_module):
+        """scan_module infers package_root and filters external inherited members."""
+        symbols = scan_module(sample_module)
+        dict_subclass = [s for s in symbols if s.name == "DictSubclass"]
+        assert len(dict_subclass) == 1
+        member_names = [m.name for m in dict_subclass[0].members]
+        assert "custom_method" in member_names
+        assert "get" not in member_names
+
+    def test_is_member_from_package_direct_definition(self):
+        """Members in cls.__dict__ always belong to the package."""
+
+        class MyDict(dict):
+            def my_method(self):
+                pass
+
+        assert _is_member_from_package(MyDict, "my_method", "some_package") is True
+
+    def test_is_member_from_package_external_base(self):
+        """Members from an external base class are excluded."""
+
+        class MyDict(dict):
+            pass
+
+        assert _is_member_from_package(MyDict, "get", "mypackage") is False
+        assert _is_member_from_package(MyDict, "keys", "mypackage") is False
