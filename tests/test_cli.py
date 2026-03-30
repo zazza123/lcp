@@ -1,6 +1,7 @@
 """Tests for the CLI module."""
 
 import json
+from unittest.mock import patch
 
 import pytest
 from click.testing import CliRunner
@@ -343,3 +344,79 @@ class TestServeAllCommand:
         assert "resolve_library" in result.output
         assert "--cache-dir" in result.output
         assert "--no-cache" in result.output
+
+
+class TestPublishCommand:
+    """Tests for the publish command."""
+
+    def test_publish_help(self, runner):
+        result = runner.invoke(main, ["publish", "--help"])
+        assert result.exit_code == 0
+        assert "PACKAGE" in result.output
+        assert "--token" in result.output
+        assert "--registry-repo" in result.output
+        assert "--dry-run" in result.output
+        assert "--file" in result.output
+
+    def test_publish_dry_run(self, runner):
+        """Dry run should scan and display info without creating a PR."""
+        result = runner.invoke(main, ["publish", "json", "--dry-run"])
+        assert result.exit_code == 0
+        assert "DRY RUN" in result.output
+        assert "json" in result.output
+        assert "new_manifest" in result.output
+
+    def test_publish_dry_run_with_file(self, runner, sample_lcp_file):
+        """Dry run with --file should load the manifest instead of scanning."""
+        result = runner.invoke(
+            main, ["publish", "test-lib", "--dry-run", "--file", str(sample_lcp_file)]
+        )
+        assert result.exit_code == 0
+        assert "DRY RUN" in result.output
+        assert "test-lib" in result.output
+
+    def test_publish_no_token(self, runner):
+        """Publishing without a token should fail."""
+        result = runner.invoke(main, ["publish", "json"])
+        assert result.exit_code == 1
+        assert "token" in result.output.lower()
+
+    def test_publish_nonexistent_package(self, runner):
+        """Publishing a nonexistent package should fail."""
+        result = runner.invoke(
+            main, ["publish", "nonexistent_pkg_12345", "--dry-run"]
+        )
+        assert result.exit_code == 1
+        assert "Error" in result.output or "error" in result.output.lower()
+
+    @patch("lcp.cli.publish_manifest")
+    def test_publish_success(self, mock_publish, runner):
+        """Successful publish should show PR URL."""
+        from lcp.publish import PublishResult
+
+        mock_publish.return_value = PublishResult(
+            pr_url="https://github.com/zazza123/lcp-registry/pull/42",
+            pr_number=42,
+            manifest_path="manifests/python/json/0.1.0.lcp.json",
+            package_name="json",
+            package_version="0.1.0",
+            language="python",
+        )
+        result = runner.invoke(
+            main, ["publish", "json", "--token", "ghp_fake_token"]
+        )
+        assert result.exit_code == 0
+        assert "Pull request created successfully" in result.output
+        assert "pull/42" in result.output
+
+    @patch("lcp.cli.publish_manifest")
+    def test_publish_api_error(self, mock_publish, runner):
+        """PublishError should be caught and displayed."""
+        from lcp.publish import PublishError
+
+        mock_publish.side_effect = PublishError("GitHub API error (HTTP 422): already exists")
+        result = runner.invoke(
+            main, ["publish", "json", "--token", "ghp_fake_token"]
+        )
+        assert result.exit_code == 1
+        assert "already exists" in result.output

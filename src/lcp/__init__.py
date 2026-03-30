@@ -9,6 +9,7 @@ from .coverage import (
 )
 from .diff import DiffResult, SymbolDiff, diff_documents, load_lcp_document, update_document
 from .generator import generate_lcp
+from .publish import PublishError, PublishResult, publish_manifest
 from .mcp_server import (
     LCPIndex,
     MultiLibraryIndex,
@@ -74,6 +75,10 @@ __all__ = [
     "diff_documents",
     "load_lcp_document",
     "update_document",
+    # Publish
+    "PublishError",
+    "PublishResult",
+    "publish_manifest",
     # Validator
     "validate_document",
     "validate_file",
