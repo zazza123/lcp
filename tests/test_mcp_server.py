@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import asyncio
+import urllib.error
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -11,6 +13,7 @@ from lcp.generator import generate_lcp
 from lcp.mcp_server import (
     LCPIndex,
     MultiLibraryIndex,
+    _fetch_from_registry,
     create_server,
     create_universal_server,
     load_lcp_document,
@@ -545,6 +548,185 @@ class TestResolveLibraryDocument:
                 no_cache=True,
             )
 
+    def test_registry_fallback_on_scan_failure(self, tmp_path: Path, sample_lcp_file: Path):
+        """Should fall back to registry when local scan fails."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            result_doc, source = resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url="https://registry.example.com",
+            )
+
+        assert source == "registry"
+        assert result_doc is not None
+
+    def test_registry_not_used_when_scan_succeeds(self, tmp_path: Path):
+        """Should not contact registry when local scan succeeds."""
+        with patch("urllib.request.urlopen") as mock_urlopen:
+            doc, source = resolve_library_document(
+                "tests.sample_module",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url="https://registry.example.com",
+            )
+
+        assert source == "scan"
+        mock_urlopen.assert_not_called()
+
+    def test_registry_fallback_disabled_without_url(self, tmp_path: Path):
+        """Should raise ImportError if no registry_url is set and scan fails."""
+        with pytest.raises(ImportError, match="Cannot resolve library"):
+            resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url=None,
+            )
+
+    def test_registry_http_error_propagates(self, tmp_path: Path):
+        """Should raise ImportError when registry returns HTTP error."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.HTTPError(
+                url="http://example.com", code=404, msg="Not Found", hdrs=None, fp=None  # type: ignore[arg-type]
+            ),
+        ):
+            with pytest.raises(ImportError, match="Cannot resolve library"):
+                resolve_library_document(
+                    "nonexistent_package_xyz_123",
+                    cache_dir=tmp_path / "cache",
+                    no_cache=True,
+                    registry_url="https://registry.example.com",
+                )
+
+    def test_registry_saves_to_cache(self, tmp_path: Path, sample_lcp_file: Path):
+        """Registry result should be cached when no_cache is False."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+        cache_dir = tmp_path / "cache"
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            _, source = resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=cache_dir,
+                no_cache=False,
+                registry_url="https://registry.example.com",
+            )
+
+        assert source == "registry"
+        assert cache_dir.exists()
+
+
+# ---------------------------------------------------------------------------
+# Tests for _fetch_from_registry
+# ---------------------------------------------------------------------------
+
+
+class TestFetchFromRegistry:
+    """Tests for the _fetch_from_registry helper."""
+
+    def test_successful_fetch(self, sample_lcp_file: Path):
+        """Should return a valid LCPDocument on a successful 200 response."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            result = _fetch_from_registry("mylib", "https://registry.example.com")
+
+        mock_open.assert_called_once_with(
+            "https://registry.example.com/mylib.lcp.json", timeout=10
+        )
+        assert result is not None
+
+    def test_trailing_slash_stripped(self, sample_lcp_file: Path):
+        """Registry URL trailing slash should be normalised."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            _fetch_from_registry("mylib", "https://registry.example.com/")
+
+        called_url = mock_open.call_args[0][0]
+        assert called_url == "https://registry.example.com/mylib.lcp.json"
+
+    def test_http_error_raises_import_error(self):
+        """HTTPError from the registry should raise ImportError."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.HTTPError(
+                url="http://example.com", code=404, msg="Not Found", hdrs=None, fp=None  # type: ignore[arg-type]
+            ),
+        ):
+            with pytest.raises(ImportError, match="Registry returned HTTP 404"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_url_error_raises_import_error(self):
+        """URLError (network failure) should raise ImportError."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.URLError("connection refused"),
+        ):
+            with pytest.raises(ImportError, match="Registry fetch failed"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_timeout_raises_import_error(self):
+        """TimeoutError should raise ImportError."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=TimeoutError(),
+        ):
+            with pytest.raises(ImportError, match="Registry fetch timed out"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_invalid_json_raises_import_error(self):
+        """Non-JSON response body should raise ImportError."""
+        mock_response = MagicMock()
+        mock_response.read.return_value = b"not valid json {"
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            with pytest.raises(ImportError, match="not a valid LCP document"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_invalid_scheme_raises_import_error(self):
+        """Non-HTTP(S) registry URL should raise ImportError without making a request."""
+        with patch("urllib.request.urlopen") as mock_open:
+            with pytest.raises(ImportError, match="must use http or https scheme"):
+                _fetch_from_registry("mylib", "ftp://registry.example.com")
+        mock_open.assert_not_called()
+
+    def test_path_traversal_in_name_raises_import_error(self):
+        """Package name with path-traversal characters should raise ImportError."""
+        with patch("urllib.request.urlopen") as mock_open:
+            with pytest.raises(ImportError, match="Invalid package name"):
+                _fetch_from_registry("../secret", "https://registry.example.com")
+        mock_open.assert_not_called()
+
 
 # ---------------------------------------------------------------------------
 # Tests for create_universal_server
@@ -610,6 +792,30 @@ class TestResolveLibraryTool:
 
         result = fn(name="nonexistent_package_xyz_123")
         assert "error" in result
+
+    def test_resolve_via_registry_fallback(self, tmp_path: Path, sample_lcp_file: Path):
+        """resolve_library should use registry when scan fails and registry_url is set."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        server = create_universal_server(
+            name="lcp-test-registry",
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+            registry_url="https://registry.example.com",
+        )
+        fn = _get_tool_fn(server, "resolve_library")
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            result = fn(name="nonexistent_package_xyz_123")
+
+        assert result.get("status") == "loaded"
+        assert result.get("source") == "registry"
 
     def test_sets_default_library(self, universal_server):
         """Resolved library should become the implicit default."""

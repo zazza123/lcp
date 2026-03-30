@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import urllib.error
+import urllib.request
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -157,28 +159,110 @@ def _installed_version(package_name: str) -> str | None:
         return None
 
 
+_REGISTRY_FETCH_TIMEOUT = 10  # seconds
+_ALLOWED_REGISTRY_SCHEMES = {"http", "https"}
+
+
+def _fetch_from_registry(
+    name: str,
+    registry_url: str,
+    timeout: int = _REGISTRY_FETCH_TIMEOUT,
+) -> LCPDocument:
+    """Fetch an LCP manifest from a remote registry.
+
+    Constructs the request URL as ``{registry_url}/{name}.lcp.json`` and
+    performs an HTTP GET with a configurable timeout.
+
+    Args:
+        name: Python package name (e.g. ``"requests"``).
+        registry_url: Base URL of the LCP registry
+            (e.g. ``"https://registry.example.com"``).  Must use ``http``
+            or ``https`` scheme.
+        timeout: Request timeout in seconds (default: 10).
+
+    Returns:
+        Validated :class:`LCPDocument` fetched from the registry.
+
+    Raises:
+        ImportError: If the registry URL has an unsupported scheme, the
+            package name contains path-traversal characters, the registry
+            returns a non-200 response, the request times out, or the
+            response body cannot be parsed as a valid LCP document.
+    """
+    # Validate the registry URL scheme
+    scheme = registry_url.split("://")[0].lower() if "://" in registry_url else ""
+    if scheme not in _ALLOWED_REGISTRY_SCHEMES:
+        raise ImportError(
+            f"Registry URL must use http or https scheme, got: '{registry_url}'"
+        )
+
+    # Prevent path traversal in the package name
+    if ".." in name or "/" in name or "\\" in name:
+        raise ImportError(
+            f"Invalid package name for registry lookup: '{name}'"
+        )
+
+    url = f"{registry_url.rstrip('/')}/{name}.lcp.json"
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
+            body = response.read()
+    except urllib.error.HTTPError as exc:
+        raise ImportError(
+            f"Registry returned HTTP {exc.code} for '{name}' at {url}"
+        ) from exc
+    except urllib.error.URLError as exc:
+        raise ImportError(
+            f"Registry fetch failed for '{name}' at {url}: {exc.reason}"
+        ) from exc
+    except TimeoutError as exc:
+        raise ImportError(
+            f"Registry fetch timed out for '{name}' at {url}"
+        ) from exc
+
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError as exc:
+        raise ImportError(
+            f"Registry response for '{name}' is not a valid LCP document: {exc}"
+        ) from exc
+
+    try:
+        return LCPDocument.model_validate(data)
+    except Exception as exc:
+        raise ImportError(
+            f"Registry response for '{name}' is not a valid LCP document: {exc}"
+        ) from exc
+
+
 def resolve_library_document(
     name: str,
     cache_dir: Path = _DEFAULT_CACHE_DIR,
     no_cache: bool = False,
+    registry_url: str | None = None,
 ) -> tuple[LCPDocument, str]:
     """Resolve an LCP document for *name* using the standard resolution order.
 
     Resolution order:
       1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
       2. Live scan    (package is pip-installed)
-      3. Error
+      3. Registry     (HTTP GET from *registry_url* if provided)
+      4. Error
 
     Args:
         name: Python package name to resolve.
         cache_dir: Cache root directory (default: ~/.lcp/cache/).
         no_cache: Skip cache read/write entirely.
+        registry_url: Optional base URL of an LCP registry to try when local
+            scanning fails (e.g. ``"https://registry.example.com"``).
+            The manifest is fetched from ``{registry_url}/{name}.lcp.json``.
 
     Returns:
-        Tuple of (LCPDocument, source) where source is "cache" or "scan".
+        Tuple of (LCPDocument, source) where source is ``"cache"``,
+        ``"scan"``, or ``"registry"``.
 
     Raises:
-        ImportError: If the package is not installed and cannot be resolved.
+        ImportError: If the package cannot be resolved via any available
+            source (cache, scan, or registry).
     """
     from .scanner import scan_package
     from .generator import generate_lcp
@@ -198,6 +282,7 @@ def resolve_library_document(
                 return cached, "cache"
 
     # 2. Live scan
+    scan_error: Exception | None = None
     try:
         scanned = scan_package(name, include_private=False, recursive=True)
         doc = generate_lcp(scanned)
@@ -208,10 +293,26 @@ def resolve_library_document(
                 pass  # cache write failure is non-fatal
         return doc, "scan"
     except Exception as exc:
-        raise ImportError(
-            f"Cannot resolve library '{name}': not installed or scan failed. "
-            f"Install it first with: pip install {name}"
-        ) from exc
+        scan_error = exc
+
+    # 3. Registry fallback
+    if registry_url:
+        try:
+            doc = _fetch_from_registry(name, registry_url)
+            if not no_cache:
+                try:
+                    _save_to_cache(cache_dir, doc)
+                except Exception:
+                    pass  # cache write failure is non-fatal
+            return doc, "registry"
+        except ImportError:
+            pass  # fall through to final error
+
+    raise ImportError(
+        f"Cannot resolve library '{name}': not installed or scan failed. "
+        f"Install it first with: pip install {name}"
+        + (f" (registry fetch also failed: {registry_url})" if registry_url else "")
+    ) from scan_error
 
 
 def _symbol_summary(symbol_id: str, symbol: Symbol) -> dict[str, Any]:
@@ -678,6 +779,7 @@ def create_universal_server(
     name: str = "lcp-universal",
     cache_dir: Path | str | None = None,
     no_cache: bool = False,
+    registry_url: str | None = None,
 ) -> FastMCP:
     """Create a universal MCP server that resolves any installed Python library.
 
@@ -692,6 +794,9 @@ def create_universal_server(
         cache_dir: Root directory for cached manifests
             (default: ``~/.lcp/cache/``).
         no_cache: Disable reading from and writing to the cache.
+        registry_url: Optional base URL of an LCP registry used as a fallback
+            when local scanning fails
+            (e.g. ``"https://registry.example.com"``).
 
     Returns:
         Configured FastMCP server instance.
@@ -729,6 +834,7 @@ def create_universal_server(
         Resolves the library in order:
           1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
           2. Live scan    (pip-installed package)
+          3. Registry     (HTTP fetch from the configured registry URL, if set)
 
         After resolving, this library becomes the implicit default for all
         other tools when no ``library`` parameter is given.
@@ -744,6 +850,7 @@ def create_universal_server(
                 name,
                 cache_dir=resolved_cache_dir,
                 no_cache=no_cache,
+                registry_url=registry_url,
             )
         except ImportError as exc:
             return {"error": str(exc)}
@@ -1249,6 +1356,7 @@ def run_universal_server(
     name: str = "lcp-universal",
     cache_dir: Path | str | None = None,
     no_cache: bool = False,
+    registry_url: str | None = None,
 ) -> None:
     """Create and run a universal MCP server that resolves any installed Python library.
 
@@ -1256,6 +1364,10 @@ def run_universal_server(
         name: Server name (default: lcp-universal).
         cache_dir: Root directory for cached manifests (default: ~/.lcp/cache/).
         no_cache: Disable reading from and writing to the cache.
+        registry_url: Optional base URL of an LCP registry used as a fallback
+            when local scanning fails.
     """
-    server = create_universal_server(name=name, cache_dir=cache_dir, no_cache=no_cache)
+    server = create_universal_server(
+        name=name, cache_dir=cache_dir, no_cache=no_cache, registry_url=registry_url
+    )
     server.run()

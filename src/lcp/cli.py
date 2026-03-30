@@ -291,12 +291,30 @@ def serve(manifest: str, name: str | None):
     default=False,
     help="Disable reading from and writing to the local cache.",
 )
-def serve_all(cache_dir: str | None, name: str, no_cache: bool):
+@click.option(
+    "--registry",
+    type=str,
+    default=None,
+    help=(
+        "Base URL of an LCP registry to use as a fallback when local scanning "
+        "fails (e.g. https://registry.example.com). "
+        "Manifests are fetched from {registry}/{name}.lcp.json."
+    ),
+)
+def serve_all(cache_dir: str | None, name: str, no_cache: bool, registry: str | None):
     """Start a universal MCP server that resolves any installed Python library.
 
     Unlike `lcp serve`, this command requires no pre-built manifest.  AI agents
     call the `resolve_library` tool to load any pip-installed package on the fly.
     Manifests are cached under ~/.lcp/cache/ by default.
+
+    When local scanning fails, the server can optionally fetch the manifest from
+    a remote LCP registry (configured via --registry).  The resolution order is:
+
+    \b
+    1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
+    2. Live scan    (pip-installed package)
+    3. Registry     (HTTP fetch from --registry/{name}.lcp.json)
 
     Setup (one-time):
 
@@ -313,9 +331,13 @@ def serve_all(cache_dir: str | None, name: str, no_cache: bool):
         lcp serve-all --cache-dir /tmp/lcp-cache
 
         lcp serve-all --no-cache --name my-lcp
+
+        lcp serve-all --registry https://registry.example.com
     """
     try:
-        run_universal_server(name=name, cache_dir=cache_dir, no_cache=no_cache)
+        run_universal_server(
+            name=name, cache_dir=cache_dir, no_cache=no_cache, registry_url=registry
+        )
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
         import sys
