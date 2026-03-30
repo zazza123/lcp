@@ -11,6 +11,7 @@ Documentation for the LCP Python SDK, a tool for generating Library Context Prot
 - [Manifest Generation](manifest/index.md) - Scans an installed Python package and produces a structured `.lcp.json` manifest via a scan → generate → validate pipeline
 - [MCP Server](mcp_server/index.md) - Serves LCP manifests to AI agents via the Model Context Protocol, with guided exploration tools
 - [Coverage](coverage/index.md) - Measures documentation completeness across a package; produces JSON and Markdown reports
+- [Version Diff](diff/index.md) - Compares two LCP manifests to detect removed symbols and generate deprecation entries
 - [AI Documentation Generation](ai_docgen/index.md) - Automatic docstring generation using LLM providers, with hierarchical bottom-up processing
 
 ## Key Components
@@ -22,8 +23,9 @@ Documentation for the LCP Python SDK, a tool for generating Library Context Prot
 | Validator | `src/lcp/validator.py` | Validates output against JSON schema |
 | MCP Server | `src/lcp/mcp_server.py` | Serves LCP manifests to AI agents via MCP |
 | Coverage | `src/lcp/coverage.py` | Analyzes documentation completeness |
+| Diff | `src/lcp/diff.py` | Compares LCP versions and detects deprecations |
 | AI DocGen | `src/lcp/ai/` | Generates missing docstrings using LLMs |
 
 ---
-**Last Updated:** February 2026
+**Last Updated:** March 2026
 **Status:** Implemented
