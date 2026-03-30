@@ -90,6 +90,7 @@ With `--include-private`, names starting with `_` (except `__dunder__`) are also
 |---------|----------------|
 | [Coverage](../coverage/index.md) | `generate_coverage_from_scanned()` reuses the `ScannedModule` to avoid a second scan |
 | [MCP Server](../mcp_server/index.md) | `lcp serve` loads the `.lcp.json` file and exposes it as MCP tools |
+| [Version Diff](../diff/index.md) | `lcp diff` compares two manifests to detect removed symbols and generate deprecation entries |
 | [AI DocGen](../ai_docgen/index.md) | The coverage JSON produced alongside the manifest feeds the docstring generation pipeline |
 
 ## Related Documentation

@@ -27,6 +27,7 @@ pip install lcp
 - Extracts type hints from function signatures
 - Validates output against LCP JSON schema
 - Documentation coverage analysis with JSON/Markdown reports
+- Version diff to detect deprecated symbols across releases
 - AI-powered docstring generation via OpenAI and Anthropic (`lcp[ai]`)
 - Both CLI and Python API interfaces
 - MCP server for AI agent integration
@@ -103,6 +104,44 @@ for symbol in report.undocumented:
 # Save report
 report.to_file("coverage.json")      # JSON format
 report.to_file("coverage.md")        # Markdown format
+```
+
+## Version Diff
+
+Compare two LCP manifests to detect symbols that were removed between versions and automatically generate deprecation entries.
+
+### CLI
+
+```bash
+# Compare two versions and print the diff report
+lcp diff v1.lcp.json v2.lcp.json
+
+# Save the diff report to a file
+lcp diff v1.lcp.json v2.lcp.json -o diff.json
+
+# Automatically update the new manifest with deprecation entries
+lcp diff v1.lcp.json v2.lcp.json --update
+```
+
+### Python API
+
+```python
+from lcp import diff_documents, load_lcp_document, update_document
+
+# Load two versions
+old = load_lcp_document("v1.lcp.json")
+new = load_lcp_document("v2.lcp.json")
+
+# Compare
+result = diff_documents(old, new)
+print(f"Removed: {len(result.removed)}, Added: {len(result.added)}")
+
+for sid, dep in result.deprecated.items():
+    print(f"  {sid}: deprecated in {dep.deprecated_in}")
+
+# Merge deprecations into the new document
+updated = update_document(new, result)
+updated.to_file("v2.lcp.json")
 ```
 
 ## MCP Server

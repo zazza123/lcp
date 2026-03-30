@@ -7,6 +7,7 @@ from .coverage import (
     generate_coverage,
     generate_coverage_from_scanned,
 )
+from .diff import DiffResult, SymbolDiff, diff_documents, load_lcp_document, update_document
 from .generator import generate_lcp
 from .models import (
     LCPDocument,
@@ -50,6 +51,12 @@ __all__ = [
     "scan_package",
     # Generator
     "generate_lcp",
+    # Diff
+    "DiffResult",
+    "SymbolDiff",
+    "diff_documents",
+    "load_lcp_document",
+    "update_document",
     # Validator
     "validate_document",
     "validate_file",
