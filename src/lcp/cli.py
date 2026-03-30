@@ -432,10 +432,10 @@ def publish(
         # Step 1: Get or generate the manifest
         if manifest_file:
             click.echo(f"Loading manifest from {manifest_file}...", err=True)
-            import json as json_mod
+            from json import load as json_load
 
             with open(manifest_file, encoding="utf-8") as f:
-                data = json_mod.load(f)
+                data = json_load(f)
             from .models import LCPDocument
 
             lcp_doc = LCPDocument.model_validate(data)

@@ -419,7 +419,7 @@ def publish_manifest(
             (default: ``zazza123/lcp-registry``).
 
     Returns:
-        :class:`PublishResult` with the PR URL and metadata.
+        ``PublishResult`` with the PR URL and metadata.
 
     Raises:
         PublishError: If any step of the publish workflow fails.
