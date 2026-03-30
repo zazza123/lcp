@@ -1,6 +1,6 @@
 ---
 name: lcp-serve-all
-description: Use when writing or debugging code that depends on any pip-installed Python library. The `lcp serve-all` universal MCP server can resolve any library on-the-fly — call `resolve_library("package_name")` first, then use the standard LCP tools to explore its API. Triggers on any task involving third-party library usage, import errors, or API misuse when no per-library LCP server is connected.
+description: This skill should be used when the user writes code that imports or uses a Python library, asks to "look up the X API", "check how to use X", "what's the signature of X.Y", "resolve library X", or encounters import errors or API misuse when the lcp universal MCP server is connected. Provides the resolve_library workflow for on-demand introspection of any pip-installed package.
 ---
 
 # LCP Universal Server (serve-all)

@@ -1,0 +1,6 @@
+{
+  "lcp": {
+    "command": "lcp",
+    "args": ["serve-all"]
+  }
+}
