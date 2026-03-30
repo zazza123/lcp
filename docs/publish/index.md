@@ -15,6 +15,10 @@ The Registry Publish module submits LCP manifests to a remote registry by openin
 - Accepts an existing manifest file via `--file` instead of scanning
 - Token can be provided via `--token`, `LCP_GITHUB_TOKEN`, or `GITHUB_TOKEN` environment variable
 
+## Documents
+
+- [Architecture](architecture.md) - GitHub API workflow, authentication, error handling, and PR structure internals
+
 ## Key Components
 
 | Component | Location | Purpose |
@@ -37,13 +41,8 @@ flowchart TD
     F --> G["validate_or_raise()"]
     G --> H{"--dry-run?"}
     H -- Yes --> I["Display submission preview"]
-    H -- No --> J["_get_authenticated_user()"]
-    J --> K["_ensure_fork()"]
-    K --> L["_create_branch()"]
-    L --> M["_upload_manifest()"]
-    M --> N["_create_pull_request()"]
-    N --> O["_try_add_labels()"]
-    O --> P["PublishResult"]
+    H -- No --> J["publish_manifest()"]
+    J --> K["PublishResult"]
 ```
 
 ## Prerequisites
@@ -60,7 +59,7 @@ The `lcp publish` command accepts a package name and submits its manifest to the
 
 | Flag | Default | Purpose |
 |------|---------|---------|
-| `PACKAGE` | *(required)* | Name of the installed Python package to publish |
+| `<PACKAGE>` | *(required)* | Name of the installed Python package to publish |
 | `--token` | `LCP_GITHUB_TOKEN` or `GITHUB_TOKEN` env var | GitHub personal access token |
 | `--registry-repo` | `zazza123/lcp-registry` | Target registry repository in `owner/name` format |
 | `--file` | *(none)* | Path to an existing `.lcp.json` file (skips scanning) |
@@ -68,46 +67,13 @@ The `lcp publish` command accepts a package name and submits its manifest to the
 | `--no-recursive` | off | Do not scan submodules recursively |
 | `--dry-run` | off | Preview submission without creating a PR |
 
-## Pull Request Structure
-
-Each PR created by the publish command follows a consistent format:
-
-| Element | Value |
-|---------|-------|
-| **Title** | `[new_manifest] Add {name} v{version} ({language})` |
-| **Labels** | `new_manifest`, `{language}` |
-| **Branch** | `lcp/add/{name}/{version}` on the user's fork |
-| **Target** | `main` branch of the registry repository |
-
-The PR body contains a metadata table (package name, version, language, symbol count, schema version), the manifest path, requested labels, generation details, and a checklist confirming the manifest was generated, validated, and correctly placed.
-
-## Registry Path Convention
-
-Manifests are stored in the registry using the path:
-
-`manifests/{language}/{name}/{version}.lcp.json`
-
-For example, a Python `requests` package at version `2.31.0` is placed at `manifests/python/requests/2.31.0.lcp.json`. This matches the path convention used by `_fetch_from_registry()` in `src/lcp/mcp_server.py` for reading manifests from the registry.
+When `--dry-run` is set, the command scans and validates the manifest, prints the PR title, labels, and target registry, then exits without making any API calls. When `--file` is provided, the command loads and validates the given manifest file instead of scanning the package.
 
 ## Python API
 
-`publish_manifest()` in `src/lcp/publish.py` is the primary entry point. It accepts a validated `LCPDocument`, a GitHub token, and an optional registry repository string. It returns a `PublishResult` dataclass containing the PR URL, PR number, manifest path, package name, version, and language.
+`publish_manifest()` in `src/lcp/publish.py` is the primary entry point. It accepts a validated `LCPDocument`, a GitHub token string, and an optional `registry_repo` string in `owner/name` format (defaulting to `zazza123/lcp-registry`). It returns a `PublishResult` dataclass containing the PR URL, PR number, manifest path, package name, version, and language.
 
-The function performs six steps internally: authenticating via `_get_authenticated_user()`, forking the registry via `_ensure_fork()`, creating a branch via `_create_branch()`, uploading the manifest via `_upload_manifest()`, opening a PR via `_create_pull_request()`, and attempting to add labels via `_try_add_labels()`. All GitHub API communication uses `_github_request()`, which wraps `urllib.request` with authentication headers and structured error handling.
-
-## Error Handling
-
-All GitHub API errors are wrapped in `PublishError` with descriptive messages:
-
-| HTTP Status | Meaning |
-|-------------|---------|
-| 401 | Invalid or expired token |
-| 403 | Token lacks required permissions |
-| 404 | Resource not found (e.g. registry repo) |
-| 422 | Validation error (e.g. branch or PR already exists) |
-| Network/Timeout | Connectivity issues with GitHub API |
-
-Path traversal attempts in package names (containing `..`, `/`, or `\`) are rejected before any API calls are made.
+All GitHub API errors are wrapped in `PublishError` with descriptive messages covering authentication failures, permission errors, network issues, and timeouts. Path traversal attempts in package names (containing `..`, `/`, or `\`) are rejected before any API calls are made.
 
 ## Integration with Other Features
 
@@ -116,6 +82,10 @@ Path traversal attempts in package names (containing `..`, `/`, or `\`) are reje
 | [Manifest Generation](../manifest/index.md) | The publish command uses `scan_package()` and `generate_lcp()` to produce the manifest |
 | [MCP Server](../mcp_server/index.md) | Published manifests become available via the registry fallback in `resolve_library_document()` |
 | [Version Diff](../diff/index.md) | Users can diff previous and new versions before publishing updates |
+
+## Related Documentation
+
+- [Architecture](architecture.md) - GitHub API workflow, fork management, and PR structure details
 
 ---
 **Last Updated:** March 2026
