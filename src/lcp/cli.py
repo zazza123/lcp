@@ -9,6 +9,7 @@ import click
 from .coverage import generate_coverage, generate_coverage_from_scanned
 from .generator import generate_lcp
 from .mcp_server import run_server as run_mcp_server
+from .mcp_server import run_universal_server
 from .scanner import scan_package
 from .validator import LCPValidationError, validate_document
 
@@ -270,8 +271,59 @@ def serve(manifest: str, name: str | None):
         sys.exit(1)
 
 
-@main.command()
-@click.argument("coverage_json", type=click.Path(exists=True))
+@main.command("serve-all")
+@click.option(
+    "--cache-dir",
+    type=click.Path(),
+    default=None,
+    help="Cache directory for LCP manifests (default: ~/.lcp/cache/).",
+)
+@click.option(
+    "--name",
+    type=str,
+    default="lcp-universal",
+    show_default=True,
+    help="Server name for MCP identification.",
+)
+@click.option(
+    "--no-cache",
+    is_flag=True,
+    default=False,
+    help="Disable reading from and writing to the local cache.",
+)
+def serve_all(cache_dir: str | None, name: str, no_cache: bool):
+    """Start a universal MCP server that resolves any installed Python library.
+
+    Unlike `lcp serve`, this command requires no pre-built manifest.  AI agents
+    call the `resolve_library` tool to load any pip-installed package on the fly.
+    Manifests are cached under ~/.lcp/cache/ by default.
+
+    Setup (one-time):
+
+        # Claude Code
+        claude mcp add lcp -- lcp serve-all
+
+        # Cursor / Claude Desktop (.cursor/mcp.json or claude_desktop_config.json)
+        # { "mcpServers": { "lcp": { "command": "lcp", "args": ["serve-all"] } } }
+
+    Examples:
+
+        lcp serve-all
+
+        lcp serve-all --cache-dir /tmp/lcp-cache
+
+        lcp serve-all --no-cache --name my-lcp
+    """
+    try:
+        run_universal_server(name=name, cache_dir=cache_dir, no_cache=no_cache)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        import sys
+
+        sys.exit(1)
+
+
+
 @click.option(
     "--provider",
     type=click.Choice(["openai", "anthropic"]),

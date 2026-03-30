@@ -331,3 +331,15 @@ class TestDiffCommand:
         with open(new_path) as f:
             data = json.load(f)
         assert "deprecations" not in data
+
+
+class TestServeAllCommand:
+    """Tests for the serve-all CLI command."""
+
+    def test_help(self, runner):
+        """Should display help without error."""
+        result = runner.invoke(main, ["serve-all", "--help"])
+        assert result.exit_code == 0
+        assert "resolve_library" in result.output
+        assert "--cache-dir" in result.output
+        assert "--no-cache" in result.output
