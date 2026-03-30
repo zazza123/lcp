@@ -443,5 +443,77 @@ def docgen(
         sys.exit(1)
 
 
+@main.command()
+@click.argument("old", type=click.Path(exists=True))
+@click.argument("new", type=click.Path(exists=True))
+@click.option(
+    "-o",
+    "--output",
+    type=click.Path(),
+    help="Output file path. If not specified, prints to stdout.",
+)
+@click.option(
+    "--indent",
+    type=int,
+    default=2,
+    help="JSON indentation (default: 2).",
+)
+def diff(old: str, new: str, output: str | None, indent: int):
+    """Compare two LCP files and detect deprecated symbols.
+
+    OLD is the path to the earlier LCP JSON file.
+
+    NEW is the path to the later LCP JSON file.
+
+    Symbols present in OLD but missing in NEW are reported as removed
+    (deprecated).  The output includes generated deprecation entries
+    that can be merged into the new manifest.
+
+    Examples:
+
+        lcp diff v1.lcp.json v2.lcp.json
+
+        lcp diff v1.lcp.json v2.lcp.json -o diff.json
+    """
+    from .diff import diff_documents, load_lcp_document
+
+    try:
+        click.echo(f"Loading {old}...", err=True)
+        old_doc = load_lcp_document(old)
+
+        click.echo(f"Loading {new}...", err=True)
+        new_doc = load_lcp_document(new)
+
+        click.echo("Comparing documents...", err=True)
+        result = diff_documents(old_doc, new_doc)
+
+        json_output = result.to_json(indent=indent)
+
+        if output:
+            with open(output, "w", encoding="utf-8") as f:
+                f.write(json_output)
+            click.echo(f"Written to {output}", err=True)
+        else:
+            click.echo(json_output)
+
+        # Summary
+        click.echo(
+            f"Diff: {result.library_name} "
+            f"{result.old_version} → {result.new_version}",
+            err=True,
+        )
+        click.echo(
+            f"  Removed: {len(result.removed)} | Added: {len(result.added)}",
+            err=True,
+        )
+
+    except FileNotFoundError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     main()

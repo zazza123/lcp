@@ -159,3 +159,94 @@ class TestEndToEnd:
         assert data["manifest"]["library"]["name"] == "json"
         assert data["manifest"]["library"]["language"] == "python"
         assert len(data["symbols"]) > 0
+
+
+class TestDiffCommand:
+    """Tests for the diff command."""
+
+    def _write_lcp(self, path, name="mylib", version="1.0.0", symbols=None):
+        """Write a minimal LCP document to *path*."""
+        doc = {
+            "manifest": {
+                "schema_version": "1.0",
+                "library": {"name": name, "version": version, "language": "python"},
+            },
+            "symbols": symbols or {},
+        }
+        with open(path, "w") as f:
+            json.dump(doc, f)
+
+    def test_diff_help(self, runner):
+        result = runner.invoke(main, ["diff", "--help"])
+        assert result.exit_code == 0
+        assert "OLD" in result.output
+        assert "NEW" in result.output
+
+    def test_diff_identical_files(self, temp_dir):
+        cli = CliRunner(mix_stderr=False)
+        old_path = temp_dir / "old.lcp.json"
+        new_path = temp_dir / "new.lcp.json"
+        symbols = {"mod:func": {"kind": "function", "semantics": {"summary": "F"}}}
+        self._write_lcp(old_path, version="1.0.0", symbols=symbols)
+        self._write_lcp(new_path, version="2.0.0", symbols=symbols)
+
+        result = cli.invoke(main, ["diff", str(old_path), str(new_path)])
+        assert result.exit_code == 0
+        data = json.loads(result.output)
+        assert data["summary"]["removed"] == 0
+        assert data["summary"]["added"] == 0
+
+    def test_diff_removed_symbol(self, temp_dir):
+        cli = CliRunner(mix_stderr=False)
+        old_path = temp_dir / "old.lcp.json"
+        new_path = temp_dir / "new.lcp.json"
+        self._write_lcp(
+            old_path,
+            version="1.0.0",
+            symbols={
+                "mod:a": {"kind": "function", "semantics": {"summary": "A"}},
+                "mod:b": {"kind": "function", "semantics": {"summary": "B"}},
+            },
+        )
+        self._write_lcp(
+            new_path,
+            version="2.0.0",
+            symbols={
+                "mod:a": {"kind": "function", "semantics": {"summary": "A"}},
+            },
+        )
+
+        result = cli.invoke(main, ["diff", str(old_path), str(new_path)])
+        assert result.exit_code == 0
+        data = json.loads(result.output)
+        assert data["summary"]["removed"] == 1
+        assert data["removed"][0]["symbol_id"] == "mod:b"
+        assert data["deprecations"]["mod:b"]["deprecated_in"] == "2.0.0"
+
+    def test_diff_to_file(self, runner, temp_dir):
+        old_path = temp_dir / "old.lcp.json"
+        new_path = temp_dir / "new.lcp.json"
+        out_path = temp_dir / "diff.json"
+        self._write_lcp(old_path, version="1.0.0")
+        self._write_lcp(new_path, version="2.0.0")
+
+        result = runner.invoke(
+            main, ["diff", str(old_path), str(new_path), "-o", str(out_path)]
+        )
+        assert result.exit_code == 0
+        assert out_path.exists()
+        with open(out_path) as f:
+            data = json.load(f)
+        assert data["old_version"] == "1.0.0"
+
+    def test_diff_nonexistent_old(self, runner, temp_dir):
+        new_path = temp_dir / "new.lcp.json"
+        self._write_lcp(new_path, version="2.0.0")
+        result = runner.invoke(main, ["diff", "/nonexistent/old.json", str(new_path)])
+        assert result.exit_code != 0
+
+    def test_diff_nonexistent_new(self, runner, temp_dir):
+        old_path = temp_dir / "old.lcp.json"
+        self._write_lcp(old_path, version="1.0.0")
+        result = runner.invoke(main, ["diff", str(old_path), "/nonexistent/new.json"])
+        assert result.exit_code != 0
