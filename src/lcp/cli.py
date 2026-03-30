@@ -9,7 +9,7 @@ import click
 from .coverage import generate_coverage, generate_coverage_from_scanned
 from .generator import generate_lcp
 from .mcp_server import run_server as run_mcp_server
-from .mcp_server import run_universal_server
+from .mcp_server import run_universal_server, _DEFAULT_REGISTRY_URL
 from .scanner import scan_package
 from .validator import LCPValidationError, validate_document
 
@@ -297,8 +297,9 @@ def serve(manifest: str, name: str | None):
     default=None,
     help=(
         "Base URL of an LCP registry to use as a fallback when local scanning "
-        "fails (e.g. https://registry.example.com). "
-        "Manifests are fetched from {registry}/{name}.lcp.json."
+        "fails. Manifests are fetched from "
+        "{registry}/manifests/{language}/{name}/{version}.lcp.json. "
+        f"The official registry is: {_DEFAULT_REGISTRY_URL}"
     ),
 )
 def serve_all(cache_dir: str | None, name: str, no_cache: bool, registry: str | None):
@@ -314,7 +315,7 @@ def serve_all(cache_dir: str | None, name: str, no_cache: bool, registry: str | 
     \b
     1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
     2. Live scan    (pip-installed package)
-    3. Registry     (HTTP fetch from --registry/{name}.lcp.json)
+    3. Registry     (HTTP fetch from --registry/manifests/python/{name}/{version}.lcp.json)
 
     Setup (one-time):
 

@@ -13,6 +13,7 @@ from lcp.generator import generate_lcp
 from lcp.mcp_server import (
     LCPIndex,
     MultiLibraryIndex,
+    _DEFAULT_REGISTRY_URL,
     _fetch_from_registry,
     create_server,
     create_universal_server,
@@ -650,12 +651,31 @@ class TestFetchFromRegistry:
         mock_response.__exit__ = MagicMock(return_value=False)
 
         with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
-            result = _fetch_from_registry("mylib", "https://registry.example.com")
+            result = _fetch_from_registry(
+                "mylib", "https://registry.example.com", version="1.0.0"
+            )
 
         mock_open.assert_called_once_with(
-            "https://registry.example.com/mylib.lcp.json", timeout=10
+            "https://registry.example.com/manifests/python/mylib/1.0.0.lcp.json",
+            timeout=10,
         )
         assert result is not None
+
+    def test_uses_latest_when_no_version(self, sample_lcp_file: Path):
+        """When version is None, the URL should contain 'latest'."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            _fetch_from_registry("mylib", "https://registry.example.com")
+
+        called_url = mock_open.call_args[0][0]
+        assert called_url == "https://registry.example.com/manifests/python/mylib/latest.lcp.json"
 
     def test_trailing_slash_stripped(self, sample_lcp_file: Path):
         """Registry URL trailing slash should be normalised."""
@@ -668,10 +688,10 @@ class TestFetchFromRegistry:
         mock_response.__exit__ = MagicMock(return_value=False)
 
         with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
-            _fetch_from_registry("mylib", "https://registry.example.com/")
+            _fetch_from_registry("mylib", "https://registry.example.com/", version="2.0.0")
 
         called_url = mock_open.call_args[0][0]
-        assert called_url == "https://registry.example.com/mylib.lcp.json"
+        assert called_url == "https://registry.example.com/manifests/python/mylib/2.0.0.lcp.json"
 
     def test_http_error_raises_import_error(self):
         """HTTPError from the registry should raise ImportError."""
@@ -726,6 +746,29 @@ class TestFetchFromRegistry:
             with pytest.raises(ImportError, match="Invalid package name"):
                 _fetch_from_registry("../secret", "https://registry.example.com")
         mock_open.assert_not_called()
+
+    def test_default_registry_url_is_official_registry(self):
+        """_DEFAULT_REGISTRY_URL should point to the official lcp-registry."""
+        assert "zazza123/lcp-registry" in _DEFAULT_REGISTRY_URL
+        assert _DEFAULT_REGISTRY_URL.startswith("https://")
+
+    def test_url_contains_manifests_path(self, sample_lcp_file: Path):
+        """Constructed URL must follow manifests/{language}/{name}/{version} layout."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            _fetch_from_registry(
+                "requests", "https://registry.example.com", language="python", version="2.31.0"
+            )
+
+        called_url = mock_open.call_args[0][0]
+        assert called_url == "https://registry.example.com/manifests/python/requests/2.31.0.lcp.json"
 
 
 # ---------------------------------------------------------------------------

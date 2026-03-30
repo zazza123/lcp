@@ -161,23 +161,33 @@ def _installed_version(package_name: str) -> str | None:
 
 _REGISTRY_FETCH_TIMEOUT = 10  # seconds
 _ALLOWED_REGISTRY_SCHEMES = {"http", "https"}
+_DEFAULT_REGISTRY_URL = (
+    "https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main"
+)
 
 
 def _fetch_from_registry(
     name: str,
     registry_url: str,
+    language: str = "python",
+    version: str | None = None,
     timeout: int = _REGISTRY_FETCH_TIMEOUT,
 ) -> LCPDocument:
     """Fetch an LCP manifest from a remote registry.
 
-    Constructs the request URL as ``{registry_url}/{name}.lcp.json`` and
-    performs an HTTP GET with a configurable timeout.
+    Constructs the request URL using the registry's standard path layout:
+    ``{registry_url}/manifests/{language}/{name}/{version}.lcp.json``.
+    When *version* is not supplied, ``"latest"`` is used as the version segment.
 
     Args:
         name: Python package name (e.g. ``"requests"``).
         registry_url: Base URL of the LCP registry
-            (e.g. ``"https://registry.example.com"``).  Must use ``http``
-            or ``https`` scheme.
+            (e.g. ``"https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main"``).
+            Must use ``http`` or ``https`` scheme.
+        language: Programming language of the package (default: ``"python"``).
+        version: Package version string (e.g. ``"2.31.0"``).  When *None*,
+            the segment ``"latest"`` is used so registries can expose a
+            canonical latest entry.
         timeout: Request timeout in seconds (default: 10).
 
     Returns:
@@ -202,7 +212,10 @@ def _fetch_from_registry(
             f"Invalid package name for registry lookup: '{name}'"
         )
 
-    url = f"{registry_url.rstrip('/')}/{name}.lcp.json"
+    effective_version = version or "latest"
+    url = (
+        f"{registry_url.rstrip('/')}/manifests/{language}/{name}/{effective_version}.lcp.json"
+    )
     try:
         with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
             body = response.read()
@@ -248,13 +261,18 @@ def resolve_library_document(
       3. Registry     (HTTP GET from *registry_url* if provided)
       4. Error
 
+    Registry manifests are fetched from the path
+    ``{registry_url}/manifests/python/{name}/{version}.lcp.json``.
+    When the installed version is unknown, ``"latest"`` is used as the
+    version segment so registries can expose a canonical latest entry.
+
     Args:
         name: Python package name to resolve.
         cache_dir: Cache root directory (default: ~/.lcp/cache/).
         no_cache: Skip cache read/write entirely.
         registry_url: Optional base URL of an LCP registry to try when local
-            scanning fails (e.g. ``"https://registry.example.com"``).
-            The manifest is fetched from ``{registry_url}/{name}.lcp.json``.
+            scanning fails.  The default official registry is at
+            ``https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main``.
 
     Returns:
         Tuple of (LCPDocument, source) where source is ``"cache"``,
@@ -267,9 +285,11 @@ def resolve_library_document(
     from .scanner import scan_package
     from .generator import generate_lcp
 
+    # Resolve the installed version once; used for both cache lookup and registry fetch
+    installed_ver = _installed_version(name)
+
     # 1. Cache lookup
     if not no_cache:
-        installed_ver = _installed_version(name)
         if installed_ver:
             # If the package has a known installed version, look for an exact match
             cached = _load_from_cache(cache_dir, name, installed_ver)
@@ -298,7 +318,7 @@ def resolve_library_document(
     # 3. Registry fallback
     if registry_url:
         try:
-            doc = _fetch_from_registry(name, registry_url)
+            doc = _fetch_from_registry(name, registry_url, version=installed_ver)
             if not no_cache:
                 try:
                     _save_to_cache(cache_dir, doc)
