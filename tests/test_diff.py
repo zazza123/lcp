@@ -4,7 +4,13 @@ import json
 
 import pytest
 
-from lcp.diff import DiffResult, SymbolDiff, diff_documents, load_lcp_document
+from lcp.diff import (
+    DiffResult,
+    SymbolDiff,
+    diff_documents,
+    load_lcp_document,
+    update_document,
+)
 from lcp.models import (
     Deprecation,
     LCPDocument,
@@ -270,3 +276,111 @@ class TestLoadLCPDocument:
         path.write_text("not json", encoding="utf-8")
         with pytest.raises(json.JSONDecodeError):
             load_lcp_document(str(path))
+
+
+# ---------------------------------------------------------------------------
+# update_document
+# ---------------------------------------------------------------------------
+
+
+class TestUpdateDocument:
+    """Tests for update_document()."""
+
+    def test_merges_deprecations_into_document(self):
+        new_doc = _make_doc(
+            version="2.0.0",
+            symbols={"mod:func_a": _make_symbol()},
+        )
+        diff_result = DiffResult(
+            old_version="1.0.0",
+            new_version="2.0.0",
+            library_name="test-lib",
+            deprecated={"mod:func_b": Deprecation(deprecated_in="2.0.0")},
+        )
+
+        updated = update_document(new_doc, diff_result)
+
+        assert updated.deprecations is not None
+        assert "mod:func_b" in updated.deprecations
+        assert updated.deprecations["mod:func_b"].deprecated_in == "2.0.0"
+
+    def test_preserves_existing_deprecations(self):
+        new_doc = LCPDocument(
+            manifest=Manifest(
+                schema_version="1.0",
+                library=Library(name="test-lib", version="2.0.0", language="python"),
+            ),
+            symbols={"mod:func_a": _make_symbol()},
+            deprecations={
+                "mod:old_func": Deprecation(
+                    deprecated_in="1.5.0", notes="Use func_a instead"
+                ),
+            },
+        )
+        diff_result = DiffResult(
+            old_version="1.0.0",
+            new_version="2.0.0",
+            library_name="test-lib",
+            deprecated={"mod:func_b": Deprecation(deprecated_in="2.0.0")},
+        )
+
+        updated = update_document(new_doc, diff_result)
+
+        assert "mod:old_func" in updated.deprecations
+        assert updated.deprecations["mod:old_func"].deprecated_in == "1.5.0"
+        assert updated.deprecations["mod:old_func"].notes == "Use func_a instead"
+        assert "mod:func_b" in updated.deprecations
+
+    def test_does_not_overwrite_existing_entry(self):
+        new_doc = LCPDocument(
+            manifest=Manifest(
+                schema_version="1.0",
+                library=Library(name="test-lib", version="3.0.0", language="python"),
+            ),
+            symbols={},
+            deprecations={
+                "mod:func": Deprecation(
+                    deprecated_in="2.0.0", notes="Original note"
+                ),
+            },
+        )
+        diff_result = DiffResult(
+            old_version="2.0.0",
+            new_version="3.0.0",
+            library_name="test-lib",
+            deprecated={
+                "mod:func": Deprecation(deprecated_in="3.0.0"),
+            },
+        )
+
+        updated = update_document(new_doc, diff_result)
+
+        # Should keep the original entry, not overwrite
+        assert updated.deprecations["mod:func"].deprecated_in == "2.0.0"
+        assert updated.deprecations["mod:func"].notes == "Original note"
+
+    def test_no_deprecations_returns_none(self):
+        new_doc = _make_doc(version="2.0.0", symbols={})
+        diff_result = DiffResult(
+            old_version="1.0.0",
+            new_version="2.0.0",
+            library_name="test-lib",
+        )
+
+        updated = update_document(new_doc, diff_result)
+
+        assert updated.deprecations is None
+
+    def test_does_not_mutate_original(self):
+        new_doc = _make_doc(version="2.0.0", symbols={})
+        diff_result = DiffResult(
+            old_version="1.0.0",
+            new_version="2.0.0",
+            library_name="test-lib",
+            deprecated={"mod:func": Deprecation(deprecated_in="2.0.0")},
+        )
+
+        updated = update_document(new_doc, diff_result)
+
+        assert new_doc.deprecations is None
+        assert updated.deprecations is not None

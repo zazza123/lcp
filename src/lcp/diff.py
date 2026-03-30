@@ -129,6 +129,31 @@ def diff_documents(old: LCPDocument, new: LCPDocument) -> DiffResult:
     )
 
 
+def update_document(document: LCPDocument, diff_result: DiffResult) -> LCPDocument:
+    """Return a copy of *document* with deprecation entries from *diff_result* merged in.
+
+    Existing deprecation entries in the document are preserved.  New entries
+    from the diff result are added for symbols that were removed between
+    versions.
+
+    Args:
+        document: The LCP document to update (typically the *new* version).
+        diff_result: The result of :func:`diff_documents`.
+
+    Returns:
+        A new LCPDocument with merged deprecation entries.
+    """
+    existing = dict(document.deprecations) if document.deprecations else {}
+    merged = {**existing, **{
+        sid: dep for sid, dep in diff_result.deprecated.items()
+        if sid not in existing
+    }}
+
+    return document.model_copy(update={
+        "deprecations": merged if merged else None,
+    })
+
+
 def load_lcp_document(path: str) -> LCPDocument:
     """Load an LCP document from a JSON file.
 

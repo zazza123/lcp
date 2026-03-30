@@ -458,7 +458,13 @@ def docgen(
     default=2,
     help="JSON indentation (default: 2).",
 )
-def diff(old: str, new: str, output: str | None, indent: int):
+@click.option(
+    "--update",
+    is_flag=True,
+    default=False,
+    help="Write detected deprecations back into the NEW LCP file.",
+)
+def diff(old: str, new: str, output: str | None, indent: int, update: bool):
     """Compare two LCP files and detect deprecated symbols.
 
     OLD is the path to the earlier LCP JSON file.
@@ -469,13 +475,18 @@ def diff(old: str, new: str, output: str | None, indent: int):
     (deprecated).  The output includes generated deprecation entries
     that can be merged into the new manifest.
 
+    With --update the detected deprecations are automatically written
+    back into the NEW file.
+
     Examples:
 
         lcp diff v1.lcp.json v2.lcp.json
 
         lcp diff v1.lcp.json v2.lcp.json -o diff.json
+
+        lcp diff v1.lcp.json v2.lcp.json --update
     """
-    from .diff import diff_documents, load_lcp_document
+    from .diff import diff_documents, load_lcp_document, update_document
 
     try:
         click.echo(f"Loading {old}...", err=True)
@@ -506,6 +517,15 @@ def diff(old: str, new: str, output: str | None, indent: int):
             f"  Removed: {len(result.removed)} | Added: {len(result.added)}",
             err=True,
         )
+
+        # Update the new file with deprecations if requested
+        if update and result.deprecated:
+            updated_doc = update_document(new_doc, result)
+            updated_doc.to_file(new, indent=indent)
+            click.echo(
+                f"  Updated {new} with {len(result.deprecated)} deprecation(s)",
+                err=True,
+            )
 
     except FileNotFoundError as e:
         click.echo(f"Error: {e}", err=True)

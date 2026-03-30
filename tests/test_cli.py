@@ -250,3 +250,84 @@ class TestDiffCommand:
         self._write_lcp(old_path, version="1.0.0")
         result = runner.invoke(main, ["diff", str(old_path), "/nonexistent/new.json"])
         assert result.exit_code != 0
+
+    def test_diff_update_flag(self, runner, temp_dir):
+        old_path = temp_dir / "old.lcp.json"
+        new_path = temp_dir / "new.lcp.json"
+        self._write_lcp(
+            old_path,
+            version="1.0.0",
+            symbols={
+                "mod:a": {"kind": "function", "semantics": {"summary": "A"}},
+                "mod:b": {"kind": "function", "semantics": {"summary": "B"}},
+            },
+        )
+        self._write_lcp(
+            new_path,
+            version="2.0.0",
+            symbols={
+                "mod:a": {"kind": "function", "semantics": {"summary": "A"}},
+            },
+        )
+
+        result = runner.invoke(
+            main, ["diff", str(old_path), str(new_path), "--update"]
+        )
+        assert result.exit_code == 0
+
+        # Verify the new file was updated with deprecation entries
+        with open(new_path) as f:
+            data = json.load(f)
+        assert "deprecations" in data
+        assert "mod:b" in data["deprecations"]
+        assert data["deprecations"]["mod:b"]["deprecated_in"] == "2.0.0"
+
+    def test_diff_update_preserves_existing(self, runner, temp_dir):
+        old_path = temp_dir / "old.lcp.json"
+        new_path = temp_dir / "new.lcp.json"
+        self._write_lcp(old_path, version="1.0.0", symbols={
+            "mod:a": {"kind": "function", "semantics": {"summary": "A"}},
+        })
+        # Write new file with an existing deprecation entry
+        doc = {
+            "manifest": {
+                "schema_version": "1.0",
+                "library": {"name": "mylib", "version": "2.0.0", "language": "python"},
+            },
+            "symbols": {},
+            "deprecations": {
+                "mod:old": {"deprecated_in": "1.5.0", "notes": "Existing"},
+            },
+        }
+        with open(new_path, "w") as f:
+            json.dump(doc, f)
+
+        result = runner.invoke(
+            main, ["diff", str(old_path), str(new_path), "--update"]
+        )
+        assert result.exit_code == 0
+
+        with open(new_path) as f:
+            data = json.load(f)
+        # Both old and new deprecation entries should be present
+        assert data["deprecations"]["mod:old"]["deprecated_in"] == "1.5.0"
+        assert data["deprecations"]["mod:old"]["notes"] == "Existing"
+        assert data["deprecations"]["mod:a"]["deprecated_in"] == "2.0.0"
+
+    def test_diff_update_no_changes(self, runner, temp_dir):
+        """--update with no removed symbols should not add deprecations."""
+        old_path = temp_dir / "old.lcp.json"
+        new_path = temp_dir / "new.lcp.json"
+        symbols = {"mod:a": {"kind": "function", "semantics": {"summary": "A"}}}
+        self._write_lcp(old_path, version="1.0.0", symbols=symbols)
+        self._write_lcp(new_path, version="2.0.0", symbols=symbols)
+
+        result = runner.invoke(
+            main, ["diff", str(old_path), str(new_path), "--update"]
+        )
+        assert result.exit_code == 0
+
+        # File should not gain a deprecations key
+        with open(new_path) as f:
+            data = json.load(f)
+        assert "deprecations" not in data
