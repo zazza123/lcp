@@ -58,9 +58,11 @@ def mcp_server(sample_lcp_file: Path):
 
 def _get_tool_fn(server, tool_name: str):
     """Return the raw callable for *tool_name* registered on *server*."""
-    tools = asyncio.run(server.get_tools())
-    tool = tools.get(tool_name)
-    return tool.fn if tool is not None else None
+    try:
+        tool = asyncio.run(server.get_tool(tool_name))
+        return tool.fn
+    except Exception:
+        return None
 
 
 class TestLoadLCPDocument:
@@ -815,8 +817,6 @@ class TestCreateUniversalServer:
 
     def test_has_expected_tools(self, universal_server):
         """Universal server should expose all expected tools."""
-        tools = asyncio.run(universal_server.get_tools())
-        tool_names = set(tools.keys())
         expected = {
             "resolve_library",
             "list_libraries",
@@ -830,7 +830,9 @@ class TestCreateUniversalServer:
             "explore_return_type",
             "get_suggestions",
         }
-        assert expected.issubset(tool_names)
+        for name in expected:
+            tool = asyncio.run(universal_server.get_tool(name))
+            assert tool is not None, f"Expected tool '{name}' not found"
 
 
 class TestResolveLibraryTool:
