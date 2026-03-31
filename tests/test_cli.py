@@ -397,7 +397,7 @@ class TestPublishCommand:
         mock_publish.return_value = PublishResult(
             pr_url="https://github.com/zazza123/lcp-registry/pull/42",
             pr_number=42,
-            manifest_path="manifests/python/json/0.1.0.lcp.json",
+            manifest_path="manifests/python/j/json/0.1.0.lcp.json.gz",
             package_name="json",
             package_version="0.1.0",
             language="python",

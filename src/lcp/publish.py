@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import gzip
 import json
 import time
 import urllib.error
@@ -235,7 +236,7 @@ def _upload_manifest(
     fork_repo: str,
     branch_name: str,
     file_path: str,
-    content: str,
+    content: bytes,
     token: str,
     package_name: str,
     package_version: str,
@@ -248,8 +249,9 @@ def _upload_manifest(
     Args:
         fork_repo: Fork repo in ``owner/name`` format.
         branch_name: Branch to commit to.
-        file_path: Path within the repo (e.g. ``manifests/python/requests/2.31.0.lcp.json``).
-        content: JSON string of the manifest.
+        file_path: Path within the repo (e.g.
+            ``manifests/python/r/requests/2.31.0.lcp.json.gz``).
+        content: Gzip-compressed manifest bytes.
         token: GitHub personal access token.
         package_name: Package name (for commit message).
         package_version: Package version (for commit message).
@@ -257,7 +259,7 @@ def _upload_manifest(
     Raises:
         PublishError: If file upload fails.
     """
-    encoded_content = base64.b64encode(content.encode("utf-8")).decode("ascii")
+    encoded_content = base64.b64encode(content).decode("ascii")
 
     _github_request(
         "PUT",
@@ -441,7 +443,7 @@ def publish_manifest(
     if ".." in name or "/" in name or "\\" in name:
         raise PublishError(f"Invalid package name: '{name}'")
 
-    manifest_path = f"manifests/{language}/{name}/{version}.lcp.json"
+    manifest_path = f"manifests/{language}/{name[0].lower()}/{name}/{version}.lcp.json.gz"
     branch_name = f"lcp/add/{name}/{version}"
 
     from . import __version__ as lcp_version
@@ -455,13 +457,13 @@ def publish_manifest(
     # Step 3: Create a branch
     _create_branch(fork_repo, branch_name, token)
 
-    # Step 4: Upload the manifest
-    manifest_json = document.to_json(indent=2)
+    # Step 4: Upload the manifest (gzip-compressed)
+    manifest_bytes = gzip.compress(document.to_json(indent=2).encode("utf-8"))
     _upload_manifest(
         fork_repo,
         branch_name,
         manifest_path,
-        manifest_json,
+        manifest_bytes,
         token,
         name,
         version,
