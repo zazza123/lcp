@@ -12,7 +12,8 @@ Two modes are supported:
 ## Key Features
 
 - `lcp serve-all` command: single, always-on MCP server for any Python library
-- On-demand library resolution with local caching (`~/.lcp/cache/`)
+- On-demand library resolution with three-tier fallback: local cache → live scan → remote registry
+- Optional remote registry fallback via `--registry` for packages that cannot be scanned locally
 - `MultiLibraryIndex`: holds multiple libraries simultaneously; agents work across libraries in one session
 - In-memory `LCPIndex` for fast symbol lookups by module, kind, and class membership
 - Eleven tools covering the full exploration workflow from library loading to fine-grained symbol detail
@@ -37,6 +38,7 @@ Two modes are supported:
 | `--cache-dir PATH` | `~/.lcp/cache/` | Root directory for cached manifests |
 | `--name TEXT` | `lcp-universal` | Server name for MCP identification |
 | `--no-cache` | off | Disable reading from and writing to the local cache |
+| `--registry TEXT` | *(none)* | Base URL of a remote LCP registry used as a final fallback when local scanning fails |
 
 ### Setup (one-time)
 
@@ -56,7 +58,7 @@ claude mcp add lcp -- lcp serve-all
 |-----------|----------|---------|
 | `LCPIndex` | `src/lcp/mcp_server.py` | In-memory lookup index built from an `LCPDocument` |
 | `MultiLibraryIndex` | `src/lcp/mcp_server.py` | Holds multiple `LCPIndex` instances; tracks the default library |
-| `resolve_library_document()` | `src/lcp/mcp_server.py` | Resolves a library via cache or live scan |
+| `resolve_library_document()` | `src/lcp/mcp_server.py` | Resolves a library via cache, live scan, or remote registry fetch |
 | `create_server()` | `src/lcp/mcp_server.py` | Constructs a single-library `FastMCP` instance |
 | `run_server()` | `src/lcp/mcp_server.py` | Loads a manifest and starts the single-library server |
 | `create_universal_server()` | `src/lcp/mcp_server.py` | Constructs the multi-library `FastMCP` instance |

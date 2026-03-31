@@ -5,7 +5,7 @@
 The MCP Server exposes Python library documentation as a set of MCP tools that AI agents can call to explore any library's public API. It is built on [FastMCP](https://github.com/jlowin/fastmcp) and supports two modes:
 
 - **Single-library mode** (`create_server` / `lcp serve`): loads one pre-built `.lcp.json` manifest.
-- **Universal mode** (`create_universal_server` / `lcp serve-all`): resolves any pip-installed package on demand, with optional local caching.
+- **Universal mode** (`create_universal_server` / `lcp serve-all`): resolves any pip-installed package on demand, with optional local caching and an optional remote registry fallback.
 
 ## Single-Library Server Lifecycle
 
@@ -33,6 +33,10 @@ flowchart LR
     G -- yes --> H["load from ~/.lcp/cache/"]
     G -- no --> I["scan_package() + generate_lcp()"]
     I --> J["save to cache"]
+    I -- scan fails --> R{"--registry set?"}
+    R -- yes --> S["_fetch_from_registry()"]
+    S --> J
+    R -- no --> ERR["ImportError"]
     H --> K["LCPIndex → MultiLibraryIndex"]
     J --> K
 ```
@@ -60,9 +64,10 @@ Manifests are cached as gzip-compressed `.lcp.json.gz` files under `~/.lcp/cache
 |-----------|----------------|
 | Package has `importlib.metadata` version | Exact version match required |
 | Package has no metadata version | Any cached entry for that name is returned |
-| `--no-cache` flag | Cache reads and writes are both skipped |
+| `--no-cache` flag | Cache reads and writes are both skipped; registry fallback still applies |
 | Cache write failure | Silently ignored (non-fatal) |
 | Legacy `.lcp.json` entry found | Loaded transparently as a fallback when no `.lcp.json.gz` exists |
+| `--registry` URL provided | When both cache and live scan fail, the manifest is fetched from the remote registry using the sharded path `{registry}/manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz` |
 
 ## Tool Inventory
 
@@ -72,7 +77,7 @@ In addition to the 9 standard tools below (all with an optional `library=` param
 
 | Tool | Purpose |
 |------|---------|
-| `resolve_library(name)` | Load a library from cache or live scan; sets it as the implicit default |
+| `resolve_library(name)` | Load a library from cache, live scan, or remote registry; sets it as the implicit default |
 | `list_libraries()` | List all currently loaded libraries with their metadata |
 
 ### Standard Tools (9)
