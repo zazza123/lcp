@@ -14,6 +14,7 @@ Documentation for the LCP Python SDK, a tool for generating Library Context Prot
 - [Version Diff](diff/index.md) - Compares two LCP manifests to detect removed symbols and generate deprecation entries
 - [Registry Publish](publish/index.md) - Submits LCP manifests to the registry via GitHub Pull Request with structured metadata
 - [AI Documentation Generation](ai_docgen/index.md) - Automatic docstring generation using LLM providers, with hierarchical bottom-up processing
+- [Claude Code Plugin](plugin/index.md) - Packages `lcp serve-all` as a Claude Code plugin with skills, commands, hooks, and a library-explorer subagent
 
 ## Key Components
 
@@ -27,6 +28,7 @@ Documentation for the LCP Python SDK, a tool for generating Library Context Prot
 | Diff | `src/lcp/diff.py` | Compares LCP versions and detects deprecations |
 | Publish | `src/lcp/publish.py` | Submits manifests to the registry via GitHub PR |
 | AI DocGen | `src/lcp/ai/` | Generates missing docstrings using LLMs |
+| Claude Code Plugin | `plugin/lcp/` | Packages the MCP server as a Claude Code plugin with skills, hooks, commands, and subagent |
 
 ---
 **Last Updated:** March 2026
