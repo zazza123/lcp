@@ -6,7 +6,6 @@ import pytest
 
 from lcp import (
     LCPDocument,
-    LCPValidationError,
     generate_lcp,
     is_valid,
     scan,

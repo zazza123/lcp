@@ -6,8 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-import jsonschema
-from jsonschema import Draft202012Validator, ValidationError
+from jsonschema import Draft202012Validator
 
 from .models import LCPDocument
 

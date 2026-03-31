@@ -170,7 +170,7 @@ def inject_docstring(
     if _has_docstring(node):
         return False
 
-    insert_line, indent = _get_insertion_point(node, [l.rstrip("\n\r") for l in source_lines])
+    insert_line, indent = _get_insertion_point(node, [line.rstrip("\n\r") for line in source_lines])
 
     formatted = _format_docstring(docstring, indent)
 
@@ -204,7 +204,7 @@ def inject_docstrings_batch(
         return [False] * len(injections)
 
     source_lines_raw = source.splitlines(keepends=True)
-    source_lines_stripped = [l.rstrip("\n\r") for l in source_lines_raw]
+    source_lines_stripped = [line.rstrip("\n\r") for line in source_lines_raw]
 
     # Collect all valid injections with their insertion points
     pending = []

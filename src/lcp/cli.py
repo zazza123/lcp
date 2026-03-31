@@ -12,7 +12,7 @@ from .mcp_server import run_server as run_mcp_server
 from .mcp_server import run_universal_server, _DEFAULT_REGISTRY_URL
 from .publish import PublishError, _DEFAULT_REGISTRY_REPO, publish_manifest
 from .scanner import scan_package
-from .validator import LCPValidationError, validate_document
+from .validator import LCPValidationError
 
 
 @click.group()
@@ -90,7 +90,7 @@ def scan(
         )
 
         # Generate LCP
-        click.echo(f"Generating LCP document...", err=True)
+        click.echo("Generating LCP document...", err=True)
         lcp_doc = generate_lcp(scanned)
 
         # Validate if requested

@@ -1,6 +1,5 @@
 """Tests for the generator module."""
 
-import pytest
 
 from lcp.generator import (
     _build_symbol_id,

@@ -3,7 +3,6 @@
 import json
 from datetime import datetime, timezone
 
-import pytest
 
 from lcp.models import (
     Artifact,

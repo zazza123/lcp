@@ -4,7 +4,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import pytest
 
 from lcp import generate_coverage, CoverageReport, CoverageSummary, UndocumentedSymbol
 from lcp.coverage import generate_coverage_from_scanned

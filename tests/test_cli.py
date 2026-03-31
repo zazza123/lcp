@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 from click.testing import CliRunner
 
-from lcp.cli import main, scan, validate_cmd
+from lcp.cli import main
 
 
 @pytest.fixture
@@ -90,7 +90,7 @@ class TestScanCommand:
         assert result.exit_code == 0
         # With indent=4, there should be 4-space indentation
         lines = result.output.split("\n")
-        indented_lines = [l for l in lines if l.startswith("    ")]
+        indented_lines = [line for line in lines if line.startswith("    ")]
         assert len(indented_lines) > 0
 
 

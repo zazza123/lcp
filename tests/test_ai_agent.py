@@ -1,9 +1,7 @@
 """Tests for the AI agent module."""
 
 import json
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -169,7 +167,7 @@ class TestDocGenAgent:
     def test_docstring_written_to_file(self, coverage_data, source_file):
         provider = MockProvider(response_text="Add two values together.")
         agent = DocGenAgent(provider=provider)
-        result = agent.run(coverage_data)
+        agent.run(coverage_data)
 
         content = source_file.read_text(encoding="utf-8")
         assert '"""Add two values together."""' in content
