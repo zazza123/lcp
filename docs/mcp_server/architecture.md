@@ -11,7 +11,7 @@ The MCP Server exposes Python library documentation as a set of MCP tools that A
 
 ```mermaid
 flowchart LR
-    A[".lcp.json file"] --> B["load_lcp_document()"]
+    A[".lcp.json / .lcp.json.gz file"] --> B["load_lcp_document()"]
     B --> C["LCPDocument (Pydantic)"]
     C --> D["LCPIndex"]
     C --> E["create_server()"]
@@ -54,7 +54,7 @@ Class membership is determined by the presence of `#` in the symbol ID (e.g. `pa
 
 ## Cache Design
 
-Manifests are cached as `.lcp.json` files under `~/.lcp/cache/{name}/{version}.lcp.json`.
+Manifests are cached as gzip-compressed `.lcp.json.gz` files under `~/.lcp/cache/{name}/{version}.lcp.json.gz`. `load_lcp_document()` detects the `.gz` extension and decompresses transparently, so callers need not distinguish between formats.
 
 | Situation | Cache behaviour |
 |-----------|----------------|
@@ -62,6 +62,7 @@ Manifests are cached as `.lcp.json` files under `~/.lcp/cache/{name}/{version}.l
 | Package has no metadata version | Any cached entry for that name is returned |
 | `--no-cache` flag | Cache reads and writes are both skipped |
 | Cache write failure | Silently ignored (non-fatal) |
+| Legacy `.lcp.json` entry found | Loaded transparently as a fallback when no `.lcp.json.gz` exists |
 
 ## Tool Inventory
 

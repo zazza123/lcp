@@ -6,8 +6,8 @@ The MCP Server module exposes Python library documentation to AI agents via the 
 
 Two modes are supported:
 
-- **Single-manifest server** (`lcp serve`) – given a pre-built `.lcp.json` file, starts a FastMCP server for one library.
-- **Universal server** (`lcp serve-all`) – no manifest required; agents call `resolve_library("package")` to load any pip-installed package on the fly. Resolved manifests are cached under `~/.lcp/cache/`.
+- **Single-manifest server** (`lcp serve`) – given a pre-built `.lcp.json` or `.lcp.json.gz` file, starts a FastMCP server for one library.
+- **Universal server** (`lcp serve-all`) – no manifest required; agents call `resolve_library("package")` to load any pip-installed package on the fly. Resolved manifests are cached as `.lcp.json.gz` files under `~/.lcp/cache/`.
 
 ## Key Features
 

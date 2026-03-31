@@ -234,22 +234,25 @@ class TestUploadManifest:
 
     @patch("lcp.publish._github_request")
     def test_uploads_file(self, mock_request):
+        import gzip
+
         mock_request.return_value = {"content": {"sha": "def456"}}
+        content_bytes = gzip.compress(b'{"test": true}')
         _upload_manifest(
             "testuser/lcp-registry",
             "lcp/add/test/1.0.0",
-            "manifests/python/test/1.0.0.lcp.json",
-            '{"test": true}',
+            "manifests/python/t/test/1.0.0.lcp.json.gz",
+            content_bytes,
             "token",
             "test",
             "1.0.0",
         )
         assert mock_request.call_count == 1
 
-        # Verify the content is base64-encoded
+        # Verify the content is base64-encoded gzip bytes
         call_args = mock_request.call_args
         data = call_args[1]["data"] if "data" in call_args[1] else call_args[0][3]
-        encoded = base64.b64encode(b'{"test": true}').decode("ascii")
+        encoded = base64.b64encode(content_bytes).decode("ascii")
         assert data["content"] == encoded
         assert data["branch"] == "lcp/add/test/1.0.0"
 
@@ -260,7 +263,7 @@ class TestBuildPrBody:
     def test_structured_body(self, sample_document):
         body = _build_pr_body(
             sample_document,
-            "manifests/python/mylib/1.0.0.lcp.json",
+            "manifests/python/m/mylib/1.0.0.lcp.json.gz",
             "0.1.0",
         )
         assert "## New Manifest Submission" in body
@@ -268,7 +271,7 @@ class TestBuildPrBody:
         assert "| Version | 1.0.0 |" in body
         assert "| Language | python |" in body
         assert "| Symbols | 2 |" in body
-        assert "`manifests/python/mylib/1.0.0.lcp.json`" in body
+        assert "`manifests/python/m/mylib/1.0.0.lcp.json.gz`" in body
         assert "`new_manifest`, `python`" in body
         assert "lcp Python SDK v0.1.0" in body
         assert "- [x] Manifest generated from installed package" in body
@@ -354,7 +357,7 @@ class TestPublishManifest:
         assert isinstance(result, PublishResult)
         assert result.pr_url == "https://github.com/zazza123/lcp-registry/pull/1"
         assert result.pr_number == 1
-        assert result.manifest_path == "manifests/python/mylib/1.0.0.lcp.json"
+        assert result.manifest_path == "manifests/python/m/mylib/1.0.0.lcp.json.gz"
         assert result.package_name == "mylib"
         assert result.package_version == "1.0.0"
         assert result.language == "python"
@@ -449,3 +452,49 @@ class TestPublishManifest:
         mock_labels.assert_called_once_with(
             _DEFAULT_REGISTRY_REPO, 10, ["new_manifest", "javascript"], mock_token
         )
+
+    @patch("lcp.publish._try_add_labels")
+    @patch("lcp.publish._create_pull_request")
+    @patch("lcp.publish._create_branch")
+    @patch("lcp.publish._ensure_fork")
+    @patch("lcp.publish._get_authenticated_user")
+    def test_upload_uses_gzip_and_sharded_path(
+        self,
+        mock_get_user,
+        mock_fork,
+        mock_branch,
+        mock_pr,
+        mock_labels,
+        sample_document,
+        mock_token,
+    ):
+        """publish_manifest should compress the manifest and use a sharded .gz path."""
+        import gzip
+
+        mock_get_user.return_value = "testuser"
+        mock_fork.return_value = "testuser/lcp-registry"
+        mock_branch.return_value = "abc123"
+        mock_pr.return_value = {"html_url": "", "number": 99}
+
+        captured_calls = []
+
+        def capture_upload(*args, **kwargs):
+            captured_calls.append((args, kwargs))
+
+        with patch("lcp.publish._upload_manifest", side_effect=capture_upload):
+            publish_manifest(sample_document, mock_token)
+
+        assert len(captured_calls) == 1
+        args, _ = captured_calls[0]
+        file_path = args[2]
+        content = args[3]
+
+        # Path must use sharding (first letter) and .gz extension
+        assert file_path == "manifests/python/m/mylib/1.0.0.lcp.json.gz"
+
+        # Content must be valid gzip-compressed JSON
+        assert isinstance(content, bytes)
+        decompressed = gzip.decompress(content)
+        import json
+        data = json.loads(decompressed)
+        assert data["manifest"]["library"]["name"] == "mylib"

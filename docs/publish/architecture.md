@@ -97,7 +97,7 @@ Before uploading a manifest, the module ensures the authenticated user has a for
 
 Branch creation reads the SHA of the fork's `main` branch head, then creates a new ref at `refs/heads/lcp/add/{name}/{version}`. The branch naming convention prevents collisions between different packages and versions.
 
-File upload uses the GitHub Contents API to commit the manifest directly to the branch. The manifest JSON is Base64-encoded before submission, as required by the API. The commit message follows the format `Add {name} v{version} LCP manifest`.
+File upload uses the GitHub Contents API to commit the manifest directly to the branch. The manifest JSON is first gzip-compressed and then Base64-encoded before submission, as required by the API. The commit message follows the format `Add {name} v{version} LCP manifest`.
 
 ---
 
@@ -122,7 +122,21 @@ Label application is best-effort via `_try_add_labels()` — contributors typica
 
 ## Registry Path Convention
 
-Manifests are stored in the registry using the path `manifests/{language}/{name}/{version}.lcp.json`. This matches the path convention used by `_fetch_from_registry()` in `src/lcp/mcp_server.py` for reading manifests from the registry, ensuring that published manifests are immediately consumable by the MCP server's registry fallback.
+Manifests are stored in the registry using a sharded path:
+
+```
+manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz
+```
+
+The `{first_letter}` segment is the lowercase first character of the package name (e.g. `r` for `requests`, `n` for `numpy`). This sharding ensures no directory in the registry exceeds a manageable number of entries, preventing directory-width problems as the registry grows.
+
+All manifests are stored as gzip-compressed JSON (`.lcp.json.gz`). The sharded path and `.gz` extension match the convention used by `_fetch_from_registry()` in `src/lcp/mcp_server.py`, ensuring that published manifests are immediately consumable by the MCP server's registry fallback.
+
+For example, `requests` version `2.31.0` is stored at:
+
+```
+manifests/python/r/requests/2.31.0.lcp.json.gz
+```
 
 Package names are validated before path construction — names containing `..`, `/`, or `\` are rejected with a `PublishError` to prevent path traversal.
 

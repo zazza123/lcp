@@ -79,6 +79,19 @@ class TestLoadLCPDocument:
         with pytest.raises(FileNotFoundError, match="LCP file not found"):
             load_lcp_document(tmp_path / "nonexistent.json")
 
+    def test_load_gz_file(self, sample_lcp_file: Path, tmp_path: Path):
+        """Should transparently decompress and load a .lcp.json.gz file."""
+        import gzip
+
+        doc_orig = load_lcp_document(sample_lcp_file)
+        gz_path = tmp_path / "sample.lcp.json.gz"
+        with gzip.open(gz_path, "wb") as f:
+            f.write(doc_orig.to_json().encode("utf-8"))
+
+        doc = load_lcp_document(gz_path)
+        assert doc.manifest.library.name == doc_orig.manifest.library.name
+        assert len(doc.symbols) == len(doc_orig.symbols)
+
 
 class TestLCPIndex:
     """Tests for LCPIndex class."""
@@ -642,11 +655,13 @@ class TestFetchFromRegistry:
 
     def test_successful_fetch(self, sample_lcp_file: Path):
         """Should return a valid LCPDocument on a successful 200 response."""
+        import gzip
+
         doc = load_lcp_document(sample_lcp_file)
-        manifest_json = doc.model_dump_json().encode()
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
 
         mock_response = MagicMock()
-        mock_response.read.return_value = manifest_json
+        mock_response.read.return_value = manifest_gz
         mock_response.__enter__ = lambda s: s
         mock_response.__exit__ = MagicMock(return_value=False)
 
@@ -656,18 +671,20 @@ class TestFetchFromRegistry:
             )
 
         mock_open.assert_called_once_with(
-            "https://registry.example.com/manifests/python/mylib/1.0.0.lcp.json",
+            "https://registry.example.com/manifests/python/m/mylib/1.0.0.lcp.json.gz",
             timeout=10,
         )
         assert result is not None
 
     def test_uses_latest_when_no_version(self, sample_lcp_file: Path):
         """When version is None, the URL should contain 'latest'."""
+        import gzip
+
         doc = load_lcp_document(sample_lcp_file)
-        manifest_json = doc.model_dump_json().encode()
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
 
         mock_response = MagicMock()
-        mock_response.read.return_value = manifest_json
+        mock_response.read.return_value = manifest_gz
         mock_response.__enter__ = lambda s: s
         mock_response.__exit__ = MagicMock(return_value=False)
 
@@ -675,15 +692,17 @@ class TestFetchFromRegistry:
             _fetch_from_registry("mylib", "https://registry.example.com")
 
         called_url = mock_open.call_args[0][0]
-        assert called_url == "https://registry.example.com/manifests/python/mylib/latest.lcp.json"
+        assert called_url == "https://registry.example.com/manifests/python/m/mylib/latest.lcp.json.gz"
 
     def test_trailing_slash_stripped(self, sample_lcp_file: Path):
         """Registry URL trailing slash should be normalised."""
+        import gzip
+
         doc = load_lcp_document(sample_lcp_file)
-        manifest_json = doc.model_dump_json().encode()
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
 
         mock_response = MagicMock()
-        mock_response.read.return_value = manifest_json
+        mock_response.read.return_value = manifest_gz
         mock_response.__enter__ = lambda s: s
         mock_response.__exit__ = MagicMock(return_value=False)
 
@@ -691,7 +710,7 @@ class TestFetchFromRegistry:
             _fetch_from_registry("mylib", "https://registry.example.com/", version="2.0.0")
 
         called_url = mock_open.call_args[0][0]
-        assert called_url == "https://registry.example.com/manifests/python/mylib/2.0.0.lcp.json"
+        assert called_url == "https://registry.example.com/manifests/python/m/mylib/2.0.0.lcp.json.gz"
 
     def test_http_error_raises_import_error(self):
         """HTTPError from the registry should raise ImportError."""
@@ -753,12 +772,14 @@ class TestFetchFromRegistry:
         assert _DEFAULT_REGISTRY_URL.startswith("https://")
 
     def test_url_contains_manifests_path(self, sample_lcp_file: Path):
-        """Constructed URL must follow manifests/{language}/{name}/{version} layout."""
+        """Constructed URL must follow manifests/{language}/{first}/{name}/{version}.lcp.json.gz layout."""
+        import gzip
+
         doc = load_lcp_document(sample_lcp_file)
-        manifest_json = doc.model_dump_json().encode()
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
 
         mock_response = MagicMock()
-        mock_response.read.return_value = manifest_json
+        mock_response.read.return_value = manifest_gz
         mock_response.__enter__ = lambda s: s
         mock_response.__exit__ = MagicMock(return_value=False)
 
@@ -768,7 +789,7 @@ class TestFetchFromRegistry:
             )
 
         called_url = mock_open.call_args[0][0]
-        assert called_url == "https://registry.example.com/manifests/python/requests/2.31.0.lcp.json"
+        assert called_url == "https://registry.example.com/manifests/python/r/requests/2.31.0.lcp.json.gz"
 
 
 # ---------------------------------------------------------------------------

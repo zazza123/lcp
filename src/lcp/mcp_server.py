@@ -93,13 +93,23 @@ class MultiLibraryIndex:
 
 
 def load_lcp_document(path: str | Path) -> LCPDocument:
-    """Load and validate an LCP document from a file."""
+    """Load and validate an LCP document from a file.
+
+    Supports both plain ``.lcp.json`` files and gzip-compressed
+    ``.lcp.json.gz`` files, detected transparently by file extension.
+    """
+    import gzip as _gzip
+
     path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"LCP file not found: {path}")
 
-    with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    if path.suffix == ".gz":
+        with _gzip.open(path, "rb") as f:
+            data = json.loads(f.read())
+    else:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
     return LCPDocument.model_validate(data)
 
@@ -113,17 +123,22 @@ _DEFAULT_CACHE_DIR = Path.home() / ".lcp" / "cache"
 
 def _cache_path(cache_dir: Path, name: str, version: str) -> Path:
     """Return the cache file path for a library version."""
-    return cache_dir / name / f"{version}.lcp.json"
+    return cache_dir / name / f"{version}.lcp.json.gz"
 
 
 def _load_from_cache(cache_dir: Path, name: str, version: str) -> LCPDocument | None:
-    """Load a cached LCP document if it exists."""
-    path = _cache_path(cache_dir, name, version)
-    if path.exists():
-        try:
-            return load_lcp_document(path)
-        except Exception:
-            return None
+    """Load a cached LCP document if it exists.
+
+    Accepts both ``.lcp.json.gz`` (preferred) and legacy ``.lcp.json`` files.
+    """
+    gz_path = cache_dir / name / f"{version}.lcp.json.gz"
+    plain_path = cache_dir / name / f"{version}.lcp.json"
+    for path in (gz_path, plain_path):
+        if path.exists():
+            try:
+                return load_lcp_document(path)
+            except Exception:
+                return None
     return None
 
 
@@ -132,7 +147,9 @@ def _find_any_cached(cache_dir: Path, name: str) -> LCPDocument | None:
     lib_dir = cache_dir / name
     if not lib_dir.is_dir():
         return None
-    for path in sorted(lib_dir.glob("*.lcp.json")):
+    # Prefer .lcp.json.gz files; fall back to plain .lcp.json
+    candidates = sorted(lib_dir.glob("*.lcp.json.gz")) + sorted(lib_dir.glob("*.lcp.json"))
+    for path in candidates:
         try:
             return load_lcp_document(path)
         except Exception:
@@ -141,12 +158,15 @@ def _find_any_cached(cache_dir: Path, name: str) -> LCPDocument | None:
 
 
 def _save_to_cache(cache_dir: Path, doc: LCPDocument) -> None:
-    """Persist an LCP document to the cache directory."""
+    """Persist an LCP document to the cache directory (gzip-compressed)."""
+    import gzip as _gzip
+
     name = doc.manifest.library.name
     version = doc.manifest.library.version or "unknown"
     path = _cache_path(cache_dir, name, version)
     path.parent.mkdir(parents=True, exist_ok=True)
-    doc.to_file(str(path))
+    with _gzip.open(path, "wb") as f:
+        f.write(doc.to_json(indent=2).encode("utf-8"))
 
 
 def _installed_version(package_name: str) -> str | None:
@@ -175,9 +195,10 @@ def _fetch_from_registry(
 ) -> LCPDocument:
     """Fetch an LCP manifest from a remote registry.
 
-    Constructs the request URL using the registry's standard path layout:
-    ``{registry_url}/manifests/{language}/{name}/{version}.lcp.json``.
+    Constructs the request URL using the registry's standard sharded path layout:
+    ``{registry_url}/manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz``.
     When *version* is not supplied, ``"latest"`` is used as the version segment.
+    The response body is decompressed from gzip before parsing.
 
     Args:
         name: Python package name (e.g. ``"requests"``).
@@ -199,6 +220,8 @@ def _fetch_from_registry(
             returns a non-200 response, the request times out, or the
             response body cannot be parsed as a valid LCP document.
     """
+    import gzip as _gzip
+
     # Validate the registry URL scheme
     scheme = registry_url.split("://")[0].lower() if "://" in registry_url else ""
     if scheme not in _ALLOWED_REGISTRY_SCHEMES:
@@ -206,15 +229,19 @@ def _fetch_from_registry(
             f"Registry URL must use http or https scheme, got: '{registry_url}'"
         )
 
-    # Prevent path traversal in the package name
+    # Prevent path traversal in the package name; also reject empty names
+    if not name:
+        raise ImportError("Package name must not be empty for registry lookup")
     if ".." in name or "/" in name or "\\" in name:
         raise ImportError(
             f"Invalid package name for registry lookup: '{name}'"
         )
 
     effective_version = version or "latest"
+    first_letter = name[0].lower()
     url = (
-        f"{registry_url.rstrip('/')}/manifests/{language}/{name}/{effective_version}.lcp.json"
+        f"{registry_url.rstrip('/')}/manifests/{language}/{first_letter}/{name}"
+        f"/{effective_version}.lcp.json.gz"
     )
     try:
         with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
@@ -231,6 +258,11 @@ def _fetch_from_registry(
         raise ImportError(
             f"Registry fetch timed out for '{name}' at {url}"
         ) from exc
+
+    try:
+        body = _gzip.decompress(body)
+    except (_gzip.BadGzipFile, OSError):
+        pass  # Not gzip-compressed; try to parse as plain JSON
 
     try:
         data = json.loads(body)
