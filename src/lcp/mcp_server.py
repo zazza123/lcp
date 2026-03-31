@@ -229,7 +229,9 @@ def _fetch_from_registry(
             f"Registry URL must use http or https scheme, got: '{registry_url}'"
         )
 
-    # Prevent path traversal in the package name
+    # Prevent path traversal in the package name; also reject empty names
+    if not name:
+        raise ImportError("Package name must not be empty for registry lookup")
     if ".." in name or "/" in name or "\\" in name:
         raise ImportError(
             f"Invalid package name for registry lookup: '{name}'"
@@ -259,8 +261,8 @@ def _fetch_from_registry(
 
     try:
         body = _gzip.decompress(body)
-    except Exception:
-        pass  # Not gzip-compressed; try to parse as-is
+    except (_gzip.BadGzipFile, OSError):
+        pass  # Not gzip-compressed; try to parse as plain JSON
 
     try:
         data = json.loads(body)

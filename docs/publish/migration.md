@@ -29,17 +29,13 @@ manifests/python/<name>/<version>.lcp.json
 
 ### Step 2 – Compress each manifest with gzip
 
-For each file, compress it in place using Python's standard `gzip` module:
-
-```
-gzip.compress(open("<file>", "rb").read())
-```
-
-Write the compressed bytes to a new file whose name ends in `.gz`:
+For each file, read its raw bytes and compress them using Python's standard `gzip.compress()` function from the stdlib `gzip` module. Write the resulting bytes to a new file at the same path but with `.gz` appended:
 
 ```
 manifests/python/<name>/<version>.lcp.json.gz
 ```
+
+Ensure the source file is opened in binary mode and closed properly (e.g. using a context manager) before discarding it.
 
 ### Step 3 – Move files to sharded paths
 

@@ -439,7 +439,9 @@ def publish_manifest(
     version = lib.version
     language = lib.language
 
-    # Prevent path traversal in package name
+    # Prevent path traversal in package name and reject empty names
+    if not name:
+        raise PublishError("Package name must not be empty")
     if ".." in name or "/" in name or "\\" in name:
         raise PublishError(f"Invalid package name: '{name}'")
 
