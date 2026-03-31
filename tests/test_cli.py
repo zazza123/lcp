@@ -184,7 +184,7 @@ class TestDiffCommand:
         assert "NEW" in result.output
 
     def test_diff_identical_files(self, temp_dir):
-        cli = CliRunner(mix_stderr=False)
+        cli = CliRunner()
         old_path = temp_dir / "old.lcp.json"
         new_path = temp_dir / "new.lcp.json"
         symbols = {"mod:func": {"kind": "function", "semantics": {"summary": "F"}}}
@@ -193,12 +193,12 @@ class TestDiffCommand:
 
         result = cli.invoke(main, ["diff", str(old_path), str(new_path)])
         assert result.exit_code == 0
-        data = json.loads(result.output)
+        data = json.loads(result.stdout)
         assert data["summary"]["removed"] == 0
         assert data["summary"]["added"] == 0
 
     def test_diff_removed_symbol(self, temp_dir):
-        cli = CliRunner(mix_stderr=False)
+        cli = CliRunner()
         old_path = temp_dir / "old.lcp.json"
         new_path = temp_dir / "new.lcp.json"
         self._write_lcp(
@@ -219,7 +219,7 @@ class TestDiffCommand:
 
         result = cli.invoke(main, ["diff", str(old_path), str(new_path)])
         assert result.exit_code == 0
-        data = json.loads(result.output)
+        data = json.loads(result.stdout)
         assert data["summary"]["removed"] == 1
         assert data["removed"][0]["symbol_id"] == "mod:b"
         assert data["deprecations"]["mod:b"]["deprecated_in"] == "2.0.0"
