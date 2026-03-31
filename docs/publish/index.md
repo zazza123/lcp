@@ -8,7 +8,7 @@ The Registry Publish module submits LCP manifests to a remote registry by openin
 
 - Scans an installed Python package and generates a validated LCP manifest in a single command
 - Forks the registry repository automatically (or reuses an existing fork)
-- Uploads the manifest to the canonical registry path (`manifests/{language}/{name}/{version}.lcp.json`)
+- Uploads the manifest **gzip-compressed** to the canonical sharded registry path (`manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz`)
 - Creates a pull request with structured metadata table, checklist, and generation details
 - Applies `new_manifest` and `{language}` labels to the PR (best-effort)
 - Supports `--dry-run` to preview the submission without creating a PR
@@ -18,6 +18,7 @@ The Registry Publish module submits LCP manifests to a remote registry by openin
 ## Documents
 
 - [Architecture](architecture.md) - GitHub API workflow, authentication, error handling, and PR structure internals
+- [Migration Guide](migration.md) - How to migrate existing plain `.lcp.json` manifests to the new `.lcp.json.gz` format
 
 ## Key Components
 
