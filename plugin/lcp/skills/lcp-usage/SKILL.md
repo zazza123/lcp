@@ -1,12 +1,17 @@
 ---
 name: lcp-usage
 description: This skill should be used when the user writes code against a Python library, asks "how do I use X", encounters an AttributeError or ImportError on a library symbol, or asks "what parameters does X.Y take". Detects whether the universal lcp server or a per-library lcp-LIBNAME server is connected and guides the agent to use the correct exploration workflow.
-version: 0.1.0
 ---
 
 # LCP Usage
 
 Use Library Context Protocol (LCP) MCP servers as a ground-truth reference for Python library APIs. LCP captures every public symbol, signature, and docstring; the MCP server exposes it through browsable, searchable tools.
+
+If a library name is provided via arguments, resolve it immediately and follow the appropriate workflow below:
+
+```
+resolve_library("$ARGUMENTS")
+```
 
 ## Two server modes
 

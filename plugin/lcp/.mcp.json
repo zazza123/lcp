@@ -1,6 +1,7 @@
 {
-  "lcp": {
-    "command": "lcp",
-    "args": ["serve-all"]
+  "mcpServers": {
+    "lcp": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/serve.sh"
+    }
   }
 }

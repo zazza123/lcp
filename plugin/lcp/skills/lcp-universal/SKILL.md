@@ -1,12 +1,21 @@
 ---
 name: lcp-universal
 description: This skill should be used when the user writes code that imports or uses a Python library, asks to "look up the X API", "check how to use X", "what's the signature of X.Y", "resolve library X", or encounters import errors or API misuse. Activates the lcp MCP server's resolve_library workflow for on-demand introspection of any pip-installed package.
-version: 0.1.0
 ---
 
 # LCP Universal — On-demand Python Library Documentation
 
 This plugin starts the `lcp serve-all` MCP server automatically. It can scan any pip-installed Python library and expose its full public API — every function, class, method, signature, and docstring — as browsable MCP tools.
+
+## Quick start
+
+If a library name is provided via arguments, resolve it immediately:
+
+```
+resolve_library("$ARGUMENTS")
+```
+
+Then follow the workflow below to explore it.
 
 ## Step 1: Resolve the library
 
