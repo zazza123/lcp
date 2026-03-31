@@ -75,6 +75,14 @@
       font-weight: 600;
     }
 
+    .plugin-flow__number--success {
+      background: var(--color-success);
+    }
+
+    .plugin-flow__text--bold {
+      font-weight: 600;
+    }
+
     /* Components Table */
     .components-table-wrapper {
       display: block;
@@ -418,34 +426,34 @@ claude plugin install lcp/plugin/lcp</code></pre>
 
       <div class="card card--highlight" data-animate="fade-up" data-delay="100">
         <h4 style="margin-bottom: var(--space-md);">Startup flow</h4>
-        <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
-          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
-            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">1</div>
-            <span style="font-size: 0.9375rem;">Claude Code session starts</span>
+        <div class="plugin-flow">
+          <div class="plugin-flow__step">
+            <div class="plugin-flow__number">1</div>
+            <span class="plugin-flow__text">Claude Code session starts</span>
           </div>
-          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
-          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
-            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">2</div>
-            <span style="font-size: 0.9375rem;">Plugin reads <code style="color: var(--color-primary); font-weight: 600;">.mcp.json</code> → starts <code style="color: var(--color-primary); font-weight: 600;">bin/serve.sh</code></span>
+          <div class="plugin-flow__arrow">↓</div>
+          <div class="plugin-flow__step">
+            <div class="plugin-flow__number">2</div>
+            <span class="plugin-flow__text">Plugin reads <code>.mcp.json</code> → starts <code>bin/serve.sh</code></span>
           </div>
-          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
-          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
-            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">3</div>
-            <span style="font-size: 0.9375rem;"><code style="color: var(--color-primary); font-weight: 600;">serve.sh</code> validates <code style="color: var(--color-primary); font-weight: 600;">lcp</code> on PATH</span>
+          <div class="plugin-flow__arrow">↓</div>
+          <div class="plugin-flow__step">
+            <div class="plugin-flow__number">3</div>
+            <span class="plugin-flow__text"><code>serve.sh</code> validates <code>lcp</code> on PATH</span>
           </div>
-          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
-          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
-            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">4</div>
-            <span style="font-size: 0.9375rem;"><code style="color: var(--color-primary); font-weight: 600;">lcp serve-all</code> starts (with optional <code style="color: var(--color-primary); font-weight: 600;">--registry</code>)</span>
+          <div class="plugin-flow__arrow">↓</div>
+          <div class="plugin-flow__step">
+            <div class="plugin-flow__number">4</div>
+            <span class="plugin-flow__text"><code>lcp serve-all</code> starts (with optional <code>--registry</code>)</span>
           </div>
-          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
-          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
-            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">
+          <div class="plugin-flow__arrow">↓</div>
+          <div class="plugin-flow__step plugin-flow__step--success">
+            <div class="plugin-flow__number plugin-flow__number--success">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </div>
-            <span style="font-size: 0.9375rem; font-weight: 600;">MCP server ready — Claude can resolve any library</span>
+            <span class="plugin-flow__text plugin-flow__text--bold">MCP server ready — Claude can resolve any library</span>
           </div>
         </div>
       </div>
@@ -579,19 +587,20 @@ claude plugin config lcp registries "https://your-registry.example.com"
 claude plugin config lcp registries "https://internal.example.com,https://public.example.com"</code></pre>
         </div>
 
-        <div class="card" style="border-left: 3px solid var(--color-primary);">
-          <div style="display: flex; align-items: flex-start; gap: var(--space-md);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+        <div class="troubleshoot-card">
+          <div class="troubleshoot-card__title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="16" x2="12" y2="12"></line>
               <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            <p style="color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.6;">
+            How it works
+          </div>
+          <p class="troubleshoot-card__text">
               The wrapper script <code>serve.sh</code> reads the <code>CLAUDE_PLUGIN_CONFIG_REGISTRIES</code>
               environment variable and passes the first URL to <code>lcp serve-all --registry</code>.
               This allows teams to share pre-built manifests for internal or proprietary packages.
-            </p>
-          </div>
+          </p>
         </div>
       </div>
     </div>
