@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code Plugin - Library Context Protocol</title>
+  <meta name="description" content="Install the LCP plugin for Claude Code. Automatic MCP server startup, guided skills, and on-demand library resolution for AI-powered development.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="asset/logo.32.png">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    /* Startup Flow Diagram */
+    .plugin-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: var(--space-2xl) 0;
+    }
+
+    .plugin-flow__step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--color-bg-subtle);
+      border-radius: var(--radius-md);
+      position: relative;
+    }
+
+    .plugin-flow__step:not(:last-child) {
+      margin-bottom: 0;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .plugin-flow__step:not(:first-child) {
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+    }
+
+    .plugin-flow__step:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+
+    .plugin-flow__arrow {
+      display: flex;
+      justify-content: center;
+      padding: var(--space-xs) 0;
+      color: var(--color-primary);
+      font-size: 1.25rem;
+    }
+
+    .plugin-flow__number {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8125rem;
+    }
+
+    .plugin-flow__text {
+      font-size: 0.9375rem;
+    }
+
+    .plugin-flow__text code {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    /* Components Table */
+    .components-table-wrapper {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .components-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .components-table th,
+    .components-table td {
+      padding: var(--space-md) var(--space-lg);
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .components-table th {
+      background: var(--color-primary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .components-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .components-table tr:hover td {
+      background: var(--color-bg-subtle);
+    }
+
+    .components-table__name {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+
+    .components-table__desc {
+      color: var(--color-text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    /* Components Cards (Mobile) */
+    .components-cards {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .components-table-wrapper {
+        display: none;
+      }
+
+      .components-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+      }
+    }
+
+    .component-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      transition: all var(--transition-base);
+    }
+
+    .component-card:hover {
+      border-color: var(--color-primary-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    .component-card__name {
+      font-family: var(--font-mono);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .component-card__desc {
+      color: var(--color-text-secondary);
+      font-size: 0.9375rem;
+    }
+
+    /* Troubleshooting Cards */
+    .troubleshoot-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      margin-top: var(--space-xl);
+    }
+
+    .troubleshoot-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg) var(--space-xl);
+      transition: all var(--transition-base);
+    }
+
+    .troubleshoot-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .troubleshoot-card__title {
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+      font-size: 1rem;
+    }
+
+    .troubleshoot-card__title code {
+      color: var(--color-primary);
+    }
+
+    .troubleshoot-card__text {
+      color: var(--color-text-secondary);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="hero" style="min-height: auto; padding-bottom: var(--space-4xl);">
+    <div class="hero__bg"></div>
+    <div class="hero__grid"></div>
+
+    <div class="container hero__content" style="padding-top: var(--space-3xl);">
+      <div class="hero__badge">
+        <span class="hero__badge-dot"></span>
+        <span>Claude Code Integration</span>
+      </div>
+
+      <h1 class="hero__title">
+        LCP Plugin for<br>
+        <span class="hero__title-gradient">Claude Code</span>
+      </h1>
+
+      <p class="hero__subtitle">
+        Install once, and Claude Code automatically starts an LCP MCP server.
+        Any pip-installed Python library becomes available on demand — no configuration needed.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#installation" class="btn btn--primary btn--lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Install Plugin
+        </a>
+        <a href="https://github.com/zazza123/lcp/tree/main/plugin/lcp" class="btn btn--secondary btn--lg" target="_blank" rel="noopener">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- What You Get Section -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Features</span>
+        <h2 class="section-header__title">Everything Included</h2>
+      </div>
+
+      <div class="features">
+        <div class="feature-card" data-animate="fade-up" data-delay="100">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Auto MCP Server</h3>
+          <p class="feature-card__text">
+            <code>lcp serve-all</code> starts automatically when Claude Code opens a session. No manual server setup needed.
+          </p>
+        </div>
+
+        <div class="feature-card" data-animate="fade-up" data-delay="200">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="8 17 12 21 16 17"></polyline>
+              <line x1="12" y1="12" x2="12" y2="21"></line>
+              <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">On-Demand Resolution</h3>
+          <p class="feature-card__text">
+            Call <code>resolve_library("requests")</code> and the library is scanned, cached, and ready to explore.
+          </p>
+        </div>
+
+        <div class="feature-card" data-animate="fade-up" data-delay="300">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Guided Skills</h3>
+          <p class="feature-card__text">
+            Two built-in skills (<code>lcp-universal</code>, <code>lcp-usage</code>) teach Claude the optimal API exploration workflow.
+          </p>
+        </div>
+
+        <div class="feature-card" data-animate="fade-up" data-delay="100">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="4 17 10 11 4 5"></polyline>
+              <line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Quick Commands</h3>
+          <p class="feature-card__text">
+            <code>/lcp:resolve</code> and <code>/lcp:scan</code> shortcuts for common operations.
+          </p>
+        </div>
+
+        <div class="feature-card" data-animate="fade-up" data-delay="200">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Library Explorer</h3>
+          <p class="feature-card__text">
+            Dedicated read-only subagent for deep API research without consuming parent context.
+          </p>
+        </div>
+
+        <div class="feature-card" data-animate="fade-up" data-delay="300">
+          <div class="feature-card__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <h3 class="feature-card__title">Registry Support</h3>
+          <p class="feature-card__text">
+            Configure private or team registries via <code>userConfig.registries</code> for pre-built manifests.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Section -->
+  <section class="section section--muted" id="installation">
+    <div class="container container--narrow">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Get Started</span>
+        <h2 class="section-header__title">Installation</h2>
+      </div>
+
+      <!-- Step 1 -->
+      <div data-animate="fade-up" data-delay="100">
+        <h3 class="mb-md">Step 1: Prerequisites</h3>
+        <p class="text-muted mb-lg">Ensure <code>lcp</code> is installed and available on your PATH.</p>
+        <div class="code-block">
+          <div class="code-block__header">
+            <span class="code-block__lang">bash</span>
+            <button class="code-block__copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code># Ensure lcp is installed and on your PATH
+pip install lcp
+lcp --version</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="mt-2xl" data-animate="fade-up" data-delay="200">
+        <h3 class="mb-md">Step 2: Install the Plugin</h3>
+        <p class="text-muted mb-lg">Install the plugin directly from the repository or a local clone.</p>
+        <div class="code-block">
+          <div class="code-block__header">
+            <span class="code-block__lang">bash</span>
+            <button class="code-block__copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code># Install from the repository
+claude plugin install plugin/lcp
+
+# Or from a local clone
+git clone https://github.com/zazza123/lcp.git
+claude plugin install lcp/plugin/lcp</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="mt-2xl" data-animate="fade-up" data-delay="300">
+        <h3 class="mb-md">Step 3: Verify</h3>
+        <p class="text-muted">
+          Open a new Claude Code session. You should see the LCP MCP server start automatically.
+          Try asking Claude about any Python library.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Architecture</span>
+        <h2 class="section-header__title">How the Plugin Works</h2>
+        <p class="section-header__text">
+          When Claude Code starts a session, the plugin automatically boots an LCP MCP server
+          that can resolve any pip-installed library on demand.
+        </p>
+      </div>
+
+      <div class="card card--highlight" data-animate="fade-up" data-delay="100">
+        <h4 style="margin-bottom: var(--space-md);">Startup flow</h4>
+        <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">1</div>
+            <span style="font-size: 0.9375rem;">Claude Code session starts</span>
+          </div>
+          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
+          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">2</div>
+            <span style="font-size: 0.9375rem;">Plugin reads <code style="color: var(--color-primary); font-weight: 600;">.mcp.json</code> → starts <code style="color: var(--color-primary); font-weight: 600;">bin/serve.sh</code></span>
+          </div>
+          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
+          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">3</div>
+            <span style="font-size: 0.9375rem;"><code style="color: var(--color-primary); font-weight: 600;">serve.sh</code> validates <code style="color: var(--color-primary); font-weight: 600;">lcp</code> on PATH</span>
+          </div>
+          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
+          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">4</div>
+            <span style="font-size: 0.9375rem;"><code style="color: var(--color-primary); font-weight: 600;">lcp serve-all</code> starts (with optional <code style="color: var(--color-primary); font-weight: 600;">--registry</code>)</span>
+          </div>
+          <div style="text-align: center; color: var(--color-primary); font-size: 1rem;">↓</div>
+          <div style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) var(--space-md); background: var(--color-bg-subtle); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 28px; height: 28px; background: var(--color-success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8125rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <span style="font-size: 0.9375rem; font-weight: 600;">MCP server ready — Claude can resolve any library</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plugin Components Section -->
+  <section class="section section--muted">
+    <div class="container">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Components</span>
+        <h2 class="section-header__title">What's Inside</h2>
+        <p class="section-header__text">
+          The plugin bundles everything needed for seamless integration — server config,
+          startup scripts, skills, commands, and a dedicated research agent.
+        </p>
+      </div>
+
+      <!-- Desktop: Table View -->
+      <div class="components-table-wrapper" data-animate="fade-up" data-delay="100">
+        <table class="components-table">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="components-table__name">.mcp.json</span></td>
+              <td class="components-table__desc">MCP server declaration — starts <code>lcp serve-all</code> via wrapper script</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">bin/serve.sh</span></td>
+              <td class="components-table__desc">Startup wrapper — validates PATH, injects registry config</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">hooks/hooks.json</span></td>
+              <td class="components-table__desc">SessionStart hook — warns if <code>lcp</code> not found</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">skills/lcp-universal/</span></td>
+              <td class="components-table__desc">Auto-invoked skill for proactive library resolution</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">skills/lcp-usage/</span></td>
+              <td class="components-table__desc">Auto-invoked skill for LCP usage guidance</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">commands/resolve.md</span></td>
+              <td class="components-table__desc"><code>/lcp:resolve &lt;pkg&gt;</code> shortcut command</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">commands/scan.md</span></td>
+              <td class="components-table__desc"><code>/lcp:scan &lt;pkg&gt;</code> shortcut command</td>
+            </tr>
+            <tr>
+              <td><span class="components-table__name">agents/library-explorer.md</span></td>
+              <td class="components-table__desc">Read-only haiku subagent for deep research</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile: Card View -->
+      <div class="components-cards">
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">.mcp.json</div>
+          <div class="component-card__desc">MCP server declaration — starts <code>lcp serve-all</code> via wrapper script</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">bin/serve.sh</div>
+          <div class="component-card__desc">Startup wrapper — validates PATH, injects registry config</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">hooks/hooks.json</div>
+          <div class="component-card__desc">SessionStart hook — warns if <code>lcp</code> not found</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">skills/lcp-universal/</div>
+          <div class="component-card__desc">Auto-invoked skill for proactive library resolution</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">skills/lcp-usage/</div>
+          <div class="component-card__desc">Auto-invoked skill for LCP usage guidance</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">commands/resolve.md</div>
+          <div class="component-card__desc"><code>/lcp:resolve &lt;pkg&gt;</code> shortcut command</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">commands/scan.md</div>
+          <div class="component-card__desc"><code>/lcp:scan &lt;pkg&gt;</code> shortcut command</div>
+        </div>
+        <div class="component-card" data-animate="fade-up">
+          <div class="component-card__name">agents/library-explorer.md</div>
+          <div class="component-card__desc">Read-only haiku subagent for deep research</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registry Configuration Section -->
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Teams</span>
+        <h2 class="section-header__title">Private Registry Support</h2>
+        <p class="section-header__text">
+          Teams can host private registries with pre-built manifests for internal packages.
+          Configure during plugin install or update later.
+        </p>
+      </div>
+
+      <div data-animate="fade-up" data-delay="100">
+        <div class="code-block mb-lg">
+          <div class="code-block__header">
+            <span class="code-block__lang">bash</span>
+            <button class="code-block__copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code># Configure a private registry URL
+claude plugin config lcp registries "https://your-registry.example.com"
+
+# Multiple registries (first match wins)
+claude plugin config lcp registries "https://internal.example.com,https://public.example.com"</code></pre>
+        </div>
+
+        <div class="card" style="border-left: 3px solid var(--color-primary);">
+          <div style="display: flex; align-items: flex-start; gap: var(--space-md);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <p style="color: var(--color-text-secondary); font-size: 0.9375rem; line-height: 1.6;">
+              The wrapper script <code>serve.sh</code> reads the <code>CLAUDE_PLUGIN_CONFIG_REGISTRIES</code>
+              environment variable and passes the first URL to <code>lcp serve-all --registry</code>.
+              This allows teams to share pre-built manifests for internal or proprietary packages.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Troubleshooting Section -->
+  <section class="section section--muted">
+    <div class="container container--narrow">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Help</span>
+        <h2 class="section-header__title">Troubleshooting</h2>
+      </div>
+
+      <div class="troubleshoot-grid">
+        <div class="troubleshoot-card" data-animate="fade-up" data-delay="100">
+          <div class="troubleshoot-card__title"><code>"lcp not found"</code> warning</div>
+          <p class="troubleshoot-card__text">
+            Install with <code>pip install lcp</code> and ensure it's on your PATH.
+            The SessionStart hook checks this automatically and will warn you if <code>lcp</code> is missing.
+          </p>
+        </div>
+
+        <div class="troubleshoot-card" data-animate="fade-up" data-delay="200">
+          <div class="troubleshoot-card__title">MCP server not starting</div>
+          <p class="troubleshoot-card__text">
+            Check that <code>lcp serve-all</code> works from your terminal.
+            The wrapper script at <code>bin/serve.sh</code> needs execute permission —
+            run <code>chmod +x bin/serve.sh</code> if needed.
+          </p>
+        </div>
+
+        <div class="troubleshoot-card" data-animate="fade-up" data-delay="300">
+          <div class="troubleshoot-card__title">Library not resolving</div>
+          <p class="troubleshoot-card__text">
+            Ensure the package is pip-installed in the same Python environment.
+            Try <code>lcp scan &lt;package&gt;</code> manually to verify the library can be introspected.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

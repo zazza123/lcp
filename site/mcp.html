@@ -485,8 +485,8 @@
       </h1>
       
       <p class="hero__subtitle">
-        Expose LCP manifests via Model Context Protocol (MCP) so AI assistants can 
-        query accurate, real-time library information and generate correct code.
+        Expose LCP manifests via Model Context Protocol (MCP). The universal server 
+        resolves any pip-installed library on demand — no pre-built manifests needed.
       </p>
       
       <div class="hero__actions">
@@ -582,9 +582,9 @@
               <line x1="12" y1="22.08" x2="12" y2="12"></line>
             </svg>
           </div>
-          <div class="mcp-flow__title">1. Generate LCP</div>
+          <div class="mcp-flow__title">1. Install LCP</div>
           <div class="mcp-flow__text">
-            Scan your Python packages to create LCP manifest files with complete API information.
+            Install the SDK. That's it — no pre-scanning needed.
           </div>
           <div class="mcp-flow__arrow">→</div>
         </div>
@@ -595,9 +595,9 @@
               <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
             </svg>
           </div>
-          <div class="mcp-flow__title">2. Start MCP Server</div>
+          <div class="mcp-flow__title">2. Start Universal Server</div>
           <div class="mcp-flow__text">
-            Launch the LCP-MCP server to expose manifests via the Model Context Protocol.
+            <code>lcp serve-all</code> starts a single server that handles all libraries.
           </div>
           <div class="mcp-flow__arrow">→</div>
         </div>
@@ -610,9 +610,9 @@
               <line x1="9" y1="21" x2="9" y2="9"></line>
             </svg>
           </div>
-          <div class="mcp-flow__title">3. AI Queries APIs</div>
+          <div class="mcp-flow__title">3. AI Resolves On-Demand</div>
           <div class="mcp-flow__text">
-            AI agents query the server for accurate function signatures and documentation.
+            Agent calls <code>resolve_library("pkg")</code> and the library is scanned, cached, and ready.
           </div>
         </div>
       </div>
@@ -655,7 +655,44 @@
             <div class="conversation-msg__content">
               <div class="conversation-msg__role">AI Agent</div>
               <div class="conversation-msg__text">
-                Let me check the exact signature for the requests.get function...
+                Let me load the requests library and check the exact API...
+              </div>
+              <div class="conversation-msg__tool-call">
+                <span class="conversation-msg__tool-name">resolve_library</span>("requests")
+              </div>
+            </div>
+          </div>
+          
+          <div class="conversation-msg">
+            <div class="conversation-msg__avatar conversation-msg__avatar--tool">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <div class="conversation-msg__content">
+              <div class="conversation-msg__role">MCP Server Response</div>
+              <div class="conversation-msg__tool-result">
+{
+  "library": "requests",
+  "version": "2.31.0",
+  "symbols": 150
+}</div>
+            </div>
+          </div>
+
+          <div class="conversation-msg">
+            <div class="conversation-msg__avatar conversation-msg__avatar--agent">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <circle cx="15.5" cy="8.5" r="1.5"></circle>
+                <path d="M9 15h6"></path>
+              </svg>
+            </div>
+            <div class="conversation-msg__content">
+              <div class="conversation-msg__role">AI Agent</div>
+              <div class="conversation-msg__text">
+                Now let me get the exact signature...
               </div>
               <div class="conversation-msg__tool-call">
                 <span class="conversation-msg__tool-name">get_symbol</span>("requests:get")
@@ -734,7 +771,7 @@ response = requests.get(
       <div data-animate="fade-up">
         <h3 class="mb-md">
           <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">1</span>
-          Install & Generate LCP
+          Install
         </h3>
         
         <div class="code-block">
@@ -749,11 +786,7 @@ response = requests.get(
             </button>
           </div>
           <pre><code># Install the SDK
-pip install lcp
-
-# Generate LCP for your libraries
-lcp scan requests -o requests.lcp.json
-lcp scan pandas -o pandas.lcp.json</code></pre>
+pip install lcp</code></pre>
         </div>
       </div>
       
@@ -761,7 +794,7 @@ lcp scan pandas -o pandas.lcp.json</code></pre>
       <div class="mt-2xl" data-animate="fade-up" data-delay="100">
         <h3 class="mb-md">
           <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--color-primary); color: white; border-radius: 50%; font-size: 0.875rem; font-weight: 700; margin-right: 12px;">2</span>
-          Start the MCP Server
+          Start the Universal Server
         </h3>
         
         <div class="code-block">
@@ -775,11 +808,14 @@ lcp scan pandas -o pandas.lcp.json</code></pre>
               Copy
             </button>
           </div>
-          <pre><code># Start MCP server for a single library
-lcp serve requests.lcp.json
+          <pre><code># Start the universal MCP server
+lcp serve-all
 
-# With a custom name
-lcp serve requests.lcp.json --name requests-api</code></pre>
+# With a custom cache directory
+lcp serve-all --cache-dir /path/to/cache
+
+# With registry fallback for packages not installed locally
+lcp serve-all --registry https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main</code></pre>
         </div>
       </div>
       
@@ -840,14 +876,11 @@ lcp serve requests.lcp.json --name requests-api</code></pre>
                   Copy
                 </button>
               </div>
-              <pre><code># Add a server in the default (local) scope
-claude mcp add lcp-requests -- lcp serve /path/to/requests.lcp.json
+              <pre><code># Recommended: universal server (resolves any library on demand)
+claude mcp add lcp-universal -- lcp serve-all
 
-# Add a server scoped to the current project
-claude mcp add --scope project lcp-requests -- lcp serve ./requests.lcp.json
-
-# Add a server for your user account (available in all projects)
-claude mcp add --scope user lcp-requests -- lcp serve /path/to/requests.lcp.json</code></pre>
+# With registry fallback
+claude mcp add lcp-universal -- lcp serve-all --registry https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main</code></pre>
             </div>
             <p class="text-muted mb-md">Alternatively, edit the configuration file manually (<code>~/.claude.json</code> for user/local scopes or <code>.mcp.json</code> in the project root for project scope):</p>
             <div class="code-block">
@@ -863,9 +896,9 @@ claude mcp add --scope user lcp-requests -- lcp serve /path/to/requests.lcp.json
               </div>
               <pre><code>{
   "mcpServers": {
-    "lcp-requests": {
+    "lcp-universal": {
       "command": "lcp",
-      "args": ["serve", "/path/to/requests.lcp.json"]
+      "args": ["serve-all"]
     }
   }
 }</code></pre>
@@ -909,9 +942,9 @@ copilot
               </div>
               <pre><code>{
   "mcpServers": {
-    "lcp-requests": {
+    "lcp-universal": {
       "command": "lcp",
-      "args": ["serve", "/path/to/requests.lcp.json"]
+      "args": ["serve-all"]
     }
   }
 }</code></pre>
@@ -932,10 +965,7 @@ copilot
                   Copy
                 </button>
               </div>
-              <pre><code># Add an MCP server using the CLI
-codex mcp add lcp-requests -- lcp serve /path/to/requests.lcp.json
-
-# Or configure in ~/.codex/config.toml</code></pre>
+              <pre><code>codex mcp add lcp-universal -- lcp serve-all</code></pre>
             </div>
             <p class="text-muted mb-md">Add to your <code>~/.codex/config.toml</code>:</p>
             <div class="code-block">
@@ -949,9 +979,9 @@ codex mcp add lcp-requests -- lcp serve /path/to/requests.lcp.json
                   Copy
                 </button>
               </div>
-              <pre><code>[mcp_servers.lcp-requests]
+              <pre><code>[mcp_servers.lcp-universal]
 command = "lcp"
-args = ["serve", "/path/to/requests.lcp.json"]</code></pre>
+args = ["serve-all"]</code></pre>
             </div>
           </div>
           
@@ -970,10 +1000,7 @@ args = ["serve", "/path/to/requests.lcp.json"]</code></pre>
                 </button>
               </div>
               <pre><code># Run the interactive wizard to add a server
-opencode mcp add
-
-# list configured servers
-opencode mcp list</code></pre>
+opencode mcp add</code></pre>
             </div>
             <p class="text-muted mb-md">Alternatively, add a section in your OpenCode config (e.g. <code>~/.opencode/config.json</code>):</p>
             <div class="code-block">
@@ -990,9 +1017,9 @@ opencode mcp list</code></pre>
               <pre><code>{
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "lcp-requests": {
+    "lcp-universal": {
       "type": "local",
-      "command": ["lcp", "serve", "/path/to/requests.lcp.json"],
+      "command": ["lcp", "serve-all"],
       "enabled": true
     }
   }
@@ -1000,6 +1027,45 @@ opencode mcp list</code></pre>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Single Library Mode -->
+  <section class="section section--muted">
+    <div class="container container--narrow">
+      <div class="section-header" data-animate="fade-up">
+        <span class="section-header__label">Alternative</span>
+        <h2 class="section-header__title">Single Library Mode</h2>
+        <p class="section-header__text">
+          If you prefer to serve a specific pre-built manifest, use the original <code>lcp serve</code> command.
+        </p>
+      </div>
+
+      <div data-animate="fade-up" data-delay="100">
+        <div class="code-block">
+          <div class="code-block__header">
+            <span class="code-block__lang">bash</span>
+            <button class="code-block__copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code># Generate a manifest first
+lcp scan requests -o requests.lcp.json
+
+# Serve a single manifest
+lcp serve requests.lcp.json
+
+# With a custom server name
+lcp serve requests.lcp.json --name lcp-requests</code></pre>
+        </div>
+
+        <p class="text-muted mt-2xl">This mode is useful when you want to serve a specific version of a manifest, 
+        or when working in environments where on-the-fly scanning isn't available.</p>
       </div>
     </div>
   </section>
@@ -1114,6 +1180,16 @@ ln -s $(pwd)/lcp/skill/lcp-usage ~/.copilot/skills/lcp-usage</code></pre>
           </thead>
           <tbody>
             <tr>
+              <td><span class="tools-table__name tools-table__name--new">resolve_library</span></td>
+              <td class="tools-table__desc">Load a library on demand. Scans the pip-installed package, caches the result, and makes it available for exploration.</td>
+              <td><code class="tools-table__output">{ library, version, symbols_count }</code></td>
+            </tr>
+            <tr>
+              <td><span class="tools-table__name tools-table__name--new">list_libraries</span></td>
+              <td class="tools-table__desc">List all currently loaded libraries in the universal server with version and symbol counts.</td>
+              <td><code class="tools-table__output">[{ name, version, symbols }, ...]</code></td>
+            </tr>
+            <tr>
               <td><span class="tools-table__name">get_manifest</span></td>
               <td class="tools-table__desc">Get library metadata including name, version, language, and distribution information.</td>
               <td><code class="tools-table__output">{ name, version, language, distribution }</code></td>
@@ -1164,6 +1240,24 @@ ln -s $(pwd)/lcp/skill/lcp-usage ~/.copilot/skills/lcp-usage</code></pre>
 
       <!-- Mobile: Card View -->
       <div class="tools-cards">
+        <div class="tool-card tool-card--new" data-animate="fade-up">
+          <div class="tool-card__name tool-card__name--new">resolve_library</div>
+          <div class="tool-card__desc">Load a library on demand. Scans the pip-installed package, caches the result, and makes it available for exploration.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>{ library, version, symbols_count }</code>
+          </div>
+        </div>
+
+        <div class="tool-card tool-card--new" data-animate="fade-up">
+          <div class="tool-card__name tool-card__name--new">list_libraries</div>
+          <div class="tool-card__desc">List all currently loaded libraries in the universal server with version and symbol counts.</div>
+          <div class="tool-card__output">
+            <div class="tool-card__output-label">Example output:</div>
+            <code>[{ name, version, symbols }, ...]</code>
+          </div>
+        </div>
+
         <div class="tool-card" data-animate="fade-up">
           <div class="tool-card__name">get_manifest</div>
           <div class="tool-card__desc">Get library metadata including name, version, language, and distribution information.</div>
@@ -1338,24 +1432,22 @@ ln -s $(pwd)/lcp/skill/lcp-usage ~/.copilot/skills/lcp-usage</code></pre>
               Copy
             </button>
           </div>
-          <pre><code>from lcp.mcp_server import create_server, run_server
+          <pre><code>from lcp.mcp_server import create_server, create_universal_server, run_server
 
-# Create a customized server
+# Universal server (recommended) — resolves any library on demand
+server = create_universal_server(
+    name="lcp-universal",
+    cache_dir="~/.lcp/cache"
+)
+
+# Single library mode
 server = create_server(
     "path/to/manifest.lcp.json",
     name="my-library-api"
 )
 
-# Or run directly with defaults
-run_server("path/to/manifest.lcp.json")
-
-# You can also load multiple manifests
-from lcp import scan
-
-# Generate and serve on-the-fly
-lcp_doc = scan("requests")
-lcp_doc.to_file("/tmp/requests.lcp.json")
-run_server("/tmp/requests.lcp.json")</code></pre>
+# Run directly
+run_server("path/to/manifest.lcp.json")</code></pre>
         </div>
       </div>
     </div>
