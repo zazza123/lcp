@@ -12,6 +12,8 @@
   "keywords": ["python", "documentation", "mcp", "api-introspection", "lcp"],
   "userConfig": {
     "registries": {
+      "type": "string",
+      "title": "LCP Registries",
       "description": "Comma-separated list of LCP registry URLs. The first URL is used as the primary registry for fetching pre-built manifests. Leave empty to use only the official registry.",
       "sensitive": false
     }
