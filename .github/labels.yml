@@ -2,150 +2,152 @@
 # Synced automatically by .github/workflows/labels.yml (uses EndBug/label-sync).
 #
 # Rules:
-#   - Colors are 6-digit hex without leading '#'.
+#   - Colors are 6-digit hex without leading '#', always quoted so YAML
+#     does not interpret all-digit values (e.g. "000000", "008672") as
+#     integers, which makes label-sync reject the file.
 #   - Use the namespace `category:value` for multi-value taxonomies
 #     (priority, status, area) so they group naturally in the UI.
 
 # ─── Type ────────────────────────────────────────────────────────────────────
 - name: breaking
-  color: b60205
+  color: "b60205"
   description: Backwards-incompatible change (triggers a major version bump)
 
 - name: bug
-  color: d73a4a
+  color: "d73a4a"
   description: Something is not working as expected
 
 - name: feature
-  color: a2eeef
+  color: "a2eeef"
   description: New feature or capability
 
 - name: enhancement
-  color: 84b6eb
+  color: "84b6eb"
   description: Improvement to an existing feature
 
 - name: docs
-  color: 0075ca
+  color: "0075ca"
   description: Documentation only
 
 - name: refactor
-  color: cfd3d7
+  color: "cfd3d7"
   description: Code restructuring with no behavior change
 
 - name: test
-  color: bfd4f2
+  color: "bfd4f2"
   description: Adds or updates tests
 
 - name: question
-  color: d876e3
+  color: "d876e3"
   description: Further information is requested
 
 # ─── Priority ────────────────────────────────────────────────────────────────
 - name: "priority:high"
-  color: b60205
+  color: "b60205"
   description: Blocks usage or causes data loss
 
 - name: "priority:medium"
-  color: fbca04
+  color: "fbca04"
   description: Notable issue, should be scheduled
 
 - name: "priority:low"
-  color: 0e8a16
+  color: "0e8a16"
   description: Minor or cosmetic
 
 # ─── Status ──────────────────────────────────────────────────────────────────
 - name: "status:needs-triage"
-  color: ededed
+  color: "ededed"
   description: Awaiting maintainer review and labeling
 
 - name: "status:needs-info"
-  color: ededed
+  color: "ededed"
   description: Awaiting reporter response
 
 - name: "status:blocked"
-  color: 000000
+  color: "000000"
   description: Cannot progress until something external resolves
 
 - name: "status:in-progress"
-  color: 5319e7
+  color: "5319e7"
   description: Actively being worked on
 
 - name: "status:wontfix"
-  color: ffffff
+  color: "ffffff"
   description: This will not be worked on
 
 - name: "status:duplicate"
-  color: cfd3d7
+  color: "cfd3d7"
   description: Already tracked by another issue
 
 - name: "status:stale"
-  color: ededed
+  color: "ededed"
   description: No activity for a long time; will be closed automatically
 
 # ─── Area (project-specific subsystems) ──────────────────────────────────────
 - name: "area:scanner"
-  color: c5def5
+  color: "c5def5"
   description: Python introspection / scanner module
 
 - name: "area:generator"
-  color: c5def5
+  color: "c5def5"
   description: Scanned-data to LCP conversion
 
 - name: "area:validator"
-  color: c5def5
+  color: "c5def5"
   description: JSON Schema validation
 
 - name: "area:mcp-server"
-  color: c5def5
+  color: "c5def5"
   description: MCP server and tooling
 
 - name: "area:ai-docgen"
-  color: c5def5
+  color: "c5def5"
   description: AI-powered docstring generation (lcp[ai])
 
 - name: "area:cli"
-  color: c5def5
+  color: "c5def5"
   description: Command-line interface
 
 - name: "area:plugin"
-  color: c5def5
+  color: "c5def5"
   description: Claude Code plugin (plugin/lcp/)
 
 - name: "area:docs"
-  color: c5def5
+  color: "c5def5"
   description: Documentation site / docs/ folder
 
 - name: "area:ci"
-  color: c5def5
+  color: "c5def5"
   description: GitHub Actions and CI configuration
 
 # ─── Community ───────────────────────────────────────────────────────────────
 - name: "good first issue"
-  color: 7057ff
+  color: "7057ff"
   description: Good for newcomers
 
 - name: "help wanted"
-  color: 008672
+  color: "008672"
   description: Extra attention or community contribution welcome
 
 # ─── Dependencies (used by Dependabot) ───────────────────────────────────────
 - name: dependencies
-  color: 0366d6
+  color: "0366d6"
   description: Dependency updates
 
 - name: python
-  color: 3572a5
+  color: "3572a5"
   description: Python ecosystem dependency
 
 - name: github-actions
-  color: 2088ff
+  color: "2088ff"
   description: GitHub Actions ecosystem dependency
 
 # ─── Security ────────────────────────────────────────────────────────────────
 - name: security
-  color: ee0701
+  color: "ee0701"
   description: Security-related fix or report
 
 # ─── Release management ──────────────────────────────────────────────────────
 - name: "skip-changelog"
-  color: ededed
+  color: "ededed"
   description: Exclude this PR from the auto-generated release notes
