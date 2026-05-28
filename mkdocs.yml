@@ -1,0 +1,85 @@
+site_name: Library Context Protocol
+site_description: Machine-readable library descriptions for AI, IDEs, and developer tools.
+site_url: https://zazza123.github.io/lcp/
+repo_url: https://github.com/zazza123/lcp
+repo_name: zazza123/lcp
+edit_uri: edit/main/site/
+
+docs_dir: site
+site_dir: site_build
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.32.png
+  font:
+    text: false
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Get Started:
+      - Introduction: docs/introduction.md
+      - Quickstart: docs/quickstart.md
+      - CLI reference: docs/cli.md
+  - Guides:
+      - MCP server: docs/guides/mcp-server.md
+      - Claude Code plugin: docs/guides/claude-code-plugin.md
+      - AI DocGen: docs/guides/ai-docgen.md
+      - Publishing: docs/guides/publishing.md
+  - Reference:
+      - LCP v1 spec: docs/spec/index.md
+      - JSON Schema: docs/spec/schema.md
+      - Examples: docs/spec/examples.md
