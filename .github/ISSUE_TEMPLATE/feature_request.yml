@@ -1,0 +1,65 @@
+name: Feature request
+description: Suggest a new capability, API, or improvement for lcp.
+title: "[Feature]: "
+labels: ["feature", "status:needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing an improvement! Filling in the fields below
+        helps reach a decision faster. For broader design discussions,
+        consider opening a
+        [GitHub Discussion](https://github.com/zazza123/lcp/discussions)
+        first.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What is hard or impossible today? Who is affected and why?
+      placeholder: |
+        When scanning packages with namespace subpackages, the resulting
+        manifest does not include ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: |
+        How should `lcp` solve this? Describe the user-visible behaviour,
+        new CLI flag / API, or change in output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: |
+        Other approaches you thought about and why you rejected them. Even
+        a short note here helps avoid re-litigating during review.
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example usage
+      description: |
+        A short CLI invocation or Python API sketch showing how the feature
+        would be used in practice.
+      render: shell
+      placeholder: |
+        $ lcp scan mypkg --include-namespaces -o mypkg.lcp.json
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Links to related issues, prior art, or relevant background.
+    validations:
+      required: false

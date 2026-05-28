@@ -1,0 +1,10 @@
+# Code owners for the lcp repository.
+#
+# When a PR touches a matching path, GitHub auto-requests review from the
+# listed owners. Pairs with branch protection's "Require review from Code
+# Owners" option.
+#
+# Syntax reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo.
+* @zazza123
