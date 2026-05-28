@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/zazza123/lcp/schema/lcp-v1.json",
+  "title": "Library Context Protocol (LCP) v1",
+  "type": "object",
+  "required": ["manifest", "symbols"],
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x-": {}
+  },
+  "properties": {
+    "manifest": {
+      "type": "object",
+      "required": ["schema_version", "library"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "1.0"
+        },
+        "library": {
+          "type": "object",
+          "required": ["name", "version", "language"],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-": {}
+          },
+          "properties": {
+            "name": { "type": "string" },
+            "version": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+.][0-9A-Za-z.-]+|[a-zA-Z][0-9A-Za-z.-]*)?$"
+            },
+            "language": { "type": "string" },
+            "runtime_language": { "type": ["string", "null"] },
+            "bindings": { "type": ["string", "null"] }
+          }
+        },
+        "compatibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-": {}
+          },
+          "properties": {
+            "python": { "type": ["string", "null"] },
+            "node": { "type": ["string", "null"] },
+            "platforms": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["linux", "darwin", "win32", "other"]
+              }
+            }
+          }
+        },
+        "distribution": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["pypi", "npm", "cargo", "maven", "nuget", "other"]
+            },
+            { "type": "null" }
+          ]
+        },
+        "license": { "type": ["string", "null"] },
+        "changelog": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-": {}
+          },
+          "properties": {
+            "url": { "type": "string", "format": "uri" },
+            "format": { "type": "string" }
+          }
+        },
+        "generation": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-": {}
+          },
+          "properties": {
+            "tool": { "type": "string" },
+            "version": { "type": "string" },
+            "date": { "type": "string", "format": "date-time" }
+          }
+        },
+        "symbol_resolution": {
+          "type": "string",
+          "enum": ["fully-qualified", "module-relative"],
+          "default": "fully-qualified"
+        }
+      }
+    },
+
+    "symbols": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/symbol"
+      }
+    },
+
+    "deprecations": {
+      "type": ["object", "null"],
+      "additionalProperties": {
+        "$ref": "#/$defs/deprecation"
+      }
+    },
+
+    "detailed_index": {
+      "type": ["object", "null"],
+      "additionalProperties": {
+        "$ref": "#/$defs/detailed_index_entry"
+      }
+    }
+  },
+
+  "$defs": {
+    "symbol": {
+      "type": "object",
+      "required": ["kind", "semantics"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["function", "class", "method", "attribute", "module", "constant"]
+        },
+        "module": { "type": ["string", "null"] },
+
+        "signatures": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/signature" }
+        },
+
+        "semantics": { "$ref": "#/$defs/semantics" },
+        "effects": { "$ref": "#/$defs/effects" },
+        "stability": { "$ref": "#/$defs/stability" },
+
+        "requires": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "when": { "type": ["string", "null"] },
+        "async": { "type": "boolean", "default": false },
+
+        "params": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/param" }
+        },
+
+        "returns": { "$ref": "#/$defs/type_ref" },
+
+        "raises": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "additionalProperties": false,
+            "patternProperties": {
+              "^x-": {}
+            },
+            "properties": {
+              "type": { "type": "string" },
+              "condition": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+
+    "param": {
+      "type": "object",
+      "required": ["name", "type"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "$ref": "#/$defs/type_ref" },
+
+        "required": { "type": "boolean", "default": true },
+
+        "default": {},
+
+        "variadic": { "type": "boolean", "default": false },
+
+        "kind": {
+          "type": ["string", "null"],
+          "enum": [
+            "positional",
+            "keyword",
+            "positional_only",
+            "keyword_only",
+            "rest"
+          ]
+        },
+
+        "description": { "type": ["string", "null"] }
+      }
+    },
+
+    "type_ref": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "patternProperties": {
+            "^x-": {}
+          },
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["named", "array", "map", "tuple", "union"]
+            },
+
+            "name": { "type": "string" },
+
+            "items": { "$ref": "#/$defs/type_ref" },
+
+            "key": { "$ref": "#/$defs/type_ref" },
+            "value": { "$ref": "#/$defs/type_ref" },
+
+            "elements": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/type_ref" }
+            },
+
+            "args": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/type_ref" }
+            }
+          },
+          "allOf": [
+            {
+              "if": { "properties": { "kind": { "const": "named" } } },
+              "then": { "required": ["name"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "array" } } },
+              "then": { "required": ["items"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "map" } } },
+              "then": { "required": ["key", "value"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "tuple" } } },
+              "then": { "required": ["elements"] }
+            },
+            {
+              "if": { "properties": { "kind": { "const": "union" } } },
+              "then": { "required": ["args"] }
+            }
+          ]
+        }
+      ]
+    },
+
+    "semantics": {
+      "type": "object",
+      "required": ["summary"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "summary": { "type": "string" },
+        "description": { "type": ["string", "null"] },
+        "examples": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "required": ["code"],
+            "additionalProperties": false,
+            "patternProperties": {
+              "^x-": {}
+            },
+            "properties": {
+              "code": { "type": "string" },
+              "description": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+
+    "effects": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "categories": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "string",
+            "enum": ["io", "network", "filesystem", "cpu", "memory", "gpu"]
+          }
+        },
+        "idempotent": { "type": ["boolean", "null"] },
+        "thread_safe": { "type": ["boolean", "null"] },
+        "deterministic": { "type": ["boolean", "null"] }
+      }
+    },
+
+    "stability": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["experimental", "stable", "deprecated"]
+        },
+        "since": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] },
+        "tracking_issue": { "type": ["string", "null"], "format": "uri" }
+      }
+    },
+
+    "deprecation": {
+      "type": "object",
+      "required": ["deprecated_in"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "deprecated_in": { "type": "string" },
+        "replaced_by": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+
+    "detailed_index_entry": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+
+    "artifact": {
+      "type": "object",
+      "required": ["path"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x-": {}
+      },
+      "properties": {
+        "path": { "type": "string" },
+        "lines": {
+          "type": ["array", "null"],
+          "items": { "type": "integer" }
+        },
+        "availability": {
+          "type": ["string", "null"],
+          "enum": ["full", "excerpt", "signature", null]
+        }
+      }
+    }
+  }
+}

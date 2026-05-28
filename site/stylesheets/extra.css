@@ -1,0 +1,20 @@
+/* Palette overrides matching the LCP brand orange */
+:root {
+  --md-primary-fg-color: #ea580c;
+  --md-primary-fg-color--light: #f97316;
+  --md-primary-fg-color--dark: #c2410c;
+  --md-accent-fg-color: #f59e0b;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #fb923c;
+  --md-primary-fg-color--light: #fdba74;
+  --md-primary-fg-color--dark: #f97316;
+  --md-accent-fg-color: #fbbf24;
+}
+
+/* Slightly tighten landing typography */
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
