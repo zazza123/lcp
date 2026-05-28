@@ -1,0 +1,22 @@
+name: release-drafter
+
+on:
+  push:
+    branches: [main]
+  # Allow manual run from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  draft:
+    name: update release draft
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v6
+        with:
+          config-name: release-drafter.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

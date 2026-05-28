@@ -1,0 +1,51 @@
+name: stale
+
+on:
+  schedule:
+    # Run daily at 03:00 UTC
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: mark and close stale items
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # ─── Issues ───────────────────────────────────────────────────────
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          stale-issue-label: "status:stale"
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has
+            had no activity for 60 days. It will be closed in 14 days if no
+            further activity occurs. If this issue is still relevant, please
+            leave a comment to keep it open.
+          close-issue-message: >
+            Closing as stale. Feel free to reopen with new information or
+            open a fresh issue if the problem persists.
+          exempt-issue-labels: "priority:high,status:in-progress,status:blocked,good first issue,help wanted,security"
+
+          # ─── Pull Requests ────────────────────────────────────────────────
+          days-before-pr-stale: 30
+          days-before-pr-close: 14
+          stale-pr-label: "status:stale"
+          stale-pr-message: >
+            This pull request has been automatically marked as stale because
+            it has had no activity for 30 days. It will be closed in 14 days
+            if no further activity occurs. Please push new commits or comment
+            to keep it open.
+          close-pr-message: >
+            Closing as stale. Feel free to reopen and push new commits when
+            you are ready to continue.
+          exempt-pr-labels: "status:in-progress,status:blocked,security"
+
+          # ─── Behaviour ────────────────────────────────────────────────────
+          operations-per-run: 100
+          remove-stale-when-updated: true
+          ascending: true

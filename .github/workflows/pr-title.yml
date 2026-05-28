@@ -1,0 +1,37 @@
+name: pr-title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+
+permissions:
+  pull-requests: read
+
+jobs:
+  check:
+    name: validate pr title against commit convention
+    runs-on: ubuntu-latest
+    steps:
+      - name: check title prefix
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+          echo "Validating PR title: $PR_TITLE"
+          # Project commit convention: "CODE: Title" where CODE is one of the
+          # allowed 3-letter action prefixes (see CONTRIBUTING.md).
+          pattern='^(ADD|UPD|FIX|DEL|DOC|REF|TST|STY|CFG|SEC|DEP|MRG|WIP):[[:space:]].+'
+          if ! [[ "$PR_TITLE" =~ $pattern ]]; then
+            echo "::error::PR title must start with one of the project commit codes followed by ': '"
+            echo "::error::Expected format: CODE: short imperative title"
+            echo "::error::Allowed codes: ADD, UPD, FIX, DEL, DOC, REF, TST, STY, CFG, SEC, DEP, MRG, WIP"
+            echo "::error::Examples:"
+            echo "::error::  ADD: User authentication with JWT tokens"
+            echo "::error::  FIX: Scanner failing on packages with __getattr__ modules"
+            exit 1
+          fi
+          echo "PR title format is valid."

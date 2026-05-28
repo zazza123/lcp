@@ -7,6 +7,10 @@
 #     (priority, status, area) so they group naturally in the UI.
 
 # ─── Type ────────────────────────────────────────────────────────────────────
+- name: breaking
+  color: b60205
+  description: Backwards-incompatible change (triggers a major version bump)
+
 - name: bug
   color: d73a4a
   description: Something is not working as expected
@@ -73,6 +77,10 @@
   color: cfd3d7
   description: Already tracked by another issue
 
+- name: "status:stale"
+  color: ededed
+  description: No activity for a long time; will be closed automatically
+
 # ─── Area (project-specific subsystems) ──────────────────────────────────────
 - name: "area:scanner"
   color: c5def5
@@ -136,3 +144,8 @@
 - name: security
   color: ee0701
   description: Security-related fix or report
+
+# ─── Release management ──────────────────────────────────────────────────────
+- name: "skip-changelog"
+  color: ededed
+  description: Exclude this PR from the auto-generated release notes
