@@ -9,8 +9,10 @@ import click
 from .coverage import generate_coverage, generate_coverage_from_scanned
 from .generator import generate_lcp
 from .mcp_server import run_server as run_mcp_server
+from .mcp_server import run_universal_server, _DEFAULT_REGISTRY_URL
+from .publish import PublishError, _DEFAULT_REGISTRY_REPO, publish_manifest
 from .scanner import scan_package
-from .validator import LCPValidationError, validate_document
+from .validator import LCPValidationError
 
 
 @click.group()
@@ -88,7 +90,7 @@ def scan(
         )
 
         # Generate LCP
-        click.echo(f"Generating LCP document...", err=True)
+        click.echo("Generating LCP document...", err=True)
         lcp_doc = generate_lcp(scanned)
 
         # Validate if requested
@@ -270,8 +272,254 @@ def serve(manifest: str, name: str | None):
         sys.exit(1)
 
 
+@main.command("serve-all")
+@click.option(
+    "--cache-dir",
+    type=click.Path(),
+    default=None,
+    help="Cache directory for LCP manifests (default: ~/.lcp/cache/).",
+)
+@click.option(
+    "--name",
+    type=str,
+    default="lcp-universal",
+    show_default=True,
+    help="Server name for MCP identification.",
+)
+@click.option(
+    "--no-cache",
+    is_flag=True,
+    default=False,
+    help="Disable reading from and writing to the local cache.",
+)
+@click.option(
+    "--registry",
+    type=str,
+    default=None,
+    help=(
+        "Base URL of an LCP registry to use as a fallback when local scanning "
+        "fails. Manifests are fetched from "
+        "{registry}/manifests/{language}/{name}/{version}.lcp.json. "
+        f"The official registry is: {_DEFAULT_REGISTRY_URL}"
+    ),
+)
+def serve_all(cache_dir: str | None, name: str, no_cache: bool, registry: str | None):
+    """Start a universal MCP server that resolves any installed Python library.
+
+    Unlike `lcp serve`, this command requires no pre-built manifest.  AI agents
+    call the `resolve_library` tool to load any pip-installed package on the fly.
+    Manifests are cached under ~/.lcp/cache/ by default.
+
+    When local scanning fails, the server can optionally fetch the manifest from
+    a remote LCP registry (configured via --registry).  The resolution order is:
+
+    \b
+    1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
+    2. Live scan    (pip-installed package)
+    3. Registry     (HTTP fetch from --registry/manifests/python/{name}/{version}.lcp.json)
+
+    Setup (one-time):
+
+        # Claude Code
+        claude mcp add lcp -- lcp serve-all
+
+        # Cursor / Claude Desktop (.cursor/mcp.json or claude_desktop_config.json)
+        # { "mcpServers": { "lcp": { "command": "lcp", "args": ["serve-all"] } } }
+
+    Examples:
+
+        lcp serve-all
+
+        lcp serve-all --cache-dir /tmp/lcp-cache
+
+        lcp serve-all --no-cache --name my-lcp
+
+        lcp serve-all --registry https://registry.example.com
+    """
+    try:
+        run_universal_server(
+            name=name, cache_dir=cache_dir, no_cache=no_cache, registry_url=registry
+        )
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        import sys
+
+        sys.exit(1)
+
+
 @main.command()
-@click.argument("coverage_json", type=click.Path(exists=True))
+@click.argument("package")
+@click.option(
+    "--token",
+    type=str,
+    default=None,
+    envvar=["LCP_GITHUB_TOKEN", "GITHUB_TOKEN"],
+    help=(
+        "GitHub personal access token with 'repo' or 'public_repo' scope. "
+        "Can also be set via LCP_GITHUB_TOKEN or GITHUB_TOKEN env var."
+    ),
+)
+@click.option(
+    "--registry-repo",
+    type=str,
+    default=_DEFAULT_REGISTRY_REPO,
+    show_default=True,
+    help="Target registry repository in 'owner/name' format.",
+)
+@click.option(
+    "--file",
+    "manifest_file",
+    type=click.Path(exists=True),
+    default=None,
+    help="Use an existing LCP JSON file instead of scanning the package.",
+)
+@click.option(
+    "--include-private",
+    is_flag=True,
+    default=False,
+    help="Include private symbols when scanning (starting with _).",
+)
+@click.option(
+    "--no-recursive",
+    is_flag=True,
+    default=False,
+    help="Don't scan submodules recursively.",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Generate manifest and show what would be submitted without creating a PR.",
+)
+def publish(
+    package: str,
+    token: str | None,
+    registry_repo: str,
+    manifest_file: str | None,
+    include_private: bool,
+    no_recursive: bool,
+    dry_run: bool,
+):
+    """Publish an LCP manifest to the registry via GitHub Pull Request.
+
+    PACKAGE is the name of an installed Python package to publish.
+
+    The command scans the package (or uses an existing manifest via --file),
+    validates it, then opens a PR to the registry repository.
+
+    Prerequisites:
+
+    \b
+    - A GitHub account
+    - A personal access token with 'repo' or 'public_repo' scope
+
+    The PR is created with:
+
+    \b
+    - Title: [new_manifest] Add <package> v<version> (<language>)
+    - Labels: new_manifest, <language>
+    - Structured body with package metadata and checklist
+
+    Examples:
+
+        lcp publish requests --token ghp_xxxx
+
+        lcp publish numpy --dry-run
+
+        lcp publish mylib --file mylib.lcp.json --token ghp_xxxx
+    """
+    try:
+        # Step 1: Get or generate the manifest
+        if manifest_file:
+            click.echo(f"Loading manifest from {manifest_file}...", err=True)
+            from json import load as json_load
+
+            with open(manifest_file, encoding="utf-8") as f:
+                data = json_load(f)
+            from .models import LCPDocument
+
+            lcp_doc = LCPDocument.model_validate(data)
+        else:
+            click.echo(f"Scanning package: {package}...", err=True)
+            scanned = scan_package(
+                package,
+                include_private=include_private,
+                recursive=not no_recursive,
+            )
+
+            click.echo("Generating LCP document...", err=True)
+            lcp_doc = generate_lcp(scanned)
+
+        # Step 2: Validate
+        click.echo("Validating against LCP schema...", err=True)
+        try:
+            from .validator import validate_or_raise
+
+            validate_or_raise(lcp_doc)
+            click.echo("✓ Validation passed", err=True)
+        except LCPValidationError as e:
+            click.echo(f"✗ Validation failed:\n{e}", err=True)
+            sys.exit(1)
+
+        lib = lcp_doc.manifest.library
+        manifest_path = (
+            f"manifests/{lib.language}/{lib.name}/{lib.version}.lcp.json"
+        )
+        symbol_count = len(lcp_doc.symbols)
+
+        click.echo(f"Package: {lib.name} v{lib.version} ({lib.language})", err=True)
+        click.echo(f"Symbols: {symbol_count}", err=True)
+        click.echo(f"Manifest path: {manifest_path}", err=True)
+
+        # Step 3: Dry run or publish
+        if dry_run:
+            click.echo("", err=True)
+            click.echo("DRY RUN: No PR will be created.", err=True)
+            click.echo(
+                f"  PR title: [new_manifest] Add {lib.name} "
+                f"v{lib.version} ({lib.language})",
+                err=True,
+            )
+            click.echo(
+                f"  Labels: new_manifest, {lib.language}",
+                err=True,
+            )
+            click.echo(f"  Registry: {registry_repo}", err=True)
+            return
+
+        if not token:
+            click.echo(
+                "Error: GitHub token is required. "
+                "Use --token or set LCP_GITHUB_TOKEN / GITHUB_TOKEN env var.",
+                err=True,
+            )
+            sys.exit(1)
+
+        click.echo("", err=True)
+        click.echo(f"Publishing to {registry_repo}...", err=True)
+
+        result = publish_manifest(
+            lcp_doc,
+            token=token,
+            registry_repo=registry_repo,
+        )
+
+        click.echo("", err=True)
+        click.echo("✓ Pull request created successfully!", err=True)
+        click.echo(f"  PR: {result.pr_url}", err=True)
+        click.echo(f"  Manifest: {result.manifest_path}", err=True)
+
+    except PublishError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except ImportError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
 @click.option(
     "--provider",
     type=click.Choice(["openai", "anthropic"]),

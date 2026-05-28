@@ -9,6 +9,16 @@ from .coverage import (
 )
 from .diff import DiffResult, SymbolDiff, diff_documents, load_lcp_document, update_document
 from .generator import generate_lcp
+from .publish import PublishError, PublishResult, publish_manifest
+from .mcp_server import (
+    LCPIndex,
+    MultiLibraryIndex,
+    create_server,
+    create_universal_server,
+    resolve_library_document,
+    run_server,
+    run_universal_server,
+)
 from .models import (
     LCPDocument,
     Library,
@@ -51,12 +61,24 @@ __all__ = [
     "scan_package",
     # Generator
     "generate_lcp",
+    # MCP Server
+    "LCPIndex",
+    "MultiLibraryIndex",
+    "create_server",
+    "create_universal_server",
+    "resolve_library_document",
+    "run_server",
+    "run_universal_server",
     # Diff
     "DiffResult",
     "SymbolDiff",
     "diff_documents",
     "load_lcp_document",
     "update_document",
+    # Publish
+    "PublishError",
+    "PublishResult",
+    "publish_manifest",
     # Validator
     "validate_document",
     "validate_file",

@@ -252,6 +252,39 @@ for r in result.results:
     print(f"  {r.symbol_id}: {r.status}")
 ```
 
+## Claude Code Plugin
+
+The SDK ships a ready-to-install [Claude Code](https://code.claude.com) plugin in `plugin/lcp/`. It packages `lcp serve-all` as an MCP server so Claude Code can resolve any pip-installed Python library on demand — no per-project configuration required.
+
+### Prerequisites
+
+```bash
+pip install lcp
+```
+
+### Installation
+
+```bash
+claude plugin install plugin/lcp
+```
+
+Once installed, Claude Code automatically starts the LCP MCP server on session start. The `lcp-universal` skill instructs the agent to call `resolve_library("package")` before writing code that depends on an external library.
+
+### Optional: configure a registry
+
+During or after installation you can configure one or more registry URLs (comma-separated) for teams that host pre-built manifests for private packages:
+
+```bash
+claude plugin config lcp registries https://raw.githubusercontent.com/your-org/lcp-registry/main
+```
+
+### Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `/lcp:resolve <package>` | Resolve a library and summarise its public API |
+| `/lcp:scan <package>` | Scan a package and display module/symbol overview |
+
 ## License
 
 MIT

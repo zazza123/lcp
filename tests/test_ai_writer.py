@@ -1,7 +1,5 @@
 """Tests for the AI writer module."""
 
-import tempfile
-from pathlib import Path
 
 import pytest
 

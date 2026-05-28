@@ -2,14 +2,24 @@
 
 from __future__ import annotations
 
-import json
-import tempfile
+import asyncio
+import urllib.error
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from lcp.generator import generate_lcp
-from lcp.mcp_server import LCPIndex, create_server, load_lcp_document
+from lcp.mcp_server import (
+    LCPIndex,
+    MultiLibraryIndex,
+    _DEFAULT_REGISTRY_URL,
+    _fetch_from_registry,
+    create_server,
+    create_universal_server,
+    load_lcp_document,
+    resolve_library_document,
+)
 from lcp.scanner import scan_package
 
 
@@ -17,7 +27,7 @@ from lcp.scanner import scan_package
 def sample_lcp_file(tmp_path: Path) -> Path:
     """Generate an LCP file from sample_module for testing."""
     # Scan the sample module
-    import tests.sample_module
+    import tests.sample_module  # noqa: F401 - ensures the module is importable before scan_package
 
     scanned = scan_package("tests.sample_module", include_private=False, recursive=False)
     lcp_doc = generate_lcp(scanned)
@@ -42,6 +52,19 @@ def mcp_server(sample_lcp_file: Path):
     return create_server(sample_lcp_file)
 
 
+# ---------------------------------------------------------------------------
+# Helper: retrieve a tool's callable from a FastMCP server
+# ---------------------------------------------------------------------------
+
+def _get_tool_fn(server, tool_name: str):
+    """Return the raw callable for *tool_name* registered on *server*."""
+    try:
+        tool = asyncio.run(server.get_tool(tool_name))
+        return tool.fn
+    except Exception:
+        return None
+
+
 class TestLoadLCPDocument:
     """Tests for load_lcp_document function."""
 
@@ -55,6 +78,19 @@ class TestLoadLCPDocument:
         """Should raise FileNotFoundError for missing file."""
         with pytest.raises(FileNotFoundError, match="LCP file not found"):
             load_lcp_document(tmp_path / "nonexistent.json")
+
+    def test_load_gz_file(self, sample_lcp_file: Path, tmp_path: Path):
+        """Should transparently decompress and load a .lcp.json.gz file."""
+        import gzip
+
+        doc_orig = load_lcp_document(sample_lcp_file)
+        gz_path = tmp_path / "sample.lcp.json.gz"
+        with gzip.open(gz_path, "wb") as f:
+            f.write(doc_orig.to_json().encode("utf-8"))
+
+        doc = load_lcp_document(gz_path)
+        assert doc.manifest.library.name == doc_orig.manifest.library.name
+        assert len(doc.symbols) == len(doc_orig.symbols)
 
 
 class TestLCPIndex:
@@ -121,12 +157,7 @@ class TestGetManifestTool:
     def test_returns_manifest_info(self, mcp_server):
         """Should return library metadata."""
         # Get the tool function
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_manifest":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "get_manifest")
         assert tool_fn is not None
         result = tool_fn()
 
@@ -141,12 +172,7 @@ class TestListModulesTool:
 
     def test_returns_modules(self, mcp_server):
         """Should return list of modules."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "list_modules":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "list_modules")
         assert tool_fn is not None
         result = tool_fn()
 
@@ -159,12 +185,7 @@ class TestListSymbolsTool:
 
     def test_returns_all_symbols(self, mcp_server):
         """Should return all symbols when no filter."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "list_symbols":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
         assert tool_fn is not None
         result = tool_fn()
 
@@ -175,11 +196,7 @@ class TestListSymbolsTool:
 
     def test_filter_by_module(self, mcp_server):
         """Should filter by module."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "list_symbols":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
         assert tool_fn is not None
 
         result = tool_fn(module="tests.sample_module")
@@ -188,11 +205,7 @@ class TestListSymbolsTool:
 
     def test_filter_by_kind(self, mcp_server):
         """Should filter by kind."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "list_symbols":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
         assert tool_fn is not None
 
         result = tool_fn(kind="function")
@@ -201,11 +214,7 @@ class TestListSymbolsTool:
 
     def test_invalid_kind(self, mcp_server):
         """Should return error for invalid kind."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "list_symbols":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
         assert tool_fn is not None
 
         result = tool_fn(kind="invalid_kind")
@@ -218,11 +227,7 @@ class TestGetSymbolTool:
 
     def test_returns_symbol(self, mcp_server, lcp_index):
         """Should return full symbol data."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_symbol":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "get_symbol")
         assert tool_fn is not None
 
         # Get a known symbol ID
@@ -236,11 +241,7 @@ class TestGetSymbolTool:
 
     def test_not_found(self, mcp_server):
         """Should return error for unknown symbol."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_symbol":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "get_symbol")
         assert tool_fn is not None
 
         result = tool_fn(symbol_id="nonexistent:symbol")
@@ -253,11 +254,7 @@ class TestSearchSymbolsTool:
 
     def test_search_by_name(self, mcp_server):
         """Should find symbols by name."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "search_symbols":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "search_symbols")
         assert tool_fn is not None
 
         result = tool_fn(query="simple")
@@ -268,11 +265,7 @@ class TestSearchSymbolsTool:
 
     def test_search_by_summary(self, mcp_server):
         """Should find symbols by summary text."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "search_symbols":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "search_symbols")
         assert tool_fn is not None
 
         result = tool_fn(query="add two numbers")
@@ -281,11 +274,7 @@ class TestSearchSymbolsTool:
 
     def test_search_no_results(self, mcp_server):
         """Should return empty list for no matches."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "search_symbols":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "search_symbols")
         assert tool_fn is not None
 
         result = tool_fn(query="xyznonexistent123")
@@ -297,12 +286,7 @@ class TestGetClassMembersTool:
 
     def test_returns_members(self, mcp_server, lcp_index):
         """Should return class members."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_class_members":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "get_class_members")
         # Find a class ID
         class_id = None
         for sid, symbol in lcp_index.symbols_by_id.items():
@@ -322,11 +306,7 @@ class TestGetClassMembersTool:
 
     def test_class_not_found(self, mcp_server):
         """Should return error for unknown class."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_class_members":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "get_class_members")
         assert tool_fn is not None
 
         result = tool_fn(class_id="nonexistent:Class")
@@ -335,12 +315,7 @@ class TestGetClassMembersTool:
 
     def test_not_a_class(self, mcp_server, lcp_index):
         """Should return error if symbol is not a class."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_class_members":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "get_class_members")
         # Find a function ID
         func_id = None
         for sid, symbol in lcp_index.symbols_by_id.items():
@@ -361,12 +336,7 @@ class TestGetUsageGuideTool:
 
     def test_returns_workflow(self, mcp_server):
         """Should return recommended workflow and tips."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_usage_guide":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "get_usage_guide")
         assert tool_fn is not None
         result = tool_fn()
 
@@ -390,12 +360,7 @@ class TestExploreReturnTypeTool:
 
     def test_returns_type_info(self, mcp_server, lcp_index):
         """Should return return type information."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "explore_return_type":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "explore_return_type")
         assert tool_fn is not None
 
         # Find a function with a return type
@@ -414,11 +379,7 @@ class TestExploreReturnTypeTool:
 
     def test_symbol_not_found(self, mcp_server):
         """Should return error for unknown symbol."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "explore_return_type":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "explore_return_type")
         assert tool_fn is not None
 
         result = tool_fn(symbol_id="nonexistent:func")
@@ -427,12 +388,7 @@ class TestExploreReturnTypeTool:
 
     def test_no_signature(self, mcp_server, lcp_index):
         """Should handle symbols without signatures."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "explore_return_type":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "explore_return_type")
         # Find a module symbol (no signature)
         module_id = None
         for sid, symbol in lcp_index.symbols_by_id.items():
@@ -451,12 +407,7 @@ class TestGetSuggestionsTool:
 
     def test_returns_suggestions(self, mcp_server):
         """Should return suggestions based on task."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_suggestions":
-                tool_fn = tool.fn
-                break
-
+        tool_fn = _get_tool_fn(mcp_server, "get_suggestions")
         assert tool_fn is not None
         result = tool_fn(task_description="sample module function")
 
@@ -468,11 +419,7 @@ class TestGetSuggestionsTool:
 
     def test_no_matches(self, mcp_server):
         """Should provide fallback suggestions when no matches."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_suggestions":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "get_suggestions")
         assert tool_fn is not None
 
         result = tool_fn(task_description="xyznonexistent123")
@@ -484,14 +431,584 @@ class TestGetSuggestionsTool:
 
     def test_finds_matching_modules(self, mcp_server):
         """Should find modules matching task keywords."""
-        tool_fn = None
-        for tool in mcp_server._tool_manager._tools.values():
-            if tool.name == "get_suggestions":
-                tool_fn = tool.fn
-                break
+        tool_fn = _get_tool_fn(mcp_server, "get_suggestions")
         assert tool_fn is not None
 
         result = tool_fn(task_description="sample")
 
         # Should find tests.sample_module
         assert "tests.sample_module" in result["suggested_modules"]
+
+
+# ---------------------------------------------------------------------------
+# Tests for MultiLibraryIndex
+# ---------------------------------------------------------------------------
+
+
+class TestMultiLibraryIndex:
+    """Tests for MultiLibraryIndex class."""
+
+    def test_add_and_get(self, lcp_index: LCPIndex):
+        """Should add and retrieve an index by name."""
+        multi = MultiLibraryIndex()
+        assert multi.get("mylib") is None
+        multi.add("mylib", lcp_index)
+        assert multi.get("mylib") is lcp_index
+
+    def test_default_library(self, lcp_index: LCPIndex):
+        """Last added library becomes the default."""
+        multi = MultiLibraryIndex()
+        multi.add("lib_a", lcp_index)
+        multi.add("lib_b", lcp_index)
+        assert multi.default_library == "lib_b"
+
+    def test_get_default(self, lcp_index: LCPIndex):
+        """get(None) returns the default library index."""
+        multi = MultiLibraryIndex()
+        multi.add("lib_a", lcp_index)
+        assert multi.get(None) is lcp_index
+
+    def test_get_none_empty(self):
+        """get(None) returns None when no libraries loaded."""
+        multi = MultiLibraryIndex()
+        assert multi.get(None) is None
+
+    def test_contains(self, lcp_index: LCPIndex):
+        """'in' operator works after add."""
+        multi = MultiLibraryIndex()
+        assert "mylib" not in multi
+        multi.add("mylib", lcp_index)
+        assert "mylib" in multi
+
+    def test_list_libraries(self, lcp_index: LCPIndex):
+        """list_libraries returns one entry per registered library."""
+        multi = MultiLibraryIndex()
+        multi.add("lib_a", lcp_index)
+        multi.add("lib_b", lcp_index)
+        libs = multi.list_libraries()
+        assert len(libs) == 2
+        names = {lib["name"] for lib in libs}
+        assert "lib_a" in names
+        assert "lib_b" in names
+        # The last-added library is the default
+        default_entry = next(lib for lib in libs if lib["is_default"])
+        assert default_entry["name"] == "lib_b"
+
+
+# ---------------------------------------------------------------------------
+# Tests for resolve_library_document
+# ---------------------------------------------------------------------------
+
+
+class TestResolveLibraryDocument:
+    """Tests for the resolve_library_document helper."""
+
+    def test_scan_installed_package(self, tmp_path: Path):
+        """Should successfully scan an installed package."""
+        doc, source = resolve_library_document(
+            "tests.sample_module",
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+        )
+        assert doc is not None
+        assert source == "scan"
+        assert len(doc.symbols) > 0
+
+    def test_caches_result(self, tmp_path: Path):
+        """Should write a cache file and use it on second call."""
+        cache_dir = tmp_path / "cache"
+        # First call: scan
+        doc1, source1 = resolve_library_document(
+            "tests.sample_module",
+            cache_dir=cache_dir,
+            no_cache=False,
+        )
+        assert source1 == "scan"
+        # Cache directory should exist
+        assert cache_dir.exists()
+
+        # Second call should hit cache (version matches)
+        doc2, source2 = resolve_library_document(
+            "tests.sample_module",
+            cache_dir=cache_dir,
+            no_cache=False,
+        )
+        assert source2 == "cache"
+        assert len(doc2.symbols) == len(doc1.symbols)
+
+    def test_no_cache_flag(self, tmp_path: Path):
+        """Should always scan when no_cache=True."""
+        cache_dir = tmp_path / "cache"
+        # Populate the cache first
+        resolve_library_document(
+            "tests.sample_module",
+            cache_dir=cache_dir,
+            no_cache=False,
+        )
+        # Second call with no_cache=True should still scan
+        _, source = resolve_library_document(
+            "tests.sample_module",
+            cache_dir=cache_dir,
+            no_cache=True,
+        )
+        assert source == "scan"
+
+    def test_error_for_missing_package(self, tmp_path: Path):
+        """Should raise ImportError for packages that cannot be scanned."""
+        with pytest.raises(ImportError, match="Cannot resolve library"):
+            resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+            )
+
+    def test_registry_fallback_on_scan_failure(self, tmp_path: Path, sample_lcp_file: Path):
+        """Should fall back to registry when local scan fails."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            result_doc, source = resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url="https://registry.example.com",
+            )
+
+        assert source == "registry"
+        assert result_doc is not None
+
+    def test_registry_not_used_when_scan_succeeds(self, tmp_path: Path):
+        """Should not contact registry when local scan succeeds."""
+        with patch("urllib.request.urlopen") as mock_urlopen:
+            doc, source = resolve_library_document(
+                "tests.sample_module",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url="https://registry.example.com",
+            )
+
+        assert source == "scan"
+        mock_urlopen.assert_not_called()
+
+    def test_registry_fallback_disabled_without_url(self, tmp_path: Path):
+        """Should raise ImportError if no registry_url is set and scan fails."""
+        with pytest.raises(ImportError, match="Cannot resolve library"):
+            resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url=None,
+            )
+
+    def test_registry_http_error_propagates(self, tmp_path: Path):
+        """Should raise ImportError when registry returns HTTP error."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.HTTPError(
+                url="http://example.com", code=404, msg="Not Found", hdrs=None, fp=None  # type: ignore[arg-type]
+            ),
+        ):
+            with pytest.raises(ImportError, match="Cannot resolve library"):
+                resolve_library_document(
+                    "nonexistent_package_xyz_123",
+                    cache_dir=tmp_path / "cache",
+                    no_cache=True,
+                    registry_url="https://registry.example.com",
+                )
+
+    def test_registry_saves_to_cache(self, tmp_path: Path, sample_lcp_file: Path):
+        """Registry result should be cached when no_cache is False."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+        cache_dir = tmp_path / "cache"
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            _, source = resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=cache_dir,
+                no_cache=False,
+                registry_url="https://registry.example.com",
+            )
+
+        assert source == "registry"
+        assert cache_dir.exists()
+
+
+# ---------------------------------------------------------------------------
+# Tests for _fetch_from_registry
+# ---------------------------------------------------------------------------
+
+
+class TestFetchFromRegistry:
+    """Tests for the _fetch_from_registry helper."""
+
+    def test_successful_fetch(self, sample_lcp_file: Path):
+        """Should return a valid LCPDocument on a successful 200 response."""
+        import gzip
+
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_gz
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            result = _fetch_from_registry(
+                "mylib", "https://registry.example.com", version="1.0.0"
+            )
+
+        mock_open.assert_called_once_with(
+            "https://registry.example.com/manifests/python/m/mylib/1.0.0.lcp.json.gz",
+            timeout=10,
+        )
+        assert result is not None
+
+    def test_uses_latest_when_no_version(self, sample_lcp_file: Path):
+        """When version is None, the URL should contain 'latest'."""
+        import gzip
+
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_gz
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            _fetch_from_registry("mylib", "https://registry.example.com")
+
+        called_url = mock_open.call_args[0][0]
+        assert called_url == "https://registry.example.com/manifests/python/m/mylib/latest.lcp.json.gz"
+
+    def test_trailing_slash_stripped(self, sample_lcp_file: Path):
+        """Registry URL trailing slash should be normalised."""
+        import gzip
+
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_gz
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            _fetch_from_registry("mylib", "https://registry.example.com/", version="2.0.0")
+
+        called_url = mock_open.call_args[0][0]
+        assert called_url == "https://registry.example.com/manifests/python/m/mylib/2.0.0.lcp.json.gz"
+
+    def test_http_error_raises_import_error(self):
+        """HTTPError from the registry should raise ImportError."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.HTTPError(
+                url="http://example.com", code=404, msg="Not Found", hdrs=None, fp=None  # type: ignore[arg-type]
+            ),
+        ):
+            with pytest.raises(ImportError, match="Registry returned HTTP 404"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_url_error_raises_import_error(self):
+        """URLError (network failure) should raise ImportError."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=urllib.error.URLError("connection refused"),
+        ):
+            with pytest.raises(ImportError, match="Registry fetch failed"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_timeout_raises_import_error(self):
+        """TimeoutError should raise ImportError."""
+        with patch(
+            "urllib.request.urlopen",
+            side_effect=TimeoutError(),
+        ):
+            with pytest.raises(ImportError, match="Registry fetch timed out"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_invalid_json_raises_import_error(self):
+        """Non-JSON response body should raise ImportError."""
+        mock_response = MagicMock()
+        mock_response.read.return_value = b"not valid json {"
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            with pytest.raises(ImportError, match="not a valid LCP document"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_invalid_scheme_raises_import_error(self):
+        """Non-HTTP(S) registry URL should raise ImportError without making a request."""
+        with patch("urllib.request.urlopen") as mock_open:
+            with pytest.raises(ImportError, match="must use http or https scheme"):
+                _fetch_from_registry("mylib", "ftp://registry.example.com")
+        mock_open.assert_not_called()
+
+    def test_path_traversal_in_name_raises_import_error(self):
+        """Package name with path-traversal characters should raise ImportError."""
+        with patch("urllib.request.urlopen") as mock_open:
+            with pytest.raises(ImportError, match="Invalid package name"):
+                _fetch_from_registry("../secret", "https://registry.example.com")
+        mock_open.assert_not_called()
+
+    def test_default_registry_url_is_official_registry(self):
+        """_DEFAULT_REGISTRY_URL should point to the official lcp-registry."""
+        assert "zazza123/lcp-registry" in _DEFAULT_REGISTRY_URL
+        assert _DEFAULT_REGISTRY_URL.startswith("https://")
+
+    def test_url_contains_manifests_path(self, sample_lcp_file: Path):
+        """Constructed URL must follow manifests/{language}/{first}/{name}/{version}.lcp.json.gz layout."""
+        import gzip
+
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_gz
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
+            _fetch_from_registry(
+                "requests", "https://registry.example.com", language="python", version="2.31.0"
+            )
+
+        called_url = mock_open.call_args[0][0]
+        assert called_url == "https://registry.example.com/manifests/python/r/requests/2.31.0.lcp.json.gz"
+
+
+# ---------------------------------------------------------------------------
+# Tests for create_universal_server
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def universal_server(tmp_path: Path):
+    """Universal MCP server with a temporary cache dir."""
+    return create_universal_server(
+        name="lcp-test-universal",
+        cache_dir=tmp_path / "cache",
+        no_cache=True,
+    )
+
+
+class TestCreateUniversalServer:
+    """Tests for create_universal_server."""
+
+    def test_creates_server(self, universal_server):
+        """Should create a FastMCP server."""
+        assert universal_server is not None
+        assert universal_server.name == "lcp-test-universal"
+
+    def test_has_expected_tools(self, universal_server):
+        """Universal server should expose all expected tools."""
+        expected = {
+            "resolve_library",
+            "list_libraries",
+            "get_usage_guide",
+            "get_manifest",
+            "list_modules",
+            "list_symbols",
+            "get_symbol",
+            "search_symbols",
+            "get_class_members",
+            "explore_return_type",
+            "get_suggestions",
+        }
+        for name in expected:
+            tool = asyncio.run(universal_server.get_tool(name))
+            assert tool is not None, f"Expected tool '{name}' not found"
+
+
+class TestResolveLibraryTool:
+    """Tests for the resolve_library tool in the universal server."""
+
+    def test_resolve_installed_package(self, universal_server):
+        """Should load an installed package and return summary."""
+        fn = _get_tool_fn(universal_server, "resolve_library")
+        assert fn is not None
+
+        result = fn(name="tests.sample_module")
+        assert result.get("status") == "loaded"
+        assert "symbol_count" in result
+        assert result["symbol_count"] > 0
+        assert result["source"] == "scan"
+
+    def test_resolve_missing_package(self, universal_server):
+        """Should return error dict for uninstalled package."""
+        fn = _get_tool_fn(universal_server, "resolve_library")
+        assert fn is not None
+
+        result = fn(name="nonexistent_package_xyz_123")
+        assert "error" in result
+
+    def test_resolve_via_registry_fallback(self, tmp_path: Path, sample_lcp_file: Path):
+        """resolve_library should use registry when scan fails and registry_url is set."""
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        server = create_universal_server(
+            name="lcp-test-registry",
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+            registry_url="https://registry.example.com",
+        )
+        fn = _get_tool_fn(server, "resolve_library")
+
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            result = fn(name="nonexistent_package_xyz_123")
+
+        assert result.get("status") == "loaded"
+        assert result.get("source") == "registry"
+
+    def test_sets_default_library(self, universal_server):
+        """Resolved library should become the implicit default."""
+        resolve_fn = _get_tool_fn(universal_server, "resolve_library")
+        list_libs_fn = _get_tool_fn(universal_server, "list_libraries")
+        assert resolve_fn is not None
+        assert list_libs_fn is not None
+
+        resolve_fn(name="tests.sample_module")
+        libs = list_libs_fn()
+        assert len(libs) == 1
+        assert libs[0]["is_default"] is True
+
+
+class TestListLibrariesTool:
+    """Tests for list_libraries tool."""
+
+    def test_empty_initially(self, universal_server):
+        """Should return empty list before any resolve_library calls."""
+        fn = _get_tool_fn(universal_server, "list_libraries")
+        assert fn is not None
+        assert fn() == []
+
+    def test_lists_after_resolve(self, universal_server):
+        """Should list library after it has been resolved."""
+        resolve_fn = _get_tool_fn(universal_server, "resolve_library")
+        list_fn = _get_tool_fn(universal_server, "list_libraries")
+        assert resolve_fn is not None and list_fn is not None
+
+        resolve_fn(name="tests.sample_module")
+        libs = list_fn()
+        assert len(libs) == 1
+        assert libs[0]["name"] == "tests.sample_module"
+
+
+class TestUniversalToolsWithoutLibrary:
+    """Universal tools should return error dicts when no library is loaded."""
+
+    def test_get_manifest_no_library(self, universal_server):
+        fn = _get_tool_fn(universal_server, "get_manifest")
+        assert fn is not None
+        result = fn()
+        assert "error" in result
+
+    def test_list_modules_no_library(self, universal_server):
+        fn = _get_tool_fn(universal_server, "list_modules")
+        assert fn is not None
+        result = fn()
+        assert "error" in result
+
+    def test_list_symbols_no_library(self, universal_server):
+        fn = _get_tool_fn(universal_server, "list_symbols")
+        assert fn is not None
+        result = fn()
+        assert len(result) == 1 and "error" in result[0]
+
+    def test_get_symbol_no_library(self, universal_server):
+        fn = _get_tool_fn(universal_server, "get_symbol")
+        assert fn is not None
+        result = fn(symbol_id="json:loads")
+        assert "error" in result
+
+    def test_search_symbols_no_library(self, universal_server):
+        fn = _get_tool_fn(universal_server, "search_symbols")
+        assert fn is not None
+        result = fn(query="test")
+        assert len(result) == 1 and "error" in result[0]
+
+
+class TestUniversalToolsWithLibrary:
+    """Universal tools should work correctly after resolve_library is called."""
+
+    @pytest.fixture(autouse=True)
+    def _load_library(self, universal_server):
+        """Pre-load sample_module into the universal server."""
+        resolve_fn = _get_tool_fn(universal_server, "resolve_library")
+        resolve_fn(name="tests.sample_module")
+
+    def test_get_manifest(self, universal_server):
+        fn = _get_tool_fn(universal_server, "get_manifest")
+        result = fn()
+        assert result.get("name") == "tests.sample_module"
+        assert "version" in result
+
+    def test_list_modules(self, universal_server):
+        fn = _get_tool_fn(universal_server, "list_modules")
+        result = fn()
+        assert isinstance(result, list)
+        assert "tests.sample_module" in result
+
+    def test_list_symbols(self, universal_server):
+        fn = _get_tool_fn(universal_server, "list_symbols")
+        result = fn()
+        assert isinstance(result, list)
+        assert len(result) > 0
+
+    def test_list_symbols_with_library_param(self, universal_server):
+        """Explicit library= parameter should target that library."""
+        fn = _get_tool_fn(universal_server, "list_symbols")
+        result = fn(library="tests.sample_module")
+        assert isinstance(result, list)
+        assert len(result) > 0
+
+    def test_list_symbols_unknown_library(self, universal_server):
+        """Explicit library= for an unloaded library should return error."""
+        fn = _get_tool_fn(universal_server, "list_symbols")
+        result = fn(library="not_loaded")
+        assert len(result) == 1 and "error" in result[0]
+
+    def test_get_symbol(self, universal_server, lcp_index):
+        fn = _get_tool_fn(universal_server, "get_symbol")
+        symbol_id = next(iter(lcp_index.symbols_by_id))
+        result = fn(symbol_id=symbol_id)
+        assert "id" in result or "error" in result
+
+    def test_search_symbols(self, universal_server):
+        fn = _get_tool_fn(universal_server, "search_symbols")
+        result = fn(query="simple")
+        assert isinstance(result, list)
+        assert any("simple" in s["id"].lower() for s in result)
+
+    def test_get_suggestions(self, universal_server):
+        fn = _get_tool_fn(universal_server, "get_suggestions")
+        result = fn(task_description="sample module function")
+        assert "task" in result
+        assert "suggested_modules" in result
+
+    def test_get_usage_guide_has_multi_library_tips(self, universal_server):
+        fn = _get_tool_fn(universal_server, "get_usage_guide")
+        result = fn()
+        assert "multi_library_tips" in result
+        assert "resolve_library" in result["recommended_workflow"][0]["action"]

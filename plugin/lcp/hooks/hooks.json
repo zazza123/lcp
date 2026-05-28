@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v lcp >/dev/null 2>&1 || echo '⚠️  LCP plugin: \"lcp\" command not found. Install with: pip install lcp' >&2"
+          }
+        ]
+      }
+    ]
+  }
+}

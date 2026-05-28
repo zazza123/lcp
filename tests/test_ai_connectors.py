@@ -6,7 +6,7 @@ import pytest
 
 from lcp.ai.connectors.openai import OpenAIProvider
 from lcp.ai.connectors.anthropic import AnthropicProvider
-from lcp.ai.models import LLMResponse, TokenUsage
+from lcp.ai.models import LLMResponse
 from lcp.ai.provider import LLMProvider
 
 

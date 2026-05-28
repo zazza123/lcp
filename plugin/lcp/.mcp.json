@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "lcp": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/serve.sh"
+    }
+  }
+}

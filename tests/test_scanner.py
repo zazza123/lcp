@@ -1,17 +1,12 @@
 """Tests for the scanner module."""
 
 import inspect
-import sys
-from pathlib import Path
-from types import ModuleType
 
 import pytest
 
 from lcp.scanner import (
     ScannedModule,
     ScannedParam,
-    ScannedSignature,
-    ScannedSymbol,
     _get_param_kind,
     _is_constant,
     _is_member_from_package,

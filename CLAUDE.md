@@ -71,6 +71,22 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 | `ai/prompts.py` | System prompt and level-specific user prompts (L0, L1 class, L2 module) |
 | `ai/writer.py` | AST-based docstring injection into Python source files |
 
+### Claude Code Plugin
+
+The plugin lives in `plugin/lcp/` and packages `lcp serve-all` as a Claude Code plugin:
+
+| File | Purpose |
+|------|---------|
+| `.claude-plugin/plugin.json` | Plugin manifest with `userConfig.registries` schema |
+| `.mcp.json` | MCP server declaration; points to `bin/serve.sh` |
+| `bin/serve.sh` | Startup wrapper: validates PATH, injects `--registry`, starts `lcp serve-all` |
+| `hooks/hooks.json` | `SessionStart` hook: warns if `lcp` is not found |
+| `skills/lcp-universal/SKILL.md` | Auto-invoked skill for proactive library resolution |
+| `skills/lcp-usage/SKILL.md` | Auto-invoked skill for general LCP guidance |
+| `commands/resolve.md` | `/lcp:resolve <pkg>` shortcut |
+| `commands/scan.md` | `/lcp:scan <pkg>` shortcut |
+| `agents/library-explorer.md` | Read-only haiku subagent for deep library research |
+
 ### Key Data Structures
 
 - `ScannedSymbol` / `ScannedModule` (dataclasses in scanner.py) - Internal representation of Python symbols

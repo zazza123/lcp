@@ -1,0 +1,20 @@
+{
+  "name": "lcp",
+  "owner": {
+    "name": "Andrea Zanini",
+    "email": "andrea.za94@gmail.com"
+  },
+  "description": "Library Context Protocol — universal Python library documentation for AI coding agents.",
+  "plugins": [
+    {
+      "name": "lcp",
+      "source": "./plugin/lcp",
+      "description": "Universal Python library documentation for AI coding agents via the Library Context Protocol. Resolves any pip-installed package on demand through browsable MCP tools.",
+      "category": "documentation",
+      "tags": ["python", "mcp", "documentation", "api-introspection", "lcp"],
+      "homepage": "https://github.com/zazza123/lcp",
+      "repository": "https://github.com/zazza123/lcp",
+      "license": "MIT"
+    }
+  ]
+}
