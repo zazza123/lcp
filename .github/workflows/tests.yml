@@ -22,7 +22,7 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: setup python
         uses: actions/setup-python@v5
@@ -61,7 +61,7 @@ jobs:
           - "3.12"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: setup python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
