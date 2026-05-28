@@ -223,3 +223,10 @@ gitignore/
 output/
 .vscode/
 .claude/settings.local.json
+
+# Claude
+.superpowers/
+docs/superpowers/
+
+# MkDocs build output
+site_build/
