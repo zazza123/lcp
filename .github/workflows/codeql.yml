@@ -1,22 +1,14 @@
 name: codeql
 
-# NOTE: Code scanning upload requires either a public repository or
-# GitHub Advanced Security on private repositories. While this repo is
-# private, only the manual trigger is enabled so the job does not fail
-# on every push/PR.
-#
-# When the repository becomes public, restore the push / pull_request /
-# schedule triggers (commented out below) and enable Code scanning in
-# Settings → Code security → Code scanning.
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Monday at 06:00 UTC
+    - cron: "0 6 * * 1"
   workflow_dispatch:
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
-  # schedule:
-  #   # Run weekly on Monday at 06:00 UTC
-  #   - cron: "0 6 * * 1"
 
 jobs:
   analyze:
