@@ -1,3 +1,8 @@
+---
+description: Generate a fresh LCP manifest for a pip-installed package and summarize its modules, classes, and functions.
+argument-hint: <package-name>
+---
+
 # Scan a Python library
 
 Generate a fresh LCP manifest for `$ARGUMENTS` by introspecting the pip-installed package.
