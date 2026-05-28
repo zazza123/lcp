@@ -22,22 +22,26 @@ lcp --version
 
 ## Installation
 
-### Option A — Claude Code CLI (recommended)
+### Option A — Claude Code marketplace (recommended)
 
-```bash
-# From the lcp repository root
-claude mcp add lcp -- lcp serve-all
+Add the LCP marketplace and install the plugin:
+
+```
+/plugin marketplace add zazza123/lcp
+/plugin install lcp@lcp
 ```
 
-Or install this plugin directory directly:
+This installs the plugin, registers the MCP server, the skills, the commands (`/lcp:resolve`, `/lcp:scan`), and the `library-explorer` subagent in one step.
+
+### Option B — Local plugin directory (development)
 
 ```bash
-claude plugin install /path/to/lcp/plugin/lcp
+claude --plugin-dir /path/to/lcp/plugin/lcp
 ```
 
-### Option B — Manual MCP configuration
+### Option C — Manual MCP configuration
 
-Add to your `.claude/settings.json` or project-level MCP config:
+If you only want the MCP server (no skills, hooks, or commands), add to your `.claude/settings.json` or project-level MCP config:
 
 ```json
 {
@@ -50,7 +54,13 @@ Add to your `.claude/settings.json` or project-level MCP config:
 }
 ```
 
-### Option C — Cursor / Claude Desktop
+Or via the Claude Code CLI:
+
+```bash
+claude mcp add lcp -- lcp serve-all
+```
+
+### Option D — Cursor / Claude Desktop
 
 Add to `.cursor/mcp.json` or `claude_desktop_config.json`:
 
