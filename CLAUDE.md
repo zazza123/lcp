@@ -90,7 +90,7 @@ The plugin lives in `plugin/lcp/` and packages `lcp serve-all` as a Claude Code 
 ### Key Data Structures
 
 - `ScannedSymbol` / `ScannedModule` (dataclasses in scanner.py) - Internal representation of Python symbols
-- `Symbol` / `LCPDocument` (Pydantic models in models.py) - LCP v1 specification models
+- `Symbol` / `LCPDocument` (Pydantic models in models.py) - LCP v1 Specification models
 - `LCPIndex` (in mcp_server.py) - In-memory index for fast symbol lookups
 - `DocGenAgent` / `DocGenConfig` / `HierarchicalConfig` / `DocGenResult` (in ai/) - AI docstring generation orchestrator and results
 - `SymbolNode` / `ModuleTree` (in ai/hierarchy.py) - Hierarchical symbol tree for bottom-up processing

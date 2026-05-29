@@ -27,7 +27,7 @@ hide:
 
     [:octicons-arrow-right-24: Quickstart](docs/quickstart.md)
 
--   :material-book-open-variant:{ .lg .middle } __LCP v1 specification__
+-   :material-book-open-variant:{ .lg .middle } __LCP v1 Specification__
 
     ---
 

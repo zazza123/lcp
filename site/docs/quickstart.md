@@ -66,5 +66,5 @@ A successful validation prints `OK`. Errors point at the offending JSON Pointer 
 ## Next steps
 
 - [CLI reference](cli.md) — all `lcp` commands and flags.
-- [MCP server](guides/mcp-server.md) — serve the manifest to an AI agent.
+- [MCP Server](guides/mcp-server.md) — serve the manifest to an AI agent.
 - [LCP v1 spec](spec/index.md) — what each field means.

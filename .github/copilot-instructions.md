@@ -46,7 +46,7 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 ### Key Data Structures
 
 - `ScannedSymbol` / `ScannedModule` (dataclasses in scanner.py) - Internal representation of Python symbols
-- `Symbol` / `LCPDocument` (Pydantic models in models.py) - LCP v1 specification models
+- `Symbol` / `LCPDocument` (Pydantic models in models.py) - LCP v1 Specification models
 - `DocGenAgent` / `DocGenConfig` / `DocGenResult` (in ai/) - AI docstring generation orchestrator and results
 - Symbol IDs use format: `module_path:entity_path` (e.g., `json:loads`, `pathlib:Path#resolve`)
 

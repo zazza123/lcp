@@ -55,4 +55,4 @@ Several existing approaches give AI systems and tools some information about lib
 
 - [Quickstart](quickstart.md) — generate your first LCP manifest.
 - [LCP v1 spec](spec/index.md) — the full specification.
-- [MCP server](guides/mcp-server.md) — expose an LCP manifest to AI agents.
+- [MCP Server](guides/mcp-server.md) — expose an LCP manifest to AI agents.

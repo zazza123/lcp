@@ -169,5 +169,5 @@ lcp diff v1.lcp.json v2.lcp.json -o diff.json --update
 ## See also
 
 - [Quickstart](quickstart.md) — first-time usage.
-- [MCP server guide](guides/mcp-server.md) — using `lcp serve` and `lcp serve-all` in depth.
+- [MCP Server guide](guides/mcp-server.md) — using `lcp serve` and `lcp serve-all` in depth.
 - [Publishing guide](guides/publishing.md) — using `lcp publish` to submit to the registry.

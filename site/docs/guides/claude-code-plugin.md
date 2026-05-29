@@ -8,7 +8,7 @@ When you install the plugin, Claude Code gets:
 
 | Component | What it does |
 |-----------|-------------|
-| **MCP server** | `lcp serve-all` starts automatically on every session and exposes your Python environment's libraries as browsable MCP tools |
+| **MCP Server** | `lcp serve-all` starts automatically on every session and exposes your Python environment's libraries as browsable MCP tools |
 | **`lcp-universal` skill** | Teaches Claude to call `resolve_library()` before writing code that uses a third-party library — proactive, not reactive |
 | **`lcp-usage` skill** | Guides Claude on when and how to use LCP tools for library research |
 | **`/lcp:resolve <pkg>`** | Slash command: resolve a library and get a summary of its public API |
@@ -123,6 +123,6 @@ Multiple registries can be listed comma-separated; only the first is used as the
 
 ## See also
 
-- [MCP server](mcp-server.md) — the underlying server the plugin wraps
+- [MCP Server](mcp-server.md) — the underlying server the plugin wraps
 - [CLI reference](../cli.md) — `serve-all` flags and all other commands
 - [Publishing](publishing.md) — contributing manifests to the central registry

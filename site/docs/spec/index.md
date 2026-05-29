@@ -1,4 +1,4 @@
-# LCP v1 specification
+# LCP v1 Specification
 
 This is the normative specification for the Library Context Protocol (LCP) v1.0. It defines the format, semantics, and constraints that all conforming LCP documents MUST satisfy. For the machine-readable schema used by validators and tooling, see the companion [JSON Schema](schema.md) page.
 
