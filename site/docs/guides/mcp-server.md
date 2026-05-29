@@ -1,4 +1,4 @@
-# MCP server
+# MCP Server
 
 The `lcp` package ships an [MCP](https://modelcontextprotocol.io/) server that exposes one or more LCP manifests as tools an AI agent can call. This guide shows how to start the server and connect a client.
 
@@ -13,6 +13,35 @@ When `lcp serve` or `lcp serve-all` starts, it builds an in-memory `LCPIndex` fr
 The server communicates over **stdio** using the MCP protocol. The client process spawns `lcp serve …` as a subprocess and exchanges JSON-RPC messages with it. Each MCP tool the server registers appears as a callable function in the agent's tool list. The agent calls these tools to browse library structure (`list_modules`, `list_symbols`), fetch individual symbol details (`get_symbol`), or search by text (`search_symbols`).
 
 `lcp serve` targets a single pre-built manifest and exposes a fixed set of exploration tools for that one library. `lcp serve-all` is the universal variant: it starts with no manifests loaded and exposes two additional tools — `resolve_library` and `list_libraries` — that allow the agent to load any pip-installed (or registry-available) library at runtime and then query it using the same exploration tools.
+
+```mermaid
+sequenceDiagram
+    participant Agent as AI Agent
+    participant MCP as LCP MCP Server
+    participant Idx as LCPIndex
+    participant Store as Manifest (cache / scan / registry)
+
+    Agent->>MCP: resolve_library("requests")
+    MCP->>Store: cache lookup → live scan → registry fetch
+    Store-->>MCP: LCP manifest
+    MCP->>Idx: build index (symbols, modules, kinds)
+    MCP-->>Agent: library loaded (name, version, symbol count)
+
+    Agent->>MCP: list_modules()
+    MCP->>Idx: query module list
+    Idx-->>MCP: ["requests", "requests.auth", …]
+    MCP-->>Agent: module list
+
+    Agent->>MCP: list_symbols(module="requests", kind="function")
+    MCP->>Idx: filter by module + kind
+    Idx-->>MCP: symbol summaries
+    MCP-->>Agent: [{id, kind, summary}, …]
+
+    Agent->>MCP: get_symbol("requests:get")
+    MCP->>Idx: lookup by symbol ID
+    Idx-->>MCP: full Symbol record
+    MCP-->>Agent: {signature, parameters, return type, semantics}
+```
 
 ## Single-library mode
 

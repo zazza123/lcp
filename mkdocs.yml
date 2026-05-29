@@ -55,7 +55,11 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight:
@@ -75,7 +79,7 @@ nav:
       - Quickstart: docs/quickstart.md
       - CLI reference: docs/cli.md
   - Guides:
-      - MCP server: docs/guides/mcp-server.md
+      - MCP Server: docs/guides/mcp-server.md
       - Claude Code plugin: docs/guides/claude-code-plugin.md
       - AI DocGen: docs/guides/ai-docgen.md
       - Publishing: docs/guides/publishing.md
