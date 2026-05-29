@@ -2,7 +2,7 @@
 
 ## Overview
 
-The LCP plugin packages `lcp serve-all` as a Claude Code plugin, enabling the agent to access real-time Python library documentation via MCP without any per-project configuration.
+The LCP plugin packages `lcp serve-all` as a Claude Code plugin, enabling the agent to access real-time Python library documentation via MCP without any per-project configuration. The plugin is distributed through the Claude Code marketplace, which governs how it is discovered, installed, and configured.
 
 ## Plugin Directory Structure
 
@@ -28,14 +28,29 @@ plugin/lcp/
 └── README.md
 ```
 
+## Marketplace Distribution
+
+The plugin is published to the Claude Code marketplace under the `zazza123/lcp` namespace, using the repository at `https://github.com/zazza123/lcp` as the source. The marketplace reads `plugin/lcp/.claude-plugin/plugin.json` for metadata (name, version, description, author, keywords, license) and for the `userConfig` schema that Claude Code exposes during installation.
+
+The `userConfig.registries` field lets users provide a comma-separated list of LCP registry URLs. The marketplace presents this as a labelled input during `plugin install`, and Claude Code injects the value as the `CLAUDE_PLUGIN_CONFIG_REGISTRIES` environment variable at runtime.
+
+```mermaid
+flowchart LR
+    A["GitHub repo\nzazza123/lcp"] --> B["Marketplace\nindex"]
+    B --> C["/plugin marketplace add\nzazza123/lcp"]
+    C --> D["/plugin install lcp@lcp"]
+    D --> E["Claude Code reads\nplugin.json + .mcp.json"]
+    E --> F["Plugin active in session"]
+```
+
 ## MCP Server Startup Flow
 
 When Claude Code opens a session with the plugin installed, it reads `.mcp.json` and starts the declared MCP server. The startup sequence runs through `bin/serve.sh`:
 
 ```mermaid
 flowchart TD
-    A["Claude Code sessions starts"] --> B["Read .mcp.json"]
-    B --> C["Start bin/serve.sh via \${CLAUDE_PLUGIN_ROOT}"]
+    A["Claude Code session starts"] --> B["Read .mcp.json"]
+    B --> C["Start bin/serve.sh via ${CLAUDE_PLUGIN_ROOT}"]
     C --> D{"lcp on PATH?"}
     D -- no --> E["Exit 1: print install instructions"]
     D -- yes --> F{"userConfig.registries set?"}
@@ -94,10 +109,13 @@ This supports the pattern of teams hosting a private `lcp-registry` containing p
 
 ## Relationship to the MCP Server
 
-The plugin is a packaging and configuration layer. All library resolution, caching, tool dispatch, and registry fallback logic lives in `src/lcp/mcp_server.py`. The plugin itself adds nothing to the MCP server's behaviour — it provides the lifecycle wiring (startup, hooks) and the agent guidance layer (skills, commands, subagent).
+The plugin is a packaging and configuration layer. All library resolution, caching, tool dispatch, and registry fallback logic lives in `src/lcp/mcp_server.py`. The plugin itself adds nothing to the MCP server's behaviour — it provides the lifecycle wiring (startup, hooks), the agent guidance layer (skills, commands, subagent), and the marketplace metadata.
 
 ```mermaid
 flowchart LR
+    subgraph Marketplace
+        MP["plugin.json\nmetadata + userConfig"]
+    end
     subgraph Plugin
         A[".mcp.json"] --> B["bin/serve.sh"]
         C["hooks/hooks.json"]
@@ -109,6 +127,7 @@ flowchart LR
         B --> G["lcp serve-all"]
         G --> H["mcp_server.py\ncreate_universal_server()"]
     end
+    MP --> |"installed via marketplace"| A
     D --> |"guides agent"| H
     E --> |"user shortcut"| H
     F --> |"subagent calls"| H
@@ -120,5 +139,5 @@ flowchart LR
 - [Registry Publish](../publish/index.md) — How manifests are published to the remote registry used as plugin fallback
 
 ---
-**Last Updated:** March 2026
+**Last Updated:** May 2026
 **Status:** Implemented

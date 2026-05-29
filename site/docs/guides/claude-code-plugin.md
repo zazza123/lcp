@@ -1,97 +1,128 @@
 # Claude Code plugin
 
-The LCP Claude Code plugin packages [`lcp serve-all`](mcp-server.md#universal-mode-registry-backed) plus a set of skills, commands, and a subagent for proactive library exploration. Install it once and Claude Code starts the MCP server automatically on every session — no manual setup needed.
+The LCP Claude Code plugin turns any pip-installed Python library into live, queryable documentation inside your agent session. Install it once from the Claude Code marketplace and Claude automatically knows how to look up functions, classes, signatures, and docstrings for every library your project uses — without pre-built manifests, without per-project setup.
 
 ## What's included
 
-- **MCP server** — `.mcp.json` declares `lcp serve-all`; Claude Code starts it automatically via `bin/serve.sh`.
-- **Startup wrapper** — `bin/serve.sh` validates that `lcp` is on PATH, injects the `--registry` flag if configured, then execs `lcp serve-all`.
-- **Session hook** — `hooks/hooks.json` registers a `SessionStart` hook that warns immediately if the `lcp` binary is not found, before the server starts.
-- **Skills** — `skills/lcp-universal/` and `skills/lcp-usage/` are auto-invoked skills that teach Claude the library-resolution workflow and general LCP guidance.
-- **Commands** — `commands/resolve.md` and `commands/scan.md` expose `/lcp:resolve <pkg>` and `/lcp:scan <pkg>` as Claude Code slash commands.
-- **Library explorer subagent** — `agents/library-explorer.md` is a read-only Claude Haiku subagent for deep API research without consuming the parent context window.
-- **Registry support** — `plugin.json` exposes a `userConfig.registries` field for configuring private or team registries with pre-built manifests.
+When you install the plugin, Claude Code gets:
+
+| Component | What it does |
+|-----------|-------------|
+| **MCP server** | `lcp serve-all` starts automatically on every session and exposes your Python environment's libraries as browsable MCP tools |
+| **`lcp-universal` skill** | Teaches Claude to call `resolve_library()` before writing code that uses a third-party library — proactive, not reactive |
+| **`lcp-usage` skill** | Guides Claude on when and how to use LCP tools for library research |
+| **`/lcp:resolve <pkg>`** | Slash command: resolve a library and get a summary of its public API |
+| **`/lcp:scan <pkg>`** | Slash command: scan a package and produce a structured module and symbol overview |
+| **Library explorer subagent** | A read-only Claude Haiku subagent for deep API research; runs independently so it doesn't consume your session's context |
+| **Session hook** | Warns immediately at session start if `lcp` is not on `PATH`, instead of failing silently |
+| **Registry support** | Optional `userConfig.registries` field for connecting to a private or team registry with pre-built manifests |
 
 ## Installation
 
-### 1. Prerequisites
+### Prerequisites
 
-- [Claude Code](https://claude.com/claude-code) installed.
-- `lcp` installed and on your `PATH` (see [Quickstart](../quickstart.md)):
+- [Claude Code](https://claude.com/claude-code) installed
+- `lcp` installed and available on your `PATH`:
 
 ```bash
 pip install lcp
 lcp --version
 ```
 
-### 2. Install the plugin
+### Install from the marketplace
 
-Install directly from the GitHub repository or from a local clone:
+The plugin is published to the Claude Code marketplace under the `zazza123/lcp` namespace. Add the marketplace and install the plugin in two commands:
 
-```bash
-# From the repository (no local clone needed)
-claude plugin install https://github.com/zazza123/lcp/tree/main/plugin/lcp
-
-# Or from a local clone
-git clone https://github.com/zazza123/lcp.git
-claude plugin install lcp/plugin/lcp
+```
+/plugin marketplace add zazza123/lcp
+/plugin install lcp@lcp
 ```
 
-### 3. Verify
+That's it. Claude Code reads the plugin manifest, registers the MCP server, the skills, the commands, and the subagent. Open a new session and the server starts automatically.
 
-Open a new Claude Code session. The LCP MCP server starts automatically. You should see it listed under active MCP servers. Ask Claude about any pip-installed Python library to confirm resolution is working.
+!!! tip "Configuring a private registry at install time"
+    During `plugin install`, you can set the `registries` option to point to a team registry:
+
+    ```
+    /plugin install lcp@lcp registries="https://your-registry.example.com"
+    ```
+
+### Alternative: local directory
+
+If you have a local clone of the repository and want to load the plugin directly — for example when developing the plugin itself:
+
+```bash
+claude --plugin-dir /path/to/lcp/plugin/lcp
+```
+
+### Alternative: MCP-only (Cursor, Claude Desktop)
+
+If you only need the MCP server without skills, hooks, or commands, add the server directly to your client's MCP config:
+
+=== "Claude Code"
+
+    ```bash
+    claude mcp add lcp -- lcp serve-all
+    ```
+
+=== "Cursor / Claude Desktop"
+
+    Add to `.cursor/mcp.json` or `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "lcp": {
+          "command": "lcp",
+          "args": ["serve-all"]
+        }
+      }
+    }
+    ```
 
 ## How it works
 
-The plugin manifest lives in `.claude-plugin/plugin.json`. It declares the plugin name, version, author, and the `userConfig.registries` schema used by the registry feature. Claude Code reads this file to register the plugin.
+Once the plugin is active, the typical interaction looks like this:
 
-The actual server is declared in `.mcp.json`, which points to `bin/serve.sh` as the MCP server command. When a session opens, Claude Code executes `serve.sh`, which first checks that `lcp` is available on `PATH` and exits with an error if it is not. It then builds the argument list — always starting with `serve-all` — and conditionally appends `--registry <url>` if `CLAUDE_PLUGIN_OPTION_registries` is set (populated from `userConfig.registries`). Finally, it execs `lcp serve-all`, handing control over to the MCP server process.
+```
+User: "Set up FastAPI routes with proper dependency injection"
 
-The `hooks/hooks.json` `SessionStart` hook runs in parallel with server startup. If `lcp` is not on `PATH`, it prints a warning to stderr immediately, so you get a visible signal rather than a silent failure. The two skills (`lcp-universal`, `lcp-usage`) are loaded automatically and guide Claude toward the correct tool-calling workflow when it detects a library-related request.
+Claude:
+  1. resolve_library("fastapi")                → scanned + cached
+  2. list_modules()                            → finds fastapi.routing
+  3. list_symbols(module="fastapi.routing")    → finds APIRouter, Depends
+  4. get_symbol("fastapi.routing:APIRouter")   → full signature
+  5. get_class_members("fastapi:Depends")      → understands dependencies
+  6. Writes accurate, idiomatic code
+```
 
-## Configuring registries
+The `lcp-universal` skill drives this flow automatically: whenever Claude detects that a task involves an external Python library, it calls `resolve_library("package")` first. The MCP server checks `~/.lcp/cache/` for a cached manifest; if none is found, it scans the pip-installed package on the fly and caches the result. Subsequent calls to the same library in the same session are instant.
 
-By default, `lcp serve-all` resolves libraries on demand by scanning the local Python environment. If your team hosts pre-built LCP manifests in a private registry, you can configure the plugin to use it.
+The skills, commands, and subagent are guidance and convenience layers on top of the MCP server — they don't change what the server does, they change how Claude uses it.
 
-Set the `registries` option via the plugin config command:
+## Configuring a private registry
+
+By default, `lcp serve-all` resolves libraries from your local Python environment. If your team maintains a private registry with pre-built manifests for internal packages, configure the plugin to use it:
 
 ```bash
-# Single registry
 claude plugin config lcp registries "https://your-registry.example.com"
-
-# Multiple registries (comma-separated; only the first is passed to --registry)
-claude plugin config lcp registries "https://internal.example.com,https://public.example.com"
 ```
 
-The `userConfig.registries` field in `plugin.json` defines this option's schema — type `string`, comma-separated URLs. The `bin/serve.sh` wrapper reads the value from `CLAUDE_PLUGIN_OPTION_registries`, splits on commas, trims whitespace, and passes the first URL to `lcp serve-all --registry`. Subsequent URLs in the list are currently ignored by the wrapper but recorded for future multi-registry support.
-
-A minimal `plugin.json` `userConfig` block looks like this:
-
-```json
-{
-  "userConfig": {
-    "registries": {
-      "type": "string",
-      "title": "LCP Registries",
-      "description": "Comma-separated list of LCP registry URLs. The first URL is used as the primary registry.",
-      "sensitive": false
-    }
-  }
-}
-```
+Multiple registries can be listed comma-separated; only the first is used as the active registry. The option maps to the `--registry` flag passed to `lcp serve-all` at startup.
 
 ## Troubleshooting
 
 !!! warning "`lcp` command not found"
-    The `SessionStart` hook and `bin/serve.sh` both check for `lcp` on `PATH`. If you see this warning, install `lcp` with `pip install lcp` and confirm `lcp --version` works in the same shell environment Claude Code uses.
+    Both the session hook and the startup wrapper check for `lcp` on `PATH`. Install it with `pip install lcp` and confirm `lcp --version` works in the same shell environment Claude Code uses.
 
 !!! warning "MCP server not starting"
-    Run `lcp serve-all` manually in your terminal to check for errors. On Unix systems, `bin/serve.sh` must be executable — run `chmod +x plugin/lcp/bin/serve.sh` if needed. Confirm Claude Code shows `lcp` in its MCP server list.
+    Run `lcp serve-all` manually in your terminal to check for errors. On Unix systems, `bin/serve.sh` must be executable — run `chmod +x plugin/lcp/bin/serve.sh` if needed. Confirm Claude Code shows `lcp` in its active MCP servers list.
 
 !!! warning "Library not resolving"
-    The package must be pip-installed in the Python environment that `lcp` uses. Run `lcp scan <package>` manually to verify the library can be introspected. If the scan succeeds but the MCP tool still fails, restart the Claude Code session to reload the server.
+    The package must be pip-installed in the Python environment `lcp` uses. Run `lcp scan <package>` manually to verify the library can be introspected. If scanning succeeds but the MCP tool still fails, restart the Claude Code session to reload the server.
 
 ## See also
 
-- [MCP server](mcp-server.md) — the underlying server the plugin wraps.
-- [CLI reference](../cli.md) — `serve-all` flags and all other commands.
+- [MCP server](mcp-server.md) — the underlying server the plugin wraps
+- [CLI reference](../cli.md) — `serve-all` flags and all other commands
+- [Publishing](publishing.md) — contributing manifests to the central registry
