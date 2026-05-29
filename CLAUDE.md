@@ -118,6 +118,7 @@ Build the site locally with `mkdocs build --strict` (install deps via `pip insta
 ## Conventions
 
 - Use `src/` layout with `lcp` package
+- Docstrings in `src/lcp/` feed the auto-generated API reference via `mkdocstrings` — always write Google-style docstrings (`Args:`, `Returns:`, `Raises:`) for all public functions, classes, and methods
 - Tests use `tests/sample_module.py` fixture for testing introspection
 - Private symbols (prefixed with `_`) are excluded by default; controlled via `include_private` flag
 - Public dunder methods (`__init__`, `__call__`, `__iter__`, `__getitem__`, operators) are considered public API
