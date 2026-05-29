@@ -23,7 +23,8 @@ The LCP Claude Code plugin integrates the Library Context Protocol into the Clau
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
-| Plugin manifest | `plugin/lcp/.claude-plugin/plugin.json` | Metadata, keywords, `userConfig` schema; required by the marketplace |
+| Marketplace catalog | `.claude-plugin/marketplace.json` | Registers the repository as a Claude Code marketplace; lists available plugins and their source paths |
+| Plugin manifest | `plugin/lcp/.claude-plugin/plugin.json` | Plugin metadata, keywords, `userConfig` schema; read by Claude Code during `plugin install` |
 | MCP config | `plugin/lcp/.mcp.json` | Declares the MCP server entry pointing to the wrapper script |
 | Wrapper script | `plugin/lcp/bin/serve.sh` | Validates `lcp` on PATH; injects `--registry` from `userConfig`; starts `lcp serve-all` |
 | Hooks | `plugin/lcp/hooks/hooks.json` | `SessionStart` check for missing `lcp` installation |

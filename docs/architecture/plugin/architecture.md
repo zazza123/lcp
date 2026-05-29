@@ -4,42 +4,50 @@
 
 The LCP plugin packages `lcp serve-all` as a Claude Code plugin, enabling the agent to access real-time Python library documentation via MCP without any per-project configuration. The plugin is distributed through the Claude Code marketplace, which governs how it is discovered, installed, and configured.
 
-## Plugin Directory Structure
+## Repository Structure
+
+The plugin spans two locations within the `zazza123/lcp` repository:
 
 ```
-plugin/lcp/
+lcp/                               # repository root
 ├── .claude-plugin/
-│   └── plugin.json          # Manifest: id, name, version, keywords, userConfig schema
-├── .mcp.json                # MCP server declaration pointing to bin/serve.sh
-├── agents/
-│   └── library-explorer.md  # Read-only haiku subagent for deep library research
-├── bin/
-│   └── serve.sh             # Startup wrapper: validates lcp, injects registries
-├── commands/
-│   ├── resolve.md           # /lcp:resolve <package> shortcut
-│   └── scan.md              # /lcp:scan <package> shortcut
-├── hooks/
-│   └── hooks.json           # SessionStart lifecycle hook
-├── skills/
-│   ├── lcp-universal/
-│   │   └── SKILL.md         # Proactive library resolution skill
-│   └── lcp-usage/
-│       └── SKILL.md         # General LCP usage guidance skill
-└── README.md
+│   └── marketplace.json           # Marketplace catalog: declares the repo as a marketplace
+│                                  # and lists available plugins with their source paths
+└── plugin/lcp/                    # Plugin root (source for the lcp@lcp plugin)
+    ├── .claude-plugin/
+    │   └── plugin.json            # Plugin manifest: id, name, version, keywords, userConfig schema
+    ├── .mcp.json                  # MCP server declaration pointing to bin/serve.sh
+    ├── agents/
+    │   └── library-explorer.md   # Read-only haiku subagent for deep library research
+    ├── bin/
+    │   └── serve.sh              # Startup wrapper: validates lcp, injects registries
+    ├── commands/
+    │   ├── resolve.md            # /lcp:resolve <package> shortcut
+    │   └── scan.md               # /lcp:scan <package> shortcut
+    ├── hooks/
+    │   └── hooks.json            # SessionStart lifecycle hook
+    ├── skills/
+    │   ├── lcp-universal/
+    │   │   └── SKILL.md          # Proactive library resolution skill
+    │   └── lcp-usage/
+    │       └── SKILL.md          # General LCP usage guidance skill
+    └── README.md
 ```
 
 ## Marketplace Distribution
 
-The plugin is published to the Claude Code marketplace under the `zazza123/lcp` namespace, using the repository at `https://github.com/zazza123/lcp` as the source. The marketplace reads `plugin/lcp/.claude-plugin/plugin.json` for metadata (name, version, description, author, keywords, license) and for the `userConfig` schema that Claude Code exposes during installation.
+The Claude Code plugin marketplace uses a two-layer file structure. The root `/.claude-plugin/marketplace.json` is the **marketplace catalog** — it registers the GitHub repository as a marketplace and declares which plugins are available within it, each with a `source` path pointing to a subdirectory. The `plugin/lcp/.claude-plugin/plugin.json` is the **plugin manifest** — it contains the plugin's metadata, keywords, and the `userConfig` schema that Claude Code presents during installation.
 
-The `userConfig.registries` field lets users provide a comma-separated list of LCP registry URLs. The marketplace presents this as a labelled input during `plugin install`, and Claude Code injects the value as the `CLAUDE_PLUGIN_CONFIG_REGISTRIES` environment variable at runtime.
+When a user runs `/plugin marketplace add zazza123/lcp`, Claude Code fetches the repository's marketplace catalog. When they subsequently run `/plugin install lcp@lcp`, Claude Code reads the plugin manifest from the path declared in the catalog (`./plugin/lcp`), registers the MCP server, skills, commands, hooks, and subagent, and exposes the `userConfig` inputs.
+
+The `userConfig.registries` field lets users provide a comma-separated list of LCP registry URLs. Claude Code injects the configured value as the `CLAUDE_PLUGIN_OPTION_registries` environment variable at runtime, which `bin/serve.sh` picks up to pass the first registry URL to `lcp serve-all --registry`.
 
 ```mermaid
 flowchart LR
-    A["GitHub repo\nzazza123/lcp"] --> B["Marketplace\nindex"]
+    A["GitHub repo\nzazza123/lcp"] --> B["/.claude-plugin/\nmarketplace.json"]
     B --> C["/plugin marketplace add\nzazza123/lcp"]
     C --> D["/plugin install lcp@lcp"]
-    D --> E["Claude Code reads\nplugin.json + .mcp.json"]
+    D --> E["Claude Code reads\nplugin/lcp/.claude-plugin/plugin.json\n+ .mcp.json"]
     E --> F["Plugin active in session"]
 ```
 
@@ -113,10 +121,11 @@ The plugin is a packaging and configuration layer. All library resolution, cachi
 
 ```mermaid
 flowchart LR
-    subgraph Marketplace
-        MP["plugin.json\nmetadata + userConfig"]
+    subgraph Repo root
+        CAT[".claude-plugin/\nmarketplace.json\ncatalog"]
     end
     subgraph Plugin
+        MP["plugin/lcp/.claude-plugin/\nplugin.json\nmetadata + userConfig"]
         A[".mcp.json"] --> B["bin/serve.sh"]
         C["hooks/hooks.json"]
         D["skills/"]
@@ -127,6 +136,7 @@ flowchart LR
         B --> G["lcp serve-all"]
         G --> H["mcp_server.py\ncreate_universal_server()"]
     end
+    CAT --> |"marketplace add\n→ plugin install"| MP
     MP --> |"installed via marketplace"| A
     D --> |"guides agent"| H
     E --> |"user shortcut"| H
@@ -139,5 +149,5 @@ flowchart LR
 - [Registry Publish](../publish/index.md) — How manifests are published to the remote registry used as plugin fallback
 
 ---
-**Last Updated:** May 2026
+**Last Updated:** May 2026 (updated: marketplace catalog)
 **Status:** Implemented
