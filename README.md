@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="site/asset/logo.png" alt="LCP Logo" width="80">
+  <img src="docs/assets/logo.png" alt="LCP Logo" width="80">
 </p>
 <h1 align="center">Library Context Protocol</h1>
 
