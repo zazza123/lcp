@@ -45,6 +45,17 @@
   text-align: center;
 }
 
+/* Grid cards: rounded corners consistent with logo and search bar */
+.md-typeset .grid.cards > :is(ul, ol) > li,
+.md-typeset .grid > .card {
+  border-radius: 8px;
+}
+
+/* Code blocks: rounded corners */
+.md-typeset .md-code__content {
+  border-radius: 8px;
+}
+
 /* Slightly tighten landing typography */
 .md-typeset h1 {
   font-weight: 700;
