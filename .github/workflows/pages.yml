@@ -4,40 +4,36 @@ on:
   push:
     branches: [main]
     paths:
-      - "site/**"
-  release:
-    types: [created]
+      - "docs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# Allow only one concurrent deployment; cancel in-progress runs
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
   deploy:
-    name: deploy to github pages
+    name: build & deploy docs
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: setup github pages
-        uses: actions/configure-pages@v5
-
-      - name: upload site artifact
-        uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          fetch-depth: 0
 
-      - name: deploy to github pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: install docs deps
+        run: pip install -e ".[docs]"
+
+      - name: build & deploy via mkdocs
+        run: mkdocs gh-deploy --force --clean --verbose

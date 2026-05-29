@@ -1,0 +1,136 @@
+site_name: Library Context Protocol
+site_description: Machine-readable library descriptions for AI, IDEs, and developer tools.
+site_url: https://zazza123.github.io/lcp/
+repo_url: https://github.com/zazza123/lcp
+repo_name: zazza123/lcp
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site_build
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.32.png
+  font:
+    text: Space Grotesk
+    code: JetBrains Mono
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_root_heading: true
+            show_source: true
+            show_signature_annotations: true
+            separate_signature: true
+            docstring_section_style: table
+            members_order: source
+            filters: ["!^_"]
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Get Started:
+      - Introduction: introduction.md
+      - Quickstart: quickstart.md
+      - CLI reference: cli.md
+  - Guides:
+      - MCP Server: guides/mcp-server.md
+      - Claude Code plugin: guides/claude-code-plugin.md
+      - AI DocGen: guides/ai-docgen.md
+      - Publishing: guides/publishing.md
+  - Specification:
+      - LCP v1 spec: spec/index.md
+      - JSON Schema: spec/schema.md
+      - Examples: spec/examples.md
+  - Architecture:
+      - Overview: architecture/index.md
+      - Manifest Generation:
+          - Overview: architecture/manifest/index.md
+          - Architecture: architecture/manifest/architecture.md
+      - MCP Server:
+          - Overview: architecture/mcp_server/index.md
+          - Architecture: architecture/mcp_server/architecture.md
+      - Coverage: architecture/coverage/index.md
+      - Version Diff:
+          - Overview: architecture/diff/index.md
+          - Architecture: architecture/diff/architecture.md
+      - Registry Publish:
+          - Overview: architecture/publish/index.md
+          - Architecture: architecture/publish/architecture.md
+      - AI DocGen:
+          - Overview: architecture/ai_docgen/index.md
+          - Architecture: architecture/ai_docgen/architecture.md
+      - Claude Code Plugin:
+          - Overview: architecture/plugin/index.md
+          - Architecture: architecture/plugin/architecture.md
+  - API Reference:
+      - Overview: api/index.md
+      - Scanner: api/scanner.md
+      - Generator: api/generator.md
+      - Validator: api/validator.md
+      - Models: api/models.md
+      - Coverage: api/coverage.md
+      - Diff: api/diff.md
+      - Publish: api/publish.md
+      - MCP Server: api/mcp-server.md
+      - AI DocGen: api/ai.md
