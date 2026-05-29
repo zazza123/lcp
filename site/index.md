@@ -27,6 +27,14 @@ hide:
 
     [:octicons-arrow-right-24: Quickstart](docs/quickstart.md)
 
+-   :material-server:{ .lg .middle } __MCP Server__
+
+    ---
+
+    Expose LCP manifests to AI agents via the Model Context Protocol.
+
+    [:octicons-arrow-right-24: MCP Server guide](docs/guides/mcp-server.md)
+
 -   :material-book-open-variant:{ .lg .middle } __LCP v1 Specification__
 
     ---
@@ -34,13 +42,5 @@ hide:
     Document structure, symbols, signatures, types, and semantics.
 
     [:octicons-arrow-right-24: Read the spec](docs/spec/index.md)
-
--   :fontawesome-brands-github:{ .lg .middle } __GitHub__
-
-    ---
-
-    Source, issues, and contributions.
-
-    [:octicons-arrow-right-24: zazza123/lcp](https://github.com/zazza123/lcp)
 
 </div>
