@@ -38,6 +38,13 @@
   border-radius: 8px;
 }
 
+/* Home hero: centered with constrained width */
+.home-hero {
+  max-width: 700px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
 /* Slightly tighten landing typography */
 .md-typeset h1 {
   font-weight: 700;

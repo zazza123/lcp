@@ -13,7 +13,7 @@ theme:
   logo: assets/logo.png
   favicon: assets/logo.32.png
   font:
-    text: false
+    text: Space Grotesk
     code: JetBrains Mono
   palette:
     - media: "(prefers-color-scheme: light)"

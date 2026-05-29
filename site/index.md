@@ -5,14 +5,17 @@ hide:
   - toc
 ---
 
-# Library Context Protocol
+<h1 style="display:none">Library Context Protocol</h1>
 
-Machine-readable library descriptions for AI systems, tooling, and documentation generators.
+<div class="home-hero" markdown>
+  <img src="assets/logo.png" alt="LCP Logo" width="128" style="margin-bottom: 0.5rem;">
 
-```bash
-pip install lcp
-lcp scan requests -o requests.lcp.json
-```
+  <p style="text-align: justify;"><b>lcp</b> (<i>Library Context Protocol</i>) is primarly a protocol designed to solve the problem of AI agents not having access to up-to-date library documentation, which leads to hallucinations and inaccurate code generation. The LCP SDK provides tools to scan Python packages, extract API information, and generate LCP-compliant JSON manifests. It also includes features for analyzing documentation coverage and generating missing docstrings using AI.</p>
+
+  ```bash
+  pip install lcp
+  ```
+</div>
 
 <div class="grid cards" markdown>
 
