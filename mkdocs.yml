@@ -3,9 +3,9 @@ site_description: Machine-readable library descriptions for AI, IDEs, and develo
 site_url: https://zazza123.github.io/lcp/
 repo_url: https://github.com/zazza123/lcp
 repo_name: zazza123/lcp
-edit_uri: edit/main/site/
+edit_uri: edit/main/docs/
 
-docs_dir: site
+docs_dir: docs
 site_dir: site_build
 
 theme:
@@ -75,15 +75,36 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Get Started:
-      - Introduction: docs/introduction.md
-      - Quickstart: docs/quickstart.md
-      - CLI reference: docs/cli.md
+      - Introduction: introduction.md
+      - Quickstart: quickstart.md
+      - CLI reference: cli.md
   - Guides:
-      - MCP Server: docs/guides/mcp-server.md
-      - Claude Code plugin: docs/guides/claude-code-plugin.md
-      - AI DocGen: docs/guides/ai-docgen.md
-      - Publishing: docs/guides/publishing.md
-  - Reference:
-      - LCP v1 spec: docs/spec/index.md
-      - JSON Schema: docs/spec/schema.md
-      - Examples: docs/spec/examples.md
+      - MCP Server: guides/mcp-server.md
+      - Claude Code plugin: guides/claude-code-plugin.md
+      - AI DocGen: guides/ai-docgen.md
+      - Publishing: guides/publishing.md
+  - Specification:
+      - LCP v1 spec: spec/index.md
+      - JSON Schema: spec/schema.md
+      - Examples: spec/examples.md
+  - Architecture:
+      - Overview: architecture/index.md
+      - Manifest Generation:
+          - Overview: architecture/manifest/index.md
+          - Architecture: architecture/manifest/architecture.md
+      - MCP Server:
+          - Overview: architecture/mcp_server/index.md
+          - Architecture: architecture/mcp_server/architecture.md
+      - Coverage: architecture/coverage/index.md
+      - Version Diff:
+          - Overview: architecture/diff/index.md
+          - Architecture: architecture/diff/architecture.md
+      - Registry Publish:
+          - Overview: architecture/publish/index.md
+          - Architecture: architecture/publish/architecture.md
+      - AI DocGen:
+          - Overview: architecture/ai_docgen/index.md
+          - Architecture: architecture/ai_docgen/architecture.md
+      - Claude Code Plugin:
+          - Overview: architecture/plugin/index.md
+          - Architecture: architecture/plugin/architecture.md

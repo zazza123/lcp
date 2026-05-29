@@ -18,7 +18,6 @@ The Registry Publish module submits LCP manifests to a remote registry by openin
 ## Documents
 
 - [Architecture](architecture.md) - GitHub API workflow, authentication, error handling, and PR structure internals
-- [Migration Guide](migration.md) - How to migrate existing plain `.lcp.json` manifests to the new `.lcp.json.gz` format
 
 ## Key Components
 

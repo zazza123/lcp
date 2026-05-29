@@ -1,6 +1,6 @@
 # JSON Schema
 
-The canonical machine-readable schema for LCP v1 is published in this repository at [`schema.json`](../../assets/schema.json){ download="lcp-v1.schema.json" }.
+The canonical machine-readable schema for LCP v1 is published in this repository at [`schema.json`](../assets/schema.json){ download="lcp-v1.schema.json" }.
 
 Use it to validate any `.lcp.json` document with any JSON Schema validator. The Python SDK runs this validation automatically as part of `lcp scan` and via the standalone [`lcp validate`](../cli.md#lcp-validate) command.
 
