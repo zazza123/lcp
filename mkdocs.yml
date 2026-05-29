@@ -46,6 +46,21 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_root_heading: true
+            show_source: true
+            show_signature_annotations: true
+            separate_signature: true
+            docstring_section_style: table
+            members_order: source
+            filters: ["!^_"]
+
 markdown_extensions:
   - admonition
   - attr_list
@@ -108,3 +123,14 @@ nav:
       - Claude Code Plugin:
           - Overview: architecture/plugin/index.md
           - Architecture: architecture/plugin/architecture.md
+  - API Reference:
+      - Overview: api/index.md
+      - Scanner: api/scanner.md
+      - Generator: api/generator.md
+      - Validator: api/validator.md
+      - Models: api/models.md
+      - Coverage: api/coverage.md
+      - Diff: api/diff.md
+      - Publish: api/publish.md
+      - MCP Server: api/mcp-server.md
+      - AI DocGen: api/ai.md

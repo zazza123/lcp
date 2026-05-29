@@ -1,0 +1,3 @@
+# Publish
+
+::: lcp.publish
