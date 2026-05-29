@@ -56,7 +56,7 @@ sequenceDiagram
 
     CLI->>Labels: registry_repo, pr_number
     Labels->>GitHub: POST /repos/{registry}/issues/{pr}/labels
-    Note over Labels,GitHub: Best-effort; failure silently ignored
+    Note over Labels,GitHub: Best-effort — failure silently ignored
 ```
 
 ---

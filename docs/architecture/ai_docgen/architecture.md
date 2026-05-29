@@ -6,38 +6,20 @@ The AI DocGen module uses a hierarchical bottom-up approach to generate missing 
 
 ## Processing Pipeline
 
-```
-Coverage JSON (flat list of undocumented symbols)
-        │
-        ▼
-┌──────────────────┐
-│ Hierarchy Builder │  Groups by module, builds parent-child trees,
-│                   │  assigns levels (0=leaf, 1=class, 2=module)
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│ Level 0: Leaves  │  Functions and methods
-│ asyncio.gather() │  Context: source code of the symbol (max 50 lines)
-└────────┬─────────┘
-         │ barrier + failure propagation
-         ▼
-┌──────────────────┐
-│ Level 1: Classes │  Context: class signature + __init__ + full
-│ asyncio.gather() │  docstrings of child methods
-└────────┬─────────┘
-         │ barrier + failure propagation
-         ▼
-┌──────────────────┐
-│ Level 2: Modules │  Context: top 30 lines of file + summary lines
-│ asyncio.gather() │  of child classes/functions
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│  Batch Writer    │  Groups by file, injects docstrings bottom-up
-│                  │  via AST to avoid line offset issues
-└──────────────────┘
+```mermaid
+flowchart TD
+    Input([Coverage JSON])
+    HB["Hierarchy Builder<br/>Groups by module, assigns level 0 / 1 / 2"]
+    L0["Level 0 — Leaves<br/>Functions and methods<br/>Context: symbol source code up to 50 lines"]
+    L1["Level 1 — Classes<br/>Context: class signature + child docstrings"]
+    L2["Level 2 — Modules<br/>Context: first 30 lines of file + child summaries"]
+    BW["Batch Writer<br/>Injects docstrings bottom-up via AST"]
+
+    Input --> HB
+    HB --> L0
+    L0 -->|"barrier + failure propagation"| L1
+    L1 -->|"barrier + failure propagation"| L2
+    L2 --> BW
 ```
 
 Each level is processed fully before the next begins. This ensures that when generating a class docstring, all method docstrings are already available as context.
