@@ -1,0 +1,63 @@
+/* Palette overrides matching the LCP brand orange */
+:root {
+  --md-primary-fg-color: #ea580c;
+  --md-primary-fg-color--light: #f97316;
+  --md-primary-fg-color--dark: #c2410c;
+  --md-accent-fg-color: #f59e0b;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #fb923c;
+  --md-primary-fg-color--light: #fdba74;
+  --md-primary-fg-color--dark: #f97316;
+  --md-accent-fg-color: #fbbf24;
+}
+
+/* Logo: rounded square with page-background fill so the PNG is visible on orange */
+.md-header__button.md-logo {
+  background-color: var(--md-default-bg-color);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.md-header__button.md-logo:hover {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.md-header__button.md-logo img {
+  border-radius: 4px;
+}
+
+/* Search bar: slightly rounded corners */
+.md-search__form {
+  border-radius: 8px;
+}
+
+/* Home hero: centered with constrained width */
+.home-hero {
+  max-width: 700px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+/* Grid cards: rounded corners consistent with logo and search bar */
+.md-typeset .grid.cards > :is(ul, ol) > li,
+.md-typeset .grid > .card {
+  border-radius: 8px;
+}
+
+/* Code blocks: rounded corners */
+.md-typeset .md-code__content {
+  border-radius: 8px;
+}
+
+/* Slightly tighten landing typography */
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
