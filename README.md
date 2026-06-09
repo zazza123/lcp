@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="LCP Logo" width="80">
+  <a href="https://zazza123.github.io/lcp">
+    <img src="https://raw.githubusercontent.com/zazza123/lcp/main/docs/assets/logo.png" alt="LCP Logo" width="80">
+  </a>
 </p>
 <h1 align="center">Library Context Protocol</h1>
 
