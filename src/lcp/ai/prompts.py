@@ -17,8 +17,7 @@ def build_system_prompt(
         The system prompt string.
     """
     parts = [
-        "You are a Python documentation expert. Your task is to generate "
-        "high-quality docstrings for Python symbols that lack documentation.",
+        "You are a Python documentation expert. Your task is to generate high-quality docstrings for Python symbols that lack documentation.",
         "",
         "Rules:",
         f"- Use {docstring_style} style docstrings.",
@@ -122,9 +121,7 @@ def _build_class_prompt(node, context: str) -> str:
         "```",
         "",
         "The class contains the documented members shown above.",
-        "Based on the class structure and its members' documentation, "
-        "describe the purpose of this class, its key attributes, and "
-        "its role in the module.",
+        "Based on the class structure and its members' documentation, describe the purpose of this class, its key attributes, and its role in the module.",
         "",
         "Return ONLY the docstring text, without triple quotes.",
     ]
@@ -140,8 +137,7 @@ def _build_module_prompt(node, context: str) -> str:
         "",
         context,
         "",
-        "Based on the module's imports, constants, and its components' summaries, "
-        "describe the purpose of this module and its role in the package.",
+        "Based on the module's imports, constants, and its components' summaries, describe the purpose of this module and its role in the package.",
         "",
         "Return ONLY the docstring text, without triple quotes.",
     ]

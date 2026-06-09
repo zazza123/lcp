@@ -83,8 +83,8 @@ def _github_request(
         resp_text = ""
         try:
             resp_text = exc.read().decode("utf-8", errors="replace")
-        except Exception:
-            pass
+        except (OSError, EOFError):
+            pass  # reading the error body is best-effort; resp_text stays ""
 
         if exc.code == 401:
             raise PublishError(

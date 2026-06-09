@@ -18,7 +18,7 @@ class TestProviderABC:
         class IncompleteProvider(LLMProvider):
             @property
             def name(self): return "incomplete"
-            def generate(self, system, prompt): ...
+            def generate(self, system, prompt): pass
 
         with pytest.raises(TypeError, match="agenerate"):
             IncompleteProvider()
