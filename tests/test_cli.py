@@ -420,3 +420,20 @@ class TestPublishCommand:
         )
         assert result.exit_code == 1
         assert "already exists" in result.output
+
+
+class TestDocgenCommand:
+    """Tests for the docgen command."""
+
+    def test_docgen_registered_in_main_help(self, runner):
+        result = runner.invoke(main, ["--help"])
+        assert result.exit_code == 0
+        assert "docgen" in result.output
+
+    def test_docgen_help(self, runner):
+        result = runner.invoke(main, ["docgen", "--help"])
+        assert result.exit_code == 0
+        assert "COVERAGE_JSON" in result.output
+        assert "--provider" in result.output
+        assert "--dry-run" in result.output
+        assert "--workers" in result.output

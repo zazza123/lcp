@@ -520,6 +520,8 @@ def publish(
         sys.exit(1)
 
 
+@main.command()
+@click.argument("coverage_json", type=click.Path(exists=True))
 @click.option(
     "--provider",
     type=click.Choice(["openai", "anthropic"]),
