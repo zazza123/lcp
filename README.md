@@ -4,6 +4,13 @@
   </a>
 </p>
 <h1 align="center">Library Context Protocol</h1>
+<p align="center">
+  <a href="https://pypi.org/project/lcp" target="_blank"><img src="https://img.shields.io/pypi/pyversions/lcp.svg?color=%2334D058" alt="Supported Python Versions" height="18"></a>
+  <a href="https://pypi.org/project/lcp"><img src="https://img.shields.io/pypi/v/lcp?color=%2334D058&label=pypi" alt="PyPI version" height="18"></a>
+  <a href="https://github.com/zazza123/lcp/actions/workflows/tests.yml?query=branch%3Amain+event%3Apush"><img src="https://github.com/zazza123/lcp/actions/workflows/tests.yml/badge.svg?branch=main&event=push" alt="Tests" height="18"></a>
+  <a href="https://pepy.tech/project/lcp" target="_blank"><img src="https://static.pepy.tech/badge/lcp/month" alt="Downloads" height="18"></a>
+  <a href="https://github.com/zazza123/lcp/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/zazza123/lcp.svg" alt="License" height="18"></a>
+</p>
 
 ---
 
