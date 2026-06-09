@@ -83,7 +83,7 @@ def _github_request(
         resp_text = ""
         try:
             resp_text = exc.read().decode("utf-8", errors="replace")
-        except Exception:
+        except (OSError, EOFError):
             pass
 
         if exc.code == 401:

@@ -495,6 +495,5 @@ class TestPublishManifest:
         # Content must be valid gzip-compressed JSON
         assert isinstance(content, bytes)
         decompressed = gzip.decompress(content)
-        import json
         data = json.loads(decompressed)
         assert data["manifest"]["library"]["name"] == "mylib"

@@ -13,15 +13,12 @@ class LLMProvider(ABC):
     @abstractmethod
     def generate(self, system: str, prompt: str) -> LLMResponse:
         """Generate text from the LLM (synchronous)."""
-        ...
 
     @abstractmethod
     async def agenerate(self, system: str, prompt: str) -> LLMResponse:
         """Generate text from the LLM (async)."""
-        ...
 
     @property
     @abstractmethod
     def name(self) -> str:
         """Name of the provider."""
-        ...
