@@ -38,7 +38,11 @@ from .validator import (
     validate_or_raise,
 )
 
-__version__ = "0.1.0"
+try:
+    from importlib.metadata import version as _version, PackageNotFoundError as _PackageNotFoundError
+    __version__ = _version("lcp")
+except _PackageNotFoundError:
+    __version__ = "0.0.0+unknown"
 __all__ = [
     # Main functions
     "scan",
