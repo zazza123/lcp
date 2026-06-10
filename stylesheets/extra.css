@@ -4,6 +4,28 @@
   --md-primary-fg-color--light: #f97316;
   --md-primary-fg-color--dark: #c2410c;
   --md-accent-fg-color: #f59e0b;
+
+  /* Code box: same card treatment as the registry home search bar
+     (registry --radius-lg). Border + shadow are scheme-specific below. */
+  --lcp-code-radius: 12px;
+}
+
+/* Light background: pure white, matching the registry --color-bg */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #ffffff;
+
+  /* Links use the registry brand orange (registry --color-primary) */
+  --md-typeset-a-color: var(--md-primary-fg-color);
+
+  /* Navbar: same colour as the page with a translucent blur, plus the
+     delicate hairline from the registry (--color-border-light). */
+  --lcp-navbar-bg: rgba(255, 255, 255, 0.82);
+  --lcp-navbar-border: #f1f5f9;
+
+  /* Code box: registry --color-border hairline + --shadow-md soft lift. */
+  --lcp-code-border: #e2e8f0;
+  --lcp-code-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07),
+                     0 2px 4px -2px rgba(15, 23, 42, 0.05);
 }
 
 [data-md-color-scheme="slate"] {
@@ -11,13 +33,141 @@
   --md-primary-fg-color--light: #fdba74;
   --md-primary-fg-color--dark: #f97316;
   --md-accent-fg-color: #fbbf24;
+
+  /* Dark background: slate-900, matching the registry --color-bg (#0f172a).
+     The alpha shades mirror Material's own light/lighter/lightest derivation
+     so borders and elevated surfaces stay consistent. */
+  --md-default-bg-color: #0f172a;
+  --md-default-bg-color--light: rgba(15, 23, 42, 0.54);
+  --md-default-bg-color--lighter: rgba(15, 23, 42, 0.26);
+  --md-default-bg-color--lightest: rgba(15, 23, 42, 0.07);
+
+  /* Code surface: slate-800, matching the registry dark --color-surface so
+     code boxes read as a raised panel above the slate-900 page background. */
+  --md-code-bg-color: #1e293b;
+
+  --md-typeset-a-color: var(--md-primary-fg-color);
+
+  --lcp-navbar-bg: rgba(15, 23, 42, 0.82);
+  --lcp-navbar-border: #1e293b;
+
+  /* Code box: registry dark --color-border + a deeper shadow for the
+     darker surface, mirroring the registry --shadow-md dark variant. */
+  --lcp-code-border: #334155;
+  --lcp-code-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+                     0 2px 4px -2px rgba(0, 0, 0, 0.2);
 }
 
-/* Logo: rounded square with page-background fill so the PNG is visible on orange */
+/* ==========================================================================
+   Navbar — registry-style: page-coloured bar, translucent blur, hairline.
+   Material colours the header/tabs with the primary orange; we flatten it to
+   the page background and recolour text/icons to the default foreground.
+   ========================================================================== */
+.md-header,
+.md-tabs {
+  background-color: var(--lcp-navbar-bg);
+  color: var(--md-default-fg-color);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: none;
+}
+
+/* The delicate line: under the tabs bar when present, otherwise under the
+   header (Material adds .md-header--shadow once the tabs scroll away). */
+.md-tabs,
+.md-header--shadow {
+  border-bottom: 1px solid var(--lcp-navbar-border);
+}
+.md-header--shadow {
+  box-shadow: none;
+}
+
+/* Search field: the rounded form carries the surface colour and clips its
+   children, so the input no longer shows a sharp-cornered box underneath. */
+.md-search__form {
+  background-color: var(--md-default-fg-color--lightest);
+  overflow: hidden;
+}
+.md-search__input {
+  background-color: transparent;
+  color: var(--md-default-fg-color);
+}
+.md-search__input::placeholder,
+.md-search__icon {
+  color: var(--md-default-fg-color--light);
+}
+
+/* Theme toggle: render the registry's stroke-based sun/moon as outlines.
+   Material forces fill:currentColor on header icons, which would turn the
+   Feather glyphs into solid blobs — scope fill:none back to the palette. */
+.md-header__option[data-md-component="palette"] svg {
+  fill: none;
+}
+
+/* Tabs links inherit the foreground; active tab takes the brand orange. */
+.md-tabs__link {
+  color: var(--md-default-fg-color);
+  opacity: 0.7;
+}
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+}
+.md-tabs__link--active {
+  color: var(--md-primary-fg-color);
+}
+
+/* ==========================================================================
+   Mobile drawer — flatten the slide-out nav like the header/tabs above.
+   Material paints the drawer header (.md-nav__title[for="__drawer"]) with the
+   primary orange and the repo-source strip (.md-nav__source) with the darker
+   orange. Recolour both to the page surface with the registry hairline so the
+   responsive nav matches the flattened desktop bar instead of the old orange.
+   ========================================================================== */
+.md-nav--primary .md-nav__title[for="__drawer"] {
+  background-color: var(--lcp-navbar-bg);
+  color: var(--md-default-fg-color);
+  border-bottom: 1px solid var(--lcp-navbar-border);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.md-nav__source {
+  background-color: var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color);
+  border-top: 1px solid var(--lcp-navbar-border);
+}
+
+/* The external "Registry" entry stays brand orange everywhere it appears
+   (top tabs and the responsive drawer nav). */
+.md-tabs__link[href^="https://zazza123.github.io/lcp-registry"],
+.md-nav__link[href^="https://zazza123.github.io/lcp-registry"] {
+  color: var(--md-primary-fg-color);
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* Brand lockup "LCP / Docs" in the header (see overrides/partials/header.html) */
+.md-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+}
+.md-header__brand-name {
+  color: var(--md-default-fg-color);
+}
+.md-header__brand-sep {
+  color: var(--lcp-navbar-border);
+  font-weight: 300;
+}
+.md-header__brand-label {
+  color: var(--md-primary-fg-color);
+}
+
+/* Logo: plain image like the registry; grows slightly on hover. */
 .md-header__button.md-logo {
-  background-color: var(--md-default-bg-color);
-  border-radius: 8px;
-  padding: 4px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,13 +179,21 @@
   transform: scale(1.08);
 }
 
-.md-header__button.md-logo img {
-  border-radius: 4px;
-}
-
 /* Search bar: slightly rounded corners */
 .md-search__form {
   border-radius: 8px;
+}
+
+/* Footer meta ("Made with Material for MkDocs"): mirror the nav instead of
+   Material's dark bar — page background with a delicate top hairline that
+   separates it from the content. Stays in normal flow (not fixed), so it
+   only shows once you reach the bottom of the page. */
+.md-footer-meta {
+  background-color: var(--md-default-bg-color);
+  border-top: 1px solid var(--lcp-navbar-border);
+  --md-footer-fg-color: var(--md-default-fg-color);
+  --md-footer-fg-color--light: var(--md-default-fg-color--light);
+  --md-footer-fg-color--lighter: var(--md-default-fg-color--lighter);
 }
 
 /* Home hero: centered with constrained width */
@@ -51,9 +209,27 @@
   border-radius: 8px;
 }
 
-/* Code blocks: rounded corners */
-.md-typeset .md-code__content {
-  border-radius: 8px;
+/* ==========================================================================
+   Code blocks — float them like the registry home search bar: a hairline
+   border, soft shadow and rounded corners around a single surface.
+   .md-highlight is Material's universal wrapper (plain blocks AND the
+   line-number table both render as `<div class="language-… highlight">`).
+   We move the code background onto the wrapper so the line-number gutter and
+   the code share one surface, clip the inner square corners with overflow,
+   and zero the inner margins Material puts on <pre>/.highlighttable so no
+   empty band shows inside the border.
+   ========================================================================== */
+.md-typeset .highlight {
+  margin: 1em 0;
+  background-color: var(--md-code-bg-color);
+  border: 1px solid var(--lcp-code-border);
+  border-radius: var(--lcp-code-radius);
+  box-shadow: var(--lcp-code-shadow);
+  overflow: hidden;
+}
+.md-typeset .highlight > pre,
+.md-typeset .highlight > .highlighttable {
+  margin: 0;
 }
 
 /* Slightly tighten landing typography */
