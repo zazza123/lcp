@@ -8,6 +8,11 @@ edit_uri: edit/main/docs/
 docs_dir: docs
 site_dir: site_build
 
+# Local-only planning artefacts (gitignored) live under docs/superpowers/.
+# Keep them out of the build so MkDocs stops validating their links.
+exclude_docs: |
+  superpowers/
+
 theme:
   name: material
   custom_dir: overrides
