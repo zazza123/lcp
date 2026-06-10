@@ -98,6 +98,27 @@
   color: var(--md-primary-fg-color);
 }
 
+/* ==========================================================================
+   Mobile drawer — flatten the slide-out nav like the header/tabs above.
+   Material paints the drawer header (.md-nav__title[for="__drawer"]) with the
+   primary orange and the repo-source strip (.md-nav__source) with the darker
+   orange. Recolour both to the page surface with the registry hairline so the
+   responsive nav matches the flattened desktop bar instead of the old orange.
+   ========================================================================== */
+.md-nav--primary .md-nav__title[for="__drawer"] {
+  background-color: var(--lcp-navbar-bg);
+  color: var(--md-default-fg-color);
+  border-bottom: 1px solid var(--lcp-navbar-border);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.md-nav__source {
+  background-color: var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color);
+  border-top: 1px solid var(--lcp-navbar-border);
+}
+
 /* The external "Registry" entry stays brand orange everywhere it appears
    (top tabs and the responsive drawer nav). */
 .md-tabs__link[href^="https://zazza123.github.io/lcp-registry"],
