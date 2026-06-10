@@ -144,6 +144,18 @@
   border-radius: 8px;
 }
 
+/* Footer meta ("Made with Material for MkDocs"): mirror the nav instead of
+   Material's dark bar — page background with a delicate top hairline that
+   separates it from the content. Stays in normal flow (not fixed), so it
+   only shows once you reach the bottom of the page. */
+.md-footer-meta {
+  background-color: var(--md-default-bg-color);
+  border-top: 1px solid var(--lcp-navbar-border);
+  --md-footer-fg-color: var(--md-default-fg-color);
+  --md-footer-fg-color--light: var(--md-default-fg-color--light);
+  --md-footer-fg-color--lighter: var(--md-default-fg-color--lighter);
+}
+
 /* Home hero: centered with constrained width */
 .home-hero {
   max-width: 700px;
