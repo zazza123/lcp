@@ -4,6 +4,10 @@
   --md-primary-fg-color--light: #f97316;
   --md-primary-fg-color--dark: #c2410c;
   --md-accent-fg-color: #f59e0b;
+
+  /* Code box: same card treatment as the registry home search bar
+     (registry --radius-lg). Border + shadow are scheme-specific below. */
+  --lcp-code-radius: 12px;
 }
 
 /* Light background: pure white, matching the registry --color-bg */
@@ -17,6 +21,11 @@
      delicate hairline from the registry (--color-border-light). */
   --lcp-navbar-bg: rgba(255, 255, 255, 0.82);
   --lcp-navbar-border: #f1f5f9;
+
+  /* Code box: registry --color-border hairline + --shadow-md soft lift. */
+  --lcp-code-border: #e2e8f0;
+  --lcp-code-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07),
+                     0 2px 4px -2px rgba(15, 23, 42, 0.05);
 }
 
 [data-md-color-scheme="slate"] {
@@ -33,10 +42,20 @@
   --md-default-bg-color--lighter: rgba(15, 23, 42, 0.26);
   --md-default-bg-color--lightest: rgba(15, 23, 42, 0.07);
 
+  /* Code surface: slate-800, matching the registry dark --color-surface so
+     code boxes read as a raised panel above the slate-900 page background. */
+  --md-code-bg-color: #1e293b;
+
   --md-typeset-a-color: var(--md-primary-fg-color);
 
   --lcp-navbar-bg: rgba(15, 23, 42, 0.82);
   --lcp-navbar-border: #1e293b;
+
+  /* Code box: registry dark --color-border + a deeper shadow for the
+     darker surface, mirroring the registry --shadow-md dark variant. */
+  --lcp-code-border: #334155;
+  --lcp-code-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+                     0 2px 4px -2px rgba(0, 0, 0, 0.2);
 }
 
 /* ==========================================================================
@@ -190,9 +209,27 @@
   border-radius: 8px;
 }
 
-/* Code blocks: rounded corners */
-.md-typeset .md-code__content {
-  border-radius: 8px;
+/* ==========================================================================
+   Code blocks — float them like the registry home search bar: a hairline
+   border, soft shadow and rounded corners around a single surface.
+   .md-highlight is Material's universal wrapper (plain blocks AND the
+   line-number table both render as `<div class="language-… highlight">`).
+   We move the code background onto the wrapper so the line-number gutter and
+   the code share one surface, clip the inner square corners with overflow,
+   and zero the inner margins Material puts on <pre>/.highlighttable so no
+   empty band shows inside the border.
+   ========================================================================== */
+.md-typeset .highlight {
+  margin: 1em 0;
+  background-color: var(--md-code-bg-color);
+  border: 1px solid var(--lcp-code-border);
+  border-radius: var(--lcp-code-radius);
+  box-shadow: var(--lcp-code-shadow);
+  overflow: hidden;
+}
+.md-typeset .highlight > pre,
+.md-typeset .highlight > .highlighttable {
+  margin: 0;
 }
 
 /* Slightly tighten landing typography */
