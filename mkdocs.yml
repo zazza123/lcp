@@ -10,6 +10,7 @@ site_dir: site_build
 
 theme:
   name: material
+  custom_dir: overrides
   logo: assets/logo.png
   favicon: assets/logo.32.png
   font:
@@ -21,14 +22,14 @@ theme:
       primary: deep orange
       accent: amber
       toggle:
-        icon: material/weather-night
+        icon: material/weather-sunny
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: deep orange
       accent: amber
       toggle:
-        icon: material/weather-sunny
+        icon: material/weather-night
         name: Switch to light mode
   features:
     - navigation.tabs

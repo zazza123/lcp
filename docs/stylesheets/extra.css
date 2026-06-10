@@ -9,6 +9,14 @@
 /* Light background: pure white, matching the registry --color-bg */
 [data-md-color-scheme="default"] {
   --md-default-bg-color: #ffffff;
+
+  /* Links use the registry brand orange (registry --color-primary) */
+  --md-typeset-a-color: var(--md-primary-fg-color);
+
+  /* Navbar: same colour as the page with a translucent blur, plus the
+     delicate hairline from the registry (--color-border-light). */
+  --lcp-navbar-bg: rgba(255, 255, 255, 0.82);
+  --lcp-navbar-border: #f1f5f9;
 }
 
 [data-md-color-scheme="slate"] {
@@ -24,13 +32,82 @@
   --md-default-bg-color--light: rgba(15, 23, 42, 0.54);
   --md-default-bg-color--lighter: rgba(15, 23, 42, 0.26);
   --md-default-bg-color--lightest: rgba(15, 23, 42, 0.07);
+
+  --md-typeset-a-color: var(--md-primary-fg-color);
+
+  --lcp-navbar-bg: rgba(15, 23, 42, 0.82);
+  --lcp-navbar-border: #1e293b;
 }
 
-/* Logo: rounded square with page-background fill so the PNG is visible on orange */
+/* ==========================================================================
+   Navbar — registry-style: page-coloured bar, translucent blur, hairline.
+   Material colours the header/tabs with the primary orange; we flatten it to
+   the page background and recolour text/icons to the default foreground.
+   ========================================================================== */
+.md-header,
+.md-tabs {
+  background-color: var(--lcp-navbar-bg);
+  color: var(--md-default-fg-color);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: none;
+}
+
+/* The delicate line: under the tabs bar when present, otherwise under the
+   header (Material adds .md-header--shadow once the tabs scroll away). */
+.md-tabs,
+.md-header--shadow {
+  border-bottom: 1px solid var(--lcp-navbar-border);
+}
+.md-header--shadow {
+  box-shadow: none;
+}
+
+/* Search field: subtle filled surface that reads on a light/dark bar
+   instead of the white-on-orange overlay Material ships by default. */
+.md-search__input {
+  background-color: var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color);
+}
+.md-search__input::placeholder,
+.md-search__icon {
+  color: var(--md-default-fg-color--light);
+}
+
+/* Tabs links inherit the foreground; active tab takes the brand orange. */
+.md-tabs__link {
+  color: var(--md-default-fg-color);
+  opacity: 0.7;
+}
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+}
+.md-tabs__link--active {
+  color: var(--md-primary-fg-color);
+}
+
+/* Brand lockup "LCP / Docs" in the header (see overrides/partials/header.html) */
+.md-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+}
+.md-header__brand-name {
+  color: var(--md-default-fg-color);
+}
+.md-header__brand-sep {
+  color: var(--lcp-navbar-border);
+  font-weight: 300;
+}
+.md-header__brand-label {
+  color: var(--md-primary-fg-color);
+}
+
+/* Logo: plain image like the registry; grows slightly on hover. */
 .md-header__button.md-logo {
-  background-color: var(--md-default-bg-color);
-  border-radius: 8px;
-  padding: 4px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,10 +117,6 @@
 .md-header__button.md-logo:hover {
   opacity: 1;
   transform: scale(1.08);
-}
-
-.md-header__button.md-logo img {
-  border-radius: 4px;
 }
 
 /* Search bar: slightly rounded corners */
