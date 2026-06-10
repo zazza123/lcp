@@ -63,15 +63,26 @@
   box-shadow: none;
 }
 
-/* Search field: subtle filled surface that reads on a light/dark bar
-   instead of the white-on-orange overlay Material ships by default. */
-.md-search__input {
+/* Search field: the rounded form carries the surface colour and clips its
+   children, so the input no longer shows a sharp-cornered box underneath. */
+.md-search__form {
   background-color: var(--md-default-fg-color--lightest);
+  overflow: hidden;
+}
+.md-search__input {
+  background-color: transparent;
   color: var(--md-default-fg-color);
 }
 .md-search__input::placeholder,
 .md-search__icon {
   color: var(--md-default-fg-color--light);
+}
+
+/* Theme toggle: render the registry's stroke-based sun/moon as outlines.
+   Material forces fill:currentColor on header icons, which would turn the
+   Feather glyphs into solid blobs — scope fill:none back to the palette. */
+.md-header__option[data-md-component="palette"] svg {
+  fill: none;
 }
 
 /* Tabs links inherit the foreground; active tab takes the brand orange. */
@@ -85,6 +96,15 @@
 }
 .md-tabs__link--active {
   color: var(--md-primary-fg-color);
+}
+
+/* The external "Registry" entry stays brand orange everywhere it appears
+   (top tabs and the responsive drawer nav). */
+.md-tabs__link[href^="https://zazza123.github.io/lcp-registry"],
+.md-nav__link[href^="https://zazza123.github.io/lcp-registry"] {
+  color: var(--md-primary-fg-color);
+  font-weight: 700;
+  opacity: 1;
 }
 
 /* Brand lockup "LCP / Docs" in the header (see overrides/partials/header.html) */

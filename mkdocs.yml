@@ -22,14 +22,14 @@ theme:
       primary: deep orange
       accent: amber
       toggle:
-        icon: material/weather-sunny
+        icon: lcp/sun
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: deep orange
       accent: amber
       toggle:
-        icon: material/weather-night
+        icon: lcp/moon
         name: Switch to light mode
   features:
     - navigation.tabs
@@ -135,3 +135,4 @@ nav:
       - Publish: api/publish.md
       - MCP Server: api/mcp-server.md
       - AI DocGen: api/ai.md
+  - Registry: https://zazza123.github.io/lcp-registry/
