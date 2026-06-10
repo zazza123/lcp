@@ -1,0 +1,20 @@
+{#-
+  Custom document <title>: render "<page> | LCP Docs" on every page so the
+  browser tab mirrors the in-page "LCP / Docs" lockup. The home page reads
+  "Home | LCP Docs" instead of the site_name; pages with an explicit
+  page.meta.title keep that override, everything else uses the page heading.
+  Overrides the htmltitle block from Material's base.html.
+-#}
+{% extends "base.html" %}
+
+{% block htmltitle %}
+  {%- if page.is_homepage -%}
+    <title>Home | LCP Docs</title>
+  {%- elif page.meta and page.meta.title -%}
+    <title>{{ page.meta.title | striptags }} | LCP Docs</title>
+  {%- elif page.title -%}
+    <title>{{ page.title | striptags }} | LCP Docs</title>
+  {%- else -%}
+    <title>LCP Docs</title>
+  {%- endif -%}
+{% endblock %}
