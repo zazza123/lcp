@@ -267,9 +267,15 @@ The SDK ships a ready-to-install [Claude Code](https://code.claude.com) plugin i
 
 ### Prerequisites
 
+The plugin launches `lcp serve-all` as an MCP server, so the `lcp` package must be runnable by the interpreter Claude Code uses to start that server. Install it on a **stable global PATH** — independent of whichever virtualenv happens to be active:
+
 ```bash
-pip install lcp
+pipx install lcp        # recommended
+# or
+uv tool install lcp
 ```
+
+> A plain `pip install lcp` inside a virtualenv/pyenv/conda env also works, but only if that environment is the one Claude Code resolves at launch. If `lcp` lives in an env that isn't active, see [Using an existing install](#using-an-existing-install) below.
 
 ### Installation
 
@@ -278,6 +284,20 @@ claude plugin install plugin/lcp
 ```
 
 Once installed, Claude Code automatically starts the LCP MCP server on session start. The `lcp-universal` skill instructs the agent to call `resolve_library("package")` before writing code that depends on an external library.
+
+### Using an existing install
+
+If `lcp` is already installed in a specific virtualenv/pyenv/conda env, point the plugin at it instead of installing globally:
+
+```bash
+# Option A — an lcp binary:
+claude plugin config lcp lcpCommand /path/to/venv/bin/lcp
+
+# Option B — a Python interpreter that has lcp (launched as `python -m lcp`):
+claude plugin config lcp pythonPath /path/to/venv/bin/python
+```
+
+The wrapper probes each candidate with `--version` before use, so a non-resolvable pyenv/conda shim fails fast with actionable guidance instead of a cryptic MCP `-32000` error.
 
 ### Optional: configure a registry
 
