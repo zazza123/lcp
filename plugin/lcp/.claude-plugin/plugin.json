@@ -16,6 +16,18 @@
       "title": "LCP Registries",
       "description": "Comma-separated list of LCP registry URLs. The first URL is used as the primary registry for fetching pre-built manifests. Leave empty to use only the official registry.",
       "sensitive": false
+    },
+    "lcpCommand": {
+      "type": "string",
+      "title": "lcp binary path",
+      "description": "Full path to an 'lcp' executable to launch the MCP server with. Use this when lcp is installed in a virtualenv/pyenv/conda env that is not on the active PATH. Leave empty to auto-detect 'lcp' (or 'python -m lcp') on PATH.",
+      "sensitive": false
+    },
+    "pythonPath": {
+      "type": "string",
+      "title": "Python interpreter path",
+      "description": "Full path to a Python interpreter that has lcp installed; the server is launched as 'python -m lcp'. Used only if 'lcp binary path' is empty. Leave empty to auto-detect.",
+      "sensitive": false
     }
   }
 }
