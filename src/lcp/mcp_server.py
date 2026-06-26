@@ -1453,8 +1453,8 @@ def create_universal_server(
     for pkg in preload or []:
         try:
             mcp.tool_funcs["resolve_library"](pkg)
-        except Exception:
-            pass
+        except Exception as exc:
+            print(f"Warning: failed to preload package '{pkg}': {exc}", file=sys.stderr)
 
     return mcp
 
