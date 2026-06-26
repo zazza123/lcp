@@ -261,6 +261,26 @@ def _is_member_from_package(cls: type, name: str, package_root: str) -> bool:
     return False
 
 
+def _safe_getmembers(obj: Any) -> list[tuple[str, Any]]:
+    """Like ``inspect.getmembers`` but skips members whose access raises.
+
+    Some packages expose lazily-resolved attributes (PEP 562 module
+    ``__getattr__`` / metaclass ``__getattr__``) that raise — e.g.
+    ``ModuleNotFoundError`` for a moved or removed submodule. Plain
+    ``inspect.getmembers`` propagates such errors and aborts the whole scan;
+    here we skip the offending member and keep going.
+    """
+    results: list[tuple[str, Any]] = []
+    for name in dir(obj):
+        try:
+            value = getattr(obj, name)
+        except Exception:
+            continue
+        results.append((name, value))
+    results.sort(key=lambda item: item[0])
+    return results
+
+
 def _scan_class(
     cls: type,
     module_path: str,
@@ -282,7 +302,7 @@ def _scan_class(
     members: list[ScannedSymbol] = []
 
     # Scan methods and attributes
-    for name, obj in inspect.getmembers(cls):
+    for name, obj in _safe_getmembers(cls):
         if not _is_public(name, include_private):
             continue
 
@@ -403,7 +423,7 @@ def scan_module(
     else:
         public_names = None
 
-    for name, obj in inspect.getmembers(module):
+    for name, obj in _safe_getmembers(module):
         # Skip private symbols
         if not _is_public(name, include_private):
             continue
