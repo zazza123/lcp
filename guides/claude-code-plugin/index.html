@@ -760,6 +760,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#install-lcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install lcp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#install-from-the-marketplace" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -809,10 +820,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuring-a-private-registry" class="md-nav__link">
+  <a href="#configuration-lcpjson" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuring a private registry
+        Configuration: .lcp.json
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration: .lcp.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#private-registries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Private registries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expose-and-preload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        expose and preload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#launcher-resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launcher resolution order
       
     </span>
   </a>
@@ -2294,6 +2366,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#install-lcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install lcp
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#install-from-the-marketplace" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2343,10 +2426,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuring-a-private-registry" class="md-nav__link">
+  <a href="#configuration-lcpjson" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuring a private registry
+        Configuration: .lcp.json
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration: .lcp.json">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#private-registries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Private registries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expose-and-preload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        expose and preload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#launcher-resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launcher resolution order
       
     </span>
   </a>
@@ -2396,7 +2540,7 @@
 
 
 <h1 id="claude-code-plugin">Claude Code plugin<a class="headerlink" href="#claude-code-plugin" title="Permanent link">&para;</a></h1>
-<p>The LCP Claude Code plugin turns any pip-installed Python library into live, queryable documentation inside your agent session. Install it once from the Claude Code marketplace and Claude automatically knows how to look up functions, classes, signatures, and docstrings for every library your project uses — without pre-built manifests, without per-project setup.</p>
+<p>The LCP Claude Code plugin turns any pip-installed Python library into live, queryable documentation inside your agent session. Install it once from the Claude Code marketplace and Claude automatically knows how to look up functions, classes, signatures, and docstrings for every library your project uses — including private packages installed in your project's virtualenv.</p>
 <h2 id="whats-included">What's included<a class="headerlink" href="#whats-included" title="Permanent link">&para;</a></h2>
 <p>When you install the plugin, Claude Code gets:</p>
 <table>
@@ -2433,11 +2577,11 @@
 </tr>
 <tr>
 <td><strong>Session hook</strong></td>
-<td>Warns immediately at session start if <code>lcp</code> is not on <code>PATH</code>, instead of failing silently</td>
+<td>Auto-generates <code>.lcp.json</code> for the active project when absent, seeding it from <code>settings.json</code> <code>pluginConfigs</code> values</td>
 </tr>
 <tr>
 <td><strong>Registry support</strong></td>
-<td>Optional <code>userConfig.registries</code> field for connecting to a private or team registry with pre-built manifests</td>
+<td><code>registries</code> field in <code>.lcp.json</code> for connecting to a private or team registry with pre-built manifests</td>
 </tr>
 </tbody>
 </table>
@@ -2445,27 +2589,46 @@
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://claude.com/claude-code">Claude Code</a> installed</li>
-<li><code>lcp</code> installed and available on your <code>PATH</code>:</li>
+<li><code>lcp</code> installed in your Python environment (see <a href="#install-lcp">Install <code>lcp</code></a> below)</li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>lcp
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>lcp<span class="w"> </span>--version
+<h3 id="install-lcp">Install <code>lcp</code><a class="headerlink" href="#install-lcp" title="Permanent link">&para;</a></h3>
+<p><code>lcp</code> introspects packages by importing them in-process, so it must run inside the <strong>same Python environment</strong> as your project's dependencies. For live introspection of project packages, install it in your project virtualenv:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Inside your project virtualenv</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>lcp<span class="w">      </span><span class="c1"># recommended with uv</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pip<span class="w"> </span>install<span class="w"> </span>lcp<span class="w">         </span><span class="c1"># plain pip</span>
+</span></code></pre></div>
+<p>The plugin auto-detects <code>.venv</code> under your project root — no extra configuration needed for the common case.</p>
+<p>For a global install (public libraries via the registry; does not see project-specific packages unless also globally installed):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pipx<span class="w"> </span>install<span class="w"> </span>lcp<span class="w">        </span><span class="c1"># recommended</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>lcp
 </span></code></pre></div>
 <h3 id="install-from-the-marketplace">Install from the marketplace<a class="headerlink" href="#install-from-the-marketplace" title="Permanent link">&para;</a></h3>
 <p>The plugin is published to the Claude Code marketplace under the <code>zazza123/lcp</code> namespace. Add the marketplace and install the plugin in two commands:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/plugin marketplace add zazza123/lcp
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>/plugin install lcp@lcp
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>/plugin marketplace add zazza123/lcp
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>/plugin install lcp@lcp
 </span></code></pre></div>
 <p>That's it. Claude Code reads the plugin manifest, registers the MCP server, the skills, the commands, and the subagent. Open a new session and the server starts automatically.</p>
 <div class="admonition tip">
-<p class="admonition-title">Configuring a private registry at install time</p>
-<p>During <code>plugin install</code>, you can set the <code>registries</code> option to point to a team registry:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>/plugin install lcp@lcp registries=&quot;https://your-registry.example.com&quot;
-</span></code></pre></div>
+<p class="admonition-title">Setting options at install time</p>
+<p>During <code>/plugin install</code>, Claude Code prompts you to enter <code>userConfig</code> values such as
+<code>registries</code>. These are stored in <code>settings.json</code> under <code>pluginConfigs.lcp@lcp.options</code>
+and delivered to the hook at the next full session start, which seeds them into
+<code>.lcp.json</code> when the file does not yet exist.</p>
+<p>To change an option later, edit <code>.lcp.json</code> directly (preferred), or edit
+<code>pluginConfigs.lcp@lcp.options</code> in <code>settings.json</code> directly. To re-trigger the install
+prompt, run <code>claude plugin disable lcp &amp;&amp; claude plugin enable lcp</code>.</p>
 </div>
 <h3 id="alternative-local-directory">Alternative: local directory<a class="headerlink" href="#alternative-local-directory" title="Permanent link">&para;</a></h3>
 <p>If you have a local clone of the repository and want to load the plugin directly — for example when developing the plugin itself:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>claude<span class="w"> </span>--plugin-dir<span class="w"> </span>/path/to/lcp/plugin/lcp
 </span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Reloading during development</p>
+<p>Use <code>/reload-plugins</code> to hot-reload skills, agents, hooks, and MCP after edits.
+Run <code>claude plugin validate ./plugin/lcp</code> to validate the manifest.
+Changes to <code>userConfig</code> values require a <strong>full restart</strong> to be re-delivered to the hook
+and propagated into <code>.lcp.json</code>.</p>
+</div>
 <h3 id="alternative-mcp-only-cursor-claude-desktop">Alternative: MCP-only (Cursor, Claude Desktop)<a class="headerlink" href="#alternative-mcp-only-cursor-claude-desktop" title="Permanent link">&para;</a></h3>
 <p>If you only need the MCP server without skills, hooks, or commands, add the server directly to your client's MCP config:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Claude Code</label><label for="__tabbed_1_2">Cursor / Claude Desktop</label></div>
@@ -2502,15 +2665,79 @@
 </span></code></pre></div>
 <p>The <code>lcp-universal</code> skill drives this flow automatically: whenever Claude detects that a task involves an external Python library, it calls <code>resolve_library("package")</code> first. The MCP server checks <code>~/.lcp/cache/</code> for a cached manifest; if none is found, it scans the pip-installed package on the fly and caches the result. Subsequent calls to the same library in the same session are instant.</p>
 <p>The skills, commands, and subagent are guidance and convenience layers on top of the MCP server — they don't change what the server does, they change how Claude uses it.</p>
-<h2 id="configuring-a-private-registry">Configuring a private registry<a class="headerlink" href="#configuring-a-private-registry" title="Permanent link">&para;</a></h2>
-<p>By default, <code>lcp serve-all</code> resolves libraries from your local Python environment. If your team maintains a private registry with pre-built manifests for internal packages, configure the plugin to use it:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>claude<span class="w"> </span>plugin<span class="w"> </span>config<span class="w"> </span>lcp<span class="w"> </span>registries<span class="w"> </span><span class="s2">&quot;https://your-registry.example.com&quot;</span>
+<h2 id="configuration-lcpjson">Configuration: <code>.lcp.json</code><a class="headerlink" href="#configuration-lcpjson" title="Permanent link">&para;</a></h2>
+<p>The plugin reads a <code>.lcp.json</code> file to determine how to launch <code>lcp</code> for the current project. The <code>SessionStart</code> hook <strong>auto-generates</strong> this file from your <code>pluginConfigs</code> settings when it is absent; after that, edit the file directly.</p>
+<h3 id="locations">Locations<a class="headerlink" href="#locations" title="Permanent link">&para;</a></h3>
+<p>The wrapper checks these paths in order, using the first that exists:</p>
+<ol>
+<li><code>${CLAUDE_PROJECT_DIR}/.lcp.json</code> — per-project (safe to check in to the repository)</li>
+<li><code>~/.lcp/config.json</code> — global fallback</li>
+</ol>
+<h3 id="schema">Schema<a class="headerlink" href="#schema" title="Permanent link">&para;</a></h3>
+<p>All fields are optional:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>{
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  &quot;command&quot;:    &quot;/path/to/lcp&quot;,            // explicit lcp binary
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  &quot;python&quot;:     &quot;/path/to/python&quot;,         // interpreter → `python -m lcp`
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  &quot;registries&quot;: [&quot;https://...&quot;],           // registry URLs → lcp serve-all --registry
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  &quot;expose&quot;:     [&quot;fastapi&quot;, &quot;pydantic&quot;],   // allow-list; omitted/empty = expose all
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  &quot;preload&quot;:    [&quot;fastapi&quot;]                // packages resolved at server startup
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>}
 </span></code></pre></div>
-<p>Multiple registries can be listed comma-separated; only the first is used as the active registry. The option maps to the <code>--registry</code> flag passed to <code>lcp serve-all</code> at startup.</p>
+<p><code>command</code> and <code>python</code> are mutually exclusive launch hints; <code>command</code> wins if both are set.</p>
+<h3 id="private-registries">Private registries<a class="headerlink" href="#private-registries" title="Permanent link">&para;</a></h3>
+<p>To use a team registry with pre-built manifests for internal packages, add its URL to <code>registries</code> in <code>.lcp.json</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>{
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  &quot;registries&quot;: [&quot;https://raw.githubusercontent.com/your-org/lcp-registry/main&quot;]
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>}
+</span></code></pre></div>
+<p>Only the first URL in the list is used as the active registry. The value maps to the <code>--registry</code> flag passed to <code>lcp serve-all</code> at startup.</p>
+<h3 id="expose-and-preload"><code>expose</code> and <code>preload</code><a class="headerlink" href="#expose-and-preload" title="Permanent link">&para;</a></h3>
+<p>These two fields are per-project settings in <code>.lcp.json</code> only — they are not available as <code>userConfig</code> options.</p>
+<ul>
+<li><strong><code>expose</code></strong>: An allow-list that restricts which packages <code>resolve_library</code> can expose. Useful in large monorepos to avoid noise. Omit or leave empty to expose all packages.</li>
+<li><strong><code>preload</code></strong>: A list of packages that <code>lcp</code> scans at server startup so they are ready immediately, without waiting for the first <code>resolve_library</code> call.</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>{
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  &quot;expose&quot;:  [&quot;mypackage&quot;, &quot;fastapi&quot;],
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>  &quot;preload&quot;: [&quot;mypackage&quot;]
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>}
+</span></code></pre></div>
+<h2 id="launcher-resolution-order">Launcher resolution order<a class="headerlink" href="#launcher-resolution-order" title="Permanent link">&para;</a></h2>
+<p>The wrapper probes each candidate with <code>--version</code> before use; the first that succeeds is used to run <code>lcp serve-all</code>:</p>
+<ol>
+<li><code>.lcp.json</code> → <code>command</code> (explicit binary path)</li>
+<li><code>.lcp.json</code> → <code>python</code> → <code>python -m lcp</code></li>
+<li>Auto-detected project venv under <code>${CLAUDE_PROJECT_DIR}</code>: <code>.venv/bin/lcp</code>, <code>.venv/bin/python -m lcp</code>, <code>venv/bin/lcp</code>, <code>venv/bin/python -m lcp</code></li>
+<li>Active virtualenv via <code>$VIRTUAL_ENV</code>: <code>$VIRTUAL_ENV/bin/lcp</code>, <code>$VIRTUAL_ENV/bin/python -m lcp</code></li>
+<li><code>uv run --project &lt;dir&gt; --with lcp lcp</code> if <code>uv</code> is present — ephemeral, layers <code>lcp</code> onto the project env so it can see project packages without a permanent install</li>
+<li>Global fallback: <code>lcp</code> on <code>PATH</code> → <code>uvx lcp</code> → <code>pipx run lcp</code></li>
+</ol>
+<p>If none of the above resolve, the plugin emits an actionable error explaining how to install or configure <code>lcp</code> — never a bare <code>-32000</code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Why the project venv matters</p>
+<p><code>lcp</code> introspects packages by importing them in-process via <code>importlib</code>. It can only
+document libraries installed in the <strong>same environment it runs in</strong>. Steps 1–4 specifically
+target your project's environment so private dependencies are reachable. Step 5 (global)
+is a fallback that covers publicly registered packages only.</p>
+</div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
-<p class="admonition-title"><code>lcp</code> command not found</p>
-<p>Both the session hook and the startup wrapper check for <code>lcp</code> on <code>PATH</code>. Install it with <code>pip install lcp</code> and confirm <code>lcp --version</code> works in the same shell environment Claude Code uses.</p>
+<p class="admonition-title"><code>lcp</code> not found or MCP server returns <code>-32000</code></p>
+<p>The wrapper tries six resolution strategies (see <a href="#launcher-resolution-order">Launcher resolution order</a> above).
+The most common fixes:</p>
+<p><strong>Install <code>lcp</code> in your project virtualenv</strong> (recommended for live introspection):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>lcp<span class="w">   </span><span class="c1"># or: pip install lcp</span>
+</span></code></pre></div>
+The plugin auto-detects <code>.venv</code> — no extra config needed.</p>
+<p><strong>Or pin an explicit path in <code>.lcp.json</code></strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>{ &quot;command&quot;: &quot;/path/to/venv/bin/lcp&quot; }
+</span></code></pre></div>
+or
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>{ &quot;python&quot;: &quot;/path/to/venv/bin/python&quot; }
+</span></code></pre></div></p>
+<p><strong>Or install globally</strong> (public packages and registry-backed manifests only):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>pipx<span class="w"> </span>install<span class="w"> </span>lcp
+</span></code></pre></div></p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">MCP server not starting</p>
@@ -2518,7 +2745,7 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Library not resolving</p>
-<p>The package must be pip-installed in the Python environment <code>lcp</code> uses. Run <code>lcp scan &lt;package&gt;</code> manually to verify the library can be introspected. If scanning succeeds but the MCP tool still fails, restart the Claude Code session to reload the server.</p>
+<p>The package must be installed in the Python environment <code>lcp</code> is running in. Run <code>lcp scan &lt;package&gt;</code> manually to verify the library can be introspected. If scanning succeeds but the MCP tool still fails, restart the Claude Code session to reload the server.</p>
 </div>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
