@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import urllib.error
 import urllib.request
 from collections import defaultdict
@@ -360,9 +361,28 @@ def resolve_library_document(
         except ImportError:
             pass  # fall through to final error
 
+    if installed_ver:
+        # The package imports fine in this environment but scanning failed.
+        reason = (
+            f"'{name}' is installed (version {installed_ver}) in this environment "
+            f"but the scan failed: {type(scan_error).__name__}: {scan_error}"
+        )
+    elif isinstance(scan_error, ImportError):
+        # Could not import it with the interpreter lcp is running under.
+        reason = (
+            f"'{name}' is not importable by the Python interpreter running lcp "
+            f"({sys.executable}). It may be installed in a different environment "
+            f"(point the plugin at that env via .lcp.json), or the distribution "
+            f"name may differ from the import path "
+            f"(e.g. import 'google.adk' is provided by 'pip install google-adk')."
+        )
+    else:
+        reason = (
+            f"could not resolve '{name}': {type(scan_error).__name__}: {scan_error}"
+        )
+
     raise ImportError(
-        f"Cannot resolve library '{name}': not installed or scan failed. "
-        f"Install it first with: pip install {name}"
+        f"Cannot resolve library '{name}': {reason}"
         + (f" (registry fetch also failed: {registry_url})" if registry_url else "")
     ) from scan_error
 
