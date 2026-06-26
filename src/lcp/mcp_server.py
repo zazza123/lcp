@@ -832,6 +832,8 @@ def create_universal_server(
     cache_dir: Path | str | None = None,
     no_cache: bool = False,
     registry_url: str | None = None,
+    expose: list[str] | None = None,
+    preload: list[str] | None = None,
 ) -> FastMCP:
     """Create a universal MCP server that resolves any installed Python library.
 
@@ -849,14 +851,24 @@ def create_universal_server(
         registry_url: Optional base URL of an LCP registry used as a fallback
             when local scanning fails
             (e.g. ``"https://registry.example.com"``).
+        expose: Optional allow-list of package names that ``resolve_library``
+            is permitted to load.  When ``None`` or empty, all packages are
+            allowed (default behaviour).
+        preload: Package names to resolve eagerly at server startup.
 
     Returns:
-        Configured FastMCP server instance.
+        Configured FastMCP server instance with a ``tool_funcs`` dict
+        exposing the raw callable for each registered tool.
     """
     resolved_cache_dir = Path(cache_dir) if cache_dir else _DEFAULT_CACHE_DIR
     multi_index = MultiLibraryIndex()
 
     mcp = FastMCP(name)
+
+    # Build the allow-set from the expose list (None means "allow all").
+    allow: set[str] | None = (
+        {n.strip() for n in expose if n.strip()} or None
+    ) if expose else None
 
     # ------------------------------------------------------------------
     # Local helpers
@@ -897,6 +909,14 @@ def create_universal_server(
         Returns:
             Manifest summary with name, version, symbol count, and source.
         """
+        if allow is not None and name not in allow:
+            return {
+                "error": (
+                    f"Library '{name}' is not exposed by this server."
+                ),
+                "exposed": sorted(allow),
+            }
+
         try:
             doc, source = resolve_library_document(
                 name,
@@ -1401,7 +1421,52 @@ def create_universal_server(
 
         return suggestions
 
+    # Expose raw callables so tests (and callers) can invoke tools directly
+    # without going through the MCP protocol.  In FastMCP 3.x the @mcp.tool()
+    # decorator returns the original function unchanged, so we can use it as-is.
+    mcp.tool_funcs: dict[str, Any] = {
+        "resolve_library": resolve_library,
+    }
+
+    # Preload requested packages eagerly (errors are swallowed to not block
+    # startup; individual packages may not be installed in every environment).
+    for pkg in preload or []:
+        try:
+            mcp.tool_funcs["resolve_library"](pkg)
+        except Exception:
+            pass
+
     return mcp
+
+
+def build_universal_server(
+    name: str = "lcp-universal",
+    registry_url: str | None = None,
+    expose: list[str] | None = None,
+    preload: list[str] | None = None,
+) -> FastMCP:
+    """Build a universal MCP server without entering the stdio loop.
+
+    This is the public factory used by :func:`run_universal_server` and by
+    the test suite.  The returned server has a ``tool_funcs`` dict that
+    exposes each registered tool's raw callable for direct invocation.
+
+    Args:
+        name: Server name (default: ``lcp-universal``).
+        registry_url: Optional LCP registry URL for manifest fallback.
+        expose: Optional allow-list of package names for ``resolve_library``.
+            When ``None`` or empty, all packages are allowed.
+        preload: Package names to resolve eagerly at startup.
+
+    Returns:
+        Configured FastMCP server instance (not yet running).
+    """
+    return create_universal_server(
+        name=name,
+        registry_url=registry_url,
+        expose=expose,
+        preload=preload,
+    )
 
 
 def run_universal_server(
@@ -1409,6 +1474,8 @@ def run_universal_server(
     cache_dir: Path | str | None = None,
     no_cache: bool = False,
     registry_url: str | None = None,
+    expose: list[str] | None = None,
+    preload: list[str] | None = None,
 ) -> None:
     """Create and run a universal MCP server that resolves any installed Python library.
 
@@ -1418,8 +1485,16 @@ def run_universal_server(
         no_cache: Disable reading from and writing to the cache.
         registry_url: Optional base URL of an LCP registry used as a fallback
             when local scanning fails.
+        expose: Optional allow-list of package names for ``resolve_library``.
+            When ``None`` or empty, all packages are allowed.
+        preload: Package names to resolve eagerly at startup.
     """
     server = create_universal_server(
-        name=name, cache_dir=cache_dir, no_cache=no_cache, registry_url=registry_url
+        name=name,
+        cache_dir=cache_dir,
+        no_cache=no_cache,
+        registry_url=registry_url,
+        expose=expose,
+        preload=preload,
     )
     server.run()
