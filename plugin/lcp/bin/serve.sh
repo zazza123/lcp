@@ -2,15 +2,18 @@
 # LCP plugin wrapper — starts the lcp serve-all MCP server.
 #
 # Resolution order for the launcher (first one whose --version probe succeeds):
-#   1. .lcp.json `command`                        — explicit path to an `lcp` binary
-#   2. .lcp.json `python` -m lcp                  — a python interpreter + lcp
-#   3. $CLAUDE_PROJECT_DIR/.venv/bin/lcp           — project venv lcp
-#   4. $CLAUDE_PROJECT_DIR/.venv/bin/python -m lcp — project venv python -m lcp
-#   5. $VIRTUAL_ENV/bin/lcp                        — active venv lcp
-#   6. uv run --project <dir> --with lcp lcp       — ephemeral uv run
-#   7. lcp on PATH
-#   8. uvx lcp
-#   9. pipx run lcp
+#   1.  .lcp.json `command`                         — explicit path to an `lcp` binary
+#   2.  .lcp.json `python` -m lcp                   — a python interpreter + lcp
+#   3.  $CLAUDE_PROJECT_DIR/.venv/bin/lcp            — project venv (.venv) lcp
+#   4.  $CLAUDE_PROJECT_DIR/.venv/bin/python -m lcp  — project venv (.venv) python -m lcp
+#   5.  $CLAUDE_PROJECT_DIR/venv/bin/lcp             — project venv (venv) lcp
+#   6.  $CLAUDE_PROJECT_DIR/venv/bin/python -m lcp   — project venv (venv) python -m lcp
+#   7.  $VIRTUAL_ENV/bin/lcp                         — active venv lcp
+#   8.  $VIRTUAL_ENV/bin/python -m lcp               — active venv python -m lcp
+#   9.  uv run --project <dir> --with lcp lcp        — ephemeral uv run
+#  10.  lcp on PATH
+#  11.  uvx lcp
+#  12.  pipx run lcp
 #
 # Each candidate is probed (`--version`) before use, so a non-resolvable
 # pyenv/conda shim no longer passes a bare `command -v` check and then fails at
@@ -70,9 +73,15 @@ lcp_resolve_launcher() {
       printf '%s' "$proj/.venv/bin/lcp"; return 0; fi
     if [ -x "$proj/.venv/bin/python" ] && _probe "$proj/.venv/bin/python" -m lcp; then
       printf '%s -m lcp' "$proj/.venv/bin/python"; return 0; fi
+    if [ -x "$proj/venv/bin/lcp" ] && _probe "$proj/venv/bin/lcp"; then
+      printf '%s' "$proj/venv/bin/lcp"; return 0; fi
+    if [ -x "$proj/venv/bin/python" ] && _probe "$proj/venv/bin/python" -m lcp; then
+      printf '%s -m lcp' "$proj/venv/bin/python"; return 0; fi
   fi
   if [ -n "${VIRTUAL_ENV:-}" ] && [ -x "$VIRTUAL_ENV/bin/lcp" ] && _probe "$VIRTUAL_ENV/bin/lcp"; then
     printf '%s' "$VIRTUAL_ENV/bin/lcp"; return 0; fi
+  if [ -n "${VIRTUAL_ENV:-}" ] && [ -x "$VIRTUAL_ENV/bin/python" ] && _probe "$VIRTUAL_ENV/bin/python" -m lcp; then
+    printf '%s -m lcp' "$VIRTUAL_ENV/bin/python"; return 0; fi
   if [ -n "$proj" ] && command -v uv >/dev/null 2>&1 \
        && _probe uv run --project "$proj" --with lcp lcp; then
     printf 'uv run --project %s --with lcp lcp' "$proj"; return 0; fi
