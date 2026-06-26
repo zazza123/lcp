@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.metadata
 import sys
 
 import click
@@ -14,9 +15,14 @@ from .publish import PublishError, _DEFAULT_REGISTRY_REPO, publish_manifest
 from .scanner import scan_package
 from .validator import LCPValidationError
 
+try:
+    _VERSION = importlib.metadata.version("lcp")
+except importlib.metadata.PackageNotFoundError:  # running from a source tree
+    _VERSION = "0.0.0+unknown"
+
 
 @click.group()
-@click.version_option(version="0.1.0", prog_name="lcp")
+@click.version_option(version=_VERSION, prog_name="lcp")
 def main():
     """LCP Python SDK - Generate Library Context Protocol files from Python packages."""
     pass

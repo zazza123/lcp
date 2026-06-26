@@ -1,4 +1,5 @@
-import subprocess, sys
+import sys
+import subprocess
 
 
 def test_python_m_lcp_version():
