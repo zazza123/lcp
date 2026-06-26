@@ -19,9 +19,11 @@ class TestMainGroup:
     """Tests for the main CLI group."""
 
     def test_version(self, runner):
+        import importlib.metadata
+
         result = runner.invoke(main, ["--version"])
         assert result.exit_code == 0
-        assert "0.1.0" in result.output
+        assert importlib.metadata.version("lcp") in result.output
 
     def test_help(self, runner):
         result = runner.invoke(main, ["--help"])
