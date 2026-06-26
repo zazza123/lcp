@@ -55,18 +55,14 @@ The plugin is published to the Claude Code marketplace under the `zazza123/lcp` 
 That's it. Claude Code reads the plugin manifest, registers the MCP server, the skills, the commands, and the subagent. Open a new session and the server starts automatically.
 
 !!! tip "Setting options at install time"
-    During `plugin install`, you can provide options such as `registries`. These are stored
-    in `settings.json` under `pluginConfigs.lcp@lcp.options` and delivered to the hook at
-    the next full session start, which seeds them into `.lcp.json` when the file does not
-    yet exist:
+    During `/plugin install`, Claude Code prompts you to enter `userConfig` values such as
+    `registries`. These are stored in `settings.json` under `pluginConfigs.lcp@lcp.options`
+    and delivered to the hook at the next full session start, which seeds them into
+    `.lcp.json` when the file does not yet exist.
 
-    ```
-    /plugin install lcp@lcp registries="https://your-registry.example.com"
-    ```
-
-    To change an option later, edit `.lcp.json` directly (preferred), or run
-    `claude plugin disable lcp && claude plugin enable lcp` to reset the `settings.json`
-    entry via the install prompt.
+    To change an option later, edit `.lcp.json` directly (preferred), or edit
+    `pluginConfigs.lcp@lcp.options` in `settings.json` directly. To re-trigger the install
+    prompt, run `claude plugin disable lcp && claude plugin enable lcp`.
 
 ### Alternative: local directory
 

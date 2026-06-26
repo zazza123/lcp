@@ -286,11 +286,20 @@ uv tool install lcp
 
 ### Install the plugin
 
-```bash
-claude plugin install plugin/lcp
+Add the marketplace and install the plugin in two slash commands:
+
+```
+/plugin marketplace add zazza123/lcp
+/plugin install lcp@lcp
 ```
 
 Once installed, Claude Code automatically starts the LCP MCP server on session start. The `lcp-universal` skill instructs the agent to call `resolve_library("package")` before writing code that depends on an external library.
+
+For **local development** (when working on the plugin itself), load it directly instead:
+
+```bash
+claude --plugin-dir /path/to/lcp/plugin/lcp
+```
 
 ### `.lcp.json` — per-project configuration
 
