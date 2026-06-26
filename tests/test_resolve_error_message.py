@@ -13,12 +13,11 @@ import sys
 import pytest
 
 import lcp.mcp_server as mcp_server
-from lcp.mcp_server import resolve_library_document
 
 
 def test_missing_package_message_names_interpreter(tmp_path):
     with pytest.raises(ImportError) as ei:
-        resolve_library_document(
+        mcp_server.resolve_library_document(
             "definitely_not_a_real_pkg_xyz", cache_dir=tmp_path, no_cache=True
         )
     msg = str(ei.value)
@@ -39,7 +38,7 @@ def test_installed_but_scan_fails_message(tmp_path, monkeypatch):
     monkeypatch.setattr("lcp.scanner.scan_package", boom)
 
     with pytest.raises(ImportError) as ei:
-        resolve_library_document("somepkg", cache_dir=tmp_path, no_cache=True)
+        mcp_server.resolve_library_document("somepkg", cache_dir=tmp_path, no_cache=True)
     msg = str(ei.value)
     # Must NOT claim it's not installed; must report the real scan failure + version
     assert "9.9.9" in msg
