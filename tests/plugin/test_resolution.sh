@@ -29,6 +29,7 @@ echo "OK resolution"
 # Negative test — no launcher resolvable in a bare PATH
 TMP2="$(mktemp -d)"; export CLAUDE_PROJECT_DIR="$TMP2"
 ( PATH="/usr/bin:/bin" bash -c '
+   unset VIRTUAL_ENV
    export LCP_SERVE_LIB=1
    source "'"$SERVE"'"
    lcp_resolve_launcher && echo "UNEXPECTED" || echo "OK no-launcher"
