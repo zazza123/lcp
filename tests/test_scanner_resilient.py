@@ -43,7 +43,7 @@ def poison_class_module():
     """A module exposing a class whose ``dir()`` lists a member that raises.
 
     Uses a metaclass ``__getattr__``/``__dir__`` so that ``getattr(cls, "broken")``
-    raises ``ModuleNotFoundError`` during ``inspect.getmembers(cls)`` — the
+    raises ``AttributeError`` during ``inspect.getmembers(cls)`` — the
     class-level analogue of a moved/removed lazy attribute.
     """
     mod = types.ModuleType("poisonclspkg")
@@ -51,7 +51,7 @@ def poison_class_module():
     class Meta(type):
         def __getattr__(cls, name):
             if name == "broken":
-                raise ModuleNotFoundError("Widget.broken backend is gone")
+                raise AttributeError("Widget.broken backend is gone")
             raise AttributeError(name)
 
         def __dir__(cls):
