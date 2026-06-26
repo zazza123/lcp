@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
 from lcp import mcp_server
 
 
