@@ -331,9 +331,10 @@ The wrapper probes each candidate with `--version`; the first that succeeds wins
 
 1. `.lcp.json` → `command`
 2. `.lcp.json` → `python` → `python -m lcp`
-3. Auto-detected project venv: `.venv/bin/lcp`, `.venv/bin/python -m lcp`, then `venv/`, `$VIRTUAL_ENV`, pyenv-local
-4. `uv run --project <dir> --with lcp lcp` if `uv` is present (ephemeral; layers `lcp` onto the project env)
-5. Global fallback: `lcp` on `PATH` → `uvx lcp` → `pipx run lcp`
+3. Auto-detected project venv under `${CLAUDE_PROJECT_DIR}`: `.venv/bin/lcp`, `.venv/bin/python -m lcp`, `venv/bin/lcp`, `venv/bin/python -m lcp`
+4. Active virtualenv via `$VIRTUAL_ENV`: `$VIRTUAL_ENV/bin/lcp`, `$VIRTUAL_ENV/bin/python -m lcp`
+5. `uv run --project <dir> --with lcp lcp` if `uv` is present (ephemeral; layers `lcp` onto the project env)
+6. Global fallback: `lcp` on `PATH` → `uvx lcp` → `pipx run lcp`
 
 If none resolve, the plugin emits an actionable message — never a bare `-32000`.
 

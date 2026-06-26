@@ -2,7 +2,6 @@
 # SessionStart: generate .lcp.json from userConfig when absent. Never blocks.
 set -uo pipefail
 
-target_dir="${CLAUDE_PROJECT_DIR:-$HOME/.lcp}"
 target="${CLAUDE_PROJECT_DIR:+${CLAUDE_PROJECT_DIR}/.lcp.json}"
 target="${target:-$HOME/.lcp/config.json}"
 
@@ -21,7 +20,8 @@ if os.environ.get("LCMD"): out["command"] = os.environ["LCMD"]
 if os.environ.get("LPY"):  out["python"]  = os.environ["LPY"]
 reg = [r.strip() for r in os.environ.get("LREG","").split(",") if r.strip()]
 if reg: out["registries"] = reg
-# Always write a file (possibly empty {}) so serve.sh has a stable anchor.
-json.dump(out, open(sys.argv[1], "w"), indent=2)
+# Only write the file when there is something to write; an empty project
+# .lcp.json would silently shadow a populated ~/.lcp/config.json.
+if out: json.dump(out, open(sys.argv[1], "w"), indent=2)
 PY
 exit 0

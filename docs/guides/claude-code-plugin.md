@@ -182,9 +182,10 @@ The wrapper probes each candidate with `--version` before use; the first that su
 
 1. `.lcp.json` → `command` (explicit binary path)
 2. `.lcp.json` → `python` → `python -m lcp`
-3. Auto-detected project venv under `${CLAUDE_PROJECT_DIR}`: `.venv/bin/lcp`, `.venv/bin/python -m lcp`, then `venv/`, `$VIRTUAL_ENV`, pyenv-local (`.python-version`)
-4. `uv run --project <dir> --with lcp lcp` if `uv` is present — ephemeral, layers `lcp` onto the project env so it can see project packages without a permanent install
-5. Global fallback: `lcp` on `PATH` → `uvx lcp` → `pipx run lcp`
+3. Auto-detected project venv under `${CLAUDE_PROJECT_DIR}`: `.venv/bin/lcp`, `.venv/bin/python -m lcp`, `venv/bin/lcp`, `venv/bin/python -m lcp`
+4. Active virtualenv via `$VIRTUAL_ENV`: `$VIRTUAL_ENV/bin/lcp`, `$VIRTUAL_ENV/bin/python -m lcp`
+5. `uv run --project <dir> --with lcp lcp` if `uv` is present — ephemeral, layers `lcp` onto the project env so it can see project packages without a permanent install
+6. Global fallback: `lcp` on `PATH` → `uvx lcp` → `pipx run lcp`
 
 If none of the above resolve, the plugin emits an actionable error explaining how to install or configure `lcp` — never a bare `-32000`.
 
@@ -197,7 +198,7 @@ If none of the above resolve, the plugin emits an actionable error explaining ho
 ## Troubleshooting
 
 !!! warning "`lcp` not found or MCP server returns `-32000`"
-    The wrapper tries five resolution strategies (see [Launcher resolution order](#launcher-resolution-order) above).
+    The wrapper tries six resolution strategies (see [Launcher resolution order](#launcher-resolution-order) above).
     The most common fixes:
 
     **Install `lcp` in your project virtualenv** (recommended for live introspection):
