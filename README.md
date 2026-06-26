@@ -263,21 +263,28 @@ for r in result.results:
 
 ## Claude Code Plugin
 
-The SDK ships a ready-to-install [Claude Code](https://code.claude.com) plugin in `plugin/lcp/`. It packages `lcp serve-all` as an MCP server so Claude Code can resolve any pip-installed Python library on demand — no per-project configuration required.
+The SDK ships a ready-to-install [Claude Code](https://code.claude.com) plugin in `plugin/lcp/`. It packages `lcp serve-all` as an MCP server so Claude Code can resolve any Python library on demand — including private packages installed in your project's virtualenv.
 
-### Prerequisites
+### Install `lcp` first
 
-The plugin launches `lcp serve-all` as an MCP server, so the `lcp` package must be runnable by the interpreter Claude Code uses to start that server. Install it on a **stable global PATH** — independent of whichever virtualenv happens to be active:
+`lcp` introspects packages by importing them in-process, so it must run inside the **same Python environment** as your project's dependencies. For live introspection of project packages, install it in your project virtualenv:
+
+```bash
+# Inside your project virtualenv
+uv pip install lcp      # recommended with uv
+pip install lcp         # plain pip
+```
+
+The plugin auto-detects `.venv` under your project root — no extra configuration needed for the common case.
+
+For a global install (public libraries via the registry; does not see project-specific packages unless also globally installed):
 
 ```bash
 pipx install lcp        # recommended
-# or
 uv tool install lcp
 ```
 
-> A plain `pip install lcp` inside a virtualenv/pyenv/conda env also works, but only if that environment is the one Claude Code resolves at launch. If `lcp` lives in an env that isn't active, see [Using an existing install](#using-an-existing-install) below.
-
-### Installation
+### Install the plugin
 
 ```bash
 claude plugin install plugin/lcp
@@ -285,27 +292,41 @@ claude plugin install plugin/lcp
 
 Once installed, Claude Code automatically starts the LCP MCP server on session start. The `lcp-universal` skill instructs the agent to call `resolve_library("package")` before writing code that depends on an external library.
 
-### Using an existing install
+### `.lcp.json` — per-project configuration
 
-If `lcp` is already installed in a specific virtualenv/pyenv/conda env, point the plugin at it instead of installing globally:
+The plugin uses a `.lcp.json` file to select the correct `lcp` launcher for each project. The `SessionStart` hook auto-generates this file when absent, seeding it from `settings.json` `pluginConfigs` values; edit the file directly thereafter.
 
-```bash
-# Option A — an lcp binary:
-claude plugin config lcp lcpCommand /path/to/venv/bin/lcp
+**Locations** (first found wins):
+- `${CLAUDE_PROJECT_DIR}/.lcp.json` — per-project (safe to check in)
+- `~/.lcp/config.json` — global fallback
 
-# Option B — a Python interpreter that has lcp (launched as `python -m lcp`):
-claude plugin config lcp pythonPath /path/to/venv/bin/python
+**Schema** (all fields optional):
+
+```jsonc
+{
+  "command":    "/path/to/lcp",            // explicit lcp binary
+  "python":     "/path/to/python",         // interpreter → `python -m lcp`
+  "registries": ["https://..."],           // registry URLs → lcp serve-all --registry
+  "expose":     ["fastapi", "pydantic"],   // allow-list; omitted/empty = expose all packages
+  "preload":    ["fastapi"]                // packages resolved at server startup
+}
 ```
 
-The wrapper probes each candidate with `--version` before use, so a non-resolvable pyenv/conda shim fails fast with actionable guidance instead of a cryptic MCP `-32000` error.
+`command` and `python` are mutually exclusive; `command` wins if both are set. `expose` and `preload` are `.lcp.json`-only fields (not in `userConfig`).
 
-### Optional: configure a registry
+To change an option: edit `.lcp.json` directly. To reset from `settings.json`, delete the file and restart the session — the hook regenerates it from `pluginConfigs.lcp@lcp.options`.
 
-During or after installation you can configure one or more registry URLs (comma-separated) for teams that host pre-built manifests for private packages:
+### Launcher resolution order
 
-```bash
-claude plugin config lcp registries https://raw.githubusercontent.com/your-org/lcp-registry/main
-```
+The wrapper probes each candidate with `--version`; the first that succeeds wins:
+
+1. `.lcp.json` → `command`
+2. `.lcp.json` → `python` → `python -m lcp`
+3. Auto-detected project venv: `.venv/bin/lcp`, `.venv/bin/python -m lcp`, then `venv/`, `$VIRTUAL_ENV`, pyenv-local
+4. `uv run --project <dir> --with lcp lcp` if `uv` is present (ephemeral; layers `lcp` onto the project env)
+5. Global fallback: `lcp` on `PATH` → `uvx lcp` → `pipx run lcp`
+
+If none resolve, the plugin emits an actionable message — never a bare `-32000`.
 
 ### Shortcuts
 
