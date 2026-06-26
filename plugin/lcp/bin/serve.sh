@@ -16,6 +16,41 @@
 
 set -euo pipefail
 
+# Resolve config file: project first, then global.
+lcp_config_file() {
+  if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "${CLAUDE_PROJECT_DIR}/.lcp.json" ]; then
+    printf '%s\n' "${CLAUDE_PROJECT_DIR}/.lcp.json"; return 0
+  fi
+  if [ -f "${HOME}/.lcp/config.json" ]; then
+    printf '%s\n' "${HOME}/.lcp/config.json"; return 0
+  fi
+  return 1
+}
+
+# lcp_config_get <field> — print value (arrays space-joined), or empty.
+lcp_config_get() {
+  local field="$1" file
+  file="$(lcp_config_file)" || return 0
+  command -v python3 >/dev/null 2>&1 || return 0
+  python3 - "$file" "$field" <<'PY'
+import json, sys
+try:
+    data = json.load(open(sys.argv[1]))
+except Exception:
+    sys.exit(0)
+v = data.get(sys.argv[2])
+if v is None:
+    sys.exit(0)
+if isinstance(v, list):
+    print(" ".join(str(x) for x in v))
+else:
+    print(v)
+PY
+}
+
+# When sourced for tests, stop here.
+if [ -n "${LCP_SERVE_LIB:-}" ]; then return 0 2>/dev/null || true; fi
+
 # LAUNCHER is the argv prefix used to invoke the lcp CLI, e.g. ("lcp") or
 # ("/path/to/python" "-m" "lcp").
 LAUNCHER=()
