@@ -303,7 +303,33 @@ def serve(manifest: str, name: str | None):
         f"The official registry is: {_DEFAULT_REGISTRY_URL}"
     ),
 )
-def serve_all(cache_dir: str | None, name: str, no_cache: bool, registry: str | None):
+@click.option(
+    "--expose",
+    "expose",
+    multiple=True,
+    help=(
+        "Restrict resolve_library to these package names. "
+        "Repeat the flag to allow multiple packages. "
+        "When omitted, all installed packages are accessible."
+    ),
+)
+@click.option(
+    "--preload",
+    "preload",
+    multiple=True,
+    help=(
+        "Resolve these packages at startup so they are ready immediately. "
+        "Repeat the flag for multiple packages."
+    ),
+)
+def serve_all(
+    cache_dir: str | None,
+    name: str,
+    no_cache: bool,
+    registry: str | None,
+    expose: tuple[str, ...],
+    preload: tuple[str, ...],
+):
     """Start a universal MCP server that resolves any installed Python library.
 
     Unlike `lcp serve`, this command requires no pre-built manifest.  AI agents
@@ -335,10 +361,19 @@ def serve_all(cache_dir: str | None, name: str, no_cache: bool, registry: str | 
         lcp serve-all --no-cache --name my-lcp
 
         lcp serve-all --registry https://registry.example.com
+
+        lcp serve-all --expose requests --expose httpx
+
+        lcp serve-all --expose fastapi --preload fastapi
     """
     try:
         run_universal_server(
-            name=name, cache_dir=cache_dir, no_cache=no_cache, registry_url=registry
+            name=name,
+            cache_dir=cache_dir,
+            no_cache=no_cache,
+            registry_url=registry,
+            expose=list(expose) if expose else None,
+            preload=list(preload) if preload else None,
         )
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
