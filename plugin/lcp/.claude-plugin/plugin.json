@@ -1,6 +1,6 @@
 {
   "name": "lcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Universal Python library documentation for AI coding agents via the Library Context Protocol. Resolves any pip-installed package on demand — functions, classes, signatures, docstrings — through browsable MCP tools.",
   "author": {
     "name": "Andrea Zanini",
