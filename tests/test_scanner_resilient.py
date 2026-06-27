@@ -7,11 +7,16 @@ scan instead of skipping the single bad member.
 """
 
 import sys
+import textwrap
 import types
 
 import pytest
 
-from lcp.scanner import scan_package
+from lcp.scanner import (
+    _is_member_from_package,
+    _parse_docstring,
+    scan_package,
+)
 
 
 @pytest.fixture
@@ -85,3 +90,107 @@ def test_scan_does_not_abort_on_raising_class_member(poison_class_module):
     result = scan_package("poisonclspkg")
     names = {s.name for s in result.symbols}
     assert "Widget" in names
+
+
+def _build_pkg(tmp_path, name, files):
+    """Write a real on-disk package and put it on ``sys.path``.
+
+    Returns the package name; caller's modules are cleaned up by the fixture.
+    """
+    pkg_dir = tmp_path / name
+    pkg_dir.mkdir()
+    for filename, content in files.items():
+        (pkg_dir / filename).write_text(textwrap.dedent(content))
+    sys.path.insert(0, str(tmp_path))
+    return name
+
+
+@pytest.fixture
+def cleanup_imports():
+    """Remove any test packages we imported and restore ``sys.path``."""
+    original_path = list(sys.path)
+    imported_before = set(sys.modules)
+    try:
+        yield
+    finally:
+        sys.path[:] = original_path
+        for mod_name in set(sys.modules) - imported_before:
+            sys.modules.pop(mod_name, None)
+
+
+def test_scan_survives_submodule_raising_systemexit(tmp_path, cleanup_imports):
+    """A submodule that calls ``sys.exit()`` at import must not kill the scan.
+
+    Many real packages ship submodules that run a CLI on import (e.g.
+    ``numpy.f2py.__main__``, ``flask.__main__``) or call ``pytest.importorskip``
+    inside ``tests/`` — these raise ``SystemExit`` / ``Skipped``, which are
+    ``BaseException`` subclasses, not ``Exception``.
+    """
+    name = _build_pkg(tmp_path, "sysexitpkg", {
+        "__init__.py": "GOOD = 1\n",
+        "good.py": "def real_function():\n    '''A real function.'''\n    return 1\n",
+        "boom.py": "import sys\nsys.exit(7)\n",
+    })
+    result = scan_package(name)  # must not raise SystemExit
+    names = {s.name for s in result.symbols}
+    assert "real_function" in names  # healthy submodule still scanned
+    assert not any("boom" in n for n in names)  # the exiting one is skipped
+
+
+def test_scan_skips_dunder_main_module(tmp_path, cleanup_imports):
+    """``__main__`` submodules are entry-point scripts, never public API.
+
+    Importing them runs arbitrary CLI code at import time, so they must be
+    skipped entirely (not merely survived).
+    """
+    sentinel = tmp_path / "main_was_executed"
+    name = _build_pkg(tmp_path, "mainpkg", {
+        "__init__.py": "GOOD = 1\n",
+        "good.py": "def real_function():\n    '''A real function.'''\n    return 1\n",
+        "__main__.py": f"open({str(sentinel)!r}, 'w').close()\n",
+    })
+    result = scan_package(name)
+    names = {s.name for s in result.symbols}
+    assert not any("__main__" in n for n in names)
+    assert "real_function" in names  # healthy submodule still scanned
+    assert not sentinel.exists()  # __main__ body must never have run
+
+
+def test_parse_docstring_handles_non_string_doc():
+    """A class can define ``__doc__`` as a ``property`` (e.g. sympy).
+
+    ``cls.__doc__`` then returns the property object, not a string;
+    ``_parse_docstring`` must treat any non-string as 'no docstring'.
+    """
+    class PropDoc:
+        @property
+        def __doc__(self):  # pragma: no cover - only its type matters here
+            return "dynamic"
+
+    assert _parse_docstring(PropDoc.__doc__) == (None, None)
+
+
+def test_is_member_from_package_handles_non_string_module():
+    """A base class can expose ``__module__`` as a non-string descriptor.
+
+    C-level slots (e.g. zope.interface) make ``base.__module__`` a
+    ``member_descriptor``; the package-membership check must not assume str.
+    """
+    class HasSlot:
+        __slots__ = ("x",)
+
+    member_descriptor = HasSlot.__dict__["x"]
+
+    class WeirdBase:
+        def shared_method(self):
+            return 1
+
+    WeirdBase.__module__ = member_descriptor  # non-string __module__
+
+    class Child(WeirdBase):
+        pass
+
+    Child.__module__ = "mypkg"
+
+    # Must not raise; a non-string module simply isn't within the package root.
+    assert _is_member_from_package(Child, "shared_method", "mypkg") is False
