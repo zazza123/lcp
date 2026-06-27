@@ -67,7 +67,7 @@ Manifests are cached as gzip-compressed `.lcp.json.gz` files under `~/.lcp/cache
 | `--no-cache` flag | Cache reads and writes are both skipped; registry fallback still applies |
 | Cache write failure | Silently ignored (non-fatal) |
 | Legacy `.lcp.json` entry found | Loaded transparently as a fallback when no `.lcp.json.gz` exists |
-| `--registry` URL provided | When both cache and live scan fail, the manifest is fetched from the remote registry using the sharded path `{registry}/manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz` |
+| `--registry` URL provided | When both cache and live scan fail, the manifest is fetched from the remote registry using the sharded path `{registry}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz`, where `{slug}` is the hyphenated package name (`google.adk` → `google-adk`). When no version is known, the package's `latest.json` pointer is read to resolve the canonical manifest file |
 
 ## Tool Inventory
 

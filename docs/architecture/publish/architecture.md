@@ -95,7 +95,7 @@ Before uploading a manifest, the module ensures the authenticated user has a for
 
 **Functions:** `_create_branch()` and `_upload_manifest()` in `src/lcp/publish.py`
 
-Branch creation reads the SHA of the fork's `main` branch head, then creates a new ref at `refs/heads/lcp/add/{name}/{version}`. The branch naming convention prevents collisions between different packages and versions.
+Branch creation reads the SHA of the fork's `main` branch head, then creates a new ref at `refs/heads/lcp/add/{slug}/{version}`, where `{slug}` is the canonical, hyphenated package name (see Registry Path Convention below). The branch naming convention prevents collisions between different packages and versions.
 
 File upload uses the GitHub Contents API to commit the manifest directly to the branch. The manifest JSON is first gzip-compressed and then Base64-encoded before submission, as required by the API. The commit message follows the format `Add {name} v{version} LCP manifest`.
 
@@ -109,14 +109,14 @@ Each PR created by the publish command follows a consistent format:
 
 | Element | Value |
 |---------|-------|
-| **Title** | `[new_manifest] Add {name} v{version} ({language})` |
-| **Labels** | `new_manifest`, `{language}` |
-| **Branch** | `lcp/add/{name}/{version}` on the user's fork |
+| **Title** | `NEW: Manifest {name} {version} ({language})` |
+| **Labels** | `new_manifest`, `lcp-publish`, `{language}` |
+| **Branch** | `lcp/add/{slug}/{version}` on the user's fork |
 | **Target** | `main` branch of the registry repository |
 
 The PR body is built by `_build_pr_body()` and contains a metadata table (package name, version, language, symbol count, schema version), the manifest file path within the registry, requested labels, generation details (SDK version and schema version), and a checklist confirming the manifest was generated, validated, and placed in the correct path.
 
-Label application is best-effort via `_try_add_labels()` — contributors typically lack write access to the upstream registry, so label failures are silently ignored. The PR title includes the `[new_manifest]` prefix and the language, making it filterable even without labels.
+Label application is best-effort via `_try_add_labels()` — contributors typically lack write access to the upstream registry, so label failures are silently ignored. The `lcp-publish` label marks PRs opened automatically by the publish command, distinguishing them from manual contributions. The `NEW: Manifest` title prefix and the language keep PRs filterable even when labels cannot be applied.
 
 ---
 
@@ -125,12 +125,12 @@ Label application is best-effort via `_try_add_labels()` — contributors typica
 Manifests are stored in the registry using a sharded path:
 
 ```
-manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz
+manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz
 ```
 
-The `{first_letter}` segment is the lowercase first character of the package name (e.g. `r` for `requests`, `n` for `numpy`). This sharding ensures no directory in the registry exceeds a manageable number of entries, preventing directory-width problems as the registry grows.
+The `{slug}` segment is the package name normalized by `normalize_package_name()` in `src/lcp/naming.py`: runs of `.`, `-`, and `_` collapse to a single `-` and the result is lowercased (PEP 503-style). This is why a package imported as `google.adk` is stored under `g/google-adk/` rather than `g/google.adk/`. The `{first_letter}` segment is the first character of that slug (e.g. `r` for `requests`, `g` for `google-adk`). This sharding ensures no directory in the registry exceeds a manageable number of entries, preventing directory-width problems as the registry grows.
 
-All manifests are stored as gzip-compressed JSON (`.lcp.json.gz`). The sharded path and `.gz` extension match the convention used by `_fetch_from_registry()` in `src/lcp/mcp_server.py`, ensuring that published manifests are immediately consumable by the MCP server's registry fallback.
+All manifests are stored as gzip-compressed JSON (`.lcp.json.gz`). The same slug and sharding are used by `_fetch_from_registry()` in `src/lcp/mcp_server.py`, ensuring that published manifests are immediately consumable by the MCP server's registry fallback — a manifest written to `g/google-adk/` is also read from there.
 
 For example, `requests` version `2.31.0` is stored at:
 
@@ -147,5 +147,5 @@ Package names are validated before path construction — names containing `..`, 
 - [Registry Publish Overview](index.md) - CLI usage, Python API, and feature integration
 
 ---
-**Last Updated:** March 2026
+**Last Updated:** June 2026
 **Status:** Implemented

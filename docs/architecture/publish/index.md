@@ -8,9 +8,9 @@ The Registry Publish module submits LCP manifests to a remote registry by openin
 
 - Scans an installed Python package and generates a validated LCP manifest in a single command
 - Forks the registry repository automatically (or reuses an existing fork)
-- Uploads the manifest **gzip-compressed** to the canonical sharded registry path (`manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz`)
+- Uploads the manifest **gzip-compressed** to the canonical sharded registry path (`manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz`), where `{slug}` is the hyphenated package name (e.g. `google.adk` → `google-adk`)
 - Creates a pull request with structured metadata table, checklist, and generation details
-- Applies `new_manifest` and `{language}` labels to the PR (best-effort)
+- Applies `new_manifest`, `lcp-publish`, and `{language}` labels to the PR (best-effort)
 - Supports `--dry-run` to preview the submission without creating a PR
 - Accepts an existing manifest file via `--file` instead of scanning
 - Token can be provided via `--token`, `LCP_GITHUB_TOKEN`, or `GITHUB_TOKEN` environment variable
@@ -26,6 +26,7 @@ The Registry Publish module submits LCP manifests to a remote registry by openin
 | `publish_manifest()` | `src/lcp/publish.py` | Orchestrates the full publish workflow: authenticate → fork → branch → upload → PR |
 | `PublishResult` | `src/lcp/publish.py` | Dataclass holding the PR URL, number, manifest path, and package metadata |
 | `PublishError` | `src/lcp/publish.py` | Exception raised when any step of the publish workflow fails |
+| `normalize_package_name()` | `src/lcp/naming.py` | Normalizes a package name to its canonical hyphenated registry slug |
 | CLI `publish` command | `src/lcp/cli.py` | Click command exposing the publish workflow to the CLI |
 
 ## Data Flow
