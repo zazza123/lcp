@@ -65,7 +65,6 @@ class ScannedModule:
     name: str
     version: str
     symbols: list[ScannedSymbol] = field(default_factory=list)
-    submodules: list[ScannedModule] = field(default_factory=list)
 
 
 def _parse_docstring(docstring: str | None) -> tuple[str | None, str | None]:
