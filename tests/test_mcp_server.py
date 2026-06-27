@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import urllib.error
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -676,8 +677,48 @@ class TestFetchFromRegistry:
         )
         assert result is not None
 
-    def test_uses_latest_when_no_version(self, sample_lcp_file: Path):
-        """When version is None, the URL should contain 'latest'."""
+    def test_uses_latest_json_pointer_when_no_version(self, sample_lcp_file: Path):
+        """When version is None, the manifest is resolved via latest.json."""
+        import gzip
+
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_gz = gzip.compress(doc.model_dump_json().encode())
+
+        pointer_resp = MagicMock()
+        pointer_resp.read.return_value = json.dumps(
+            {"version": "1.0.0", "manifest": "1.0.0.lcp.json.gz"}
+        ).encode()
+        pointer_resp.__enter__ = lambda s: s
+        pointer_resp.__exit__ = MagicMock(return_value=False)
+
+        manifest_resp = MagicMock()
+        manifest_resp.read.return_value = manifest_gz
+        manifest_resp.__enter__ = lambda s: s
+        manifest_resp.__exit__ = MagicMock(return_value=False)
+
+        with patch(
+            "urllib.request.urlopen", side_effect=[pointer_resp, manifest_resp]
+        ) as mock_open:
+            result = _fetch_from_registry("mylib", "https://registry.example.com")
+
+        urls = [call.args[0] for call in mock_open.call_args_list]
+        assert urls[0] == "https://registry.example.com/manifests/python/m/mylib/latest.json"
+        assert urls[1] == "https://registry.example.com/manifests/python/m/mylib/1.0.0.lcp.json.gz"
+        assert result is not None
+
+    def test_invalid_latest_pointer_raises_import_error(self):
+        """A latest.json without a valid 'manifest' field should raise."""
+        pointer_resp = MagicMock()
+        pointer_resp.read.return_value = json.dumps({"version": "1.0.0"}).encode()
+        pointer_resp.__enter__ = lambda s: s
+        pointer_resp.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=pointer_resp):
+            with pytest.raises(ImportError, match="missing a valid"):
+                _fetch_from_registry("mylib", "https://registry.example.com")
+
+    def test_dotted_name_uses_hyphenated_slug(self, sample_lcp_file: Path):
+        """A dotted import name should map to the hyphenated registry slug."""
         import gzip
 
         doc = load_lcp_document(sample_lcp_file)
@@ -689,10 +730,14 @@ class TestFetchFromRegistry:
         mock_response.__exit__ = MagicMock(return_value=False)
 
         with patch("urllib.request.urlopen", return_value=mock_response) as mock_open:
-            _fetch_from_registry("mylib", "https://registry.example.com")
+            _fetch_from_registry(
+                "google.adk", "https://registry.example.com", version="2.2.0"
+            )
 
         called_url = mock_open.call_args[0][0]
-        assert called_url == "https://registry.example.com/manifests/python/m/mylib/latest.lcp.json.gz"
+        assert called_url == (
+            "https://registry.example.com/manifests/python/g/google-adk/2.2.0.lcp.json.gz"
+        )
 
     def test_trailing_slash_stripped(self, sample_lcp_file: Path):
         """Registry URL trailing slash should be normalised."""
@@ -750,7 +795,9 @@ class TestFetchFromRegistry:
 
         with patch("urllib.request.urlopen", return_value=mock_response):
             with pytest.raises(ImportError, match="not a valid LCP document"):
-                _fetch_from_registry("mylib", "https://registry.example.com")
+                _fetch_from_registry(
+                    "mylib", "https://registry.example.com", version="1.0.0"
+                )
 
     def test_invalid_scheme_raises_import_error(self):
         """Non-HTTP(S) registry URL should raise ImportError without making a request."""

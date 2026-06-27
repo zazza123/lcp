@@ -11,6 +11,7 @@ import urllib.request
 from dataclasses import dataclass
 
 from .models import LCPDocument
+from .naming import normalize_package_name
 
 _DEFAULT_REGISTRY_REPO = "zazza123/lcp-registry"
 _GITHUB_API_BASE = "https://api.github.com"
@@ -18,7 +19,7 @@ _FORK_POLL_INTERVAL = 2
 _FORK_POLL_MAX_ATTEMPTS = 30
 _REQUEST_TIMEOUT = 30
 
-_PR_LABELS = ["new_manifest"]
+_PR_LABELS = ["new_manifest", "lcp-publish"]
 
 
 class PublishError(Exception):
@@ -308,7 +309,7 @@ def _build_pr_body(
         "",
         "### Labels",
         "",
-        f"`new_manifest`, `{lib.language}`",
+        f"`new_manifest`, `lcp-publish`, `{lib.language}`",
         "",
         "### Generation Details",
         "",
@@ -353,7 +354,7 @@ def _create_pull_request(
         PublishError: If PR creation fails.
     """
     fork_owner = fork_repo.split("/")[0]
-    title = f"[new_manifest] Add {package_name} v{package_version} ({language})"
+    title = f"NEW: Manifest {package_name} {package_version} ({language})"
 
     pr_data = _github_request(
         "POST",
@@ -445,8 +446,11 @@ def publish_manifest(
     if ".." in name or "/" in name or "\\" in name:
         raise PublishError(f"Invalid package name: '{name}'")
 
-    manifest_path = f"manifests/{language}/{name[0].lower()}/{name}/{version}.lcp.json.gz"
-    branch_name = f"lcp/add/{name}/{version}"
+    # Registry paths use the canonical slug (e.g. ``google.adk`` ->
+    # ``google-adk``) so a dotted import name maps to the hyphenated folder.
+    slug = normalize_package_name(name)
+    manifest_path = f"manifests/{language}/{slug[0]}/{slug}/{version}.lcp.json.gz"
+    branch_name = f"lcp/add/{slug}/{version}"
 
     from . import __version__ as lcp_version
 

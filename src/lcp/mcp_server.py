@@ -13,6 +13,7 @@ from typing import Any
 from fastmcp import FastMCP
 
 from .models import LCPDocument, Symbol, SymbolKind
+from .naming import normalize_package_name
 
 
 class LCPIndex:
@@ -197,9 +198,11 @@ def _fetch_from_registry(
     """Fetch an LCP manifest from a remote registry.
 
     Constructs the request URL using the registry's standard sharded path layout:
-    ``{registry_url}/manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz``.
-    When *version* is not supplied, ``"latest"`` is used as the version segment.
-    The response body is decompressed from gzip before parsing.
+    ``{registry_url}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz``,
+    where *slug* is the canonical, hyphenated package name (so ``google.adk``
+    resolves under ``g/google-adk/``). When *version* is not supplied, the
+    package's ``latest.json`` pointer is read to discover the canonical
+    manifest file. The response body is decompressed from gzip before parsing.
 
     Args:
         name: Python package name (e.g. ``"requests"``).
@@ -238,27 +241,51 @@ def _fetch_from_registry(
             f"Invalid package name for registry lookup: '{name}'"
         )
 
-    effective_version = version or "latest"
-    first_letter = name[0].lower()
-    url = (
-        f"{registry_url.rstrip('/')}/manifests/{language}/{first_letter}/{name}"
-        f"/{effective_version}.lcp.json.gz"
-    )
-    try:
-        with urllib.request.urlopen(url, timeout=timeout) as response:  # noqa: S310
-            body = response.read()
-    except urllib.error.HTTPError as exc:
-        raise ImportError(
-            f"Registry returned HTTP {exc.code} for '{name}' at {url}"
-        ) from exc
-    except urllib.error.URLError as exc:
-        raise ImportError(
-            f"Registry fetch failed for '{name}' at {url}: {exc.reason}"
-        ) from exc
-    except TimeoutError as exc:
-        raise ImportError(
-            f"Registry fetch timed out for '{name}' at {url}"
-        ) from exc
+    # Registry paths use the canonical slug, so a dotted import name like
+    # ``google.adk`` is fetched from ``.../g/google-adk/``.
+    slug = normalize_package_name(name)
+    first_letter = slug[0]
+    base_url = f"{registry_url.rstrip('/')}/manifests/{language}/{first_letter}/{slug}"
+
+    def _get(target_url: str) -> bytes:
+        try:
+            with urllib.request.urlopen(target_url, timeout=timeout) as response:  # noqa: S310
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            raise ImportError(
+                f"Registry returned HTTP {exc.code} for '{name}' at {target_url}"
+            ) from exc
+        except urllib.error.URLError as exc:
+            raise ImportError(
+                f"Registry fetch failed for '{name}' at {target_url}: {exc.reason}"
+            ) from exc
+        except TimeoutError as exc:
+            raise ImportError(
+                f"Registry fetch timed out for '{name}' at {target_url}"
+            ) from exc
+
+    if version:
+        url = f"{base_url}/{version}.lcp.json.gz"
+    else:
+        # No explicit version: resolve the canonical manifest through the
+        # ``latest.json`` pointer the registry stores per package, e.g.
+        # ``{"version": "2.2.0", "manifest": "2.2.0.lcp.json.gz"}``.
+        pointer_url = f"{base_url}/latest.json"
+        try:
+            pointer = json.loads(_get(pointer_url))
+        except json.JSONDecodeError as exc:
+            raise ImportError(
+                f"Registry 'latest.json' for '{name}' is not valid JSON: {exc}"
+            ) from exc
+        manifest_file = pointer.get("manifest") if isinstance(pointer, dict) else None
+        if not manifest_file or "/" in manifest_file or "\\" in manifest_file:
+            raise ImportError(
+                f"Registry 'latest.json' for '{name}' is missing a valid "
+                f"'manifest' field: {pointer!r}"
+            )
+        url = f"{base_url}/{manifest_file}"
+
+    body = _get(url)
 
     try:
         body = _gzip.decompress(body)
