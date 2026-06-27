@@ -4,7 +4,7 @@
 
 ## How publishing works
 
-Publishing uses a fork-and-PR flow against the central registry at `zazza123/lcp-registry` (the value of `_DEFAULT_REGISTRY_REPO` in `src/lcp/publish.py`). When you run `lcp publish`, the command authenticates with GitHub, forks the registry repo into your account if a fork does not already exist, creates a branch named `lcp/add/<package>/<version>`, gzip-compresses the manifest, and pushes it to the correct sharded path on that branch. It then opens a pull request against the upstream `main` branch with a structured body listing package metadata and a checklist.
+Publishing uses a fork-and-PR flow against the central registry at `zazza123/lcp-registry` (the value of `_DEFAULT_REGISTRY_REPO` in `src/lcp/publish.py`). When you run `lcp publish`, the command authenticates with GitHub, forks the registry repo into your account if a fork does not already exist, creates a branch named `lcp/add/<slug>/<version>`, gzip-compresses the manifest, and pushes it to the correct sharded path on that branch. The `<slug>` is the hyphenated package name (a dotted name like `google.adk` becomes `google-adk`). It then opens a pull request against the upstream `main` branch titled `NEW: Manifest <package> <version> (<language>)`, labelled `new_manifest`, `lcp-publish`, and the language, with a structured body listing package metadata and a checklist.
 
 A GitHub personal access token is required. The token must have the `repo` scope (for private registries) or `public_repo` scope (for the public registry). You can supply it via the `--token` flag or by setting the `LCP_GITHUB_TOKEN` (or `GITHUB_TOKEN`) environment variable. The tool does not store credentials; it passes the token directly to the GitHub API for each request.
 
@@ -69,10 +69,10 @@ lcp-registry/
 The path template is:
 
 ```
-manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz
+manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz
 ```
 
-For example, `requests` version `2.31.0` lands at `manifests/python/r/requests/2.31.0.lcp.json.gz`. The first-letter shard (`r/`) prevents any single directory from accumulating thousands of entries.
+The `{slug}` is the package name normalized to its canonical form: runs of `.`, `-`, and `_` collapse to a single `-` and the name is lowercased. So `requests` version `2.31.0` lands at `manifests/python/r/requests/2.31.0.lcp.json.gz`, while a dotted name like `google.adk` lands at `manifests/python/g/google-adk/2.2.0.lcp.json.gz`. The first-letter shard prevents any single directory from accumulating thousands of entries. Each package folder also carries a `latest.json` pointer (`{"version": ..., "manifest": ...}`) that the MCP server reads to resolve the newest manifest when no version is requested.
 
 ## Programmatic usage
 

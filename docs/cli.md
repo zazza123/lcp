@@ -85,7 +85,7 @@ lcp serve-all [OPTIONS]
 | `--cache-dir PATH` | `~/.lcp/cache/` | Cache directory for LCP manifests. |
 | `--name TEXT` | `lcp-universal` | Server name for MCP identification. |
 | `--no-cache` | off | Disable reading from and writing to the local cache. |
-| `--registry TEXT` | — | Base URL of an LCP registry used as fallback when local scanning fails. Manifests are fetched from `{registry}/manifests/{language}/{name}/{version}.lcp.json`. |
+| `--registry TEXT` | — | Base URL of an LCP registry used as fallback when local scanning fails. Manifests are fetched from `{registry}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz`, where `{slug}` is the hyphenated package name (`google.adk` → `google-adk`). |
 
 **Example:**
 
