@@ -70,6 +70,11 @@ class TestValidateDict:
         "1.0.0.dev0", # PEP 440 dev release
         "1.0.0-beta.1",  # semver pre-release
         "1.0.0+build.1", # semver build metadata
+        "26.2",          # two-segment release (e.g. packaging)
+        "1.0",           # two-segment release
+        "2020.6",        # two-segment calendar version
+        "1",             # single-segment release
+        "23.0.dev0",     # two-segment with PEP 440 dev suffix
     ])
     def test_valid_version_formats(self, version):
         data = {
