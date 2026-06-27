@@ -70,7 +70,10 @@ class ScannedModule:
 
 def _parse_docstring(docstring: str | None) -> tuple[str | None, str | None]:
     """Parse docstring into summary and description."""
-    if not docstring:
+    # ``__doc__`` is not guaranteed to be a string: some classes expose it as a
+    # ``property`` or other descriptor (e.g. sympy). Treat any non-string as
+    # having no docstring rather than crashing on ``.strip()``.
+    if not isinstance(docstring, str) or not docstring:
         return None, None
 
     lines = docstring.strip().split("\n")
@@ -253,7 +256,12 @@ def _is_member_from_package(cls: type, name: str, package_root: str) -> bool:
 
     for base in cls.__mro__:
         if name in base.__dict__:
-            base_module = getattr(base, "__module__", None) or ""
+            base_module = getattr(base, "__module__", None)
+            # ``__module__`` is usually a str but C-level slots can expose it as
+            # a ``member_descriptor`` (e.g. zope.interface); anything non-string
+            # cannot be within the package root.
+            if not isinstance(base_module, str):
+                return False
             return base_module == package_root or base_module.startswith(
                 package_root + "."
             )
@@ -490,10 +498,19 @@ def _iter_submodules(package: ModuleType) -> list[ModuleType]:
         for module_info in pkgutil.iter_modules(
             current.__path__, prefix=current_name + "."
         ):
+            # ``__main__`` modules are entry-point scripts, never public API,
+            # and importing them runs arbitrary CLI code (often ``sys.exit()``).
+            if module_info.name.rpartition(".")[2] == "__main__":
+                continue
             try:
                 submod = importlib.import_module(module_info.name)
-            except Exception:
-                # Skip modules that fail to import
+            except KeyboardInterrupt:
+                raise
+            except BaseException:
+                # Skip modules that fail to import. A bare ``except Exception``
+                # is not enough: submodules may raise ``BaseException`` at import
+                # (``SystemExit`` from a CLI ``main()``, pytest's ``Skipped``
+                # from ``importorskip``), which would otherwise abort the scan.
                 continue
 
             if submod.__name__ in discovered:
@@ -525,7 +542,9 @@ def _iter_submodules(package: ModuleType) -> list[ModuleType]:
 
                 try:
                     namespace_mod = importlib.import_module(module_name)
-                except Exception:
+                except KeyboardInterrupt:
+                    raise
+                except BaseException:
                     continue
 
                 discovered.add(namespace_mod.__name__)
