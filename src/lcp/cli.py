@@ -11,6 +11,7 @@ from .coverage import generate_coverage, generate_coverage_from_scanned
 from .generator import generate_lcp
 from .mcp_server import run_server as run_mcp_server
 from .mcp_server import run_universal_server, _DEFAULT_REGISTRY_URL
+from .naming import normalize_package_name
 from .publish import PublishError, _DEFAULT_REGISTRY_REPO, publish_manifest
 from .scanner import scan_package
 from .validator import LCPValidationError
@@ -305,7 +306,7 @@ def serve(manifest: str, name: str | None):
     help=(
         "Base URL of an LCP registry to use as a fallback when local scanning "
         "fails. Manifests are fetched from "
-        "{registry}/manifests/{language}/{name}/{version}.lcp.json. "
+        "{registry}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz. "
         f"The official registry is: {_DEFAULT_REGISTRY_URL}"
     ),
 )
@@ -348,7 +349,7 @@ def serve_all(
     \b
     1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
     2. Live scan    (pip-installed package)
-    3. Registry     (HTTP fetch from --registry/manifests/python/{name}/{version}.lcp.json)
+    3. Registry     (HTTP fetch from --registry/manifests/python/{first_letter}/{slug}/{version}.lcp.json.gz)
 
     Setup (one-time):
 
@@ -457,8 +458,8 @@ def publish(
     The PR is created with:
 
     \b
-    - Title: [new_manifest] Add <package> v<version> (<language>)
-    - Labels: new_manifest, <language>
+    - Title: NEW: Manifest <package> <version> (<language>)
+    - Labels: new_manifest, lcp-publish, <language>
     - Structured body with package metadata and checklist
 
     Examples:
@@ -503,8 +504,9 @@ def publish(
             sys.exit(1)
 
         lib = lcp_doc.manifest.library
+        slug = normalize_package_name(lib.name)
         manifest_path = (
-            f"manifests/{lib.language}/{lib.name}/{lib.version}.lcp.json"
+            f"manifests/{lib.language}/{slug[0]}/{slug}/{lib.version}.lcp.json.gz"
         )
         symbol_count = len(lcp_doc.symbols)
 
@@ -517,12 +519,12 @@ def publish(
             click.echo("", err=True)
             click.echo("DRY RUN: No PR will be created.", err=True)
             click.echo(
-                f"  PR title: [new_manifest] Add {lib.name} "
-                f"v{lib.version} ({lib.language})",
+                f"  PR title: NEW: Manifest {lib.name} "
+                f"{lib.version} ({lib.language})",
                 err=True,
             )
             click.echo(
-                f"  Labels: new_manifest, {lib.language}",
+                f"  Labels: new_manifest, lcp-publish, {lib.language}",
                 err=True,
             )
             click.echo(f"  Registry: {registry_repo}", err=True)

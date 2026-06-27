@@ -272,7 +272,7 @@ class TestBuildPrBody:
         assert "| Language | python |" in body
         assert "| Symbols | 2 |" in body
         assert "`manifests/python/m/mylib/1.0.0.lcp.json.gz`" in body
-        assert "`new_manifest`, `python`" in body
+        assert "`new_manifest`, `lcp-publish`, `python`" in body
         assert "lcp Python SDK v0.1.0" in body
         assert "- [x] Manifest generated from installed package" in body
         assert "- [x] Manifest validated against LCP schema" in body
@@ -303,7 +303,7 @@ class TestCreatePullRequest:
         # Verify PR data
         call_args = mock_request.call_args
         data = call_args[1]["data"] if "data" in call_args[1] else call_args[0][3]
-        assert data["title"] == "[new_manifest] Add mylib v1.0.0 (python)"
+        assert data["title"] == "NEW: Manifest mylib 1.0.0 (python)"
         assert data["head"] == "testuser:lcp/add/mylib/1.0.0"
         assert data["base"] == "main"
 
@@ -369,6 +369,44 @@ class TestPublishManifest:
         mock_upload.assert_called_once()
         mock_pr.assert_called_once()
         mock_labels.assert_called_once()
+
+    @patch("lcp.publish._try_add_labels")
+    @patch("lcp.publish._create_pull_request")
+    @patch("lcp.publish._create_branch")
+    @patch("lcp.publish._ensure_fork")
+    @patch("lcp.publish._get_authenticated_user")
+    def test_dotted_name_uses_hyphenated_slug_path(
+        self,
+        mock_get_user,
+        mock_fork,
+        mock_branch,
+        mock_pr,
+        mock_labels,
+        mock_token,
+    ):
+        """A dotted package name maps to a hyphenated, sharded registry path."""
+        doc = LCPDocument(
+            manifest=Manifest(
+                schema_version="1.0",
+                library=Library(name="google.adk", version="2.2.0", language="python"),
+            ),
+            symbols={},
+        )
+        mock_get_user.return_value = "testuser"
+        mock_fork.return_value = "testuser/lcp-registry"
+        mock_branch.return_value = "abc123"
+        mock_pr.return_value = {"html_url": "", "number": 7}
+
+        captured = []
+        with patch("lcp.publish._upload_manifest", side_effect=lambda *a, **k: captured.append(a)):
+            result = publish_manifest(doc, mock_token)
+
+        assert result.manifest_path == "manifests/python/g/google-adk/2.2.0.lcp.json.gz"
+        # Branch is created from the slug, not the raw dotted name.
+        branch_name = mock_branch.call_args.args[1]
+        assert branch_name == "lcp/add/google-adk/2.2.0"
+        # The uploaded path matches the slugged manifest path.
+        assert captured[0][2] == "manifests/python/g/google-adk/2.2.0.lcp.json.gz"
 
     def test_invalid_registry_repo_format(self, sample_document, mock_token):
         with pytest.raises(ValueError, match="Invalid registry repo format"):
@@ -448,9 +486,9 @@ class TestPublishManifest:
         result = publish_manifest(doc, mock_token)
         assert result.language == "javascript"
 
-        # Verify labels include "new_manifest" and the language
+        # Verify labels include "new_manifest", "lcp-publish" and the language
         mock_labels.assert_called_once_with(
-            _DEFAULT_REGISTRY_REPO, 10, ["new_manifest", "javascript"], mock_token
+            _DEFAULT_REGISTRY_REPO, 10, ["new_manifest", "lcp-publish", "javascript"], mock_token
         )
 
     @patch("lcp.publish._try_add_labels")
