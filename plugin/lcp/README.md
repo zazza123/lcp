@@ -31,7 +31,7 @@ Add the LCP marketplace and install the plugin:
 /plugin install lcp@lcp
 ```
 
-This installs the plugin, registers the MCP server, the skills, the commands (`/lcp:resolve`, `/lcp:scan`), and the `library-explorer` subagent in one step.
+This installs the plugin, registers the MCP server, the skills, the commands (`/lcp:resolve`, `/lcp:scan`, `/lcp:configure`), and the `library-explorer` subagent in one step.
 
 ### Option B — Local plugin directory (development)
 
@@ -106,6 +106,29 @@ lcp serve-all --name my-lcp              # custom server name
 |-------|---------|
 | `lcp-universal` | Any task involving Python library usage — auto-loads via `resolve_library` |
 | `lcp-usage` | Detecting and using either the universal or a per-library LCP server |
+| `lcp-configure` | Setting up or repairing `.lcp.json` — when the MCP server won't start, libraries don't resolve, or you want to set a registry / expose / preload |
+
+## Configuration (`.lcp.json`)
+
+Most setups need no configuration — the plugin auto-detects a runnable `lcp` and
+uses the official registry. When it doesn't (e.g. `lcp` lives in a virtualenv off
+your `PATH`, you run a private registry, or you want to restrict/warm specific
+libraries), the server reads an optional `.lcp.json` (project root, falling back
+to `~/.lcp/config.json`):
+
+| Field | Effect |
+|-------|--------|
+| `command` | Full path to an `lcp` executable to launch the server with |
+| `python` | Path to a Python interpreter that has `lcp` (run as `python -m lcp`) |
+| `registries` | Registry base URLs — only the first is active; empty = official registry |
+| `expose` | Whitelist of library names the server will serve; empty = any |
+| `preload` | Libraries to resolve at startup for an instant first lookup |
+
+Run **`/lcp:configure`** for a guided, step-by-step setup that fills this file in
+and verifies the server actually starts — or pass it a symptom
+(`/lcp:configure server won't start`) to jump straight to repair. The
+`lcp-configure` skill also triggers automatically when the server fails to start
+or a library won't resolve.
 
 ## How it works
 

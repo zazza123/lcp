@@ -11,8 +11,10 @@ When you install the plugin, Claude Code gets:
 | **MCP Server** | `lcp serve-all` starts automatically on every session and exposes your Python environment's libraries as browsable MCP tools |
 | **`lcp-universal` skill** | Teaches Claude to call `resolve_library()` before writing code that uses a third-party library — proactive, not reactive |
 | **`lcp-usage` skill** | Guides Claude on when and how to use LCP tools for library research |
+| **`lcp-configure` skill** | Walks through setting up or repairing `.lcp.json`; triggers automatically when the MCP server won't start or a library won't resolve |
 | **`/lcp:resolve <pkg>`** | Slash command: resolve a library and get a summary of its public API |
 | **`/lcp:scan <pkg>`** | Slash command: scan a package and produce a structured module and symbol overview |
+| **`/lcp:configure`** | Slash command: guided, step-by-step `.lcp.json` setup with verification; pass a symptom to jump straight to repair |
 | **Library explorer subagent** | A read-only Claude Haiku subagent for deep API research; runs independently so it doesn't consume your session's context |
 | **Session hook** | Auto-generates `.lcp.json` for the active project when absent, seeding it from `settings.json` `pluginConfigs` values |
 | **Registry support** | `registries` field in `.lcp.json` for connecting to a private or team registry with pre-built manifests |
@@ -127,6 +129,14 @@ The skills, commands, and subagent are guidance and convenience layers on top of
 
 The plugin reads a `.lcp.json` file to determine how to launch `lcp` for the current project. The `SessionStart` hook **auto-generates** this file from your `pluginConfigs` settings when it is absent; after that, edit the file directly.
 
+!!! tip "Guided setup"
+    Prefer not to hand-edit JSON? Run **`/lcp:configure`** for a step-by-step
+    wizard that fills in the fields below and verifies the server actually
+    starts. It also runs in **repair mode** — pass a symptom
+    (`/lcp:configure server won't start`) and it fixes just the broken piece.
+    The `lcp-configure` skill triggers on its own when the server fails to start
+    or a library won't resolve.
+
 ### Locations
 
 The wrapper checks these paths in order, using the first that exists:
@@ -196,6 +206,12 @@ If none of the above resolve, the plugin emits an actionable error explaining ho
     is a fallback that covers publicly registered packages only.
 
 ## Troubleshooting
+
+!!! tip "Fastest fix: `/lcp:configure`"
+    Most issues below are config or launcher-path problems. Running
+    **`/lcp:configure`** (or just describing the symptom to Claude) walks the
+    `lcp-configure` skill through diagnosing and fixing them for you, then
+    verifies the result.
 
 !!! warning "`lcp` not found or MCP server returns `-32000`"
     The wrapper tries six resolution strategies (see [Launcher resolution order](#launcher-resolution-order) above).
