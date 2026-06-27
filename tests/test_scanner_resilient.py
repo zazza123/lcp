@@ -92,6 +92,38 @@ def test_scan_does_not_abort_on_raising_class_member(poison_class_module):
     assert "Widget" in names
 
 
+@pytest.fixture
+def hostile_isinstance_module():
+    """A module whose member raises merely on being *classified*.
+
+    Mirrors ``django.conf.settings`` (a lazy object): fetching the member is
+    fine, but ``inspect.ismodule()`` / ``isinstance()`` triggers its
+    ``__getattribute__`` and raises (``ImproperlyConfigured`` in django). The
+    fetch guard (``_safe_getmembers``) does not cover this later step.
+    """
+    mod = types.ModuleType("hostilepkg")
+
+    class Hostile:
+        def __getattribute__(self, name):
+            raise RuntimeError("settings are not configured")
+
+    mod.settings = Hostile()
+    mod.GOOD = 7  # a real public constant the scan SHOULD capture
+    sys.modules["hostilepkg"] = mod
+    try:
+        yield mod
+    finally:
+        sys.modules.pop("hostilepkg", None)
+
+
+def test_scan_does_not_abort_when_member_classification_raises(hostile_isinstance_module):
+    # Must not raise; the hostile member is skipped, the healthy one kept.
+    result = scan_package("hostilepkg")
+    names = {s.name for s in result.symbols}
+    assert "GOOD" in names
+    assert "settings" not in names
+
+
 def _build_pkg(tmp_path, name, files):
     """Write a real on-disk package and put it on ``sys.path``.
 
