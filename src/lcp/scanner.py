@@ -439,32 +439,45 @@ def scan_module(
         if public_names is not None and name not in public_names:
             continue
 
-        # Skip imported modules (they belong to their own package)
-        if inspect.ismodule(obj):
-            continue
+        try:
+            # Classifying/scanning a member can raise even though fetching it
+            # did not: objects with hostile ``__getattribute__`` or lazy setup
+            # (e.g. ``django.conf.settings`` raising ``ImproperlyConfigured`` on
+            # an ``isinstance`` check) blow up here. Skip the member instead of
+            # aborting the whole scan.
 
-        # Check if this symbol is defined in this module
-        obj_module = getattr(obj, "__module__", None)
-        if obj_module and obj_module != module_path:
-            # Skip re-exported symbols (they're documented in their origin module)
-            continue
+            # Skip imported modules (they belong to their own package)
+            if inspect.ismodule(obj):
+                continue
 
-        if inspect.isclass(obj):
-            symbols.append(
-                _scan_class(obj, module_path, include_private, package_root=_package_root)
-            )
-        elif inspect.isfunction(obj):
-            symbols.append(_scan_function(obj, module_path, name))
-        elif _is_constant(name, obj):
-            symbols.append(
-                ScannedSymbol(
-                    name=name,
-                    qualified_name=name,
-                    module_path=module_path,
-                    kind="constant",
-                    summary=f"Constant {name}",
+            # Check if this symbol is defined in this module
+            obj_module = getattr(obj, "__module__", None)
+            if obj_module and obj_module != module_path:
+                # Skip re-exported symbols (documented in their origin module)
+                continue
+
+            if inspect.isclass(obj):
+                symbols.append(
+                    _scan_class(
+                        obj, module_path, include_private, package_root=_package_root
+                    )
                 )
-            )
+            elif inspect.isfunction(obj):
+                symbols.append(_scan_function(obj, module_path, name))
+            elif _is_constant(name, obj):
+                symbols.append(
+                    ScannedSymbol(
+                        name=name,
+                        qualified_name=name,
+                        module_path=module_path,
+                        kind="constant",
+                        summary=f"Constant {name}",
+                    )
+                )
+        except KeyboardInterrupt:
+            raise
+        except Exception:
+            continue
 
     return symbols
 
