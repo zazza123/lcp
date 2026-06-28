@@ -105,7 +105,7 @@ def hostile_isinstance_module():
 
     class Hostile:
         def __getattribute__(self, name):
-            raise RuntimeError("settings are not configured")
+            raise AttributeError("settings are not configured")
 
     mod.settings = Hostile()
     mod.GOOD = 7  # a real public constant the scan SHOULD capture
