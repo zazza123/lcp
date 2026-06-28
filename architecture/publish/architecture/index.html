@@ -2481,7 +2481,7 @@
 <hr />
 <h2 id="branch-and-file-upload">Branch and File Upload<a class="headerlink" href="#branch-and-file-upload" title="Permanent link">&para;</a></h2>
 <p><strong>Functions:</strong> <code>_create_branch()</code> and <code>_upload_manifest()</code> in <code>src/lcp/publish.py</code></p>
-<p>Branch creation reads the SHA of the fork's <code>main</code> branch head, then creates a new ref at <code>refs/heads/lcp/add/{name}/{version}</code>. The branch naming convention prevents collisions between different packages and versions.</p>
+<p>Branch creation reads the SHA of the fork's <code>main</code> branch head, then creates a new ref at <code>refs/heads/lcp/add/{slug}/{version}</code>, where <code>{slug}</code> is the canonical, hyphenated package name (see Registry Path Convention below). The branch naming convention prevents collisions between different packages and versions.</p>
 <p>File upload uses the GitHub Contents API to commit the manifest directly to the branch. The manifest JSON is first gzip-compressed and then Base64-encoded before submission, as required by the API. The commit message follows the format <code>Add {name} v{version} LCP manifest</code>.</p>
 <hr />
 <h2 id="pull-request-structure">Pull Request Structure<a class="headerlink" href="#pull-request-structure" title="Permanent link">&para;</a></h2>
@@ -2497,15 +2497,15 @@
 <tbody>
 <tr>
 <td><strong>Title</strong></td>
-<td><code>[new_manifest] Add {name} v{version} ({language})</code></td>
+<td><code>NEW: Manifest {name} {version} ({language})</code></td>
 </tr>
 <tr>
 <td><strong>Labels</strong></td>
-<td><code>new_manifest</code>, <code>{language}</code></td>
+<td><code>new_manifest</code>, <code>lcp-publish</code>, <code>{language}</code></td>
 </tr>
 <tr>
 <td><strong>Branch</strong></td>
-<td><code>lcp/add/{name}/{version}</code> on the user's fork</td>
+<td><code>lcp/add/{slug}/{version}</code> on the user's fork</td>
 </tr>
 <tr>
 <td><strong>Target</strong></td>
@@ -2514,14 +2514,14 @@
 </tbody>
 </table>
 <p>The PR body is built by <code>_build_pr_body()</code> and contains a metadata table (package name, version, language, symbol count, schema version), the manifest file path within the registry, requested labels, generation details (SDK version and schema version), and a checklist confirming the manifest was generated, validated, and placed in the correct path.</p>
-<p>Label application is best-effort via <code>_try_add_labels()</code> — contributors typically lack write access to the upstream registry, so label failures are silently ignored. The PR title includes the <code>[new_manifest]</code> prefix and the language, making it filterable even without labels.</p>
+<p>Label application is best-effort via <code>_try_add_labels()</code> — contributors typically lack write access to the upstream registry, so label failures are silently ignored. The <code>lcp-publish</code> label marks PRs opened automatically by the publish command, distinguishing them from manual contributions. The <code>NEW: Manifest</code> title prefix and the language keep PRs filterable even when labels cannot be applied.</p>
 <hr />
 <h2 id="registry-path-convention">Registry Path Convention<a class="headerlink" href="#registry-path-convention" title="Permanent link">&para;</a></h2>
 <p>Manifests are stored in the registry using a sharded path:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz
 </span></code></pre></div>
-<p>The <code>{first_letter}</code> segment is the lowercase first character of the package name (e.g. <code>r</code> for <code>requests</code>, <code>n</code> for <code>numpy</code>). This sharding ensures no directory in the registry exceeds a manageable number of entries, preventing directory-width problems as the registry grows.</p>
-<p>All manifests are stored as gzip-compressed JSON (<code>.lcp.json.gz</code>). The sharded path and <code>.gz</code> extension match the convention used by <code>_fetch_from_registry()</code> in <code>src/lcp/mcp_server.py</code>, ensuring that published manifests are immediately consumable by the MCP server's registry fallback.</p>
+<p>The <code>{slug}</code> segment is the package name normalized by <code>normalize_package_name()</code> in <code>src/lcp/naming.py</code>: runs of <code>.</code>, <code>-</code>, and <code>_</code> collapse to a single <code>-</code> and the result is lowercased (PEP 503-style). This is why a package imported as <code>google.adk</code> is stored under <code>g/google-adk/</code> rather than <code>g/google.adk/</code>. The <code>{first_letter}</code> segment is the first character of that slug (e.g. <code>r</code> for <code>requests</code>, <code>g</code> for <code>google-adk</code>). This sharding ensures no directory in the registry exceeds a manageable number of entries, preventing directory-width problems as the registry grows.</p>
+<p>All manifests are stored as gzip-compressed JSON (<code>.lcp.json.gz</code>). The same slug and sharding are used by <code>_fetch_from_registry()</code> in <code>src/lcp/mcp_server.py</code>, ensuring that published manifests are immediately consumable by the MCP server's registry fallback — a manifest written to <code>g/google-adk/</code> is also read from there.</p>
 <p>For example, <code>requests</code> version <code>2.31.0</code> is stored at:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>manifests/python/r/requests/2.31.0.lcp.json.gz
 </span></code></pre></div>
@@ -2532,7 +2532,7 @@
 <li><a href="../">Registry Publish Overview</a> - CLI usage, Python API, and feature integration</li>
 </ul>
 <hr />
-<p><strong>Last Updated:</strong> March 2026
+<p><strong>Last Updated:</strong> June 2026
 <strong>Status:</strong> Implemented</p>
 
 

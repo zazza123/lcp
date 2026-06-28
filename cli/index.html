@@ -2482,7 +2482,7 @@
 <tr>
 <td><code>--registry TEXT</code></td>
 <td>—</td>
-<td>Base URL of an LCP registry used as fallback when local scanning fails. Manifests are fetched from <code>{registry}/manifests/{language}/{name}/{version}.lcp.json</code>.</td>
+<td>Base URL of an LCP registry used as fallback when local scanning fails. Manifests are fetched from <code>{registry}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz</code>, where <code>{slug}</code> is the hyphenated package name (<code>google.adk</code> → <code>google-adk</code>).</td>
 </tr>
 </tbody>
 </table>

@@ -2410,9 +2410,9 @@
 <ul>
 <li>Scans an installed Python package and generates a validated LCP manifest in a single command</li>
 <li>Forks the registry repository automatically (or reuses an existing fork)</li>
-<li>Uploads the manifest <strong>gzip-compressed</strong> to the canonical sharded registry path (<code>manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz</code>)</li>
+<li>Uploads the manifest <strong>gzip-compressed</strong> to the canonical sharded registry path (<code>manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz</code>), where <code>{slug}</code> is the hyphenated package name (e.g. <code>google.adk</code> → <code>google-adk</code>)</li>
 <li>Creates a pull request with structured metadata table, checklist, and generation details</li>
-<li>Applies <code>new_manifest</code> and <code>{language}</code> labels to the PR (best-effort)</li>
+<li>Applies <code>new_manifest</code>, <code>lcp-publish</code>, and <code>{language}</code> labels to the PR (best-effort)</li>
 <li>Supports <code>--dry-run</code> to preview the submission without creating a PR</li>
 <li>Accepts an existing manifest file via <code>--file</code> instead of scanning</li>
 <li>Token can be provided via <code>--token</code>, <code>LCP_GITHUB_TOKEN</code>, or <code>GITHUB_TOKEN</code> environment variable</li>
@@ -2445,6 +2445,11 @@
 <td><code>PublishError</code></td>
 <td><code>src/lcp/publish.py</code></td>
 <td>Exception raised when any step of the publish workflow fails</td>
+</tr>
+<tr>
+<td><code>normalize_package_name()</code></td>
+<td><code>src/lcp/naming.py</code></td>
+<td>Normalizes a package name to its canonical hyphenated registry slug</td>
 </tr>
 <tr>
 <td>CLI <code>publish</code> command</td>

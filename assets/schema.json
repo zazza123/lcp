@@ -32,7 +32,7 @@
             "name": { "type": "string" },
             "version": {
               "type": "string",
-              "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+.][0-9A-Za-z.-]+|[a-zA-Z][0-9A-Za-z.-]*)?$"
+              "pattern": "^\\d+(?:\\.\\d+)*(?:[-+.][0-9A-Za-z.-]+|[a-zA-Z][0-9A-Za-z.-]*)?$"
             },
             "language": { "type": "string" },
             "runtime_language": { "type": ["string", "null"] },

@@ -2715,7 +2715,7 @@
 </tr>
 <tr>
 <td><code>--registry</code> URL provided</td>
-<td>When both cache and live scan fail, the manifest is fetched from the remote registry using the sharded path <code>{registry}/manifests/{language}/{first_letter}/{name}/{version}.lcp.json.gz</code></td>
+<td>When both cache and live scan fail, the manifest is fetched from the remote registry using the sharded path <code>{registry}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz</code>, where <code>{slug}</code> is the hyphenated package name (<code>google.adk</code> → <code>google-adk</code>). When no version is known, the package's <code>latest.json</code> pointer is read to resolve the canonical manifest file</td>
 </tr>
 </tbody>
 </table>

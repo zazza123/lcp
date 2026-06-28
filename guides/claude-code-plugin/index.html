@@ -2564,12 +2564,20 @@
 <td>Guides Claude on when and how to use LCP tools for library research</td>
 </tr>
 <tr>
+<td><strong><code>lcp-configure</code> skill</strong></td>
+<td>Walks through setting up or repairing <code>.lcp.json</code>; triggers automatically when the MCP server won't start or a library won't resolve</td>
+</tr>
+<tr>
 <td><strong><code>/lcp:resolve &lt;pkg&gt;</code></strong></td>
 <td>Slash command: resolve a library and get a summary of its public API</td>
 </tr>
 <tr>
 <td><strong><code>/lcp:scan &lt;pkg&gt;</code></strong></td>
 <td>Slash command: scan a package and produce a structured module and symbol overview</td>
+</tr>
+<tr>
+<td><strong><code>/lcp:configure</code></strong></td>
+<td>Slash command: guided, step-by-step <code>.lcp.json</code> setup with verification; pass a symptom to jump straight to repair</td>
 </tr>
 <tr>
 <td><strong>Library explorer subagent</strong></td>
@@ -2667,6 +2675,15 @@ and propagated into <code>.lcp.json</code>.</p>
 <p>The skills, commands, and subagent are guidance and convenience layers on top of the MCP server — they don't change what the server does, they change how Claude uses it.</p>
 <h2 id="configuration-lcpjson">Configuration: <code>.lcp.json</code><a class="headerlink" href="#configuration-lcpjson" title="Permanent link">&para;</a></h2>
 <p>The plugin reads a <code>.lcp.json</code> file to determine how to launch <code>lcp</code> for the current project. The <code>SessionStart</code> hook <strong>auto-generates</strong> this file from your <code>pluginConfigs</code> settings when it is absent; after that, edit the file directly.</p>
+<div class="admonition tip">
+<p class="admonition-title">Guided setup</p>
+<p>Prefer not to hand-edit JSON? Run <strong><code>/lcp:configure</code></strong> for a step-by-step
+wizard that fills in the fields below and verifies the server actually
+starts. It also runs in <strong>repair mode</strong> — pass a symptom
+(<code>/lcp:configure server won't start</code>) and it fixes just the broken piece.
+The <code>lcp-configure</code> skill triggers on its own when the server fails to start
+or a library won't resolve.</p>
+</div>
 <h3 id="locations">Locations<a class="headerlink" href="#locations" title="Permanent link">&para;</a></h3>
 <p>The wrapper checks these paths in order, using the first that exists:</p>
 <ol>
@@ -2721,6 +2738,13 @@ target your project's environment so private dependencies are reachable. Step 5 
 is a fallback that covers publicly registered packages only.</p>
 </div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Fastest fix: <code>/lcp:configure</code></p>
+<p>Most issues below are config or launcher-path problems. Running
+<strong><code>/lcp:configure</code></strong> (or just describing the symptom to Claude) walks the
+<code>lcp-configure</code> skill through diagnosing and fixing them for you, then
+verifies the result.</p>
+</div>
 <div class="admonition warning">
 <p class="admonition-title"><code>lcp</code> not found or MCP server returns <code>-32000</code></p>
 <p>The wrapper tries six resolution strategies (see <a href="#launcher-resolution-order">Launcher resolution order</a> above).
