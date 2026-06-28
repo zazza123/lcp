@@ -518,11 +518,12 @@ def _iter_submodules(package: ModuleType) -> list[ModuleType]:
                 submod = importlib.import_module(module_info.name)
             except KeyboardInterrupt:
                 raise
-            except BaseException:
-                # Skip modules that fail to import. A bare ``except Exception``
-                # is not enough: submodules may raise ``BaseException`` at import
-                # (``SystemExit`` from a CLI ``main()``, pytest's ``Skipped``
-                # from ``importorskip``), which would otherwise abort the scan.
+            except SystemExit:
+                # Skip modules that terminate at import time (for example CLI-style
+                # modules that call ``sys.exit()``).
+                continue
+            except Exception:
+                # Skip modules that fail to import with regular exceptions.
                 continue
 
             if submod.__name__ in discovered:
@@ -556,7 +557,9 @@ def _iter_submodules(package: ModuleType) -> list[ModuleType]:
                     namespace_mod = importlib.import_module(module_name)
                 except KeyboardInterrupt:
                     raise
-                except BaseException:
+                except SystemExit:
+                    continue
+                except Exception:
                     continue
 
                 discovered.add(namespace_mod.__name__)
