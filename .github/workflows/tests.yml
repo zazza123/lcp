@@ -34,7 +34,7 @@ jobs:
           python-version: "3.12"
 
       - name: cache python environment
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: cache
         with:
           path: ${{ env.pythonLocation }}
@@ -75,7 +75,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: cache python environment
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: cache
         with:
           path: ${{ env.pythonLocation }}
