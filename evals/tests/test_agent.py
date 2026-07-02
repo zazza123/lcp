@@ -1,6 +1,6 @@
 import json
 
-from harness.agent import MODEL, build_command, parse_stream
+from harness.agent import BUILTIN_TOOLS, MODEL, build_command, parse_stream
 
 STREAM_LINES = [
     json.dumps({"type": "system", "subtype": "init", "tools": ["mcp__lcp__resolve_library"]}),
@@ -57,3 +57,14 @@ class TestBuildCommand:
     def test_web_tools_disallowed(self):
         cmd = build_command("do it", "baseline", None)
         assert "WebFetch" in cmd and "WebSearch" in cmd
+
+    def test_builtin_tools_denied_via_disallowed_not_tools_flag(self):
+        # `--tools ""` strips MCP tools along with built-ins (see Task 10
+        # smoke test); built-ins must instead be blocked individually via
+        # --disallowedTools so MCP tools stay visible to the lcp arm.
+        cmd = build_command("do it", "baseline", None)
+        assert "--tools" not in cmd
+        assert "--disallowedTools" in cmd
+        idx = cmd.index("--disallowedTools")
+        denied = cmd[idx + 1 : idx + 1 + len(BUILTIN_TOOLS)]
+        assert set(denied) == set(BUILTIN_TOOLS)
