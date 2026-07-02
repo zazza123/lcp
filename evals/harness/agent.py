@@ -20,15 +20,25 @@ Requirements:
 """
 
 
+BUILTIN_TOOLS = [
+    "Bash", "Read", "Write", "Edit", "Glob", "Grep",
+    "WebFetch", "WebSearch", "Task", "NotebookEdit", "TodoWrite",
+]
+
+
 def build_command(prompt: str, arm: str, mcp_config: str | None) -> list[str]:
-    """Build the claude CLI command; arms differ ONLY by --mcp-config."""
+    """Build the claude CLI command; arms differ ONLY by --mcp-config.
+
+    Built-in tools (Bash, Read, Write, etc.) are denied via --disallowedTools
+    rather than `--tools ""`: the latter also strips MCP tools from the
+    offered set, which would silently defeat the LCP arm.
+    """
     cmd = [
         "claude", "-p", prompt,
         "--model", MODEL,
         "--output-format", "stream-json", "--verbose",
         "--strict-mcp-config",
-        "--tools", "",
-        "--disallowedTools", "WebFetch", "WebSearch",
+        "--disallowedTools", *BUILTIN_TOOLS,
     ]
     if arm == "lcp":
         if mcp_config is None:
