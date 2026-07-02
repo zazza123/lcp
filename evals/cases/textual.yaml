@@ -1,0 +1,39 @@
+- id: textual-richlog
+  library: textual
+  version: "8.2.8"
+  prompt: >
+    Build a minimal Textual app that displays streaming log lines in a
+    scrollable log widget, with a method that appends one line to the log.
+  checks:
+    required_symbols: ["textual.widgets:RichLog"]
+    forbidden_symbols: ["textual.widgets:TextLog"]
+
+- id: textual-post-message
+  library: textual
+  version: "8.2.8"
+  prompt: >
+    In a Textual app, define a custom message class on a widget and send that
+    message to its parent when a button inside the widget is pressed.
+  checks:
+    required_symbols: ["textual.widget:Widget#post_message"]
+    forbidden_symbols: ["textual.widget:Widget#emit"]
+
+- id: textual-layout
+  library: textual
+  version: "8.2.8"
+  prompt: >
+    Create a Textual app with two panels side by side: a directory tree on the
+    left and a text area on the right.
+  checks:
+    required_symbols: ["textual.containers:Horizontal"]
+    forbidden_symbols: ["textual.views:DockView"]
+
+- id: textual-scroll
+  library: textual
+  version: "8.2.8"
+  prompt: >
+    Create a Textual app showing a list of 100 labelled items inside a
+    vertically scrollable container.
+  checks:
+    required_symbols: ["textual.containers:VerticalScroll"]
+    forbidden_symbols: ["textual.widgets:ScrollView"]
