@@ -1,0 +1,634 @@
+# Agentic Improvements Roadmap
+
+> **How to use this document:** This is the master roadmap, not an executable
+> implementation plan. Each phase below is a self-contained work package that
+> will be executed in its own session. At the start of each phase session:
+> read this document, settle the phase's **Open decisions**, then use
+> `superpowers:writing-plans` to produce the detailed TDD implementation plan
+> (`docs/superpowers/plans/YYYY-MM-DD-phase-N-<name>.md`) from the phase
+> section. After a phase lands, update its **Status** line and the
+> **Eval results log** at the bottom.
+
+**Goal:** Make LCP the most token-efficient, verifiably accurate way for AI
+coding agents to consume Python library APIs — and prove it with a benchmark.
+
+**Strategy (agreed 2026-07-02):** Build the measurement harness first
+(private, cheap), then change interface and manifest content (phases 1–4),
+then infrastructure and distribution (phases 5–7), and only then run and
+publish the full benchmark (phase 8). Everything that changes the manifest
+format or the MCP tool surface happens **before** the registry is populated.
+
+**Ordering rationale:**
+
+1. Without a baseline measurement, improvement claims are guesses (Phase 0).
+2. The MCP tool surface defines what everything else is measured and
+   documented against — change it first (Phases 1–2).
+3. Manifest content changes (aliases, structured docs) must be frozen before
+   mass-publishing manifests, or the registry gets regenerated twice
+   (Phases 3–4 before Phase 7).
+4. Docs describe interface + format, so a full docs pass only pays off once
+   those stop moving (Phase 6). Exception: docs that are *factually wrong
+   today* get fixed immediately (Phase 6a is unblocked from day one).
+5. The published benchmark is the launch asset; it runs on the finished
+   product (Phase 8).
+
+**De-scoping rule (if the timeline slips):** cut from Phase 4 (doctest
+extraction) and Phase 7 (population breadth: 100 libraries instead of 500),
+never from Phases 2–3. A correct interface with less content beats the
+opposite.
+
+## Global constraints
+
+- Python `>=3.10`; core deps stay minimal (`pydantic>=2`, `click>=8`,
+  `jsonschema>=4`, `fastmcp>=2`). New runtime deps need explicit sign-off in
+  the phase's design decision.
+- LCP schema version stays `"1.0"`; all manifest additions must be
+  backward-compatible (additive fields only — `extra="allow"` already
+  guarantees old consumers tolerate them). If a change cannot be additive, it
+  blocks on a `"1.1"` schema decision — flag it, don't improvise.
+- Commits follow the `git-commit-convention` skill; docs follow the
+  `lcp-writing-documentation` skill (architecture vs guides vs API-reference
+  conventions).
+- Every phase ends with: full test suite green (`pytest`), docs updated,
+  `mkdocs build --strict` clean, and (for phases 2–4) an eval-harness run
+  recorded in the results log.
+
+---
+
+## Phase 0 — Eval harness (baseline measurement)
+
+**Status:** not started
+
+**Objective:** A small, private, repeatable benchmark that measures how often
+a coding agent misuses library APIs, with and without the LCP MCP server —
+run it once now to record the baseline before any change.
+
+**Why first:** every subsequent phase claims to reduce hallucination or token
+cost; without a baseline those claims are unfalsifiable, and effort keeps
+flowing to features that don't move the metric.
+
+**Scope (in):**
+- `evals/` top-level directory (not part of the `lcp` package, not shipped in
+  the wheel).
+- 20–30 task cases as YAML/JSON files:
+  `{library, version, prompt, checks}` where checks are
+  `forbidden_symbols` (APIs that don't exist — the hallucination trap),
+  `required_symbols` (the correct API), and optionally a `run` smoke command.
+- Target libraries: lesser-known and/or recently-churned APIs where training
+  data is stale (candidates: `polars`, `httpx`, `textual`, `pydantic` v2
+  migration surface, `fastmcp` itself, one or two niche libs). Avoid
+  requests/numpy-class libraries the model already knows cold.
+- Runner script (`evals/run.py`): invokes `claude -p` (headless) per task,
+  in two configurations (with / without the lcp MCP server configured),
+  captures the generated code, verifies symbol usage **against live
+  introspection** (reuse `lcp.scanner`), and emits a JSON + Markdown report.
+- Metrics: API-misuse count per task, task pass rate, tokens + tool-call
+  count per task (from the transcript).
+- Baseline run: 3 repetitions per configuration, results committed to
+  `evals/results/` and summarized in the log at the bottom of this file.
+
+**Scope (out):** CI integration, dashboards, publishing anything, task-count
+beyond ~30, non-Claude agents (defer to Phase 8).
+
+**Code notes (2026-07-02 review):**
+- LCP arm vs baseline arm: same `claude -p` invocation, the only difference
+  being `--mcp-config` pointing at a config that launches `lcp serve-all`.
+  Disable web tools in both arms, otherwise you measure internet access, not
+  LCP.
+- Use `--output-format json` to get token usage and tool-call counts from
+  the transcript without parsing text.
+- Symbol verification should reuse `lcp.scanner.scan_package` (or plain
+  `importlib` + `getattr` walks) against the *pinned* library version — a
+  regex-only check misses `obj.method()` misuse on returned objects, which
+  is exactly the hallucination class LCP claims to fix.
+
+**Critical caveat (measurement noise):** agents are stochastic; with ~30
+tasks, a single run cannot distinguish a 5% delta from noise. Mitigation:
+3 repetitions minimum, report per-task misuse *counts* (not just pass/fail),
+and treat only large effects (>20% relative) as signal during phases 2–4.
+The gate between phases is "no regression + plausible improvement", not
+statistical proof — that's what Phase 8 is for.
+
+**Open decisions (settle at phase start):**
+- Exact task list and library set.
+- Whether checks run as static verification only (grep generated code for
+  symbol usage, verify via introspection) or also execute the code. Static
+  only is acceptable for the baseline.
+- Which model/agent config to pin for comparability across phases.
+
+**Exit criteria:** `evals/run.py` produces a report end-to-end; baseline
+recorded in the results log; a `evals/README.md` documents how to re-run.
+
+---
+
+## Phase 1 — "V2 surface" design spec (interface + manifest additions)
+
+**Status:** not started
+
+**Objective:** One short design document
+(`docs/superpowers/specs/YYYY-MM-DD-v2-surface-design.md`) that settles,
+*together*, every decision phases 2–4 implement — so the tool surface and the
+manifest additions are designed as a coherent whole and the schema is touched
+once, not three times.
+
+**Why a separate phase:** phases 2, 3 and 4 are one product decision wearing
+three implementation hats. Designing them independently risks e.g. an alias
+representation that the consolidated `get_symbol` can't serve efficiently.
+
+**Decisions the spec must settle:**
+
+*MCP surface (feeds Phase 2):*
+- Final tool set — working proposal, to be confirmed:
+  1. `resolve_library(name, version?)`
+  2. `search(query, library?, kind?, limit?)` — ranked, capped, the primary
+     entry point
+  3. `get_symbol(ids: list[str], library?)` — batch; classes include members
+     inline (summaries), functions include full signature + structured docs
+  4. `get_overview(library?)` — manifest metadata + module tree with symbol
+     counts (replaces `get_manifest` + `list_modules`; decide whether
+     `list_symbols` survives as a browse fallback or folds into `search`
+     with empty query + module filter)
+- Removals: `get_usage_guide` (content moves to the MCP `instructions` field
+  and tool descriptions), `get_suggestions` (bag-of-words matcher; an LLM
+  with good `search` beats it), `explore_return_type` (its useful part —
+  "return type X is class `mod:X`" — folds into `get_symbol`'s
+  `usage_hints`).
+- Whether `library` becomes required when ≥2 libraries are loaded (recommended:
+  yes, return a structured error listing loaded libraries) vs keeping the
+  implicit last-resolved default.
+- Response shape and hard caps: search default `limit=20` with
+  `"truncated": true` signal; a max-bytes guard on every list-returning tool.
+- Error convention: FastMCP `ToolError` vs `{"error": ...}` dicts — pick one,
+  apply everywhere (recommended: structured error dicts with a stable shape,
+  since agents recover from data better than from protocol errors — but
+  decide and document).
+- Single-library `lcp serve` mode: keep in sync with the same surface
+  (thin wrapper), or deprecate in favor of `serve-all --expose`? (Recommended:
+  the latter; one surface to maintain and document.)
+
+*Manifest additions (feeds Phases 3–4):*
+- Alias representation (recommended: additive `aliases: list[str]` field on
+  `Symbol`, IDs stay at definition site, `LCPIndex` indexes aliases too;
+  alternative: canonical-ID-at-reexport-site — rejected unless the spec
+  review finds ID stability problems with aliases).
+- Structured docstring fields: `Param.description`, `Signature.raises`,
+  `semantics.examples` populated from parsed docstrings; which docstring
+  styles (Google, NumPy, reST) and which parser dependency (see Phase 4).
+- Version bump policy: confirm all changes are additive under schema `"1.0"`,
+  or explicitly open the `"1.1"` question.
+
+**Exit criteria:** spec merged; each open decision above has a written
+answer with a one-line rationale; phases 2–4 sections of this roadmap
+updated if the spec contradicts them.
+
+---
+
+## Phase 2 — MCP consolidation
+
+**Status:** not started — blocked by Phase 1
+
+**Objective:** Implement the tool surface decided in Phase 1 in
+`src/lcp/mcp_server.py`; update the plugin skills to match.
+
+**Scope (in):**
+- Rework `create_universal_server` (and `create_server` per the Phase 1
+  decision) to the new tool set: ranked+capped `search`, batch `get_symbol`
+  with inline class members, `get_overview`, `instructions` field on the
+  FastMCP server.
+- Search ranking (no new deps): exact name match > name prefix > name
+  substring > summary substring > description substring; stable
+  tie-break by ID. Cap + truncation flag.
+- Consistent error shape everywhere; explicit error when `library` is
+  ambiguous (per Phase 1 decision).
+- Remove `mcp.tool_funcs` attribute-stuffing: expose tool callables through a
+  proper return type or module-level registry that tests import.
+- Update `plugin/lcp/skills/lcp-universal/SKILL.md`,
+  `plugin/lcp/skills/lcp-usage/SKILL.md`, `plugin/lcp/commands/*.md`, and
+  `plugin/lcp/agents/library-explorer.md` to the new workflow (the
+  recommended path should be ≤3 calls: resolve → search → get_symbol).
+- Tests: rewrite `tests/test_mcp_server.py` around the new surface; add
+  ranking, cap/truncation, batch, ambiguous-library, and error-shape cases.
+
+**Scope (out):** manifest format changes (Phase 3–4), subprocess scanning
+(Phase 5), docs site pages (Phase 6 — but keep docstrings accurate, they
+feed the API reference).
+
+**Code notes (2026-07-02 review):**
+- `search_symbols` is an unbounded O(n) substring scan, and `list_symbols()`
+  with no filters returns every symbol in the library
+  (`src/lcp/mcp_server.py:636`, `:1223`, `:549`, `:1124`) — the caps fix a
+  real context-blowout, not a theoretical one.
+- `get_usage_guide` is duplicated verbatim in both servers (`:461`, `:1005`);
+  its content maps 1:1 onto the `FastMCP(name, instructions=...)` constructor
+  argument. A comment at `:1472` says the project runs FastMCP 3.x — verify
+  `instructions` support in the pinned version before relying on it.
+- The implicit default library is `MultiLibraryIndex._default`, silently
+  reassigned by every `add()` (`:65-68`) — that is the race behind the
+  ambiguous-`library` decision.
+- `explore_return_type` matches classes via `type_part.endswith(class_name)`
+  (`:766`, `:1372`) → false positives (e.g. `PurePath` matching a `Path`
+  lookup). The salvageable behavior is resolving `returns` to a class ID
+  inside `get_symbol`'s `usage_hints`; the
+  `return_type.startswith(("str", "int", ...))` suggestion heuristic
+  (`:630`) should not survive the fold.
+- The single-library server duplicates ~450 lines of the universal one —
+  whatever the `lcp serve` keep/deprecate decision, deduplicate the
+  implementations (one tool-registration function parameterized by an index
+  provider).
+- Today's error shapes are inconsistent: dict-returning tools emit
+  `{"error": ...}`, list-returning tools emit `[{"error": ...}]`.
+- `mcp.tool_funcs` (`:1474-1484`) is also load-bearing for `preload` —
+  replacing it changes the preload loop too.
+
+**Files:** `src/lcp/mcp_server.py`, `src/lcp/cli.py` (serve/serve-all
+options), `tests/test_mcp_server.py`, `tests/test_serve_all_expose.py`,
+`plugin/lcp/skills/*`, `plugin/lcp/commands/*`, `plugin/lcp/agents/*`.
+
+**Exit criteria:** tests green; eval harness re-run recorded (expect: fewer
+tool calls and tokens per task at equal or better accuracy); plugin smoke
+test — `lcp serve-all` under Claude Code resolves a library and answers a
+signature question through the new surface in ≤3 tool calls.
+
+---
+
+## Phase 3 — Re-export aliases
+
+**Status:** not started — blocked by Phase 1
+
+**Objective:** A symbol re-exported at package level is findable under the
+name users actually import: `requests.get` resolves even though it is defined
+in `requests.api`.
+
+**Why:** today `scan_module` skips any object whose `__module__` differs from
+the scanning module (scanner.py, re-export check), so the most user-visible
+names — package-root re-exports listed in `__all__` — are reachable only
+under their definition path. Agents think in documented import paths; this is
+the single most expensive usability bug.
+
+**Scope (in):**
+- Scanner: when a module (especially a package `__init__`) re-exports an
+  object (`__module__` differs but the name is in `__all__`, or the module is
+  the package root), record an alias `(module_path, name)` on the scanned
+  symbol instead of dropping it silently. Definition site remains canonical.
+- Generator: emit the additive `aliases` field per the Phase 1 decision.
+- `LCPIndex._build_indexes`: index aliases so `get_symbol("requests:get")`
+  and `search("get")` both hit; alias hits marked in responses
+  (`"resolved_via_alias": "requests.api:get"`-style, exact shape per Phase 1).
+- Edge cases that must have tests: `__all__` re-export, star re-export
+  without `__all__`, aliased name (`from x import y as z`), class re-export
+  whose members must be reachable via both IDs, name collisions (two modules
+  re-exporting different objects under the same name), and the existing
+  skip-external-modules behavior must not regress.
+- Regenerate `tests/sample_module.py` fixtures / add a re-exporting fixture
+  package under `tests/`.
+
+**Scope (out):** rewriting IDs to re-export sites; alias support in the
+registry `latest.json` (nothing changes there — aliases live inside the
+manifest).
+
+**Code notes (2026-07-02 review):**
+- The exact skip is `src/lcp/scanner.py:453-457`: any object with
+  `obj.__module__ != module_path` → `continue`. The `__all__` allowlist
+  computed at `:428-431` is only used to *filter*, never to record the
+  re-export — that is the hook point.
+- Concrete repro: `requests.get.__module__ == "requests.api"`, so a scan of
+  `requests` yields only `requests.api:get`.
+- IDs are assembled in `generator._build_symbol_id`
+  (`src/lcp/generator.py:51-63`) as `module_path:qualified_name`; modules use
+  an empty entity path (`"pkg:"`) — alias IDs must follow the same grammar.
+- Class-member lookups key on the `#`-prefix (`LCPIndex._build_indexes`,
+  `src/lcp/mcp_server.py:43-46`): if `requests:Session` becomes an alias,
+  members must be reachable as `requests:Session#get` too — decide whether
+  the index maps alias-prefixed member IDs to canonical ones or materializes
+  alias entries per member.
+- Aliasing must not defeat the id-based `_visited` module dedup nor trigger
+  re-scans — record aliases during the existing pass, don't add a second one.
+
+**Files:** `src/lcp/scanner.py`, `src/lcp/generator.py`,
+`src/lcp/models.py` (additive `Symbol.aliases`), `src/lcp/mcp_server.py`
+(index + lookup), `src/lcp/schema.json` + `docs/assets/schema.json`,
+`tests/test_scanner.py`, `tests/test_generator.py`,
+`tests/test_mcp_server.py`, new fixture package.
+
+**Exit criteria:** `get_symbol("requests:get")` (or equivalent fixture)
+resolves; eval harness re-run recorded — this phase is the one expected to
+show the clearest accuracy delta; schema files updated and `lcp validate`
+accepts both old and new manifests.
+
+---
+
+## Phase 4 — Structured docstrings + examples
+
+**Status:** not started — blocked by Phase 1
+
+**Objective:** Populate the fields that differentiate LCP from "type stubs in
+JSON": per-parameter descriptions, `raises`, and usage examples extracted
+from docstrings and doctests.
+
+**Scope (in):**
+- Docstring parsing (Google + NumPy styles minimum) → `Param.description`,
+  `Signature.raises` (`RaisesEntry.type` + `condition`), `returns`
+  description. Dependency decision from Phase 1: `docstring_parser` is the
+  obvious candidate (~pure-python, small); if rejected, a minimal in-house
+  Google-style parser is acceptable but must be scoped to sections
+  (`Args/Returns/Raises/Examples`) only — no attempt at full reST.
+- Doctest / `Examples:` section extraction → `semantics.examples`
+  (`Example.code` + `description`). Use the stdlib `doctest` parser for
+  `>>>` blocks; fenced/indented code in `Examples:` sections taken verbatim.
+- Generator wires parsed structures into the models; `description` keeps the
+  *unparsed remainder* so no information is lost when parsing fails.
+- Parsing must be fail-open: any parser exception falls back to today's
+  behavior (summary + raw description). The scanner's resilience guarantees
+  (hostile packages) must not regress — parse at generator level, not during
+  member iteration.
+- `get_symbol` response includes the structured fields; check response size
+  on a heavy real library (e.g. pandas `DataFrame`) against the Phase 2 caps.
+- Tests: parametrized docstring fixtures (Google, NumPy, malformed, empty,
+  non-string `__doc__`), doctest extraction, generator integration, MCP
+  response shape.
+
+**Scope (out):** AI-generated docs (the `ai/` module is a separate product
+surface and stays untouched), reST/Sphinx field lists, cross-reference
+resolution inside docstrings, `effects`/`stability` inference (revisit after
+Phase 8 with data).
+
+**De-scope line (pre-agreed):** if the phase runs long, ship docstring
+parsing without doctest extraction and move examples to a follow-up.
+
+**Code notes (2026-07-02 review):**
+- No model changes needed: `Param.description`, `RaisesEntry`, `Example`,
+  `Semantics.examples` all already exist in `src/lcp/models.py` — the
+  generator just never fills them (`src/lcp/generator.py:98` hardcodes
+  `raises=None`, `:110` hardcodes `examples=None`).
+- `scanner._parse_docstring` (`src/lcp/scanner.py:70-100`) keeps the entire
+  post-summary remainder as `description` and guards non-string `__doc__`
+  (sympy exposes it as a property) — preserve both behaviors.
+- Merge docstring params with introspected params *by name*; introspection
+  wins on existence and type. Docstrings routinely document renamed or
+  removed params — an unmatched docstring entry must never invent a `Param`.
+- Complex defaults are serialized as the placeholder `"..."`
+  (`src/lcp/generator.py:77`); the docstring often states the real default in
+  prose — keeping that prose in `Param.description` is the cheap fix.
+
+**Files:** `src/lcp/generator.py` (or a new `src/lcp/docstrings.py` —
+decide in the phase plan), `src/lcp/models.py` (nothing new expected —
+fields exist), `pyproject.toml` (dependency, if approved),
+`tests/test_generator.py`, new `tests/test_docstrings.py`.
+
+**Exit criteria:** on a real library scan, ≥X% of documented params carry
+descriptions (set X from a quick pre-measurement, don't guess); eval re-run
+recorded; manifest size growth measured and reported (gzip) — if manifests
+balloon >2×, revisit what `get_symbol` inlines vs. lazy-loads.
+
+---
+
+## Phase 5 — Subprocess scanning
+
+**Status:** not started — independent (can run any time after Phase 2)
+
+**Objective:** `resolve_library` no longer imports arbitrary package code
+into the MCP server process, and can scan packages installed in a *different*
+interpreter/venv.
+
+**Why:** import-based scanning executes package code at import time inside
+the agent-facing server (side effects, crashes take the server down, heavy
+imports block the tool call), and today the server can only see its own
+environment — the #1 real-world friction (project venv ≠ lcp venv).
+
+**Scope (in):**
+- A machine-mode scan entry point: `lcp scan <pkg> --json -` (or
+  `python -m lcp.scanjson <pkg>`) that writes the LCP document to stdout,
+  errors as structured JSON to stderr, exit codes distinguishing
+  import-failure / scan-failure.
+- `resolve_library_document` gains a subprocess path: configurable
+  interpreter (from `.lcp.json` `python` field, already plumbed through the
+  plugin's `serve.sh`), timeout (default ~60s, configurable), captured
+  stderr surfaced in the error message.
+- In-process scanning remains available as a fallback/option
+  (`--scan-mode inprocess|subprocess`, default subprocess) — needed for
+  environments where spawning is restricted, and for tests.
+- The error message for "installed in a different environment" now has a
+  real remedy: the server *uses* the configured interpreter instead of just
+  mentioning it.
+- Tests: subprocess happy path, timeout, crashing package (fixture that
+  `sys.exit`s or segfault-simulates via exception), interpreter-not-found,
+  fallback mode.
+
+**Scope (out):** sandboxing beyond process isolation (no seccomp/containers —
+document the residual trust model honestly instead), Windows-specific
+launcher work beyond `sys.executable` defaults.
+
+**Critical note:** this phase adds a second code path for the same operation.
+Keep the subprocess protocol *identical* to the public document format (an
+LCP JSON on stdout) so there is no private IPC format to version.
+
+**Code notes (2026-07-02 review):**
+- `resolve_library_document` (`src/lcp/mcp_server.py:310-414`) is the single
+  choke point: cache read/write, the three-step resolution order, and the
+  error wording all live there. The subprocess path must preserve the cache
+  side effect.
+- `.lcp.json`'s `python` field is currently consumed by the plugin's
+  `serve.sh` (`plugin/lcp/bin/serve.sh:39-69`) to pick the interpreter that
+  *runs the server*. Phase 5 needs the interpreter whose environment *gets
+  scanned* — usually the same, but decide explicitly whether `python` does
+  double duty or a `scan_python` field is added; conflating them silently is
+  how someone ends up scanning the wrong venv.
+- FastMCP runs sync tools on a worker thread, but the CPython import lock +
+  GIL still stall concurrent tool calls during a heavy in-process import —
+  the subprocess is about responsiveness as much as crash isolation.
+- Suggested exit-code contract: 0 = ok, 3 = import failure, 4 = scan
+  failure; stderr carries one JSON object `{"type": ..., "message": ...}`.
+
+**Files:** `src/lcp/cli.py`, `src/lcp/mcp_server.py`
+(`resolve_library_document`), `plugin/lcp/bin/serve.sh` (pass-through of the
+interpreter config — mostly already there), `tests/test_mcp_server.py`, new
+`tests/test_subprocess_scan.py`.
+
+**Exit criteria:** a package installed only in a second venv resolves via
+`.lcp.json` `python` config; a package whose import raises `SystemExit`
+degrades to a clean error without killing the server; scan of a heavy
+library doesn't freeze concurrent tool calls.
+
+---
+
+## Phase 6 — Documentation truth + positioning
+
+**Status:** 6a unblocked now; 6b blocked by Phases 2–4
+
+**Objective:** Docs that validate, one consistent story, and explicit
+positioning against the alternatives every evaluator has in mind.
+
+**Phase 6a — factual fixes (do immediately, ~1 hour, any session):**
+- `docs/introduction.md` + `docs/spec/examples.md`: examples use a flat
+  symbol shape (`summary`, `signature` string, `stability: "stable"`,
+  `members[]`) that does **not** validate against the normative spec
+  (map keyed by ID, `semantics.summary`, `signatures[]`, stability object).
+  Rewrite the examples to validate; add a CI-adjacent test that runs
+  `lcp validate` on every JSON example embedded in docs.
+- `docs/quickstart.md`: `jq '.symbols[0]'` is wrong for a map — fix.
+- `docgen` story: README documents a CLI with certain flags, the
+  architecture doc documents different flags, the guide says "planned",
+  `docs/cli.md` omits it. Establish the truth from `src/lcp/cli.py` and make
+  all four agree.
+- README/introduction: soften "language-agnostic" claims to "the *format* is
+  language-agnostic; the shipped scanner is Python" wherever capability is
+  implied.
+- Rot guard: add `tests/test_docs_examples.py` that extracts fenced JSON
+  blocks from `docs/**/*.md` and runs them through `lcp.validator`, so
+  examples cannot silently drift from the schema again.
+
+**Phase 6b — the positioning + refresh pass (after 2–4):**
+- Rewrite MCP guide + plugin guide around the consolidated surface.
+- New short page (or README section): **LCP vs Context7 vs llms.txt vs
+  "agent reads site-packages"** — honest table. LCP's defensible claims:
+  introspected ground truth of the *installed* version, offline, private
+  packages, token-dense structured responses. Do not claim narrative-docs
+  superiority over Context7; that's not what LCP is.
+- Rename decision for the `.lcp.json` config-vs-manifest collision
+  (recommendation: config becomes `.lcp-config.json`, with a deprecation
+  fallback in `serve.sh` and the plugin userConfig seeding). This is a
+  breaking-ish plugin change — do it here, while plugin adoption is small.
+- Architecture docs updated for phases 2–5 per `lcp-writing-documentation`.
+
+**Exit criteria:** `mkdocs build --strict` green; every embedded example
+validates; a newcomer reading only the README can state in one sentence when
+to choose LCP over Context7.
+
+---
+
+## Phase 7 — Registry: CI verification + pre-population
+
+**Status:** not started — blocked by Phases 3–4 (manifest format frozen)
+
+**Objective:** The registry verifies submissions automatically and ships
+pre-built manifests for the top PyPI libraries, so `serve-all --registry`
+has answers on day one.
+
+**Important:** most of this work lands in the **registry repo**
+(`zazza123/lcp-registry`), not this SDK repo. Plan sessions accordingly.
+
+**Scope (in):**
+- Registry CI (GitHub Action on PR): for each added manifest, install the
+  claimed `(package, version)` from PyPI in an isolated env, regenerate the
+  manifest with pinned lcp version, and compare (symbol-ID set equality +
+  spot-check of signatures; allow a documented tolerance for
+  environment-dependent symbols). Green check replaces manual review as the
+  trust mechanism.
+- `lcp validate` + schema check + path-layout check (`manifests/{lang}/
+  {letter}/{slug}/{version}.lcp.json.gz` + `latest.json` update) in the same
+  action.
+- Pre-population: batch script (this repo, `scripts/populate_registry.py` or
+  in the registry repo) that takes a list of top-PyPI packages, scans each in
+  an isolated venv (Phase 5 machinery), and opens batched PRs via the
+  existing `publish.py` flow. Target: top 100 by download count that aren't
+  stdlib-trivial; 500 only if the pipeline proves cheap.
+- Idempotent publish: `publish.py` currently fails on re-run for the same
+  `(package, version)` (branch/file already exist) — make it upsert or
+  cleanly no-op; needed for batch operation.
+- Version-mismatch honesty in the server: when the cache/registry serves a
+  version different from the installed one (`_find_any_cached`, `latest.json`
+  fallback), the response carries `"version_mismatch": true` + both versions.
+
+**Scope (out):** registry hosting beyond raw.githubusercontent (CDN, API
+service — revisit only if adoption demands it), signing/attestation
+(document as known limitation), non-Python languages.
+
+**Critical caveat:** CI that installs arbitrary PyPI packages executes
+arbitrary code — the Action must run with no secrets exposed, on isolated
+runners, with network egress documented. Don't hand-wave this in the phase
+plan.
+
+**Code notes (2026-07-02 review):**
+- Non-idempotence, concretely: `_create_branch` POSTs a git ref and fails if
+  the branch already exists (`src/lcp/publish.py:196-233`);
+  `_upload_manifest` PUTs contents without a `sha`, which GitHub rejects for
+  pre-existing files (`:236-274`). Upsert = GET the file's sha first +
+  tolerate an existing branch.
+- The current publish flow uploads only the manifest file — it does **not**
+  update the package's `latest.json` pointer (shape:
+  `{"version": ..., "manifest": "X.lcp.json.gz"}`, validated by
+  `_fetch_from_registry` at `src/lcp/mcp_server.py:280-286`). Check how the
+  registry repo maintains `latest.json` (bot? CI?); the batch publisher must
+  handle it, or population produces packages the server cannot resolve
+  without an exact version.
+- Version-mismatch sources to flag in responses: `_find_any_cached`
+  (`src/lcp/mcp_server.py:147-159`, returns *any* cached version) and the
+  registry-`latest` fallback taken when `_installed_version` returns None.
+- The batch script must use `lcp.naming.normalize_package_name` for
+  slug/sharding — the same helper `publish.py` and `_fetch_from_registry`
+  already share; do not reimplement it.
+
+**Exit criteria:** a manually-submitted wrong manifest (e.g. a function
+signature edited to not match the real package) is rejected by CI; top-100 manifests published; a fresh machine with *no*
+local package installed gets a useful `resolve_library("polars")` answer via
+registry in <2s.
+
+---
+
+## Phase 8 — Full benchmark + publication
+
+**Status:** not started — blocked by all previous phases
+
+**Objective:** Run the grown-up version of the Phase 0 harness on the
+finished product and publish results as the launch asset.
+
+**Scope (in):**
+- Expand task set (target 75–100 tasks), add at least one non-Claude agent
+  configuration if cheap (e.g. an OpenAI-tool-use harness) to preempt "works
+  only with Claude" objections.
+- Enough repetitions for defensible numbers (pin models; report variance;
+  pre-register the metric: API-misuse rate + task pass rate + tokens/task).
+- Comparison arms: (a) no assistance, (b) LCP MCP, (c) agent free to read
+  site-packages, and — decide at phase start — (d) Context7 if reproducible.
+  Arm (c) is the intellectually honest one and the most likely to be
+  uncomfortable; run it anyway. If LCP doesn't beat (c) on accuracy, the
+  token/latency delta is the story; if it loses both, that's a product
+  finding, not a marketing problem.
+- Publication: `docs/` page + README summary + the per-phase delta story
+  from the results log ("baseline → final").
+
+**Exit criteria:** published page with reproducible methodology (harness
+committed, config pinned); README leads with the headline number.
+
+---
+
+## Post-roadmap cleanup (after Phase 8)
+
+Once the roadmap is complete, remove the scaffolding it needed:
+
+- Remove the **Active Roadmap** section from `CLAUDE.md` (it exists only to
+  route sessions to this file while the work is in flight).
+- Clean up `docs/superpowers/` (plans + specs): these are internal working
+  documents, not user documentation. Archive or delete them — decide then
+  whether anything (e.g. the v2 surface design spec) deserves promotion into
+  `docs/architecture/` per the `lcp-writing-documentation` conventions
+  before deletion.
+- Verify `mkdocs.yml` never referenced them (they are outside the nav today;
+  keep it that way).
+
+---
+
+## Eval results log
+
+| Date | Phase | Config | Misuse rate | Pass rate | Tokens/task | Tool calls/task | Notes |
+|------|-------|--------|-------------|-----------|-------------|-----------------|-------|
+| —    | 0 baseline (no LCP) | — | — | — | — | — | fill after Phase 0 |
+| —    | 0 baseline (LCP current) | — | — | — | — | — | fill after Phase 0 |
+
+---
+
+## Cross-phase risks (standing)
+
+1. **Schema churn:** any manifest field added after Phase 7 population means
+   mass-regeneration. The freeze point is the end of Phase 4 — treat additive
+   ideas discovered later as post-launch.
+2. **Moving target:** agents keep getting better at reading site-packages
+   directly. The moat is token efficiency + ranked search + structured
+   examples + registry for uninstalled/private packages — if a phase doesn't
+   serve one of those, question it.
+3. **Solo-maintainer bandwidth:** phases are sized to be individually
+   shippable; never start a phase that can't be merged in that session's
+   horizon. De-scope per the rule in the header, don't stall mid-phase.
+4. **Eval overfitting:** phases 2–4 are tuned against the Phase 0 task set.
+   Phase 8 must add fresh tasks the earlier phases never saw, or the final
+   number is meaningless.
