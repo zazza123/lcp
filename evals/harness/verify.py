@@ -1,6 +1,9 @@
 """Verify symbol usage against the live (pinned) environment via introspection."""
 
 import importlib
+from dataclasses import dataclass, field
+
+from harness import extract
 
 
 def resolve_dotted(path: str) -> bool:
@@ -34,3 +37,61 @@ def resolve_symbol(symbol_id: str) -> bool:
     if not entity:
         return resolve_dotted(module)
     return resolve_dotted(f"{module}.{entity.replace('#', '.')}")
+
+
+def symbol_used(symbol_id: str, usage: "extract.CodeUsage") -> bool:
+    """Return True if the generated code uses this symbol.
+
+    'module:Class#method' matches by method name on any receiver (static
+    analysis cannot type the receiver) or by full dotted path.
+    'module:entity' matches the canonical dotted path.
+    """
+    module, _, entity = symbol_id.partition(":")
+    if "#" in entity:
+        cls, _, method = entity.partition("#")
+        if method in usage.method_names:
+            return True
+        return f"{module}.{cls}.{method}" in usage.dotted_paths
+    dotted = f"{module}.{entity}" if entity else module
+    return dotted in usage.dotted_paths
+
+
+@dataclass
+class Verification:
+    passed: bool
+    misuse_count: int
+    required_missing: list[str] = field(default_factory=list)
+    forbidden_used: list[str] = field(default_factory=list)
+    unresolved_usages: list[str] = field(default_factory=list)
+    error: str | None = None
+
+
+def verify_code(code: str | None, case) -> Verification:
+    """Statically verify generated code against a case's checks.
+
+    misuse_count = forbidden symbols used + library-rooted attribute chains
+    that do not resolve via live introspection.
+    """
+    if not code:
+        return Verification(
+            passed=False, misuse_count=0,
+            required_missing=list(case.required_symbols), error="no code block",
+        )
+    try:
+        usage = extract.extract_usage(code, case.import_name)
+    except SyntaxError as exc:
+        return Verification(
+            passed=False, misuse_count=0,
+            required_missing=list(case.required_symbols),
+            error=f"syntax error in generated code: {exc}",
+        )
+    required_missing = [s for s in case.required_symbols if not symbol_used(s, usage)]
+    forbidden_used = [s for s in case.forbidden_symbols if symbol_used(s, usage)]
+    unresolved = sorted(p for p in usage.dotted_paths if not resolve_dotted(p))
+    return Verification(
+        passed=not (required_missing or forbidden_used or unresolved),
+        misuse_count=len(forbidden_used) + len(unresolved),
+        required_missing=required_missing,
+        forbidden_used=forbidden_used,
+        unresolved_usages=unresolved,
+    )
