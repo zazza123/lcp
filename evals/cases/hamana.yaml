@@ -1,0 +1,57 @@
+- id: hamana-sqlite-execute
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana, connect to a SQLite database file "data.db" and execute the
+    query "SELECT * FROM users" to retrieve the results.
+  checks:
+    required_symbols:
+      - "hamana.connector.db:SQLite"
+      - "hamana.connector.db:SQLite#execute"
+    forbidden_symbols:
+      - "hamana.connector.db:SQLite#query"
+      - "hamana.connector.db:Sqlite"
+
+- id: hamana-csv-to-sqlite
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana, load the CSV file "sales.csv" and insert its contents into
+    hamana's internal SQLite database as a table named "sales".
+  checks:
+    required_symbols:
+      - "hamana.connector.file:CSV"
+      - "hamana.connector.file:CSV#to_sqlite"
+    forbidden_symbols:
+      - "hamana.connector.file:CSV#to_csv"
+      - "hamana.connector.file:CSV#load_sqlite"
+
+- id: hamana-internal-shortcuts
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana's top-level shortcut functions (not a connector class),
+    connect to the library's internal in-memory database, execute a raw SQL
+    statement, then disconnect.
+  checks:
+    required_symbols:
+      - "hamana:connect"
+      - "hamana:execute"
+      - "hamana:disconnect"
+    forbidden_symbols:
+      - "hamana:open"
+      - "hamana:run_query"
+
+- id: hamana-connector-not-initialised
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Write code that executes a query against hamana's internal database
+    before it has been connected and catches the library's specific
+    "not initialised" exception.
+  checks:
+    required_symbols:
+      - "hamana.connector.db.exceptions:HamanaConnectorNotInitialised"
+    forbidden_symbols:
+      - "hamana.connector.db.exceptions:HamanaConnectorNotInitializedError"
+      - "hamana.core.exceptions:HamanaConnectorNotInitialised"
