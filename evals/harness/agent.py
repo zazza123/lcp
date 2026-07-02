@@ -32,6 +32,14 @@ def build_command(prompt: str, arm: str, mcp_config: str | None) -> list[str]:
     Built-in tools (Bash, Read, Write, etc.) are denied via --disallowedTools
     rather than `--tools ""`: the latter also strips MCP tools from the
     offered set, which would silently defeat the LCP arm.
+
+    `--allowedTools "mcp__lcp"` pre-approves every tool on the MCP server
+    named "lcp" (the documented server-level wildcard pattern). Headless
+    `-p` runs auto-deny any tool call requiring interactive permission
+    approval, so without this an actual mcp__lcp__* call by the model would
+    silently fail with a permission denial (see Task 10 smoke test). This
+    flag is a no-op in the baseline arm, which never registers a server
+    named "lcp".
     """
     cmd = [
         "claude", "-p", prompt,
@@ -39,6 +47,7 @@ def build_command(prompt: str, arm: str, mcp_config: str | None) -> list[str]:
         "--output-format", "stream-json", "--verbose",
         "--strict-mcp-config",
         "--disallowedTools", *BUILTIN_TOOLS,
+        "--allowedTools", "mcp__lcp",
     ]
     if arm == "lcp":
         if mcp_config is None:
