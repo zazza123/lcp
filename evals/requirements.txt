@@ -1,0 +1,8 @@
+polars==1.42.1
+httpx==0.28.1
+textual==8.2.8
+pydantic==2.13.4
+fastmcp==2.14.4
+cyhole==0.3.0
+hamana==1.0.1
+pyyaml>=6.0
