@@ -72,3 +72,30 @@ class TestExtractUsage:
     def test_syntax_error_propagates(self):
         with pytest.raises(SyntaxError):
             extract_usage("def broken(:", "polars")
+
+    def test_bare_module_alias_not_in_dotted_paths(self):
+        code = "import polars as pl\npl.read_csv('x')"
+        usage = extract_usage(code, "polars")
+        assert "polars.read_csv" in usage.dotted_paths
+        assert "polars" not in usage.dotted_paths
+
+    def test_foreign_module_attrs_not_in_method_names(self):
+        code = (
+            "import os\n"
+            "import polars as pl\n"
+            "os.path.join('a')\n"
+            "pl.col('x')\n"
+        )
+        usage = extract_usage(code, "polars")
+        assert "join" not in usage.method_names
+        assert "path" not in usage.method_names
+
+    def test_foreign_from_import_attrs_not_in_method_names(self):
+        code = (
+            "from pathlib import Path\n"
+            "import polars as pl\n"
+            "Path.home()\n"
+            "pl.col('x')\n"
+        )
+        usage = extract_usage(code, "polars")
+        assert "home" not in usage.method_names
