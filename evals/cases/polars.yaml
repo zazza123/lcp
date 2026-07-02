@@ -1,0 +1,40 @@
+- id: polars-group-by
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Read the CSV file "sales.csv" (columns: region, product, revenue) into a
+    polars DataFrame and compute the mean revenue per region, sorted by region.
+  checks:
+    required_symbols: ["polars:read_csv", "polars:DataFrame#group_by"]
+    forbidden_symbols: ["polars:DataFrame#groupby"]
+
+- id: polars-map-elements
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given a polars DataFrame with a string column "name", add a column
+    "name_upper" that applies the Python function str.upper to each element
+    using a polars expression.
+  checks:
+    required_symbols: ["polars:Expr#map_elements"]
+    forbidden_symbols: ["polars:Expr#apply"]
+
+- id: polars-with-columns
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Create a polars DataFrame with integer columns "a" and "b" and add a
+    single derived column "c" equal to a + b.
+  checks:
+    required_symbols: ["polars:DataFrame#with_columns"]
+    forbidden_symbols: ["polars:DataFrame#with_column"]
+
+- id: polars-equals
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Write a function that returns True when two polars DataFrames are exactly
+    equal (same schema and same values).
+  checks:
+    required_symbols: ["polars:DataFrame#equals"]
+    forbidden_symbols: ["polars:DataFrame#frame_equal"]
