@@ -160,11 +160,11 @@ The SDK includes an MCP (Model Context Protocol) server that exposes LCP manifes
 ### Starting the Server
 
 ```bash
-# Start MCP server for a library
-lcp serve requests.lcp.json
+# Universal server: resolves any installed library on demand
+lcp serve-all
 
-# With custom server name
-lcp serve numpy.lcp.json --name numpy-docs
+# Restrict and pre-warm specific libraries
+lcp serve-all --expose requests --preload requests
 ```
 
 ### MCP Client Configuration
@@ -174,9 +174,9 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 ```json
 {
   "mcpServers": {
-    "requests-api": {
+    "lcp": {
       "command": "lcp",
-      "args": ["serve", "/path/to/requests.lcp.json"]
+      "args": ["serve-all"]
     }
   }
 }
@@ -186,23 +186,21 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 
 | Tool | Description |
 |------|-------------|
-| `get_manifest` | Get library metadata (name, version, language) |
-| `list_modules` | List all modules in the library |
-| `list_symbols` | Browse symbols with optional filtering by module or kind |
-| `get_symbol` | Get full details for a specific symbol |
-| `search_symbols` | Find symbols by text search |
-| `get_class_members` | Get all methods and attributes of a class |
+| `resolve_library(name, version?)` | Load a library (cache → live scan → registry). Call first. |
+| `search(query, library?, module?, kind?, limit?)` | Ranked symbol search; empty query browses. Hits include the exact import line. |
+| `get_symbol(ids, library?)` | Batch detail: full signatures, parameters, import lines; classes inline member summaries. |
+| `get_overview(library?)` | Library identity plus the module tree with symbol counts. |
 
 ### Programmatic Usage
 
 ```python
-from lcp.mcp_server import create_server, run_server
+from lcp.mcp_server import create_universal_server
 
-# Create and customize server
-server = create_server("path/to/manifest.lcp.json", name="my-server")
+server = create_universal_server(name="my-server", preload=["requests"])
+server.run()  # serve on stdio
 
-# Or run directly
-run_server("path/to/manifest.lcp.json")
+# Or invoke tools in-process, without the MCP protocol
+server.tools["search"]("send get request", library="requests")
 ```
 
 ## AI Documentation Generation

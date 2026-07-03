@@ -113,12 +113,11 @@ Once the plugin is active, the typical interaction looks like this:
 User: "Set up FastAPI routes with proper dependency injection"
 
 Claude:
-  1. resolve_library("fastapi")                → scanned + cached
-  2. list_modules()                            → finds fastapi.routing
-  3. list_symbols(module="fastapi.routing")    → finds APIRouter, Depends
-  4. get_symbol("fastapi.routing:APIRouter")   → full signature
-  5. get_class_members("fastapi:Depends")      → understands dependencies
-  6. Writes accurate, idiomatic code
+  1. resolve_library("fastapi")                       → scanned + cached
+  2. search("routing dependency", library="fastapi")  → ranked hits + import lines
+  3. get_symbol(ids=["fastapi.routing:APIRouter",
+                     "fastapi:Depends"])              → full signatures, members inline
+  4. Writes accurate, idiomatic code
 ```
 
 The `lcp-universal` skill drives this flow automatically: whenever Claude detects that a task involves an external Python library, it calls `resolve_library("package")` first. The MCP server checks `~/.lcp/cache/` for a cached manifest; if none is found, it scans the pip-installed package on the fly and caches the result. Subsequent calls to the same library in the same session are instant.

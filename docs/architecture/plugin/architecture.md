@@ -83,7 +83,7 @@ Skills are auto-invoked by Claude Code based on their `description` frontmatter.
 | `lcp-universal` | Automatic + `/lcp:lcp-universal <library>` | Triggers when implementing code against any third-party Python library |
 | `lcp-usage` | Automatic + `/lcp:lcp-usage <library>` | Triggers on LCP tool usage guidance requests |
 
-`lcp-universal` is the primary skill. It instructs the agent to call `resolve_library("package")` before writing any code that uses an external library, then follow the structured exploration workflow defined in the MCP server's `get_usage_guide` tool.
+`lcp-universal` is the primary skill. It instructs the agent to call `resolve_library("package")` before writing any code that uses an external library, then follow the three-call workflow (`resolve_library` → `search` → `get_symbol`) that the MCP server also teaches through its `instructions` field.
 
 ## Commands Design
 

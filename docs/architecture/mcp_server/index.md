@@ -4,32 +4,30 @@
 
 The MCP Server module exposes Python library documentation to AI agents via the [Model Context Protocol](https://modelcontextprotocol.io/).
 
-Two modes are supported:
-
-- **Single-manifest server** (`lcp serve`) – given a pre-built `.lcp.json` or `.lcp.json.gz` file, starts a FastMCP server for one library.
-- **Universal server** (`lcp serve-all`) – no manifest required; agents call `resolve_library("package")` to load any pip-installed package on the fly. Resolved manifests are cached as `.lcp.json.gz` files under `~/.lcp/cache/`.
+The universal server (`lcp serve-all`) is the single implementation: agents call `resolve_library("package")` to load any pip-installed package on the fly, then `search` and `get_symbol` to explore it. Resolved manifests are cached as `.lcp.json.gz` files under `~/.lcp/cache/`. The single-manifest command (`lcp serve`) is deprecated and now wraps the same server, pre-loaded with the manifest.
 
 ## Key Features
 
 - `lcp serve-all` command: single, always-on MCP server for any Python library
+- Four-tool surface designed around a three-call workflow: `resolve_library` → `search` → `get_symbol` (+ `get_overview` for orientation)
 - On-demand library resolution with three-tier fallback: local cache → live scan → remote registry
-- Optional remote registry fallback via `--registry` for packages that cannot be scanned locally
-- `MultiLibraryIndex`: holds multiple libraries simultaneously; agents work across libraries in one session
-- In-memory `LCPIndex` for fast symbol lookups by module, kind, and class membership
-- Eleven tools covering the full exploration workflow from library loading to fine-grained symbol detail
-- Guided workflow embedded in `get_usage_guide` to help agents avoid expensive operations
-- All standard tools accept an optional `library` parameter for explicit multi-library targeting
+- Ranked search with exact import lines in every hit; empty query browses deterministically
+- Batch `get_symbol` with inline class-member summaries and exact return-type-to-class resolution
+- Structured error dicts with stable shape and recovery hints on every failure path
+- Byte-capped responses (`--max-response-bytes`) guarding against context blowouts
+- `MultiLibraryIndex`: holds multiple libraries simultaneously; with several loaded, tools require an explicit `library` argument (no silent default)
+- Usage guidance delivered through the MCP `instructions` field, reaching agents before any tool call
 
 ## Documents
 
-- [Architecture](architecture.md) - Server structure, index design, tool inventory, and data flow
+- [Architecture](architecture.md) - Server structure, index design, error model, caps, tool inventory, and data flow
 
 ## CLI Commands
 
 | Command | Purpose |
 |---------|---------|
 | `lcp serve-all` | Start the universal multi-library MCP server (recommended) |
-| `lcp serve <manifest.lcp.json>` | Start a single-library server from a pre-built manifest |
+| `lcp serve <manifest.lcp.json>` | Deprecated: starts the universal server pre-loaded with the manifest |
 
 ### `lcp serve-all` options
 
@@ -39,6 +37,9 @@ Two modes are supported:
 | `--name TEXT` | `lcp-universal` | Server name for MCP identification |
 | `--no-cache` | off | Disable reading from and writing to the local cache |
 | `--registry TEXT` | *(none)* | Base URL of a remote LCP registry used as a final fallback when local scanning fails |
+| `--expose TEXT` | all packages | Restrict `resolve_library` to these package names (repeatable) |
+| `--preload TEXT` | *(none)* | Resolve these packages at startup (repeatable) |
+| `--max-response-bytes INT` | `25000` | Byte budget for list-returning tool responses |
 
 ### Setup (one-time)
 
@@ -57,20 +58,21 @@ claude mcp add lcp -- lcp serve-all
 | Component | Location | Purpose |
 |-----------|----------|---------|
 | `LCPIndex` | `src/lcp/mcp_server.py` | In-memory lookup index built from an `LCPDocument` |
-| `MultiLibraryIndex` | `src/lcp/mcp_server.py` | Holds multiple `LCPIndex` instances; tracks the default library |
+| `MultiLibraryIndex` | `src/lcp/mcp_server.py` | Registry of loaded `LCPIndex` instances with per-library resolution source; enforces explicit-library disambiguation |
+| `LCPServer` | `src/lcp/mcp_server.py` | Dataclass bundling the FastMCP instance, the index registry, and the raw tool callables |
 | `resolve_library_document()` | `src/lcp/mcp_server.py` | Resolves a library via cache, live scan, or remote registry fetch |
-| `create_server()` | `src/lcp/mcp_server.py` | Constructs a single-library `FastMCP` instance |
-| `run_server()` | `src/lcp/mcp_server.py` | Loads a manifest and starts the single-library server |
-| `create_universal_server()` | `src/lcp/mcp_server.py` | Constructs the multi-library `FastMCP` instance |
+| `_register_tools()` | `src/lcp/mcp_server.py` | Single registration path for the four tools, shared by all entry points |
+| `create_universal_server()` | `src/lcp/mcp_server.py` | Constructs the universal `LCPServer` |
 | `run_universal_server()` | `src/lcp/mcp_server.py` | Starts the universal server |
-| CLI `serve` command | `src/lcp/cli.py` | Thin wrapper that calls `run_server()` |
+| `create_server()` / `run_server()` | `src/lcp/mcp_server.py` | Deprecated single-manifest wrappers over the universal server |
 | CLI `serve-all` command | `src/lcp/cli.py` | Thin wrapper that calls `run_universal_server()` |
+| CLI `serve` command | `src/lcp/cli.py` | Deprecated thin wrapper that warns and calls `run_server()` |
 
 ## Related Documentation
 
-- [Architecture](architecture.md) - Detailed tool inventory and index design
+- [Architecture](architecture.md) - Detailed tool inventory, error model, and index design
 - [AI DocGen](../ai_docgen/index.md) - Generates the docstrings that make manifests more useful to the MCP server
 
 ---
-**Last Updated:** March 2026
+**Last Updated:** July 2026
 **Status:** Implemented

@@ -2,32 +2,19 @@
 
 ## Overview
 
-The MCP Server exposes Python library documentation as a set of MCP tools that AI agents can call to explore any library's public API. It is built on [FastMCP](https://github.com/jlowin/fastmcp) and supports two modes:
+The MCP Server exposes Python library documentation as a small set of MCP tools that AI agents call to explore any library's public API. It is built on [FastMCP](https://github.com/jlowin/fastmcp) and has a single implementation: the universal server (`create_universal_server` / `lcp serve-all`), which resolves any pip-installed package on demand with optional local caching and a remote registry fallback. The deprecated single-manifest entry points (`create_server` / `lcp serve`) are thin wrappers that build the same universal server pre-loaded with one manifest and restricted to its library.
 
-- **Single-library mode** (`create_server` / `lcp serve`): loads one pre-built `.lcp.json` manifest.
-- **Universal mode** (`create_universal_server` / `lcp serve-all`): resolves any pip-installed package on demand, with optional local caching and an optional remote registry fallback.
+The tool surface was consolidated to four tools designed around a three-call happy path (`resolve_library` → `search` → `get_symbol`), with the usage guidance moved into the server's MCP *instructions* field so it reaches agents even before the first tool call.
 
-## Single-Library Server Lifecycle
-
-```mermaid
-flowchart LR
-    A[".lcp.json / .lcp.json.gz file"] --> B["load_lcp_document()"]
-    B --> C["LCPDocument (Pydantic)"]
-    C --> D["LCPIndex"]
-    C --> E["create_server()"]
-    D --> E
-    E --> F["FastMCP instance\n(9 tools registered)"]
-    F --> G["run_server() → server.run()"]
-```
-
-## Universal Server Lifecycle
+## Server Lifecycle
 
 ```mermaid
 flowchart LR
     A["lcp serve-all"] --> B["create_universal_server()"]
     B --> C["MultiLibraryIndex (empty)"]
-    B --> D["FastMCP instance\n(11 tools registered)"]
-    D --> E["server.run()"]
+    B --> D["FastMCP instance\n(4 tools + instructions)"]
+    B --> P["LCPServer\n(mcp, index, tools)"]
+    P --> E["run() → stdio loop"]
     E --> F["resolve_library('pkg')"]
     F --> G{"Cache hit?"}
     G -- yes --> H["load from ~/.lcp/cache/"]
@@ -36,14 +23,16 @@ flowchart LR
     I -- scan fails --> R{"--registry set?"}
     R -- yes --> S["_fetch_from_registry()"]
     S --> J
-    R -- no --> ERR["ImportError"]
+    R -- no --> ERR["resolve_failed error"]
     H --> K["LCPIndex → MultiLibraryIndex"]
     J --> K
 ```
 
+Tool registration lives in a single function, `_register_tools()` in `src/lcp/mcp_server.py`, parameterized by the `MultiLibraryIndex` registry, the cache/registry settings, an optional package allow-list, and the response byte budget. Both CLI entry points share it, which removed the ~450 lines previously duplicated between the two servers. `create_universal_server()` returns an `LCPServer` dataclass bundling the FastMCP instance, the index registry, and the raw tool callables — the latter is what the test suite and the startup preload loop invoke directly, replacing the former `tool_funcs` attribute-stuffing.
+
 ## Index Design
 
-`LCPIndex` is built once per library from its `LCPDocument` and kept in memory for the lifetime of the server. It maintains four lookup structures derived from a single pass over the symbol map:
+`LCPIndex` is built once per library from its `LCPDocument` and kept in memory for the lifetime of the server. It maintains five lookup structures derived from a single pass over the symbol map:
 
 | Index | Key | Value |
 |-------|-----|-------|
@@ -51,10 +40,19 @@ flowchart LR
 | `symbols_by_module` | module path (str) | list of `symbol_id` strings |
 | `symbols_by_kind` | kind value (str) | list of `symbol_id` strings |
 | `class_members` | class `symbol_id` | list of member `symbol_id` strings |
+| `classes_by_name` | bare class name (str) | sorted list of class `symbol_id` strings |
 
-Class membership is determined by the presence of `#` in the symbol ID (e.g. `pathlib:Path#resolve` belongs to `pathlib:Path`). The `modules` set is built in the same pass and is the source for `list_modules`.
+Class membership is determined by the presence of `#` in the symbol ID (e.g. `pathlib:Path#resolve` belongs to `pathlib:Path`). `classes_by_name` supports exact return-type-to-class resolution in `get_symbol`'s usage hints — an exact-name lookup that replaced the old suffix-matching heuristic and its false positives (e.g. `PurePath` matching a `Path` query).
 
-`MultiLibraryIndex` wraps a `dict[str, LCPIndex]` and tracks the last-resolved library as the implicit default when no `library=` parameter is provided.
+`MultiLibraryIndex` wraps the loaded libraries together with the source each was resolved from (`cache`, `scan`, `registry`, or `manifest`). There is deliberately **no** implicit default library: its `resolve()` method returns the single loaded library when the `library` argument is omitted, and a structured `ambiguous_library` error listing the loaded names when two or more are loaded. This replaced the last-resolved-wins default, whose silent reassignment made multi-library answers non-deterministic.
+
+## Error Model
+
+Every tool returns a structured error dict with a stable shape on failure — `error.code`, `error.message`, an actionable `error.hint`, and context keys such as `loaded_libraries`. Recoverable conditions never raise protocol-level exceptions, because agents recover from data better than from aborted calls. Error codes: `library_not_loaded`, `ambiguous_library`, `library_not_exposed`, `resolve_failed`, `invalid_kind`; unresolved symbol ids are reported per-id in `get_symbol`'s `not_found` list.
+
+## Response Caps
+
+Every list-returning payload is capped by a configurable byte budget (`DEFAULT_MAX_RESPONSE_BYTES`, 25 000 bytes, CLI flag `--max-response-bytes`), enforced by keeping the longest prefix that fits and setting a `truncated` flag with a follow-up hint. `search` additionally caps by `limit` (default 20, max 100). Inline class members get 80 % of the budget so the class body always fits. The cap was calibrated against polars' `DataFrame` (159 members, ~30 KB of member summaries) — heavy classes are expected to truncate.
 
 ## Cache Design
 
@@ -63,6 +61,7 @@ Manifests are cached as gzip-compressed `.lcp.json.gz` files under `~/.lcp/cache
 | Situation | Cache behaviour |
 |-----------|----------------|
 | Package has `importlib.metadata` version | Exact version match required |
+| Explicit `version` passed to `resolve_library` | That version wins over the installed one for cache lookup and registry fetch |
 | Package has no metadata version | Any cached entry for that name is returned |
 | `--no-cache` flag | Cache reads and writes are both skipped; registry fallback still applies |
 | Cache write failure | Silently ignored (non-fatal) |
@@ -71,70 +70,22 @@ Manifests are cached as gzip-compressed `.lcp.json.gz` files under `~/.lcp/cache
 
 ## Tool Inventory
 
-### Universal Server Tools (11)
-
-In addition to the 9 standard tools below (all with an optional `library=` parameter), the universal server exposes two new tools:
-
 | Tool | Purpose |
 |------|---------|
-| `resolve_library(name)` | Load a library from cache, live scan, or remote registry; sets it as the implicit default |
-| `list_libraries()` | List all currently loaded libraries with their metadata |
+| `resolve_library(name, version?)` | Load a library from cache, live scan, or remote registry; records the resolution source and flags a `version_mismatch` warning when the resolved version differs from the requested one. |
+| `search(query, library?, module?, kind?, limit?)` | Ranked discovery: exact name > name prefix > name substring > summary > description, stable id tie-break. An empty query browses in deterministic `(kind, name)` order. Every hit carries the exact import line. |
+| `get_symbol(ids, library?)` | Batch detail: full signatures, usage hints (required/optional parameters, async flag, return type, `returns_classes` resolution), the import line, and — for classes — every member inlined as a one-line summary. |
+| `get_overview(library?)` | Library identity (name, version, language, resolution source) plus the module tree with per-module symbol counts. |
 
-### Standard Tools (9)
-
-These tools are registered on both the single-library and universal servers. In the universal server, all tools accept an optional `library` parameter to target a specific loaded library.
-
-#### Orientation
-
-| Tool | Purpose |
-|------|---------|
-| `get_usage_guide` | Returns the recommended exploration workflow, cost-optimization tips, and common agent mistakes. |
-| `get_manifest` | Returns library name, version, language, and schema version. |
-
-#### Browsing
-
-| Tool | Purpose |
-|------|---------|
-| `list_modules` | Returns a sorted list of all unique module paths in the index. |
-| `list_symbols` | Returns lightweight symbol summaries (id, kind, summary), optionally filtered by `module` and/or `kind`. |
-
-#### Deep Inspection
-
-| Tool | Purpose |
-|------|---------|
-| `get_symbol` | Returns full `Symbol` data for one ID, plus a `usage_hints` block with required parameters, optional parameters, async flag, and return type. |
-| `get_class_members` | Returns lightweight summaries of all members of a given class. |
-| `explore_return_type` | Resolves the return type of a function or method and finds matching class IDs. |
-
-#### Discovery
-
-| Tool | Purpose |
-|------|---------|
-| `search_symbols` | Full-text search over all symbols by name, summary, and/or description. Marked as expensive. |
-| `get_suggestions` | Maps a natural-language task description to relevant modules and symbols. |
+Nine tools from the previous surface were removed: `get_usage_guide` (content moved to the `instructions` field), `get_manifest` and `list_modules` (folded into `get_overview`), `list_symbols` and `search_symbols` (folded into `search`), `get_class_members` (members inline in `get_symbol`), `explore_return_type` (its exact-match core became `usage_hints.returns_classes`), `get_suggestions` (an LLM with ranked search beats a bag-of-words matcher), and `list_libraries` (loaded libraries appear in `resolve_library` responses and in disambiguation errors). The rationale for each removal is recorded in the V2 surface design spec (Phase 1 deliverable).
 
 ## Recommended Exploration Workflow
 
-### Universal server
-
 ```mermaid
 flowchart TD
-    A["resolve_library('pkg')\n(call first)"] --> B["get_manifest\n(verify library fit)"]
-    B --> C["list_modules\n(find relevant areas)"]
-    C --> D["list_symbols(module, kind)\n(browse candidates)"]
-    D --> E["get_symbol\n(verify signature & types)"]
-    E --> F["get_class_members / explore_return_type\n(understand returned objects)"]
-```
-
-### Single-library server
-
-```mermaid
-flowchart TD
-    A["get_usage_guide\n(call first)"] --> B["get_manifest\n(verify library fit)"]
-    B --> C["list_modules\n(find relevant areas)"]
-    C --> D["list_symbols(module, kind)\n(browse candidates)"]
-    D --> E["get_symbol\n(verify signature & types)"]
-    E --> F["get_class_members / explore_return_type\n(understand returned objects)"]
+    A["resolve_library('pkg')\n(load, always first)"] --> B["search('what you need')\n(ranked hits + import lines)"]
+    B --> C["get_symbol(ids=[...])\n(exact signatures before coding)"]
+    C -.-> D["get_overview()\n(orientation, when needed)"]
 ```
 
 ## Symbol ID Format
@@ -147,20 +98,20 @@ Symbol IDs follow the format `module_path:entity_path`, where class members use 
 | `pathlib:Path` | Class `Path` in the `pathlib` module |
 | `pathlib:Path#resolve` | Method `resolve` on `pathlib.Path` |
 
-This format is used as keys in all index structures and as the primary identifier passed to tools like `get_symbol`, `get_class_members`, and `explore_return_type`.
+This format is used as keys in all index structures, in `search` results, and as the identifiers passed to `get_symbol`.
 
 ## CLI Integration
 
 | Command | Delegates to |
 |---------|-------------|
-| `lcp serve <manifest>` | `run_server(manifest_path, name=...)` |
-| `lcp serve-all` | `run_universal_server(name=..., cache_dir=..., no_cache=...)` |
+| `lcp serve-all` | `run_universal_server(name=..., cache_dir=..., expose=..., preload=..., max_response_bytes=...)` |
+| `lcp serve <manifest>` (deprecated) | `run_server(manifest_path, name=...)`, which builds the universal server pre-loaded with the manifest |
 
 ## Related Documentation
 
 - [MCP Server Overview](index.md)
-- [AI DocGen](../ai_docgen/index.md) - Generates the docstrings that populate the `semantics.summary` and `semantics.description` fields used by search and suggestion tools
+- [AI DocGen](../ai_docgen/index.md) - Generates the docstrings that populate the `semantics.summary` and `semantics.description` fields used by search ranking
 
 ---
-**Last Updated:** March 2026
+**Last Updated:** July 2026
 **Status:** Implemented
