@@ -41,6 +41,23 @@ class TestParseStream:
         assert parsed["is_error"] is True
         assert parsed["result_text"] == ""
 
+    def test_collects_tool_call_details(self):
+        details = parse_stream(STREAM_LINES)["tool_call_details"]
+        assert details == [
+            {"name": "mcp__lcp__resolve_library", "input": {}}
+        ]
+
+    def test_tool_call_input_is_truncated(self):
+        lines = [
+            json.dumps({"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "name": "mcp__lcp__search",
+                 "input": {"query": "x" * 2000}}]}}),
+            STREAM_LINES[-1],
+        ]
+        details = parse_stream(lines)["tool_call_details"]
+        assert details[0]["name"] == "mcp__lcp__search"
+        assert len(json.dumps(details[0]["input"])) <= 520
+
 
 class TestBuildCommand:
     def test_baseline_has_no_mcp_config(self):
