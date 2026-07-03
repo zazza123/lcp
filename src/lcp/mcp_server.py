@@ -46,38 +46,109 @@ class LCPIndex:
                 self.class_members[class_id].append(symbol_id)
 
 
-class MultiLibraryIndex:
-    """Manages multiple LCPIndex instances for a universal MCP server.
+def _error(
+    code: str, message: str, hint: str | None = None, **extra: Any
+) -> dict[str, Any]:
+    """Build the stable structured-error shape every tool returns on failure.
 
-    Holds one LCPIndex per loaded library, keyed by library name.
-    Tracks the most recently resolved library as the implicit default.
+    Args:
+        code: Machine-readable error code (e.g. ``"ambiguous_library"``).
+        message: Human/agent-readable description of what went wrong.
+        hint: Optional recovery suggestion for the calling agent.
+        **extra: Additional context keys merged into the error object
+            (e.g. ``loaded_libraries=[...]``).
+
+    Returns:
+        ``{"error": {"code": ..., "message": ..., "hint"?: ..., **extra}}``.
+    """
+    err: dict[str, Any] = {"code": code, "message": message}
+    if hint is not None:
+        err["hint"] = hint
+    err.update(extra)
+    return {"error": err}
+
+
+class MultiLibraryIndex:
+    """Registry of loaded LCPIndex instances for the MCP server.
+
+    Holds one :class:`LCPIndex` per loaded library plus the source it was
+    resolved from. There is deliberately **no** implicit default library:
+    with one library loaded :meth:`resolve` returns it for a ``None``
+    argument, with several it returns an ``ambiguous_library`` error
+    (spec D7).
     """
 
     def __init__(self) -> None:
-        self._indexes: dict[str, LCPIndex] = {}
-        self._default: str | None = None
+        self._entries: dict[str, tuple[LCPIndex, str]] = {}
 
-    @property
-    def default_library(self) -> str | None:
-        """Most recently resolved library name (used as implicit default)."""
-        return self._default
+    def add(self, name: str, index: LCPIndex, source: str = "scan") -> None:
+        """Register (or replace) a library index.
 
-    def add(self, name: str, index: LCPIndex) -> None:
-        """Register a library index."""
-        self._indexes[name] = index
-        self._default = name
+        Args:
+            name: Library name used as the lookup key.
+            index: Built index for the library's manifest.
+            source: Where the manifest came from (``"cache"``, ``"scan"``,
+                ``"registry"``, or ``"manifest"`` for a pre-loaded file).
+        """
+        self._entries[name] = (index, source)
 
-    def get(self, name: str | None = None) -> LCPIndex | None:
-        """Return the index for *name*, or the default index if *name* is None."""
-        key = name if name is not None else self._default
-        if key is None:
-            return None
-        return self._indexes.get(key)
+    def get(self, name: str) -> LCPIndex | None:
+        """Return the index registered under *name*, or None."""
+        entry = self._entries.get(name)
+        return entry[0] if entry else None
+
+    def source(self, name: str) -> str | None:
+        """Return the resolution source recorded for *name*, or None."""
+        entry = self._entries.get(name)
+        return entry[1] if entry else None
+
+    def names(self) -> list[str]:
+        """Return the sorted names of all loaded libraries."""
+        return sorted(self._entries)
+
+    def resolve(
+        self, library: str | None
+    ) -> tuple[str | None, LCPIndex | None, dict[str, Any] | None]:
+        """Resolve a tool's ``library`` argument to an index (spec D7).
+
+        Args:
+            library: Explicit library name, or None.
+
+        Returns:
+            ``(name, index, None)`` on success, ``(None, None, error_dict)``
+            on failure — the error dict follows the D5 shape.
+        """
+        if library is not None:
+            entry = self._entries.get(library)
+            if entry is not None:
+                return library, entry[0], None
+            return None, None, _error(
+                "library_not_loaded",
+                f"Library '{library}' is not loaded.",
+                hint=f"Call resolve_library('{library}') first.",
+                loaded_libraries=self.names(),
+            )
+        if not self._entries:
+            return None, None, _error(
+                "library_not_loaded",
+                "No library is loaded.",
+                hint="Call resolve_library(<package name>) first.",
+            )
+        if len(self._entries) == 1:
+            name = next(iter(self._entries))
+            return name, self._entries[name][0], None
+        return None, None, _error(
+            "ambiguous_library",
+            "Multiple libraries are loaded; pass library=<name>.",
+            hint="Pick one of loaded_libraries and retry with library=<name>.",
+            loaded_libraries=self.names(),
+        )
 
     def list_libraries(self) -> list[dict[str, Any]]:
         """Return summary info for all loaded libraries."""
         result = []
-        for name, idx in self._indexes.items():
+        for name in self.names():
+            idx, source = self._entries[name]
             lib = idx.doc.manifest.library
             result.append(
                 {
@@ -85,13 +156,13 @@ class MultiLibraryIndex:
                     "version": lib.version,
                     "language": lib.language,
                     "symbol_count": len(idx.symbols_by_id),
-                    "is_default": name == self._default,
+                    "source": source,
                 }
             )
         return result
 
     def __contains__(self, name: str) -> bool:
-        return name in self._indexes
+        return name in self._entries
 
 
 def load_lcp_document(path: str | Path) -> LCPDocument:
@@ -922,7 +993,8 @@ def create_universal_server(
     # ------------------------------------------------------------------
 
     def _get_index(library: str | None) -> LCPIndex | None:
-        return multi_index.get(library)
+        _, index, _ = multi_index.resolve(library)
+        return index
 
     def _no_library_error(library: str | None) -> dict[str, Any]:
         if library:
