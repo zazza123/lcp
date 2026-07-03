@@ -2,9 +2,9 @@ name: codeql
 
 on:
   push:
-    branches: [main]
+    branches: [main, "roadmap/**"]
   pull_request:
-    branches: [main]
+    branches: [main, "roadmap/**"]
   schedule:
     # Run weekly on Monday at 06:00 UTC
     - cron: "0 6 * * 1"

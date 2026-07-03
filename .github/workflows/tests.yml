@@ -2,13 +2,13 @@ name: tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, "roadmap/**"]
     paths:
       - "src/**"
       - "tests/**"
       - "pyproject.toml"
   pull_request:
-    branches: [main]
+    branches: [main, "roadmap/**"]
     paths:
       - "src/**"
       - "tests/**"
