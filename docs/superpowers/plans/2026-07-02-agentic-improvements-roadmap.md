@@ -262,7 +262,8 @@ iterations even though a probe confirmed the server `instructions` reach the
 model verbatim and cyhole/hamana (known-unknown libs) do get calls — with
 haiku headless this is a model-compliance limit, not a discovery failure. The
 remaining F1 levers are client-side (the plugin skills, which this harness
-deliberately excludes) and the Phase 8 task mix/model choice.
+deliberately excludes) and the Phase 8 task mix/model choice — **probed with
+data in Phase 2b below before any new phase is added.**
 
 **Baseline evidence (2026-07-03):** this phase carries F1 — the skills/
 `instructions` rewrite is where "the agent never asks" gets fixed. The
@@ -335,6 +336,93 @@ options), `tests/test_mcp_server.py`, `tests/test_serve_all_expose.py`,
 tool calls and tokens per task at equal or better accuracy); plugin smoke
 test — `lcp serve-all` under Claude Code resolves a library and answers a
 signature question through the new surface in ≤3 tool calls.
+
+---
+
+## Phase 2b — Adoption probes (decide the F1 lever with data)
+
+**Status:** not started — plan ready at
+`docs/superpowers/plans/2026-07-03-phase-2b-adoption-probes.md` (written at
+Phase 2 close, execute in its own session, before Phase 3's eval re-run so
+later phases can measure the shipped product).
+
+**Objective:** Phase 2 falsified the server-side persuasion lever (D9) for
+haiku-class agents; before adding any new phase, run two cheap, targeted
+experiments that determine *which* remaining lever closes the F1 adoption
+gap — the plugin skill (client-side, shipped but never measured) or model
+class — and only add a "forcing functions" phase if both fail.
+
+**Evidence this phase rests on (2026-07-03, Phase 2 close — do not re-derive):**
+- **E1 — Instructions reach the model and are ignored.** A probe run quoted
+  the server `instructions` back verbatim (they ARE in context), yet fastmcp
+  cases stayed at **0 voluntary tool calls across two instruction
+  iterations** (conditional wording, then unconditional "verify EVERY
+  library"). Persuasion-by-server-text is exhausted for haiku headless.
+- **E2 — Adoption exists where the model knows it doesn't know.** cyhole
+  2.3–4.3 calls/run (pass 0/12 → 4/12 across baseline → phase2 → iter2,
+  the F2 import-line fix working), hamana engaged at 1.0 calls/run. The
+  failure is confined to libraries the model *wrongly thinks it knows*
+  (fastmcp ↔ official `mcp` SDK confusion).
+- **E3 — The shipped F1 lever was never measured.** The harness deliberately
+  denies skills/built-ins; real developers install the plugin whose
+  `lcp-universal` skill fires task-side. The Phase 2 smoke test showed the
+  3-call path works perfectly *when the workflow is in the prompt* — which
+  is what a skill does.
+- **E4 — Instructed-agent efficiency is solved.** Cost overhead 48%→7%,
+  output tokens below the no-LCP arm; whatever 2b finds, the consolidated
+  surface is not the bottleneck.
+
+**Scope (in):**
+- Harness: third arm `lcp-skill` (= `lcp` + `--append-system-prompt` with the
+  `lcp-universal` SKILL.md body — approximates plugin-skill activation),
+  `--model` override, and per-run `tool_call_details` capture (names + key
+  args) so adoption *quality* (did it get_symbol what it used?) becomes
+  analyzable. Unit tests in `evals/tests/`.
+- **Exp1 (skill arm):** 8 F1-sensitive cases (4 fastmcp + 4 cyhole) × 3 reps,
+  arm `lcp-skill`, pinned haiku. Gate metric: mean voluntary calls on the
+  fastmcp cases.
+- **Exp2 (model probe):** 4 fastmcp cases × 3 reps × both arms with
+  `--model claude-sonnet-5`, no skill. Does a stronger model adopt
+  spontaneously from instructions alone?
+- **Decision rule (record the outcome, then stop):**
+  - **A.** Exp1 fastmcp ≥1.0 calls/run → the shipped plugin closes F1: no new
+    phase; Phase 8 MUST include an `lcp-skill` arm or it benchmarks a product
+    nobody installs.
+  - **B.** Exp1 ~0 but Exp2 ≥1.0 → F1 is model-bound: no new phase; record as
+    product guidance (small models need the skill/forcing, capable models
+    self-serve) and fold into the Phase 8 model mix.
+  - **C.** Both ~0 → persuasion is dead in all shipped channels: add a
+    "Phase 2c — adoption forcing functions" section (plugin hook that
+    intercepts unverified third-party imports at Write/Edit time and
+    suggests `resolve_library`; `/lcp:resolve` promotion) — 2b's last task
+    drafts that section from the collected data.
+- Secondary analysis from `tool_call_details` (feeds Phase 3): on engaged
+  cyhole runs, are the symbols used in the generated code the ones actually
+  fetched via `get_symbol`, or does the model verify A and write B?
+
+**Scope (out):** implementing forcing functions (that is the conditional
+Phase 2c), any `src/lcp/` change, non-Claude agents, statistical claims
+(n stays small; this phase picks a lever, Phase 8 proves it).
+
+**Code notes (2026-07-03):**
+- `evals/harness/agent.py:29` `build_command(prompt, arm, mcp_config)` — arms
+  differ only by flags; extend with `model` and `append_system` params, keep
+  the single-flag-difference discipline. `MODEL` pin at `:11`.
+- `evals/run.py:105` arms list, `:151` `--arms` choices, `:50` `_run_one`
+  (records `model` per run at `:60` — thread the override through).
+- Skill body: `plugin/lcp/skills/lcp-universal/SKILL.md` minus the YAML
+  frontmatter; inject verbatim, do not paraphrase (we are measuring the
+  shipped artifact).
+- `parse_stream` (`agent.py:59`) already walks assistant tool_use blocks —
+  collect `{"name", "input"}` there for `tool_call_details`.
+- Model id for Exp2: `claude-sonnet-5`.
+- Run from `evals/.venv` (fastmcp 2.14.4 runtime constraint — see
+  `evals/README.md` note).
+
+**Exit criteria:** both experiments run and committed under `evals/results/`;
+eval log updated; the A/B/C decision written into this file (either "no new
+phase — rationale" or a drafted Phase 2c section); harness changes merged
+with tests green.
 
 ---
 
