@@ -1,0 +1,27 @@
+{
+  "case_id": "textual-richlog",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App\nfrom textual.widgets import RichLog\n\n\nclass LogApp(App):\n    \"\"\"Minimal Textual app with scrollable log widget.\"\"\"\n    \n    CSS = \"\"\"\n    RichLog {\n        height: 1fr;\n        width: 1fr;\n    }\n    \"\"\"\n    \n    def compose(self) -> ComposeResult:\n        yield RichLog(id=\"log\")\n    \n    def on_mount(self) -> None:\n        self.log_widget = self.query_one(\"#log\", RichLog)\n    \n    def append_log(self, line: str) -> None:\n        \"\"\"Append a single line to the log.\"\"\"\n        self.log_widget.write(line)\n\n\nif __name__ == \"__main__\":\n    app = LogApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App\nfrom textual.widgets import RichLog\n\n\nclass LogApp(App):\n    \"\"\"Minimal Textual app with scrollable log widget.\"\"\"\n    \n    CSS = \"\"\"\n    RichLog {\n        height: 1fr;\n        width: 1fr;\n    }\n    \"\"\"\n    \n    def compose(self) -> ComposeResult:\n        yield RichLog(id=\"log\")\n    \n    def on_mount(self) -> None:\n        self.log_widget = self.query_one(\"#log\", RichLog)\n    \n    def append_log(self, line: str) -> None:\n        \"\"\"Append a single line to the log.\"\"\"\n        self.log_widget.write(line)\n\n\nif __name__ == \"__main__\":\n    app = LogApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1243,
+    "cache_read_tokens": 21461,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0083701,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.3
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

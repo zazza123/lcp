@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-richlog",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App, RenderableType\nfrom textual.widgets import Static\nfrom textual.binding import Binding\nfrom rich.panel import Panel\n\n\nclass LogWidget(Static):\n    \"\"\"Scrollable log widget.\"\"\"\n    \n    def __init__(self):\n        super().__init__()\n        self.log_lines = []\n    \n    def append_line(self, line: str) -> None:\n        \"\"\"Append one line to the log.\"\"\"\n        self.log_lines.append(line)\n        self.refresh()\n    \n    def render(self) -> RenderableType:\n        content = \"\\n\".join(self.log_lines)\n        return Panel(content, title=\"Log\")\n\n\nclass LogApp(App):\n    \"\"\"Main Textual application with logging.\"\"\"\n    \n    BINDINGS = [Binding(\"q\", \"quit\", \"Quit\")]\n    \n    def compose(self) -> ComposeResult:\n        self.log_widget = LogWidget()\n        yield self.log_widget\n    \n    def append_log(self, line: str) -> None:\n        \"\"\"Append a line to the log.\"\"\"\n        self.log_widget.append_line(line)\n    \n    def on_mount(self) -> None:\n        \"\"\"Initialize with sample log lines.\"\"\"\n        self.append_log(\"Log initialized\")\n        self.append_log(\"Ready for logging\")\n\n\nif __name__ == \"__main__\":\n    app = LogApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App, RenderableType\nfrom textual.widgets import Static\nfrom textual.binding import Binding\nfrom rich.panel import Panel\n\n\nclass LogWidget(Static):\n    \"\"\"Scrollable log widget.\"\"\"\n    \n    def __init__(self):\n        super().__init__()\n        self.log_lines = []\n    \n    def append_line(self, line: str) -> None:\n        \"\"\"Append one line to the log.\"\"\"\n        self.log_lines.append(line)\n        self.refresh()\n    \n    def render(self) -> RenderableType:\n        content = \"\\n\".join(self.log_lines)\n        return Panel(content, title=\"Log\")\n\n\nclass LogApp(App):\n    \"\"\"Main Textual application with logging.\"\"\"\n    \n    BINDINGS = [Binding(\"q\", \"quit\", \"Quit\")]\n    \n    def compose(self) -> ComposeResult:\n        self.log_widget = LogWidget()\n        yield self.log_widget\n    \n    def append_log(self, line: str) -> None:\n        \"\"\"Append a line to the log.\"\"\"\n        self.log_widget.append_line(line)\n    \n    def on_mount(self) -> None:\n        \"\"\"Initialize with sample log lines.\"\"\"\n        self.append_log(\"Log initialized\")\n        self.append_log(\"Ready for logging\")\n\n\nif __name__ == \"__main__\":\n    app = LogApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4066,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6270,
+    "cost_usd": 0.0343885,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 39.5
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "textual.widgets:RichLog"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

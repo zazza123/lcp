@@ -1,0 +1,29 @@
+{
+  "case_id": "httpx-retries",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\nimport time\n\n# Configure client with retry logic\nclient = httpx.Client()\n\ndef make_request_with_retry(\n    url: str,\n    max_retries: int = 3,\n    backoff_factor: float = 0.1\n) -> httpx.Response:\n    \"\"\"Make an HTTP request with up to 3 retries on connection failures.\"\"\"\n    for attempt in range(max_retries):\n        try:\n            response = client.get(url)\n            response.raise_for_status()\n            return response\n        except (httpx.ConnectError, httpx.TimeoutException, httpx.NetworkError) as e:\n            if attempt == max_retries - 1:\n                raise\n            wait_time = backoff_factor * (2 ** attempt)\n            print(f\"Attempt {attempt + 1} failed. Retrying in {wait_time}s...\")\n            time.sleep(wait_time)\n\n# Example usage\nif __name__ == \"__main__\":\n    try:\n        response = make_request_with_retry(\"https://httpbin.org/get\")\n        print(f\"Success! Status code: {response.status_code}\")\n    except Exception as e:\n        print(f\"Failed after retries: {e}\")\n    finally:\n        client.close()",
+  "result_text": "```python\nimport httpx\nimport time\n\n# Configure client with retry logic\nclient = httpx.Client()\n\ndef make_request_with_retry(\n    url: str,\n    max_retries: int = 3,\n    backoff_factor: float = 0.1\n) -> httpx.Response:\n    \"\"\"Make an HTTP request with up to 3 retries on connection failures.\"\"\"\n    for attempt in range(max_retries):\n        try:\n            response = client.get(url)\n            response.raise_for_status()\n            return response\n        except (httpx.ConnectError, httpx.TimeoutException, httpx.NetworkError) as e:\n            if attempt == max_retries - 1:\n                raise\n            wait_time = backoff_factor * (2 ** attempt)\n            print(f\"Attempt {attempt + 1} failed. Retrying in {wait_time}s...\")\n            time.sleep(wait_time)\n\n# Example usage\nif __name__ == \"__main__\":\n    try:\n        response = make_request_with_retry(\"https://httpbin.org/get\")\n        print(f\"Success! Status code: {response.status_code}\")\n    except Exception as e:\n        print(f\"Failed after retries: {e}\")\n    finally:\n        client.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1906,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6259,
+    "cost_usd": 0.0235665,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.0
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "httpx:HTTPTransport"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

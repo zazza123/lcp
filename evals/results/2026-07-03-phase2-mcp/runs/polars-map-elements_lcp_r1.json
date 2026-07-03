@@ -1,0 +1,27 @@
+{
+  "case_id": "polars-map-elements",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"name\": [\"alice\", \"bob\", \"charlie\"]\n})\n\n# Add a column \"name_upper\" using str.upper with a polars expression\ndf = df.with_columns(\n    name_upper=pl.col(\"name\").map_elements(str.upper)\n)\n\nprint(df)",
+  "result_text": "```python\nimport polars as pl\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"name\": [\"alice\", \"bob\", \"charlie\"]\n})\n\n# Add a column \"name_upper\" using str.upper with a polars expression\ndf = df.with_columns(\n    name_upper=pl.col(\"name\").map_elements(str.upper)\n)\n\nprint(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 626,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6372,
+    "cost_usd": 0.017392499999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.5
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "cyhole-missing-api-key",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye import Birdeye\n\ntry:\n    birdeye = Birdeye()\nexcept Exception as e:\n    print(f\"Caught {type(e).__name__}: {e}\")",
+  "result_text": "```python\nfrom cyhole.birdeye import Birdeye\n\ntry:\n    birdeye = Birdeye()\nexcept Exception as e:\n    print(f\"Caught {type(e).__name__}: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2188,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6269,
+    "cost_usd": 0.024996499999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.8
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.core.exception:MissingAPIKeyError"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

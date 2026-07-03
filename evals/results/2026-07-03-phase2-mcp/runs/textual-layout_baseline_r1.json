@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-layout",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "**Task #2: Clarifying Questions**\n\nI have a few questions to finalize the design. Let me start with the first one:\n\n**Q1: File Interaction** \u2014 Your message asked whether the app should support clicking to select files or just display static panels. Which direction appeals to you more? \n- *Option A:* Static panels \u2014 just show a file tree and a text area (no interaction between them)\n- *Option B:* Interactive \u2014 clicking a file in the tree loads its content into the text area\n- *Option C:* Hybrid \u2014 show the tree and text area, but leave what goes in the text area flexible for now (you populate it later)\n\nWhich makes most sense for what you're building?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 5517,
+    "cache_read_tokens": 180713,
+    "cache_creation_tokens": 15527,
+    "cost_usd": 0.07680129999999999,
+    "num_turns": 16,
+    "tool_calls": 14,
+    "duration_s": 67.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "textual.containers:Horizontal"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

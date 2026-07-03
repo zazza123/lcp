@@ -1,0 +1,31 @@
+{
+  "case_id": "hamana-internal-shortcuts",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable knowledge of the `hamana` library's API in my training data. To provide complete, runnable code as you've requested, I'd need to either:\n\n1. Check the library's documentation or installed package to see the actual top-level shortcut functions\n2. Run `python -c \"import hamana; help(hamana)\"` to inspect the module\n\nCould you either share the hamana API (what the top-level shortcut functions are called), or would you like me to inspect the installed package to discover the correct function signatures?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 868,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6374,
+    "cost_usd": 0.0186065,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:connect",
+      "hamana:execute",
+      "hamana:disconnect"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

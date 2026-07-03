@@ -1,0 +1,29 @@
+{
+  "case_id": "httpx-retries",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\nimport time\n\n# Configure httpx client with retry logic for connection failures\nclient = httpx.Client(timeout=30.0)\n\ndef make_request_with_retries(url: str, max_retries: int = 3) -> httpx.Response:\n    \"\"\"Make an HTTP request with up to 3 connection retries.\"\"\"\n    for attempt in range(max_retries + 1):\n        try:\n            response = client.get(url)\n            return response\n        except (httpx.ConnectError, httpx.TimeoutException) as e:\n            if attempt >= max_retries:\n                raise\n            wait_time = 2 ** attempt\n            print(f\"Connection failed, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})\")\n            time.sleep(wait_time)\n\ntry:\n    response = make_request_with_retries(\"https://httpbin.org/get\")\n    print(f\"Success: {response.status_code}\")\nfinally:\n    client.close()",
+  "result_text": "```python\nimport httpx\nimport time\n\n# Configure httpx client with retry logic for connection failures\nclient = httpx.Client(timeout=30.0)\n\ndef make_request_with_retries(url: str, max_retries: int = 3) -> httpx.Response:\n    \"\"\"Make an HTTP request with up to 3 connection retries.\"\"\"\n    for attempt in range(max_retries + 1):\n        try:\n            response = client.get(url)\n            return response\n        except (httpx.ConnectError, httpx.TimeoutException) as e:\n            if attempt >= max_retries:\n                raise\n            wait_time = 2 ** attempt\n            print(f\"Connection failed, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})\")\n            time.sleep(wait_time)\n\ntry:\n    response = make_request_with_retries(\"https://httpbin.org/get\")\n    print(f\"Success: {response.status_code}\")\nfinally:\n    client.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1847,
+    "cache_read_tokens": 21354,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.011379400000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.0
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "httpx:HTTPTransport"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

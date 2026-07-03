@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-json-schema",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel\nimport json\n\n# Define a sample Pydantic v2 model\nclass User(BaseModel):\n    name: str\n    age: int\n    email: str\n    is_active: bool = True\n\n# Get JSON schema as a dict\nschema_dict = User.model_json_schema()\nprint(\"JSON Schema (as dict):\")\nprint(schema_dict)\n\n# Create a model instance\nuser = User(name=\"Alice\", age=30, email=\"alice@example.com\")\n\n# Serialize model instance to JSON string\njson_string = user.model_dump_json()\nprint(\"\\nSerialized Model (as JSON string):\")\nprint(json_string)\n\n# Access schema as string if needed\nschema_json_string = json.dumps(schema_dict)\nprint(\"\\nSchema (as JSON string):\")\nprint(schema_json_string)",
+  "result_text": "```python\nfrom pydantic import BaseModel\nimport json\n\n# Define a sample Pydantic v2 model\nclass User(BaseModel):\n    name: str\n    age: int\n    email: str\n    is_active: bool = True\n\n# Get JSON schema as a dict\nschema_dict = User.model_json_schema()\nprint(\"JSON Schema (as dict):\")\nprint(schema_dict)\n\n# Create a model instance\nuser = User(name=\"Alice\", age=30, email=\"alice@example.com\")\n\n# Serialize model instance to JSON string\njson_string = user.model_dump_json()\nprint(\"\\nSerialized Model (as JSON string):\")\nprint(json_string)\n\n# Access schema as string if needed\nschema_json_string = json.dumps(schema_dict)\nprint(\"\\nSchema (as JSON string):\")\nprint(schema_json_string)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 600,
+    "cache_read_tokens": 21464,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005155399999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.1
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

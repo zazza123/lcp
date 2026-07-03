@@ -1,0 +1,30 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable documentation for the cyhole 0.3.0 API to write confident code. I cannot verify the correct methods for instantiating Birdeye interaction or fetching Solana token prices with this library version.\n\nTo help you effectively, I'd need either:\n- The actual cyhole library documentation or source code\n- An example of how you've used cyhole before in this project\n- The specific Birdeye API class/method names available in cyhole 0.3.0\n\nIf cyhole is installed in your environment, I could inspect it directly if you'd like to run `python -c \"import cyhole; help(cyhole)\"` or similar, or we could look at any existing usage in the codebase.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1473,
+    "cache_read_tokens": 21361,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0095101,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.birdeye.interaction:Birdeye",
+      "cyhole.birdeye.client:BirdeyeClient#get_price"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

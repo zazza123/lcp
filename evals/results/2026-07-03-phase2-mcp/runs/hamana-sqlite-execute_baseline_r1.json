@@ -1,0 +1,30 @@
+{
+  "case_id": "hamana-sqlite-execute",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable information about the \"hamana\" library in my training data. Could you verify the library name or provide documentation on how to use it? This will ensure I write correct, working code for your use case.\n\nIf this is a proprietary or newer library, you could also share:\n- The library's API/documentation\n- An example import or usage pattern\n- Whether it's an alternative name for a known library",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 843,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6273,
+    "cost_usd": 0.0182795,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db:SQLite#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

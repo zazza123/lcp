@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel\nimport os\n\nclass Settings(BaseModel):\n    database_url: str\n    debug: bool = False\n\nsettings = Settings(\n    database_url=os.getenv('DATABASE_URL', 'postgresql://localhost/mydb'),\n    debug=os.getenv('DEBUG', 'false').lower() in ('true', '1', 'yes')\n)\n\nprint(settings)",
+  "result_text": "```python\nfrom pydantic import BaseModel\nimport os\n\nclass Settings(BaseModel):\n    database_url: str\n    debug: bool = False\n\nsettings = Settings(\n    database_url=os.getenv('DATABASE_URL', 'postgresql://localhost/mydb'),\n    debug=os.getenv('DEBUG', 'false').lower() in ('true', '1', 'yes')\n)\n\nprint(settings)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4193,
+    "cache_read_tokens": 21356,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.023109599999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 39.7
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

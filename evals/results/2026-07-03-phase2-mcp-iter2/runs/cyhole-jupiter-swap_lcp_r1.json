@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Jupiter\nimport json\n\n# Initialize Jupiter client\njupiter = Jupiter()\n\n# Token addresses on Solana\nSOL = \"So11111111111111111111111111111111111111112\"\nUSDC = \"EPjFWaJY35Z81KJsb7PaxL9aTjfkMXVVvTUt3nxZvLG\"\n\n# Amount: 1 SOL (in lamports)\namount_lamports = 1 * 10**9\n\n# Request a quote\nquote = jupiter.get_quote(\n    input_mint=SOL,\n    output_mint=USDC,\n    amount=amount_lamports\n)\n\nprint(\"Quote Details:\")\nprint(f\"Input Amount: {quote['inAmount']}\")\nprint(f\"Output Amount: {quote['outAmount']}\")\nprint(f\"Price Impact: {quote['priceImpactPct']}%\")\nprint(f\"Route Plan: {len(quote['routePlan'])} step(s)\")\n\n# Execute the swap\nswap_result = jupiter.execute_swap(\n    quote=quote,\n    wallet=\"YOUR_SOLANA_WALLET_ADDRESS\"\n)\n\nprint(\"\\nSwap Execution Result:\")\nprint(f\"Transaction Signature: {swap_result['txid']}\")\nprint(f\"Status: {swap_result['status']}\")\nprint(f\"Output Tokens Received: {swap_result['output_amount']}\")",
+  "result_text": "```python\nfrom cyhole import Jupiter\nimport json\n\n# Initialize Jupiter client\njupiter = Jupiter()\n\n# Token addresses on Solana\nSOL = \"So11111111111111111111111111111111111111112\"\nUSDC = \"EPjFWaJY35Z81KJsb7PaxL9aTjfkMXVVvTUt3nxZvLG\"\n\n# Amount: 1 SOL (in lamports)\namount_lamports = 1 * 10**9\n\n# Request a quote\nquote = jupiter.get_quote(\n    input_mint=SOL,\n    output_mint=USDC,\n    amount=amount_lamports\n)\n\nprint(\"Quote Details:\")\nprint(f\"Input Amount: {quote['inAmount']}\")\nprint(f\"Output Amount: {quote['outAmount']}\")\nprint(f\"Price Impact: {quote['priceImpactPct']}%\")\nprint(f\"Route Plan: {len(quote['routePlan'])} step(s)\")\n\n# Execute the swap\nswap_result = jupiter.execute_swap(\n    quote=quote,\n    wallet=\"YOUR_SOLANA_WALLET_ADDRESS\"\n)\n\nprint(\"\\nSwap Execution Result:\")\nprint(f\"Transaction Signature: {swap_result['txid']}\")\nprint(f\"Status: {swap_result['status']}\")\nprint(f\"Output Tokens Received: {swap_result['output_amount']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1411,
+    "cache_read_tokens": 15117,
+    "cache_creation_tokens": 6363,
+    "cost_usd": 0.0213017,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Jupiter"
+    ],
+    "error": null
+  }
+}

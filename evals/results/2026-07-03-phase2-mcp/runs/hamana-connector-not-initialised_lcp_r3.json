@@ -1,0 +1,29 @@
+{
+  "case_id": "hamana-connector-not-initialised",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I need to know the specific exception class name from the hamana library to write correct code. What is the \"not initialised\" exception called? (e.g., `hamana.NotInitializedError`, `hamana.DatabaseNotConnectedException`, etc.)",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2726,
+    "cache_read_tokens": 21461,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0157851,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 28.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.exceptions:HamanaConnectorNotInitialised"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

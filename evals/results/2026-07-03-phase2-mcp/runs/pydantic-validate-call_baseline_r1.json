@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-validate-call",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import validate_call, ValidationError\n\n@validate_call\ndef add(a: int, b: int) -> int:\n    return a + b\n\n# Test cases\nprint(add(1, 2))  # Valid: 3\nprint(add(\"1\", \"2\"))  # Coerces: 3\n\ntry:\n    print(add(\"abc\", 2))  # Fails: ValidationError\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")\n\ntry:\n    print(add(1, None))  # Fails: ValidationError\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")",
+  "result_text": "```python\nfrom pydantic import validate_call, ValidationError\n\n@validate_call\ndef add(a: int, b: int) -> int:\n    return a + b\n\n# Test cases\nprint(add(1, 2))  # Valid: 3\nprint(add(\"1\", \"2\"))  # Coerces: 3\n\ntry:\n    print(add(\"abc\", 2))  # Fails: ValidationError\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")\n\ntry:\n    print(add(1, None))  # Fails: ValidationError\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 814,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6283,
+    "cost_usd": 0.018154500000000004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.6
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

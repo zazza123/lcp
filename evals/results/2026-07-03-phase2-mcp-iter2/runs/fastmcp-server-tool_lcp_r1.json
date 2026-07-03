@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-server-tool",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Server\n\nserver = Server(\"calc\")\n\n@server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    asyncio.run(server.run())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Server\n\nserver = Server(\"calc\")\n\n@server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    asyncio.run(server.run())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1649,
+    "cache_read_tokens": 15117,
+    "cache_creation_tokens": 6375,
+    "cost_usd": 0.0225157,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:FastMCP"
+    ],
+    "forbidden_used": [
+      "fastmcp:Server"
+    ],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

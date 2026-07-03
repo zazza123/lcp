@@ -1,0 +1,27 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Client\n\nasync def main():\n    async with Client(\"python server.py\") as client:\n        # List all tools\n        tools = await client.list_tools()\n        print(f\"Available tools: {[t.name for t in tools]}\")\n        \n        # Call the add tool\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"add(1, 2) = {result}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Client\n\nasync def main():\n    async with Client(\"python server.py\") as client:\n        # List all tools\n        tools = await client.list_tools()\n        print(f\"Available tools: {[t.name for t in tools]}\")\n        \n        # Call the add tool\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"add(1, 2) = {result}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1021,
+    "cache_read_tokens": 21480,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007262000000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.2
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

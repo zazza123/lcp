@@ -1,0 +1,27 @@
+{
+  "case_id": "textual-layout",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App\nfrom textual.containers import Horizontal\nfrom textual.widgets import DirectoryTree, Static\nfrom pathlib import Path\n\n\nclass TextDisplay(Static):\n    DEFAULT_CSS = \"\"\"\n    TextDisplay {\n        width: 1fr;\n        height: 100%;\n        border: solid $accent;\n        overflow: auto;\n    }\n    \"\"\"\n\n    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        self.text_content = \"\"\n\n    def render(self) -> str:\n        return self.text_content\n\n    def set_text(self, text: str) -> None:\n        self.text_content = text\n        self.update()\n\n\nclass DirectoryTextApp(App):\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n\n    Horizontal {\n        height: 100%;\n        width: 100%;\n    }\n\n    DirectoryTree {\n        width: 50%;\n        height: 100%;\n        border: solid $accent;\n    }\n\n    TextDisplay {\n        width: 50%;\n        height: 100%;\n    }\n    \"\"\"\n\n    def compose(self) -> ComposeResult:\n        with Horizontal():\n            yield DirectoryTree(str(Path.home()))\n            yield TextDisplay()\n\n    def on_mount(self) -> None:\n        self.title = \"Directory Tree & Text Viewer\"\n\n    def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:\n        text_display = self.query_one(TextDisplay)\n        try:\n            with open(event.file_path, \"r\", encoding=\"utf-8\") as f:\n                text_display.set_text(f.read())\n        except Exception as e:\n            text_display.set_text(f\"Error reading file: {type(e).__name__}: {e}\")\n\n\nif __name__ == \"__main__\":\n    app = DirectoryTextApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App\nfrom textual.containers import Horizontal\nfrom textual.widgets import DirectoryTree, Static\nfrom pathlib import Path\n\n\nclass TextDisplay(Static):\n    DEFAULT_CSS = \"\"\"\n    TextDisplay {\n        width: 1fr;\n        height: 100%;\n        border: solid $accent;\n        overflow: auto;\n    }\n    \"\"\"\n\n    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        self.text_content = \"\"\n\n    def render(self) -> str:\n        return self.text_content\n\n    def set_text(self, text: str) -> None:\n        self.text_content = text\n        self.update()\n\n\nclass DirectoryTextApp(App):\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n\n    Horizontal {\n        height: 100%;\n        width: 100%;\n    }\n\n    DirectoryTree {\n        width: 50%;\n        height: 100%;\n        border: solid $accent;\n    }\n\n    TextDisplay {\n        width: 50%;\n        height: 100%;\n    }\n    \"\"\"\n\n    def compose(self) -> ComposeResult:\n        with Horizontal():\n            yield DirectoryTree(str(Path.home()))\n            yield TextDisplay()\n\n    def on_mount(self) -> None:\n        self.title = \"Directory Tree & Text Viewer\"\n\n    def on_directory_tree_file_selected(self, event: DirectoryTree.FileSelected) -> None:\n        text_display = self.query_one(TextDisplay)\n        try:\n            with open(event.file_path, \"r\", encoding=\"utf-8\") as f:\n                text_display.set_text(f.read())\n        except Exception as e:\n            text_display.set_text(f\"Error reading file: {type(e).__name__}: {e}\")\n\n\nif __name__ == \"__main__\":\n    app = DirectoryTextApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2429,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6362,
+    "cost_usd": 0.0263875,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.7
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

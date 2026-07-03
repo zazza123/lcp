@@ -1,0 +1,29 @@
+{
+  "case_id": "pydantic-validate-call",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel, create_model, ValidationError\nfrom functools import wraps\nimport inspect\nfrom typing import get_type_hints\n\ndef validate_args(func):\n    \"\"\"Decorator that validates function arguments using Pydantic.\"\"\"\n    hints = get_type_hints(func)\n    sig = inspect.signature(func)\n    \n    field_definitions = {}\n    for param_name in sig.parameters:\n        param_type = hints.get(param_name, str)\n        field_definitions[param_name] = (param_type, ...)\n    \n    ValidatorModel = create_model('ValidatedArgs', **field_definitions)\n    \n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        bound = sig.bind(*args, **kwargs)\n        bound.apply_defaults()\n        validated = ValidatorModel(**bound.arguments)\n        return func(**validated.model_dump())\n    \n    return wrapper\n\n@validate_args\ndef add(a: int, b: int) -> int:\n    return a + b\n\n# Test: string arguments coerced to int\nprint(add(\"1\", \"2\"))  # Output: 3\n\n# Test: int arguments\nprint(add(1, 2))  # Output: 3\n\n# Test: invalid argument fails\ntry:\n    add(\"not_a_number\", \"2\")\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")",
+  "result_text": "```python\nfrom pydantic import BaseModel, create_model, ValidationError\nfrom functools import wraps\nimport inspect\nfrom typing import get_type_hints\n\ndef validate_args(func):\n    \"\"\"Decorator that validates function arguments using Pydantic.\"\"\"\n    hints = get_type_hints(func)\n    sig = inspect.signature(func)\n    \n    field_definitions = {}\n    for param_name in sig.parameters:\n        param_type = hints.get(param_name, str)\n        field_definitions[param_name] = (param_type, ...)\n    \n    ValidatorModel = create_model('ValidatedArgs', **field_definitions)\n    \n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        bound = sig.bind(*args, **kwargs)\n        bound.apply_defaults()\n        validated = ValidatorModel(**bound.arguments)\n        return func(**validated.model_dump())\n    \n    return wrapper\n\n@validate_args\ndef add(a: int, b: int) -> int:\n    return a + b\n\n# Test: string arguments coerced to int\nprint(add(\"1\", \"2\"))  # Output: 3\n\n# Test: int arguments\nprint(add(1, 2))  # Output: 3\n\n# Test: invalid argument fails\ntry:\n    add(\"not_a_number\", \"2\")\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2841,
+    "cache_read_tokens": 21378,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0163518,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pydantic:validate_call"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport subprocess\nfrom fastmcp import Client\n\nasync def main():\n    # Start the server process\n    process = subprocess.Popen(\n        [\"python\", \"server.py\"],\n        stdin=subprocess.PIPE,\n        stdout=subprocess.PIPE,\n    )\n    \n    # Connect client to server over stdio\n    async with Client(process) as client:\n        # List all tools\n        tools_response = await client.list_tools()\n        print(\"Available tools:\")\n        for tool in tools_response.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool with a=1, b=2\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nadd(a=1, b=2) = {result.content[0].text}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport subprocess\nfrom fastmcp import Client\n\nasync def main():\n    # Start the server process\n    process = subprocess.Popen(\n        [\"python\", \"server.py\"],\n        stdin=subprocess.PIPE,\n        stdout=subprocess.PIPE,\n    )\n    \n    # Connect client to server over stdio\n    async with Client(process) as client:\n        # List all tools\n        tools_response = await client.list_tools()\n        print(\"Available tools:\")\n        for tool in tools_response.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool with a=1, b=2\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nadd(a=1, b=2) = {result.content[0].text}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3177,
+    "cache_read_tokens": 21384,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.018032399999999997,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.6
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

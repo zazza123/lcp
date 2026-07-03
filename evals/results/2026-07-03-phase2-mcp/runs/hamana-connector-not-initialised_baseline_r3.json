@@ -1,0 +1,31 @@
+{
+  "case_id": "hamana-connector-not-initialised",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\n\ntry:\n    # Attempt to execute a query before initializing the database\n    result = hamana.query(\"SELECT * FROM users\")\nexcept hamana.NotInitializedError as e:\n    print(f\"Caught expected exception: {e}\")\n    print(\"Database must be initialized before executing queries\")",
+  "result_text": "```python\nimport hamana\n\ntry:\n    # Attempt to execute a query before initializing the database\n    result = hamana.query(\"SELECT * FROM users\")\nexcept hamana.NotInitializedError as e:\n    print(f\"Caught expected exception: {e}\")\n    print(\"Database must be initialized before executing queries\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 2091,
+    "cache_read_tokens": 108931,
+    "cache_creation_tokens": 11402,
+    "cost_usd": 0.04418910000000001,
+    "num_turns": 6,
+    "tool_calls": 4,
+    "duration_s": 31.0
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.db.exceptions:HamanaConnectorNotInitialised"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.NotInitializedError"
+    ],
+    "error": null
+  }
+}

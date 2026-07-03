@@ -1,0 +1,32 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.client import StdioClientTransport, ClientSession\n\nasync def main():\n    transport = StdioClientTransport(\"python\", \"server.py\")\n    \n    async with ClientSession(transport) as session:\n        # List tools\n        tools = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"Result of add(1, 2): {result}\")\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.client import StdioClientTransport, ClientSession\n\nasync def main():\n    transport = StdioClientTransport(\"python\", \"server.py\")\n    \n    async with ClientSession(transport) as session:\n        # List tools\n        tools = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"Result of add(1, 2): {result}\")\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4799,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6289,
+    "cost_usd": 0.0380915,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.5
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.client.ClientSession",
+      "fastmcp.client.StdioClientTransport"
+    ],
+    "error": null
+  }
+}

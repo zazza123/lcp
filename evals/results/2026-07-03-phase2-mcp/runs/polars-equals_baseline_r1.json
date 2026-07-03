@@ -1,0 +1,27 @@
+{
+  "case_id": "polars-equals",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n\ndef dataframes_equal(df1: pl.DataFrame, df2: pl.DataFrame) -> bool:\n    \"\"\"Check if two polars DataFrames are exactly equal (same schema and values).\"\"\"\n    return df1.equals(df2)\n\n\nif __name__ == \"__main__\":\n    # Identical DataFrames\n    df1 = pl.DataFrame({\"a\": [1, 2, 3], \"b\": [\"x\", \"y\", \"z\"]})\n    df2 = pl.DataFrame({\"a\": [1, 2, 3], \"b\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df2))  # True\n\n    # Different values\n    df3 = pl.DataFrame({\"a\": [1, 2, 4], \"b\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df3))  # False\n\n    # Different schema (column name)\n    df4 = pl.DataFrame({\"a\": [1, 2, 3], \"c\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df4))  # False\n\n    # Different schema (column type)\n    df5 = pl.DataFrame({\"a\": [\"1\", \"2\", \"3\"], \"b\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df5))  # False\n\n    # Empty DataFrames\n    df6 = pl.DataFrame({\"a\": pl.Int64([]), \"b\": pl.Utf8([])})\n    df7 = pl.DataFrame({\"a\": pl.Int64([]), \"b\": pl.Utf8([])})\n    print(dataframes_equal(df6, df7))  # True",
+  "result_text": "```python\nimport polars as pl\n\n\ndef dataframes_equal(df1: pl.DataFrame, df2: pl.DataFrame) -> bool:\n    \"\"\"Check if two polars DataFrames are exactly equal (same schema and values).\"\"\"\n    return df1.equals(df2)\n\n\nif __name__ == \"__main__\":\n    # Identical DataFrames\n    df1 = pl.DataFrame({\"a\": [1, 2, 3], \"b\": [\"x\", \"y\", \"z\"]})\n    df2 = pl.DataFrame({\"a\": [1, 2, 3], \"b\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df2))  # True\n\n    # Different values\n    df3 = pl.DataFrame({\"a\": [1, 2, 4], \"b\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df3))  # False\n\n    # Different schema (column name)\n    df4 = pl.DataFrame({\"a\": [1, 2, 3], \"c\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df4))  # False\n\n    # Different schema (column type)\n    df5 = pl.DataFrame({\"a\": [\"1\", \"2\", \"3\"], \"b\": [\"x\", \"y\", \"z\"]})\n    print(dataframes_equal(df1, df5))  # False\n\n    # Empty DataFrames\n    df6 = pl.DataFrame({\"a\": pl.Int64([]), \"b\": pl.Utf8([])})\n    df7 = pl.DataFrame({\"a\": pl.Int64([]), \"b\": pl.Utf8([])})\n    print(dataframes_equal(df6, df7))  # True\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1246,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6262,
+    "cost_usd": 0.0202725,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.8
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

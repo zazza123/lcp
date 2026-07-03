@@ -1,0 +1,30 @@
+{
+  "case_id": "hamana-csv-to-sqlite",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have documentation for the `hamana` library in my knowledge base. To write complete, runnable code, I need to know its API\u2014specifically:\n\n- How to initialize a connection (function/class name, parameters)?\n- How to load/insert CSV data (method names)?\n- How to create or target the SQLite table?\n\nCould you provide the hamana library's documentation or an example of its usage?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1865,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6370,
+    "cost_usd": 0.0235835,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.file:CSV",
+      "hamana.connector.file:CSV#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

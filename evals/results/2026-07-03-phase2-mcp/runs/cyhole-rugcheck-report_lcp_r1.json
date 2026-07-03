@@ -1,0 +1,30 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I need the Solana token mint address you want to check. Could you provide that? Once you do, I can write the complete code block.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1360,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6359,
+    "cost_usd": 0.0210365,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

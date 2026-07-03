@@ -1,0 +1,27 @@
+{
+  "case_id": "hamana-internal-shortcuts",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\n\nconn = hamana.connect(\":memory:\")\nresult = hamana.execute(\"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\")\nhamana.execute(\"INSERT INTO users (id, name) VALUES (1, 'Alice')\")\nhamana.execute(\"INSERT INTO users (id, name) VALUES (2, 'Bob')\")\nrows = hamana.execute(\"SELECT * FROM users\")\nprint(rows)\nhamana.disconnect()",
+  "result_text": "```python\nimport hamana\n\nconn = hamana.connect(\":memory:\")\nresult = hamana.execute(\"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\")\nhamana.execute(\"INSERT INTO users (id, name) VALUES (1, 'Alice')\")\nhamana.execute(\"INSERT INTO users (id, name) VALUES (2, 'Bob')\")\nrows = hamana.execute(\"SELECT * FROM users\")\nprint(rows)\nhamana.disconnect()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1337,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6374,
+    "cost_usd": 0.0209515,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.2
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

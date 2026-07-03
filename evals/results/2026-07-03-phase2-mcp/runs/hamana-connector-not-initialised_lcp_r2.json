@@ -1,0 +1,31 @@
+{
+  "case_id": "hamana-connector-not-initialised",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\n\ntry:\n    hamana.query(\"SELECT 1\")\nexcept hamana.NotInitialised as e:\n    print(f\"Caught NotInitialised exception: {e}\")",
+  "result_text": "```python\nimport hamana\n\ntry:\n    hamana.query(\"SELECT 1\")\nexcept hamana.NotInitialised as e:\n    print(f\"Caught NotInitialised exception: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1859,
+    "cache_read_tokens": 21461,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0114501,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.db.exceptions:HamanaConnectorNotInitialised"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.NotInitialised"
+    ],
+    "error": null
+  }
+}

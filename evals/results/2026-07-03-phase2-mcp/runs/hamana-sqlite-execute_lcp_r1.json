@@ -1,0 +1,30 @@
+{
+  "case_id": "hamana-sqlite-execute",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I'm not familiar with a `hamana` Python library in the standard Python ecosystem. I cannot find documentation or usage information for it, so I cannot confidently generate code that uses it correctly.\n\nCould you please provide:\n1. A link to the library's documentation or GitHub repository\n2. Example usage of the library\n3. Confirmation that it's installed (output from `pip show hamana`)\n\nOnce I understand the library's API, I'll be able to provide the correct code.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 827,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6369,
+    "cost_usd": 0.018391499999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db:SQLite#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

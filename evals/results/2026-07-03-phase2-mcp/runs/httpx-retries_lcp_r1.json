@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-retries",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\nfrom httpx import HTTPTransport\nimport time\n\ntransport = HTTPTransport(\n    limits=httpx.Limits(\n        max_connections=100,\n        max_keepalive_connections=20,\n    )\n)\n\nclient = httpx.Client(transport=transport, timeout=30.0)\n\ndef request_with_retries(method: str, url: str, max_retries: int = 3, **kwargs):\n    \"\"\"Make a request with automatic retries on connection failure.\"\"\"\n    for attempt in range(max_retries):\n        try:\n            response = client.request(method, url, **kwargs)\n            response.raise_for_status()\n            return response\n        except (httpx.ConnectError, httpx.TimeoutException) as e:\n            if attempt == max_retries - 1:\n                raise\n            wait_time = 2 ** attempt\n            print(f\"Attempt {attempt + 1} failed, retrying in {wait_time}s...\")\n            time.sleep(wait_time)\n\ntry:\n    response = request_with_retries(\"GET\", \"https://httpbin.org/status/200\")\n    print(f\"Success: {response.status_code}\")\nfinally:\n    client.close()",
+  "result_text": "```python\nimport httpx\nfrom httpx import HTTPTransport\nimport time\n\ntransport = HTTPTransport(\n    limits=httpx.Limits(\n        max_connections=100,\n        max_keepalive_connections=20,\n    )\n)\n\nclient = httpx.Client(transport=transport, timeout=30.0)\n\ndef request_with_retries(method: str, url: str, max_retries: int = 3, **kwargs):\n    \"\"\"Make a request with automatic retries on connection failure.\"\"\"\n    for attempt in range(max_retries):\n        try:\n            response = client.request(method, url, **kwargs)\n            response.raise_for_status()\n            return response\n        except (httpx.ConnectError, httpx.TimeoutException) as e:\n            if attempt == max_retries - 1:\n                raise\n            wait_time = 2 ** attempt\n            print(f\"Attempt {attempt + 1} failed, retrying in {wait_time}s...\")\n            time.sleep(wait_time)\n\ntry:\n    response = request_with_retries(\"GET\", \"https://httpbin.org/status/200\")\n    print(f\"Success: {response.status_code}\")\nfinally:\n    client.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1702,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6355,
+    "cost_usd": 0.022738500000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.3
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

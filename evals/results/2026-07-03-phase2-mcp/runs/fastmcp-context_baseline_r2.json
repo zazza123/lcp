@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import fastmcp\nimport asyncio\nfrom typing import Any\n\nserver = fastmcp.Server(\"progress-reporter\")\n\n@server.tool()\nasync def process_items_with_progress(items: list[str]) -> dict[str, Any]:\n    \"\"\"Process a list of items while reporting progress via MCP logging.\n    \n    Args:\n        items: List of items to process\n        \n    Returns:\n        Dictionary containing processing results and metadata\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for index, item in enumerate(items, 1):\n        # Log progress via MCP context\n        progress_message = f\"[{index}/{total}] Processing: {item}\"\n        print(progress_message)\n        \n        # Simulate processing work\n        await asyncio.sleep(0.1)\n        \n        # Store result\n        results.append({\n            \"item\": item,\n            \"status\": \"completed\"\n        })\n    \n    return {\n        \"total_items\": total,\n        \"processed_count\": len(results),\n        \"results\": results,\n        \"status\": \"success\"\n    }\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nimport fastmcp\nimport asyncio\nfrom typing import Any\n\nserver = fastmcp.Server(\"progress-reporter\")\n\n@server.tool()\nasync def process_items_with_progress(items: list[str]) -> dict[str, Any]:\n    \"\"\"Process a list of items while reporting progress via MCP logging.\n    \n    Args:\n        items: List of items to process\n        \n    Returns:\n        Dictionary containing processing results and metadata\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for index, item in enumerate(items, 1):\n        # Log progress via MCP context\n        progress_message = f\"[{index}/{total}] Processing: {item}\"\n        print(progress_message)\n        \n        # Simulate processing work\n        await asyncio.sleep(0.1)\n        \n        # Store result\n        results.append({\n            \"item\": item,\n            \"status\": \"completed\"\n        })\n    \n    return {\n        \"total_items\": total,\n        \"processed_count\": len(results),\n        \"results\": results,\n        \"status\": \"success\"\n    }\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2105,
+    "cache_read_tokens": 21365,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0126705,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.2
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:Context"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

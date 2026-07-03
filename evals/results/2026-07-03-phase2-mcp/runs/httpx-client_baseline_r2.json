@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-client",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\n\n# Create a reusable client with base URL and bearer token\nwith httpx.Client(base_url=\"https://api.example.com\") as client:\n    # Make GET request to /users with bearer token authorization\n    response = client.get(\"/users\", headers={\"Authorization\": \"Bearer YOUR_TOKEN_HERE\"})\n    \n    print(f\"Status Code: {response.status_code}\")\n    print(response.text)",
+  "result_text": "```python\nimport httpx\n\n# Create a reusable client with base URL and bearer token\nwith httpx.Client(base_url=\"https://api.example.com\") as client:\n    # Make GET request to /users with bearer token authorization\n    response = client.get(\"/users\", headers={\"Authorization\": \"Bearer YOUR_TOKEN_HERE\"})\n    \n    print(f\"Status Code: {response.status_code}\")\n    print(response.text)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1489,
+    "cache_read_tokens": 21371,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.009591100000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.7
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

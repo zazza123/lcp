@@ -1,0 +1,32 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.client import AsyncClientSession\nfrom fastmcp.client.stdio import StdioClientTransport\n\n\nasync def main():\n    transport = StdioClientTransport(command=\"python\", args=[\"server.py\"])\n    \n    async with AsyncClientSession(transport) as session:\n        # List tools\n        tools = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool with a=1, b=2\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult of add(a=1, b=2): {result}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.client import AsyncClientSession\nfrom fastmcp.client.stdio import StdioClientTransport\n\n\nasync def main():\n    transport = StdioClientTransport(command=\"python\", args=[\"server.py\"])\n    \n    async with AsyncClientSession(transport) as session:\n        # List tools\n        tools = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool with a=1, b=2\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult of add(a=1, b=2): {result}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1454,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6385,
+    "cost_usd": 0.0215585,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.0
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.client.AsyncClientSession",
+      "fastmcp.client.stdio.StdioClientTransport"
+    ],
+    "error": null
+  }
+}

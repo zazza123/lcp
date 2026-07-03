@@ -1,0 +1,29 @@
+{
+  "case_id": "httpx-retries",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\nfrom httpx._transports.retries import Retry\n\n# Synchronous client with retry configuration\nretry = Retry(max_retries=3)\ntransport = httpx.HTTPTransport(retries=retry)\nclient = httpx.Client(transport=transport)\n\n# Example usage\ntry:\n    response = client.get(\"https://httpbin.org/get\")\n    print(response.status_code)\nfinally:\n    client.close()\n\n# Asynchronous client with retry configuration\nasync_retry = Retry(max_retries=3)\nasync_transport = httpx.AsyncHTTPTransport(retries=async_retry)\nasync_client = httpx.AsyncClient(transport=async_transport)\n\n# Example async usage\nimport asyncio\n\nasync def main():\n    try:\n        response = await async_client.get(\"https://httpbin.org/get\")\n        print(response.status_code)\n    finally:\n        await async_client.aclose()\n\nasyncio.run(main())",
+  "result_text": "```python\nimport httpx\nfrom httpx._transports.retries import Retry\n\n# Synchronous client with retry configuration\nretry = Retry(max_retries=3)\ntransport = httpx.HTTPTransport(retries=retry)\nclient = httpx.Client(transport=transport)\n\n# Example usage\ntry:\n    response = client.get(\"https://httpbin.org/get\")\n    print(response.status_code)\nfinally:\n    client.close()\n\n# Asynchronous client with retry configuration\nasync_retry = Retry(max_retries=3)\nasync_transport = httpx.AsyncHTTPTransport(retries=async_retry)\nasync_client = httpx.AsyncClient(transport=async_transport)\n\n# Example async usage\nimport asyncio\n\nasync def main():\n    try:\n        response = await async_client.get(\"https://httpbin.org/get\")\n        print(response.status_code)\n    finally:\n        await async_client.aclose()\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 655,
+    "cache_read_tokens": 21450,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005429,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "httpx._transports.retries.Retry"
+    ],
+    "error": null
+  }
+}

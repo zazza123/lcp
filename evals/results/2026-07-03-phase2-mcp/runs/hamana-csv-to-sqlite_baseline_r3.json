@@ -1,0 +1,32 @@
+{
+  "case_id": "hamana-csv-to-sqlite",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nimport pandas as pd\n\ndf = pd.read_csv('sales.csv')\nhamana.insert_into_database('sales', df)",
+  "result_text": "```python\nimport hamana\nimport pandas as pd\n\ndf = pd.read_csv('sales.csv')\nhamana.insert_into_database('sales', df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1323,
+    "cache_read_tokens": 21369,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0087609,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.file:CSV",
+      "hamana.connector.file:CSV#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.insert_into_database"
+    ],
+    "error": null
+  }
+}
