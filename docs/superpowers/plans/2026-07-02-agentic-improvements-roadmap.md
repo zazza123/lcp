@@ -52,6 +52,17 @@ opposite.
 - Every phase ends with: full test suite green (`pytest`), docs updated,
   `mkdocs build --strict` clean, and (for phases 2–4) an eval-harness run
   recorded in the results log.
+- **Docs-alignment rule:** from Phase 2 onward, any phase that changes
+  behavior, the MCP surface, or the manifest format MUST update the
+  user-facing docs (`docs/guides`, `docs/spec`, `docs/cli.md`, plugin skills)
+  via the `lcp-writing-documentation` skill *in the same phase* — that is the
+  shipped documentation; keep it aligned as you go, don't defer it all to
+  Phase 6. (Design-only phases like Phase 1 have no user docs to touch.)
+- **Internal-docs handling:** `docs/superpowers/` is gitignored; phase
+  deliverables there (this roadmap, design specs) are force-added
+  (`git add -f`) onto `roadmap/agentic-improvements`. Before that branch
+  merges into `main`, strip `docs/superpowers/` (see post-roadmap cleanup) so
+  `main` never carries internal working docs.
 
 ---
 
@@ -160,7 +171,15 @@ code and verification detail).
 
 ## Phase 1 — "V2 surface" design spec (interface + manifest additions)
 
-**Status:** not started
+**Status:** done (2026-07-03) — spec at
+`docs/superpowers/specs/2026-07-03-v2-surface-design.md`; every open decision
+below has a written answer with rationale (D0–D12). Key settlements:
+FastMCP target `>=3.0,<4` (migrate in Phase 2, not a new phase); `list_symbols`
+folded into `search`; structured error dicts everywhere; `library` required
+when ≥2 libs loaded; `lcp serve` deprecated → `serve-all --expose`; alias =
+additive `Symbol.aliases: list[str]` with index-time member expansion;
+docstrings parsed via `docstring_parser` (core dep, generate-time only);
+all additive under schema `"1.0"`.
 
 **Baseline evidence (2026-07-03):** F1 makes tool *adoption* the design's
 first-class goal — tool names, descriptions and the MCP `instructions` field
@@ -189,9 +208,9 @@ representation that the consolidated `get_symbol` can't serve efficiently.
   3. `get_symbol(ids: list[str], library?)` — batch; classes include members
      inline (summaries), functions include full signature + structured docs
   4. `get_overview(library?)` — manifest metadata + module tree with symbol
-     counts (replaces `get_manifest` + `list_modules`; decide whether
-     `list_symbols` survives as a browse fallback or folds into `search`
-     with empty query + module filter)
+     counts (replaces `get_manifest` + `list_modules`). **Settled (spec D3):**
+     `list_symbols` is removed — browse is `search("", module=…, kind=…)` with
+     deterministic `(kind, name)` order, structure is `get_overview`.
 - Removals: `get_usage_guide` (content moves to the MCP `instructions` field
   and tool descriptions), `get_suggestions` (bag-of-words matcher; an LLM
   with good `search` beats it), `explore_return_type` (its useful part —
@@ -270,8 +289,12 @@ feed the API reference).
   real context-blowout, not a theoretical one.
 - `get_usage_guide` is duplicated verbatim in both servers (`:461`, `:1005`);
   its content maps 1:1 onto the `FastMCP(name, instructions=...)` constructor
-  argument. A comment at `:1472` says the project runs FastMCP 3.x — verify
-  `instructions` support in the pinned version before relying on it.
+  argument, confirmed present in the installed 2.14.4 and retained in 3.x.
+  (The comment at `:1472` claiming FastMCP 3.x is wrong — the project runs
+  2.14.4.) **Spec D0:** this phase migrates the pin to `fastmcp>=3.0,<4`
+  while it rewrites the surface; verify on 3.x: tool registration + the
+  `tool_funcs` replacement (preload depends on it), the `instructions`
+  argument, and in-process tool invocation used by tests.
 - The implicit default library is `MultiLibraryIndex._default`, silently
   reassigned by every `add()` (`:65-68`) — that is the race behind the
   ambiguous-`library` decision.
@@ -657,7 +680,10 @@ committed, config pinned); README leads with the headline number.
 
 ## Post-roadmap cleanup (after Phase 8)
 
-Once the roadmap is complete, remove the scaffolding it needed:
+Once the roadmap is complete, remove the scaffolding it needed. **This cleanup
+happens on `roadmap/agentic-improvements` before it merges into `main`** — the
+internal docs live on the roadmap branch during development but must not reach
+`main`:
 
 - Remove the **Active Roadmap** section from `CLAUDE.md` (it exists only to
   route sessions to this file while the work is in flight).
