@@ -452,20 +452,21 @@ class TestLCPIndex:
         assert len(lcp_index.symbols_by_kind["function"]) > 0
         assert len(lcp_index.symbols_by_kind["class"]) > 0
 
-    def test_class_members(self, lcp_index: LCPIndex):
-        """Should index class members."""
-        # Find a class ID
-        class_ids = [
-            sid for sid in lcp_index.symbols_by_id.keys()
-            if lcp_index.symbols_by_id[sid].kind.value == "class"
+    def test_class_members(self):
+        """Should index class members under their class id."""
+        idx = make_index(
+            {
+                "fake:Widget": make_symbol("class"),
+                "fake:Widget#spin": make_symbol("method"),
+                "fake:Widget#size": make_symbol("attribute"),
+                "fake:loose_fn": make_symbol("function"),
+            }
+        )
+        assert sorted(idx.class_members["fake:Widget"]) == [
+            "fake:Widget#size",
+            "fake:Widget#spin",
         ]
-        assert len(class_ids) > 0
-
-        # Check if class has members indexed
-        for class_id in class_ids:
-            if class_id in lcp_index.class_members:
-                members = lcp_index.class_members[class_id]
-                assert all("#" in member_id for member_id in members)
+        assert "fake:loose_fn" not in idx.class_members
 
     def test_modules_set(self, lcp_index: LCPIndex):
         """Should collect all unique modules."""
@@ -1118,3 +1119,90 @@ class TestCreateServerDeprecated:
         with pytest.warns(DeprecationWarning):
             server = create_server(sample_lcp_file, name="custom-name")
         assert server.mcp.name == "custom-name"
+
+
+class TestReviewFindings:
+    """Regression tests for the Phase 2 independent-review findings."""
+
+    def test_single_oversized_symbol_still_returned(self):
+        """A symbol bigger than the cap must degrade, never disappear."""
+        symbols = {
+            "fake:Big": make_symbol(
+                "class", summary="Big.", description="d" * 30_000
+            )
+        }
+        for i in range(300):
+            symbols[f"fake:Big#m{i:03d}"] = make_symbol("method", summary="z" * 150)
+        idx = make_index(symbols)
+        result = _get_symbols(idx, ["fake:Big"], max_bytes=25_000)
+        assert [s["id"] for s in result["symbols"]] == ["fake:Big"]
+        assert "not_returned" not in result
+        sym = result["symbols"][0]
+        assert sym.get("members_truncated") is True
+        # the returned entry itself respects the cap
+        assert len(json.dumps(sym, default=str)) <= 25_000
+
+    def test_not_found_and_truncation_hints_coexist(self):
+        big = {
+            f"fake:f{i:02d}": make_symbol("function", summary="y" * 400)
+            for i in range(40)
+        }
+        idx = make_index(big)
+        result = _get_symbols(idx, ["fake:missing", *sorted(big)], max_bytes=2_000)
+        assert result["not_found"] == ["fake:missing"]
+        assert result["truncated"] is True
+        assert "not found" in result["hint"]
+        assert "byte cap" in result["hint"]
+
+    def test_overview_truncation_has_hint(self):
+        idx = make_index(
+            {
+                f"fake.m{i:03d}:f": make_symbol("function", module=f"fake.m{i:03d}")
+                for i in range(600)
+            }
+        )
+        result = _overview(idx, max_bytes=1_000)
+        assert result["truncated"] is True
+        assert "hint" in result
+
+    def test_blank_expose_fails_closed(self, tmp_path):
+        server = create_universal_server(
+            cache_dir=tmp_path / "cache", no_cache=True, expose=["  "]
+        )
+        result = server.tools["resolve_library"](name="json")
+        assert result["error"]["code"] == "library_not_exposed"
+
+    def test_resolve_reports_registration_key(self, tmp_path, sample_lcp_file):
+        """The response 'name' must be the key usable as library=..."""
+        doc = load_lcp_document(sample_lcp_file)
+        mock_response = MagicMock()
+        mock_response.read.return_value = doc.model_dump_json().encode()
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        server = create_universal_server(
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+            registry_url="https://registry.example.com",
+        )
+        with patch("urllib.request.urlopen", return_value=mock_response):
+            result = server.tools["resolve_library"](
+                name="nonexistent_package_xyz_123"
+            )
+        assert result["name"] == "nonexistent_package_xyz_123"
+        follow_up = server.tools["get_overview"](
+            library="nonexistent_package_xyz_123"
+        )
+        assert "error" not in follow_up
+
+    def test_create_server_resolve_does_not_override_manifest(
+        self, sample_lcp_file
+    ):
+        """resolve_library must not clobber a manifest-pinned library."""
+        with pytest.warns(DeprecationWarning):
+            server = create_server(sample_lcp_file)
+        result = server.tools["resolve_library"](name="tests.sample_module")
+        assert result["status"] == "loaded"
+        assert result["source"] == "manifest"
+        overview = server.tools["get_overview"]()
+        assert overview["library"]["source"] == "manifest"
