@@ -20,6 +20,7 @@ from lcp.mcp_server import (
     _fetch_from_registry,
     _fit_list,
     _import_statement,
+    _search_index,
     _symbol_name,
     create_server,
     create_universal_server,
@@ -178,6 +179,123 @@ class TestFitList:
 
     def test_default_budget_constant(self):
         assert DEFAULT_MAX_RESPONSE_BYTES == 25_000
+
+
+@pytest.fixture
+def ranking_index() -> LCPIndex:
+    """Synthetic index with one hit per ranking tier for query 'get'."""
+    return make_index(
+        {
+            "fake:get": make_symbol("function", summary="Send a request."),
+            "fake:getattr_helper": make_symbol("function", summary="Helper."),
+            "fake:widget_getter": make_symbol("function", summary="A widget."),
+            "fake:fetch": make_symbol(
+                "function", summary="Alias to get a resource."
+            ),
+            "fake:pull": make_symbol(
+                "function", summary="Pull.", description="Wraps get internally."
+            ),
+            "fake:unrelated": make_symbol("function", summary="Nothing here."),
+            "fake:Client": make_symbol("class", summary="A client."),
+            "fake:Client#get": make_symbol("method", summary="Client get."),
+        }
+    )
+
+
+class TestSearchRanking:
+    def test_tier_order(self, ranking_index):
+        result = _search_index(ranking_index, "get")
+        ids = [r["id"] for r in result["results"]]
+        # exact name (tie-break by id) > prefix > substring > summary > description
+        assert ids == [
+            "fake:Client#get",      # name 'get' == query (id tie-break: C < g)
+            "fake:get",             # name 'get' == query
+            "fake:getattr_helper",  # prefix
+            "fake:widget_getter",   # substring
+            "fake:fetch",           # summary
+            "fake:pull",            # description
+        ]
+        assert result["total"] == 6
+        assert result["truncated"] is False
+
+    def test_hit_shape(self, ranking_index):
+        hit = _search_index(ranking_index, "get")["results"][1]
+        assert hit == {
+            "id": "fake:get",
+            "kind": "function",
+            "summary": "Send a request.",
+            "import": "from fake import get",
+        }
+
+    def test_case_insensitive(self, ranking_index):
+        result = _search_index(ranking_index, "GET")
+        assert result["results"][1]["id"] == "fake:get"
+
+    def test_no_matches(self, ranking_index):
+        result = _search_index(ranking_index, "zzz_nope")
+        assert result == {"results": [], "total": 0, "truncated": False}
+
+
+class TestSearchLimitAndCaps:
+    def test_limit_truncates(self, ranking_index):
+        result = _search_index(ranking_index, "get", limit=2)
+        assert len(result["results"]) == 2
+        assert result["total"] == 6
+        assert result["truncated"] is True
+
+    def test_limit_clamped_to_100(self):
+        idx = make_index(
+            {f"fake:sym{i:03d}": make_symbol("function") for i in range(150)}
+        )
+        result = _search_index(idx, "sym", limit=999)
+        assert len(result["results"]) == 100
+        assert result["truncated"] is True
+
+    def test_byte_cap_truncates(self, ranking_index):
+        result = _search_index(ranking_index, "get", max_bytes=250)
+        assert result["truncated"] is True
+        assert 0 < len(result["results"]) < 6
+
+
+class TestSearchBrowseMode:
+    """D3: empty query = browse, deterministic (kind, name) order."""
+
+    def test_empty_query_orders_by_kind_then_name(self, ranking_index):
+        result = _search_index(ranking_index, "")
+        ids = [r["id"] for r in result["results"]]
+        assert ids == [
+            "fake:Client",           # class
+            "fake:fetch",            # functions, by name
+            "fake:get",
+            "fake:getattr_helper",
+            "fake:pull",
+            "fake:unrelated",
+            "fake:widget_getter",
+            "fake:Client#get",       # method
+        ]
+
+    def test_browse_with_kind_filter(self, ranking_index):
+        result = _search_index(ranking_index, "", kind="class")
+        assert [r["id"] for r in result["results"]] == ["fake:Client"]
+
+    def test_browse_with_module_filter(self):
+        idx = make_index(
+            {
+                "fake.a:one": make_symbol("function", module="fake.a"),
+                "fake.b:two": make_symbol("function", module="fake.b"),
+            }
+        )
+        result = _search_index(idx, "", module="fake.a")
+        assert [r["id"] for r in result["results"]] == ["fake.a:one"]
+
+    def test_invalid_kind_error(self, ranking_index):
+        result = _search_index(ranking_index, "get", kind="wibble")
+        assert result["error"]["code"] == "invalid_kind"
+        assert "function" in result["error"]["hint"]
+
+    def test_query_with_kind_filter(self, ranking_index):
+        result = _search_index(ranking_index, "get", kind="method")
+        assert [r["id"] for r in result["results"]] == ["fake:Client#get"]
 
 
 class TestLoadLCPDocument:
