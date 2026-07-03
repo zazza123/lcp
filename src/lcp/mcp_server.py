@@ -546,12 +546,105 @@ def resolve_library_document(
     ) from scan_error
 
 
+_VALID_KINDS = [k.value for k in SymbolKind]
+
+
 def _symbol_summary(symbol_id: str, symbol: Symbol) -> dict[str, Any]:
-    """Create a lightweight summary of a symbol."""
+    """Create a compact search/browse hit for a symbol (spec D4)."""
     return {
         "id": symbol_id,
         "kind": symbol.kind.value,
         "summary": symbol.semantics.summary,
+        "import": _import_statement(symbol_id, symbol.kind),
+    }
+
+
+def _search_index(
+    index: LCPIndex,
+    query: str,
+    module: str | None = None,
+    kind: str | None = None,
+    limit: int = 20,
+    max_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+) -> dict[str, Any]:
+    """Ranked, capped symbol search over one library index (spec D3/D4/D6).
+
+    Ranking tiers: exact name > name prefix > name substring > summary
+    substring > description substring; ties break by id. An empty *query*
+    browses instead: results are ordered by ``(kind, name, id)``.
+
+    Args:
+        index: The library index to search.
+        query: Case-insensitive text; empty string means "browse".
+        module: Optional module-path filter.
+        kind: Optional symbol-kind filter (validated).
+        limit: Maximum hits to return, clamped to 1..100 (default 20).
+        max_bytes: Byte budget for the results list.
+
+    Returns:
+        ``{"results": [...], "total": N, "truncated": bool}`` or a D5 error
+        dict when *kind* is invalid.
+    """
+    if kind is not None and kind not in _VALID_KINDS:
+        return _error(
+            "invalid_kind",
+            f"Invalid kind '{kind}'.",
+            hint=f"Valid kinds: {', '.join(_VALID_KINDS)}.",
+        )
+    limit = max(1, min(int(limit), 100))
+
+    if module is not None:
+        candidates = list(index.symbols_by_module.get(module, []))
+    else:
+        candidates = list(index.symbols_by_id)
+    if kind is not None:
+        kind_ids = set(index.symbols_by_kind.get(kind, []))
+        candidates = [sid for sid in candidates if sid in kind_ids]
+
+    q = query.strip().lower()
+    if not q:
+        # Browse mode: no relevance to rank by — deterministic (kind, name, id)
+        ranked = sorted(
+            candidates,
+            key=lambda sid: (
+                index.symbols_by_id[sid].kind.value,
+                _symbol_name(sid).lower(),
+                sid,
+            ),
+        )
+    else:
+        scored: list[tuple[int, str]] = []
+        for sid in candidates:
+            symbol = index.symbols_by_id[sid]
+            name = _symbol_name(sid).lower()
+            if name == q:
+                score = 0
+            elif name.startswith(q):
+                score = 1
+            elif q in name:
+                score = 2
+            elif q in symbol.semantics.summary.lower():
+                score = 3
+            elif (
+                symbol.semantics.description
+                and q in symbol.semantics.description.lower()
+            ):
+                score = 4
+            else:
+                continue
+            scored.append((score, sid))
+        scored.sort()
+        ranked = [sid for _, sid in scored]
+
+    total = len(ranked)
+    hits = [
+        _symbol_summary(sid, index.symbols_by_id[sid]) for sid in ranked[:limit]
+    ]
+    hits, byte_truncated = _fit_list(hits, max_bytes)
+    return {
+        "results": hits,
+        "total": total,
+        "truncated": byte_truncated or total > len(hits),
     }
 
 
