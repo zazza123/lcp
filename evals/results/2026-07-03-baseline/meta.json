@@ -1,0 +1,9 @@
+{
+  "date": "2026-07-03",
+  "model": "claude-haiku-4-5-20251001",
+  "claude_cli_version": "2.1.198-2.1.199 (CLI auto-updated during the session; all 168 runs on 2026-07-03)",
+  "workers": 2,
+  "reps": 3,
+  "cases": 28,
+  "notes": "tool_calls counts attempts including permission-denied ones; residual built-ins verified inert (sandbox/approval)"
+}

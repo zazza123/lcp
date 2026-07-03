@@ -1,6 +1,6 @@
 import pytest
 
-from harness.extract import CodeUsage, extract_code_blocks, extract_usage
+from harness.extract import extract_code_blocks, extract_usage
 
 
 class TestExtractCodeBlocks:
