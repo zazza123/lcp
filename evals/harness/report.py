@@ -57,9 +57,9 @@ def render_markdown(summary: dict) -> str:
         "",
         "## By configuration",
         "",
-        "| Arm | Runs | Pass rate | Misuse/run | Errors | In tok (mean) | "
+        "| Arm | Runs | Pass rate | Misuse/run | Errors | In tok (mean) | " +
         "Out tok (mean) | Tool calls (mean) | Cost (total) |",
-        "|-----|------|-----------|------------|--------|---------------|"
+        "|-----|------|-----------|------------|--------|---------------|" +
         "----------------|-------------------|--------------|",
     ]
     for arm, s in summary["arms"].items():
