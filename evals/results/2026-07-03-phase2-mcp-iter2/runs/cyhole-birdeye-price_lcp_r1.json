@@ -1,0 +1,27 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye.interaction import Birdeye\n\nbirdeye = Birdeye()\nresponse = birdeye.client.get_price(address=\"EPjFWaLb3odccjf2cj9QC5de4Uj8bxvj8rB3jVJQXgL\")\nprint(f\"Current price: {response.data.value} USD\")",
+  "result_text": "```python\nfrom cyhole.birdeye.interaction import Birdeye\n\nbirdeye = Birdeye()\nresponse = birdeye.client.get_price(address=\"EPjFWaLb3odccjf2cj9QC5de4Uj8bxvj8rB3jVJQXgL\")\nprint(f\"Current price: {response.data.value} USD\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 32,
+    "output_tokens": 990,
+    "cache_read_tokens": 85156,
+    "cache_creation_tokens": 15424,
+    "cost_usd": 0.0443456,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 18.1
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

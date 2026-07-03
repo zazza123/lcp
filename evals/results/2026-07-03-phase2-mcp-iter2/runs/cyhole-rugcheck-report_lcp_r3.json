@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport json\nfrom cyhole import Rugcheck\n\nasync def get_token_risk_report(mint_address: str) -> dict:\n    \"\"\"\n    Retrieve the full risk report for a Solana token using Rugcheck.\n    \n    Args:\n        mint_address: The Solana token mint address\n        \n    Returns:\n        Full risk report as a dictionary\n    \"\"\"\n    rugcheck = Rugcheck()\n    report = await rugcheck.token_risk(mint_address)\n    return report\n\n\nasync def main():\n    # Example: Replace with your target Solana token mint address\n    mint_address = \"EPjFWaLb3odcccccccccccccccccccccccccccccccc\"  # Example: USDC\n    \n    print(f\"Retrieving Rugcheck risk report for: {mint_address}\\n\")\n    \n    report = await get_token_risk_report(mint_address)\n    \n    print(json.dumps(report, indent=2, default=str))\n    \n    return report\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport json\nfrom cyhole import Rugcheck\n\nasync def get_token_risk_report(mint_address: str) -> dict:\n    \"\"\"\n    Retrieve the full risk report for a Solana token using Rugcheck.\n    \n    Args:\n        mint_address: The Solana token mint address\n        \n    Returns:\n        Full risk report as a dictionary\n    \"\"\"\n    rugcheck = Rugcheck()\n    report = await rugcheck.token_risk(mint_address)\n    return report\n\n\nasync def main():\n    # Example: Replace with your target Solana token mint address\n    mint_address = \"EPjFWaLb3odcccccccccccccccccccccccccccccccc\"  # Example: USDC\n    \n    print(f\"Retrieving Rugcheck risk report for: {mint_address}\\n\")\n    \n    report = await get_token_risk_report(mint_address)\n    \n    print(json.dumps(report, indent=2, default=str))\n    \n    return report\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 744,
+    "cache_read_tokens": 21476,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005876599999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.5
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [
+      "cyhole:Rugcheck"
+    ],
+    "unresolved_usages": [
+      "cyhole.Rugcheck"
+    ],
+    "error": null
+  }
+}

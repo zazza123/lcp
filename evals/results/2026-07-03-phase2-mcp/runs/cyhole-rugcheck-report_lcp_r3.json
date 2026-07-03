@@ -1,0 +1,30 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I notice this request is unrelated to the lcp project. However, I can't verify the exact API of `cyhole` 0.3.0 without documentation. Before providing code, I need clarification:\n\n1. What is the exact function/method name to fetch Rugcheck data? (e.g., `RugcheckClient.get_report()`, `cyhole.rugcheck.risk_report()`, etc.)\n2. Should the mint address be a hardcoded example or a function parameter?\n3. What output format do you need? (raw JSON, parsed object, etc.)\n\nIf you can provide the cyhole 0.3.0 documentation or an example call, I can write the complete code.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1396,
+    "cache_read_tokens": 21454,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0091344,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

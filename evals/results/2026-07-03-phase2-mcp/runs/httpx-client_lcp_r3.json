@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-client",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\n\n# Create a reusable HTTP client with base URL and authorization\nclient = httpx.Client(\n    base_url=\"https://api.example.com\",\n    headers={\"Authorization\": \"Bearer YOUR_TOKEN_HERE\"}\n)\n\ntry:\n    # Make a GET request to /users\n    response = client.get(\"/users\")\n    response.raise_for_status()\n    print(f\"Status Code: {response.status_code}\")\n    print(f\"Response: {response.json()}\")\nfinally:\n    # Close the client\n    client.close()",
+  "result_text": "```python\nimport httpx\n\n# Create a reusable HTTP client with base URL and authorization\nclient = httpx.Client(\n    base_url=\"https://api.example.com\",\n    headers={\"Authorization\": \"Bearer YOUR_TOKEN_HERE\"}\n)\n\ntry:\n    # Make a GET request to /users\n    response = client.get(\"/users\")\n    response.raise_for_status()\n    print(f\"Status Code: {response.status_code}\")\n    print(f\"Response: {response.json()}\")\nfinally:\n    # Close the client\n    client.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 873,
+    "cache_read_tokens": 21467,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.006520700000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.2
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "case_id": "cyhole-missing-api-key",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.birdeye.interaction import Birdeye\nfrom cyhole.core.exception import MissingAPIKeyError\n\nos.environ.pop('BIRDEYE_API_KEY', None)\n\ntry:\n    birdeye = Birdeye(api_key=None)\nexcept MissingAPIKeyError as e:\n    print(f\"Caught MissingAPIKeyError: {e}\")",
+  "result_text": "**Phase 2 & 3: Pattern Analysis and Hypothesis**\n\nI've confirmed:\n- The `Birdeye` class from `cyhole.birdeye.interaction` accepts an optional `api_key` parameter\n- When no API key is provided (neither in constructor nor in `BIRDEYE_API_KEY` environment variable), it raises `MissingAPIKeyError` from `cyhole.core.exception`\n\n```python\nimport os\nfrom cyhole.birdeye.interaction import Birdeye\nfrom cyhole.core.exception import MissingAPIKeyError\n\nos.environ.pop('BIRDEYE_API_KEY', None)\n\ntry:\n    birdeye = Birdeye(api_key=None)\nexcept MissingAPIKeyError as e:\n    print(f\"Caught MissingAPIKeyError: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 64,
+    "output_tokens": 2676,
+    "cache_read_tokens": 218060,
+    "cache_creation_tokens": 18578,
+    "cost_usd": 0.072406,
+    "num_turns": 11,
+    "tool_calls": 8,
+    "duration_s": 40.5
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

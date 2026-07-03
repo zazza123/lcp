@@ -1,0 +1,30 @@
+{
+  "case_id": "hamana-sqlite-execute",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I'm not familiar with a Python library called \"hamana\" version 1.0.1. I cannot write code using a library I cannot verify exists or understand its API.\n\nCould you provide:\n- A link to the library's documentation or repository\n- The correct library name if this is a typo\n- Example usage showing how to connect and query with this library\n\nIf you meant a different database library (like `sqlite3`, `sqlalchemy`, `pandas`, or another), I'm happy to help with that instead.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 576,
+    "cache_read_tokens": 21464,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005035400000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.5
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db:SQLite#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

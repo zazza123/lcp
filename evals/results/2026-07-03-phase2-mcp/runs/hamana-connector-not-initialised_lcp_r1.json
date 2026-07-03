@@ -1,0 +1,27 @@
+{
+  "case_id": "hamana-connector-not-initialised",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana.connector.db.hamana import execute\nfrom hamana.connector.db.exceptions import HamanaConnectorNotInitialised\n\ntry:\n    # Try to execute a query without initializing the database connection\n    result = execute(\"SELECT * FROM some_table\")\nexcept HamanaConnectorNotInitialised as e:\n    print(f\"Caught expected exception: {type(e).__name__}\")\n    print(f\"Error message: {e}\")",
+  "result_text": "```python\nfrom hamana.connector.db.hamana import execute\nfrom hamana.connector.db.exceptions import HamanaConnectorNotInitialised\n\ntry:\n    # Try to execute a query without initializing the database connection\n    result = execute(\"SELECT * FROM some_table\")\nexcept HamanaConnectorNotInitialised as e:\n    print(f\"Caught expected exception: {type(e).__name__}\")\n    print(f\"Error message: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 83,
+    "output_tokens": 3060,
+    "cache_read_tokens": 266508,
+    "cache_creation_tokens": 15932,
+    "cost_usd": 0.07389780000000001,
+    "num_turns": 13,
+    "tool_calls": 12,
+    "duration_s": 44.9
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -248,7 +248,21 @@ updated if the spec contradicts them.
 
 ## Phase 2 — MCP consolidation
 
-**Status:** not started — blocked by Phase 1
+**Status:** done (2026-07-03) — plan:
+`docs/superpowers/plans/2026-07-03-phase-2-mcp-consolidation.md`. Shipped: the
+four-tool V2 surface (resolve_library/search/get_symbol/get_overview) behind a
+single `_register_tools()` path, `LCPServer` replacing `tool_funcs`, D5 error
+dicts + D7 disambiguation, byte caps (25k default, `--max-response-bytes`),
+`fastmcp>=3.0,<4`, `lcp serve` deprecated (D8), plugin + docs aligned. Eval
+re-run recorded below; exit-criteria delta: LCP-arm cost overhead 48%→7% with
+output tokens below the baseline arm, plugin smoke test answered a signature
+question in exactly 3 calls. **F1 residual (recorded per the gate rule):**
+fastmcp-class adoption stayed at 0 voluntary calls across two instruction
+iterations even though a probe confirmed the server `instructions` reach the
+model verbatim and cyhole/hamana (known-unknown libs) do get calls — with
+haiku headless this is a model-compliance limit, not a discovery failure. The
+remaining F1 levers are client-side (the plugin skills, which this harness
+deliberately excludes) and the Phase 8 task mix/model choice.
 
 **Baseline evidence (2026-07-03):** this phase carries F1 — the skills/
 `instructions` rewrite is where "the agent never asks" gets fixed. The
@@ -703,6 +717,9 @@ internal docs live on the roadmap branch during development but must not reach
 |------|-------|--------|-------------|-----------|-------------|-----------------|-------|
 | 2026-07-03 | 0 baseline (no LCP) | haiku-4.5, 28 cases, 3 reps | 0.46/run | 45% | ~1501 (13 in + 1488 out) | 0.5 | static checks only; tool calls count attempts (residual built-ins denied) |
 | 2026-07-03 | 0 baseline (LCP current) | haiku-4.5, 28 cases, 3 reps | 0.43/run | 52% | ~1643 (21 in + 1622 out) | 1.7 | serve-all, --expose 7 libs; delta within noise; low voluntary tool use |
+| 2026-07-03 | 2 (no LCP) | haiku-4.5, 28 cases, 3 reps | 0.31/run | 45% | ~1664 (11 in + 1653 out) | 0.3 | fresh baseline arm, same pass rate as Phase 0 |
+| 2026-07-03 | 2 (LCP V2 surface) | haiku-4.5, 28 cases, 3 reps | 0.32/run | 52% | ~1418 (13 in + 1405 out) | 0.65 | 4-tool surface: LCP-arm cost overhead 48%→7%, output tokens now BELOW baseline arm; cyhole 0/12→2/12 pass, misuse 13→8 (F2 import lines working); hamana same outcome at 7.6→1.0 calls/run; fastmcp still 0 voluntary calls |
+| 2026-07-03 | 2 iter2 (LCP arm, fastmcp+cyhole) | haiku-4.5, 8 cases, 3 reps | — | cyhole 4/12, fastmcp 1/12 | — | cyhole 2.3 | after unconditional-verification instructions rewrite: cyhole pass trend 0→2→4/12; fastmcp adoption stays 0 despite instructions verifiably reaching the model (quoted verbatim on probe) — model-compliance limit, see Phase 2 status |
 
 ---
 

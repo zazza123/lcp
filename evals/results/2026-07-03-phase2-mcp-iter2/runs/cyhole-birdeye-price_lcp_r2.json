@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Birdeye\n\n# Initialize Birdeye interaction\nbirdeye = Birdeye()\n\n# Example: Fetch current price for Wrapped SOL (WSOL) on Solana\ntoken_address = \"So11111111111111111111111111111111111111112\"\n\n# Get current price synchronously\nprice_data = birdeye.get_price(token_address)\n\nprint(f\"Token: {token_address}\")\nprint(f\"Current Price: {price_data}\")",
+  "result_text": "```python\nfrom cyhole import Birdeye\n\n# Initialize Birdeye interaction\nbirdeye = Birdeye()\n\n# Example: Fetch current price for Wrapped SOL (WSOL) on Solana\ntoken_address = \"So11111111111111111111111111111111111111112\"\n\n# Get current price synchronously\nprice_data = birdeye.get_price(token_address)\n\nprint(f\"Token: {token_address}\")\nprint(f\"Current Price: {price_data}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1379,
+    "cache_read_tokens": 11001,
+    "cache_creation_tokens": 10478,
+    "cost_usd": 0.0289601,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.birdeye.interaction:Birdeye"
+    ],
+    "forbidden_used": [
+      "cyhole:Birdeye"
+    ],
+    "unresolved_usages": [
+      "cyhole.Birdeye"
+    ],
+    "error": null
+  }
+}

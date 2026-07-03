@@ -1,0 +1,29 @@
+{
+  "case_id": "httpx-retries",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\nimport time\n\nclass HTTPClientWithRetry:\n    def __init__(self, max_retries=3, timeout=30):\n        self.client = httpx.Client(timeout=timeout)\n        self.max_retries = max_retries\n    \n    def request(self, method, url, **kwargs):\n        for attempt in range(self.max_retries):\n            try:\n                return self.client.request(method, url, **kwargs)\n            except (httpx.ConnectError, httpx.TimeoutException) as e:\n                if attempt == self.max_retries - 1:\n                    raise\n                wait_time = 2 ** attempt\n                time.sleep(wait_time)\n    \n    def get(self, url, **kwargs):\n        return self.request(\"GET\", url, **kwargs)\n    \n    def post(self, url, **kwargs):\n        return self.request(\"POST\", url, **kwargs)\n    \n    def close(self):\n        self.client.close()\n\n# Usage\nclient = HTTPClientWithRetry(max_retries=3)\nresponse = client.get(\"https://example.com\")\nprint(f\"Status: {response.status_code}\")\nclient.close()",
+  "result_text": "```python\nimport httpx\nimport time\n\nclass HTTPClientWithRetry:\n    def __init__(self, max_retries=3, timeout=30):\n        self.client = httpx.Client(timeout=timeout)\n        self.max_retries = max_retries\n    \n    def request(self, method, url, **kwargs):\n        for attempt in range(self.max_retries):\n            try:\n                return self.client.request(method, url, **kwargs)\n            except (httpx.ConnectError, httpx.TimeoutException) as e:\n                if attempt == self.max_retries - 1:\n                    raise\n                wait_time = 2 ** attempt\n                time.sleep(wait_time)\n    \n    def get(self, url, **kwargs):\n        return self.request(\"GET\", url, **kwargs)\n    \n    def post(self, url, **kwargs):\n        return self.request(\"POST\", url, **kwargs)\n    \n    def close(self):\n        self.client.close()\n\n# Usage\nclient = HTTPClientWithRetry(max_retries=3)\nresponse = client.get(\"https://example.com\")\nprint(f\"Status: {response.status_code}\")\nclient.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2858,
+    "cache_read_tokens": 21450,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.016444,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "httpx:HTTPTransport"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

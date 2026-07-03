@@ -12,13 +12,17 @@ python3 -m venv evals/.venv
 evals/.venv/bin/pip install -e ".[dev]" -r evals/requirements.txt
 ```
 
-> **Note:** the evals venv pins `fastmcp==2.14.4` for the eval cases, while the
-> project's main `.venv` uses fastmcp 3.x. Run the MAIN test suite (`tests/`)
-> from the project venv, not from `evals/.venv`, or the fastmcp-3.x-specific
-> tests in `tests/test_serve_all_expose.py` will fail spuriously.
-> When recording a new baseline, note the `claude --version` in the results
-> directory (`meta.json`) — the harness denies a snapshot of the CLI's built-in
-> tools, so CLI drift between runs must stay detectable.
+> **Note:** the evals venv pins `fastmcp==2.14.4` because fastmcp is one of
+> the seven *target* libraries and the cases were validated against that
+> version. The `lcp` package itself now pins `fastmcp>=3.0,<4`, so do NOT
+> re-run `pip install -e ".[dev]"` in this venv (it would bump fastmcp and
+> invalidate the case pins) — lcp is installed editable and picks up code
+> changes automatically. The server code happens to run on both majors; the
+> supported pin is 3.x. Run the MAIN test suite (`tests/`) from the project
+> `.venv` (fastmcp 3.x), never from `evals/.venv`.
+> When recording a new results directory, note the `claude --version` in
+> `meta.json` — the harness denies a snapshot of the CLI's built-in tools, so
+> CLI drift between runs must stay detectable.
 
 The `-e ".[dev]"` install puts the `lcp` package (and the `lcp` console
 script) on the venv's PATH — the harness shells out to `lcp serve-all` for

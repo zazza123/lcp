@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-async",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport httpx\n\n\nasync def fetch_url(client: httpx.AsyncClient, url: str) -> tuple[str, int]:\n    try:\n        response = await client.get(url, follow_redirects=True, timeout=10)\n        return url, response.status_code\n    except Exception as e:\n        return url, f\"Error: {e}\"\n\n\nasync def main():\n    urls = [\n        \"https://httpbin.org/status/200\",\n        \"https://httpbin.org/status/404\",\n        \"https://httpbin.org/status/500\",\n    ]\n    \n    async with httpx.AsyncClient() as client:\n        tasks = [fetch_url(client, url) for url in urls]\n        results = await asyncio.gather(*tasks)\n    \n    for url, status in results:\n        print(f\"{url}: {status}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport httpx\n\n\nasync def fetch_url(client: httpx.AsyncClient, url: str) -> tuple[str, int]:\n    try:\n        response = await client.get(url, follow_redirects=True, timeout=10)\n        return url, response.status_code\n    except Exception as e:\n        return url, f\"Error: {e}\"\n\n\nasync def main():\n    urls = [\n        \"https://httpbin.org/status/200\",\n        \"https://httpbin.org/status/404\",\n        \"https://httpbin.org/status/500\",\n    ]\n    \n    async with httpx.AsyncClient() as client:\n        tasks = [fetch_url(client, url) for url in urls]\n        results = await asyncio.gather(*tasks)\n    \n    for url, status in results:\n        print(f\"{url}: {status}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 407,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6260,
+    "cost_usd": 0.0160735,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 4.9
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

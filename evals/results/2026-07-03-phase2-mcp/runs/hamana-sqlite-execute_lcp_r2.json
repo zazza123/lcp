@@ -1,0 +1,30 @@
+{
+  "case_id": "hamana-sqlite-execute",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable information about the `hamana` library's API in my training data. To provide accurate, runnable code, I'd need to either:\n\n1. Search for hamana's documentation online\n2. Have you share the API details (how to initialize a connection, execute queries, etc.)\n\nRather than guess at the API and provide code that might fail, could you share how hamana is typically used\u2014specifically the connection initialization and query execution methods?\n\nAlternatively, if you have hamana's documentation or a reference example available, I can write the code based on that.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1044,
+    "cache_read_tokens": 21464,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007375400000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db:SQLite#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

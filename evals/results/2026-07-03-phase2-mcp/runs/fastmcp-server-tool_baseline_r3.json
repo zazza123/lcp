@@ -1,0 +1,27 @@
+{
+  "case_id": "fastmcp-server-tool",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import fastmcp\n\napp = fastmcp.FastMCP(\"calc\")\n\n\n@app.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    app.run(transport=\"stdio\")",
+  "result_text": "```python\nimport fastmcp\n\napp = fastmcp.FastMCP(\"calc\")\n\n\n@app.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    app.run(transport=\"stdio\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 579,
+    "cache_read_tokens": 21377,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0050417,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.4
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable knowledge of the `cyhole` library's v0.3.0 API to provide accurate code. Without access to the library's documentation or source, I can't generate correct method names and argument patterns.\n\nTo help you effectively, I'd need to either:\n1. Check the installed library's API (could you share output from `python -c \"import cyhole; help(cyhole.Birdeye)\"` or similar?)\n2. Look at example usage in your codebase or the library's repo\n\nAlternatively, if you can share the relevant API surface of `cyhole`, I can generate the exact code you need.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 810,
+    "cache_read_tokens": 11001,
+    "cache_creation_tokens": 10360,
+    "cost_usd": 0.0258791,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.9
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.birdeye.interaction:Birdeye",
+      "cyhole.birdeye.client:BirdeyeClient#get_price"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

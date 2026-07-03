@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-scroll",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App\nfrom textual.containers import ScrollableContainer\nfrom textual.widgets import Header, Footer, Static\n\n\nclass ItemApp(App):\n    \"\"\"A simple app with 100 scrollable items.\"\"\"\n    \n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n    \n    ScrollableContainer {\n        height: 1fr;\n        border: solid green;\n    }\n    \n    Static {\n        height: auto;\n        width: 100%;\n    }\n    \"\"\"\n    \n    def compose(self) -> ComposeResult:\n        \"\"\"Create child widgets for the app.\"\"\"\n        yield Header()\n        with ScrollableContainer():\n            for i in range(1, 101):\n                yield Static(f\"Item {i}: Label {i}\")\n        yield Footer()\n\n\nif __name__ == \"__main__\":\n    ItemApp().run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App\nfrom textual.containers import ScrollableContainer\nfrom textual.widgets import Header, Footer, Static\n\n\nclass ItemApp(App):\n    \"\"\"A simple app with 100 scrollable items.\"\"\"\n    \n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n    \n    ScrollableContainer {\n        height: 1fr;\n        border: solid green;\n    }\n    \n    Static {\n        height: auto;\n        width: 100%;\n    }\n    \"\"\"\n    \n    def compose(self) -> ComposeResult:\n        \"\"\"Create child widgets for the app.\"\"\"\n        yield Header()\n        with ScrollableContainer():\n            for i in range(1, 101):\n                yield Static(f\"Item {i}: Label {i}\")\n        yield Footer()\n\n\nif __name__ == \"__main__\":\n    ItemApp().run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1678,
+    "cache_read_tokens": 21454,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0105444,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "textual.containers:VerticalScroll"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

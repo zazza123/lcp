@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel\nfrom typing import Optional\nimport os\n\n\nclass Settings(BaseModel):\n    database_url: str\n    debug: bool\n\n\n# Load from environment variables\nsettings = Settings(\n    database_url=os.getenv(\"DATABASE_URL\", \"sqlite:///app.db\"),\n    debug=os.getenv(\"DEBUG\", \"false\").lower() in (\"true\", \"1\", \"yes\"),\n)\n\n# Or use model_validate to parse environment variables directly\nsettings = Settings.model_validate({\n    \"database_url\": os.getenv(\"DATABASE_URL\", \"sqlite:///app.db\"),\n    \"debug\": os.getenv(\"DEBUG\", \"false\").lower() in (\"true\", \"1\", \"yes\"),\n})\n\nprint(f\"Database URL: {settings.database_url}\")\nprint(f\"Debug mode: {settings.debug}\")",
+  "result_text": "```python\nfrom pydantic import BaseModel\nfrom typing import Optional\nimport os\n\n\nclass Settings(BaseModel):\n    database_url: str\n    debug: bool\n\n\n# Load from environment variables\nsettings = Settings(\n    database_url=os.getenv(\"DATABASE_URL\", \"sqlite:///app.db\"),\n    debug=os.getenv(\"DEBUG\", \"false\").lower() in (\"true\", \"1\", \"yes\"),\n)\n\n# Or use model_validate to parse environment variables directly\nsettings = Settings.model_validate({\n    \"database_url\": os.getenv(\"DATABASE_URL\", \"sqlite:///app.db\"),\n    \"debug\": os.getenv(\"DEBUG\", \"false\").lower() in (\"true\", \"1\", \"yes\"),\n})\n\nprint(f\"Database URL: {settings.database_url}\")\nprint(f\"Debug mode: {settings.debug}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 894,
+    "cache_read_tokens": 21452,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0066242,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.5
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

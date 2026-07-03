@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom cyhole import Jupiter, CyholeClient\nfrom solders.pubkey import Pubkey\n\nasync def main():\n    # Initialize Jupiter client via cyhole\n    client = CyholeClient()\n    jupiter = Jupiter(client)\n    \n    # SOL and USDC token mint addresses on Solana\n    SOL_MINT = \"So11111111111111111111111111111111111111112\"\n    USDC_MINT = \"EPjFWaLb3odccccccccccccccccccccccppMuc8gJ3\"\n    \n    # Amount of SOL to swap (in lamports: 1 SOL = 1e9 lamports)\n    amount_in_lamports = int(1 * 1e9)  # 1 SOL\n    \n    # Get quote for the swap\n    quote = await jupiter.get_quote(\n        input_mint=SOL_MINT,\n        output_mint=USDC_MINT,\n        amount=amount_in_lamports,\n    )\n    \n    print(f\"Quote received:\")\n    print(f\"  Input amount: {quote.in_amount}\")\n    print(f\"  Output amount: {quote.out_amount}\")\n    print(f\"  Price impact: {quote.price_impact_pct}%\")\n    \n    # Execute the swap\n    swap_response = await jupiter.swap(\n        quote=quote,\n        user_public_key=client.payer.pubkey(),\n    )\n    \n    print(f\"\\nSwap executed:\")\n    print(f\"  Transaction signature: {swap_response.tx_signature}\")\n    print(f\"  Status: {swap_response.status}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom cyhole import Jupiter, CyholeClient\nfrom solders.pubkey import Pubkey\n\nasync def main():\n    # Initialize Jupiter client via cyhole\n    client = CyholeClient()\n    jupiter = Jupiter(client)\n    \n    # SOL and USDC token mint addresses on Solana\n    SOL_MINT = \"So11111111111111111111111111111111111111112\"\n    USDC_MINT = \"EPjFWaLb3odccccccccccccccccccccccppMuc8gJ3\"\n    \n    # Amount of SOL to swap (in lamports: 1 SOL = 1e9 lamports)\n    amount_in_lamports = int(1 * 1e9)  # 1 SOL\n    \n    # Get quote for the swap\n    quote = await jupiter.get_quote(\n        input_mint=SOL_MINT,\n        output_mint=USDC_MINT,\n        amount=amount_in_lamports,\n    )\n    \n    print(f\"Quote received:\")\n    print(f\"  Input amount: {quote.in_amount}\")\n    print(f\"  Output amount: {quote.out_amount}\")\n    print(f\"  Price impact: {quote.price_impact_pct}%\")\n    \n    # Execute the swap\n    swap_response = await jupiter.swap(\n        quote=quote,\n        user_public_key=client.payer.pubkey(),\n    )\n    \n    print(f\"\\nSwap executed:\")\n    print(f\"  Transaction signature: {swap_response.tx_signature}\")\n    print(f\"  Status: {swap_response.status}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1016,
+    "cache_read_tokens": 21458,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0072347999999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.CyholeClient",
+      "cyhole.Jupiter"
+    ],
+    "error": null
+  }
+}

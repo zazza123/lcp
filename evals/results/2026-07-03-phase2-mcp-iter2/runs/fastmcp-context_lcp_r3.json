@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\nimport logging\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format='%(asctime)s - %(levelname)s - %(message)s'\n)\nlogger = logging.getLogger(\"mcp_processor\")\n\nmcp = FastMCP()\n\n@mcp.tool()\nasync def process_items(items: list[str]) -> dict:\n    \"\"\"Process a list of items and report progress via MCP logging context.\n    \n    Args:\n        items: List of string items to process\n        \n    Returns:\n        Dictionary with results and processing statistics\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for index, item in enumerate(items, 1):\n        # Process item\n        processed = item.upper()\n        results.append(processed)\n        \n        # Log progress via MCP context\n        logger.info(f\"MCP Progress: {index}/{total} - Processed '{item}' -> '{processed}'\")\n    \n    return {\n        \"status\": \"completed\",\n        \"results\": results,\n        \"total_items\": total,\n        \"items_processed\": len(results)\n    }\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nimport logging\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format='%(asctime)s - %(levelname)s - %(message)s'\n)\nlogger = logging.getLogger(\"mcp_processor\")\n\nmcp = FastMCP()\n\n@mcp.tool()\nasync def process_items(items: list[str]) -> dict:\n    \"\"\"Process a list of items and report progress via MCP logging context.\n    \n    Args:\n        items: List of string items to process\n        \n    Returns:\n        Dictionary with results and processing statistics\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for index, item in enumerate(items, 1):\n        # Process item\n        processed = item.upper()\n        results.append(processed)\n        \n        # Log progress via MCP context\n        logger.info(f\"MCP Progress: {index}/{total} - Processed '{item}' -> '{processed}'\")\n    \n    return {\n        \"status\": \"completed\",\n        \"results\": results,\n        \"total_items\": total,\n        \"items_processed\": len(results)\n    }\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2902,
+    "cache_read_tokens": 21482,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0166672,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 28.9
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:Context"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

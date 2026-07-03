@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import logging\nfrom fastmcp import FastMCP\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nserver = FastMCP(\"progress-logger\")\n\n@server.tool()\ndef process_items_with_progress(items: list[str]) -> dict:\n    \"\"\"Process a list of items and report progress via MCP logging.\"\"\"\n    results = []\n    total = len(items)\n    \n    logger.info(f\"Starting processing of {total} items\")\n    \n    for index, item in enumerate(items, start=1):\n        logger.info(f\"Processing item {index}/{total}: {item}\")\n        \n        # Simulate processing\n        processed_item = item.upper()\n        results.append(processed_item)\n        \n        logger.info(f\"Completed item {index}/{total}\")\n    \n    logger.info(f\"\u2713 All {total} items processed successfully\")\n    \n    return {\n        \"total_processed\": total,\n        \"results\": results,\n        \"status\": \"success\"\n    }\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nimport logging\nfrom fastmcp import FastMCP\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nserver = FastMCP(\"progress-logger\")\n\n@server.tool()\ndef process_items_with_progress(items: list[str]) -> dict:\n    \"\"\"Process a list of items and report progress via MCP logging.\"\"\"\n    results = []\n    total = len(items)\n    \n    logger.info(f\"Starting processing of {total} items\")\n    \n    for index, item in enumerate(items, start=1):\n        logger.info(f\"Processing item {index}/{total}: {item}\")\n        \n        # Simulate processing\n        processed_item = item.upper()\n        results.append(processed_item)\n        \n        logger.info(f\"Completed item {index}/{total}\")\n    \n    logger.info(f\"\u2713 All {total} items processed successfully\")\n    \n    return {\n        \"total_processed\": total,\n        \"results\": results,\n        \"status\": \"success\"\n    }\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1424,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6270,
+    "cost_usd": 0.021178500000000003,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.8
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:Context"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

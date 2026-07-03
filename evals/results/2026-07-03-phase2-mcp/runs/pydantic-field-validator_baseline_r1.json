@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-field-validator",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel, field_validator, ValidationError\n\n\nclass User(BaseModel):\n    email: str\n\n    @field_validator('email')\n    @classmethod\n    def validate_email(cls, v):\n        if '@' not in v:\n            raise ValueError('email must contain \"@\"')\n        return v\n\n\n# Test valid email\nuser = User(email='test@example.com')\nprint(f\"Valid user: {user}\")\n\n# Test invalid email\ntry:\n    invalid_user = User(email='invalidemail')\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")",
+  "result_text": "```python\nfrom pydantic import BaseModel, field_validator, ValidationError\n\n\nclass User(BaseModel):\n    email: str\n\n    @field_validator('email')\n    @classmethod\n    def validate_email(cls, v):\n        if '@' not in v:\n            raise ValueError('email must contain \"@\"')\n        return v\n\n\n# Test valid email\nuser = User(email='test@example.com')\nprint(f\"Valid user: {user}\")\n\n# Test invalid email\ntry:\n    invalid_user = User(email='invalidemail')\nexcept ValidationError as e:\n    print(f\"Validation error: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 700,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6270,
+    "cost_usd": 0.0175585,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.4
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

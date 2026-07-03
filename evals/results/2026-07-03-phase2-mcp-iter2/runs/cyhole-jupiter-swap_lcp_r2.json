@@ -1,0 +1,35 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Cyhole\n\n# Initialize Cyhole client\nclient = Cyhole()\n\n# Request a swap quote (order): SOL to USDC\nquote = client.get_swap_quote(\n    input_mint=\"So11111111111111111111111111111111111111112\",  # SOL\n    output_mint=\"EPjFWdd5Au17hunznztC2yhAH5Q4wEsxU9MRXoEL3mo\",  # USDC\n    amount=1_000_000_000,  # 1 SOL in lamports\n)\n\nprint(\"Quote:\", quote)\n\n# Execute the swap using the quote\nswap_result = client.execute_swap(quote)\n\nprint(\"Swap executed:\", swap_result)",
+  "result_text": "```python\nfrom cyhole import Cyhole\n\n# Initialize Cyhole client\nclient = Cyhole()\n\n# Request a swap quote (order): SOL to USDC\nquote = client.get_swap_quote(\n    input_mint=\"So11111111111111111111111111111111111111112\",  # SOL\n    output_mint=\"EPjFWdd5Au17hunznztC2yhAH5Q4wEsxU9MRXoEL3mo\",  # USDC\n    amount=1_000_000_000,  # 1 SOL in lamports\n)\n\nprint(\"Quote:\", quote)\n\n# Execute the swap using the quote\nswap_result = client.execute_swap(quote)\n\nprint(\"Swap executed:\", swap_result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1273,
+    "cache_read_tokens": 21480,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.008522,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [
+      "cyhole.jupiter.client:JupiterClient#get_swap_quote"
+    ],
+    "unresolved_usages": [
+      "cyhole.Cyhole"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-post-message",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import App, ComposeResult\nfrom textual.widgets import Button, Container, Label, Static\nfrom textual.message import Message\n\n\nclass MyWidget(Static):\n    \"\"\"A widget that sends custom messages to its parent.\"\"\"\n\n    class CustomMessage(Message):\n        \"\"\"A custom message sent by MyWidget.\"\"\"\n\n        def __init__(self, text: str) -> None:\n            self.text = text\n            super().__init__()\n\n    def compose(self) -> ComposeResult:\n        yield Button(\"Send Message\", id=\"send-btn\")\n\n    def on_button_pressed(self, event: Button.Pressed) -> None:\n        self.post_message(self.CustomMessage(\"Button was clicked!\"))\n\n\nclass MyApp(App):\n    \"\"\"Main application.\"\"\"\n\n    def compose(self) -> ComposeResult:\n        yield Container(\n            Label(\"Waiting for message...\", id=\"status\"),\n            MyWidget(id=\"my-widget\"),\n        )\n\n    def on_my_widget_custom_message(self, message: MyWidget.CustomMessage) -> None:\n        \"\"\"Handle custom message from MyWidget.\"\"\"\n        status = self.query_one(\"#status\", Label)\n        status.update(f\"Message received: {message.text}\")\n\n\nif __name__ == \"__main__\":\n    app = MyApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import App, ComposeResult\nfrom textual.widgets import Button, Container, Label, Static\nfrom textual.message import Message\n\n\nclass MyWidget(Static):\n    \"\"\"A widget that sends custom messages to its parent.\"\"\"\n\n    class CustomMessage(Message):\n        \"\"\"A custom message sent by MyWidget.\"\"\"\n\n        def __init__(self, text: str) -> None:\n            self.text = text\n            super().__init__()\n\n    def compose(self) -> ComposeResult:\n        yield Button(\"Send Message\", id=\"send-btn\")\n\n    def on_button_pressed(self, event: Button.Pressed) -> None:\n        self.post_message(self.CustomMessage(\"Button was clicked!\"))\n\n\nclass MyApp(App):\n    \"\"\"Main application.\"\"\"\n\n    def compose(self) -> ComposeResult:\n        yield Container(\n            Label(\"Waiting for message...\", id=\"status\"),\n            MyWidget(id=\"my-widget\"),\n        )\n\n    def on_my_widget_custom_message(self, message: MyWidget.CustomMessage) -> None:\n        \"\"\"Handle custom message from MyWidget.\"\"\"\n        status = self.query_one(\"#status\", Label)\n        status.update(f\"Message received: {message.text}\")\n\n\nif __name__ == \"__main__\":\n    app = MyApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1396,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6270,
+    "cost_usd": 0.0210385,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.8
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "textual.widgets.Container"
+    ],
+    "error": null
+  }
+}

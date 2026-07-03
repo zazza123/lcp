@@ -1,0 +1,31 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have documentation for the `cyhole` library's API in my knowledge base, so I can't write accurate code for this without either:\n\n1. Access to cyhole 0.3.0's API documentation or docstrings\n2. Example code showing how to initialize Jupiter interactions, request quotes, and execute swaps\n\nCould you provide:\n- The cyhole library's documentation or a link to its API reference?\n- An example of how to instantiate the Jupiter interaction object?\n- Any required configuration (RPC endpoint, wallet credentials, etc.)?\n\nAlternatively, if you have a project directory with cyhole already installed, I can inspect its installed modules to reverse-engineer the API.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 997,
+    "cache_read_tokens": 21458,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0071398,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.8
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

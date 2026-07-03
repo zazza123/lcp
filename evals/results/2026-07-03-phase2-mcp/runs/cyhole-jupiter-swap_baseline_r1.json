@@ -1,0 +1,31 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom cyhole.jupiter import Jupiter\n\nasync def main():\n    # Initialize Jupiter client\n    jupiter = Jupiter()\n    \n    # Token mint addresses\n    SOL_MINT = \"So11111111111111111111111111111111111111112\"\n    USDC_MINT = \"EPjFWaLb3d7mu9u4RjZhsvguAPapYw2duKvscUNqeixo\"\n    \n    # Amount: 1 SOL (9 decimals = 1 billion lamports)\n    amount_in_lamports = 1_000_000_000\n    \n    # Request swap quote\n    quote = await jupiter.get_quote(\n        input_mint=SOL_MINT,\n        output_mint=USDC_MINT,\n        amount=amount_in_lamports,\n        slippage_bps=100  # 1% slippage tolerance\n    )\n    \n    print(f\"Quote received:\")\n    print(f\"  Input amount: {quote.in_amount}\")\n    print(f\"  Output amount: {quote.out_amount}\")\n    print(f\"  Price impact: {quote.price_impact_pct}%\")\n    \n    # Execute the swap\n    swap_result = await jupiter.execute_swap(quote)\n    \n    print(f\"\\nSwap executed:\")\n    print(f\"  Transaction ID: {swap_result.signature}\")\n    print(f\"  Status: {swap_result.status}\")\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom cyhole.jupiter import Jupiter\n\nasync def main():\n    # Initialize Jupiter client\n    jupiter = Jupiter()\n    \n    # Token mint addresses\n    SOL_MINT = \"So11111111111111111111111111111111111111112\"\n    USDC_MINT = \"EPjFWaLb3d7mu9u4RjZhsvguAPapYw2duKvscUNqeixo\"\n    \n    # Amount: 1 SOL (9 decimals = 1 billion lamports)\n    amount_in_lamports = 1_000_000_000\n    \n    # Request swap quote\n    quote = await jupiter.get_quote(\n        input_mint=SOL_MINT,\n        output_mint=USDC_MINT,\n        amount=amount_in_lamports,\n        slippage_bps=100  # 1% slippage tolerance\n    )\n    \n    print(f\"Quote received:\")\n    print(f\"  Input amount: {quote.in_amount}\")\n    print(f\"  Output amount: {quote.out_amount}\")\n    print(f\"  Price impact: {quote.price_impact_pct}%\")\n    \n    # Execute the swap\n    swap_result = await jupiter.execute_swap(quote)\n    \n    print(f\"\\nSwap executed:\")\n    print(f\"  Transaction ID: {swap_result.signature}\")\n    print(f\"  Status: {swap_result.status}\")\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1547,
+    "cache_read_tokens": 15095,
+    "cache_creation_tokens": 6267,
+    "cost_usd": 0.0217875,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
