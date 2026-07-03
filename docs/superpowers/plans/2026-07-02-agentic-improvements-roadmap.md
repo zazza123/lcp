@@ -57,7 +57,12 @@ opposite.
 
 ## Phase 0 — Eval harness (baseline measurement)
 
-**Status:** not started
+**Status:** done (2026-07-03) — harness in `evals/`, baseline in
+`evals/results/2026-07-03-baseline/`, plan:
+`docs/superpowers/plans/2026-07-02-phase-0-eval-harness.md`. Key finding:
+haiku rarely calls the lcp tools voluntarily (mean 1.7 calls/run), so the
+LCP-arm delta (+7pp pass rate) is within noise — closing that adoption gap
+is what phases 1–2 must move.
 
 **Objective:** A small, private, repeatable benchmark that measures how often
 a coding agent misuses library APIs, with and without the LCP MCP server —
@@ -612,8 +617,8 @@ Once the roadmap is complete, remove the scaffolding it needed:
 
 | Date | Phase | Config | Misuse rate | Pass rate | Tokens/task | Tool calls/task | Notes |
 |------|-------|--------|-------------|-----------|-------------|-----------------|-------|
-| —    | 0 baseline (no LCP) | — | — | — | — | — | fill after Phase 0 |
-| —    | 0 baseline (LCP current) | — | — | — | — | — | fill after Phase 0 |
+| 2026-07-03 | 0 baseline (no LCP) | haiku-4.5, 28 cases, 3 reps | 0.46/run | 45% | ~1501 (13 in + 1488 out) | 0.5 | static checks only; tool calls count attempts (residual built-ins denied) |
+| 2026-07-03 | 0 baseline (LCP current) | haiku-4.5, 28 cases, 3 reps | 0.43/run | 52% | ~1643 (21 in + 1622 out) | 1.7 | serve-all, --expose 7 libs; delta within noise; low voluntary tool use |
 
 ---
 
