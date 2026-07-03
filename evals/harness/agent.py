@@ -3,7 +3,7 @@
 import json
 import subprocess
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable
 
 from harness import extract
@@ -56,9 +56,25 @@ def build_command(prompt: str, arm: str, mcp_config: str | None) -> list[str]:
     return cmd
 
 
+def _truncate_input(value: dict, limit: int = 500) -> dict:
+    """Keep tool inputs analyzable without bloating run files.
+
+    The truncated wrapper (envelope + re-escaping of the snippet) must
+    itself stay within ~limit chars once JSON-encoded, so trim until it fits.
+    """
+    encoded = json.dumps(value)
+    if len(encoded) <= limit:
+        return value
+    snippet = encoded[:limit]
+    while len(json.dumps({"_truncated": snippet})) > limit + 20:
+        snippet = snippet[:-8]
+    return {"_truncated": snippet}
+
+
 def parse_stream(lines: Iterable[str]) -> dict:
     """Parse stream-json lines: count tool_use blocks, read the final result."""
     tool_calls = 0
+    tool_call_details: list[dict] = []
     result: dict = {}
     for line in lines:
         line = line.strip()
@@ -70,16 +86,22 @@ def parse_stream(lines: Iterable[str]) -> dict:
             continue
         if event.get("type") == "assistant":
             content = event.get("message", {}).get("content", [])
-            tool_calls += sum(
-                1 for b in content
-                if isinstance(b, dict) and b.get("type") == "tool_use"
-            )
+            for b in content:
+                if isinstance(b, dict) and b.get("type") == "tool_use":
+                    tool_calls += 1
+                    tool_call_details.append(
+                        {
+                            "name": b.get("name", ""),
+                            "input": _truncate_input(b.get("input") or {}),
+                        }
+                    )
         elif event.get("type") == "result":
             result = event
     usage = result.get("usage", {})
     return {
         "result_text": result.get("result") or "",
         "tool_calls": tool_calls,
+        "tool_call_details": tool_call_details,
         "input_tokens": usage.get("input_tokens", 0),
         "output_tokens": usage.get("output_tokens", 0),
         "cache_read_tokens": usage.get("cache_read_input_tokens", 0),
@@ -103,6 +125,7 @@ class AgentRun:
     cost_usd: float
     num_turns: int
     duration_s: float
+    tool_call_details: list = field(default_factory=list)
     error: str | None = None
 
 
@@ -120,6 +143,7 @@ def run_agent(case, arm: str, mcp_config=None, timeout: int = TIMEOUT_S) -> Agen
             result_text="", code=None, tool_calls=0, input_tokens=0,
             output_tokens=0, cache_read_tokens=0, cache_creation_tokens=0,
             cost_usd=0.0, num_turns=0, duration_s=time.monotonic() - start,
+            tool_call_details=[],
             error=f"timeout after {timeout}s",
         )
     duration = time.monotonic() - start
@@ -141,5 +165,6 @@ def run_agent(case, arm: str, mcp_config=None, timeout: int = TIMEOUT_S) -> Agen
         cost_usd=parsed["cost_usd"],
         num_turns=parsed["num_turns"],
         duration_s=duration,
+        tool_call_details=parsed["tool_call_details"],
         error=error,
     )
