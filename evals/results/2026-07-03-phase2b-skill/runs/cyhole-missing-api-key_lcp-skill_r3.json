@@ -1,0 +1,74 @@
+{
+  "case_id": "cyhole-missing-api-key",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye.interaction import Birdeye\nfrom cyhole.core.exception import MissingAPIKeyError\n\ntry:\n    birdeye = Birdeye(api_key=None)\nexcept MissingAPIKeyError as e:\n    print(f\"Caught exception: {type(e).__name__}\")\n    print(f\"Exception message: {e}\")",
+  "result_text": "```python\nfrom cyhole.birdeye.interaction import Birdeye\nfrom cyhole.core.exception import MissingAPIKeyError\n\ntry:\n    birdeye = Birdeye(api_key=None)\nexcept MissingAPIKeyError as e:\n    print(f\"Caught exception: {type(e).__name__}\")\n    print(f\"Exception message: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 53,
+    "output_tokens": 1628,
+    "cache_read_tokens": 170657,
+    "cache_creation_tokens": 5831,
+    "cost_usd": 0.036920699999999994,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 26.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Birdeye",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.interaction:Birdeye",
+          "cyhole.birdeye.exception:BirdeyeAuthorisationError"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "MissingAPIKeyError",
+        "library": "cyhole"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
