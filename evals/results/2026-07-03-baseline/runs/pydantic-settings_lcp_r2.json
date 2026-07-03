@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom pydantic import BaseModel, Field, field_validator\n\n\nclass Config(BaseModel):\n    database_url: str = Field(validation_alias=\"DATABASE_URL\")\n    debug: bool = Field(default=False, validation_alias=\"DEBUG\")\n    \n    @field_validator(\"debug\", mode=\"before\")\n    @classmethod\n    def parse_bool(cls, v):\n        if isinstance(v, bool):\n            return v\n        if isinstance(v, str):\n            return v.lower() in (\"true\", \"1\", \"yes\")\n        return False\n\n\nif __name__ == \"__main__\":\n    os.environ[\"DATABASE_URL\"] = \"postgresql://localhost/mydb\"\n    os.environ[\"DEBUG\"] = \"true\"\n    \n    config = Config.model_validate(os.environ)\n    print(f\"Database URL: {config.database_url}\")\n    print(f\"Debug: {config.debug}\")",
+  "result_text": "```python\nimport os\nfrom pydantic import BaseModel, Field, field_validator\n\n\nclass Config(BaseModel):\n    database_url: str = Field(validation_alias=\"DATABASE_URL\")\n    debug: bool = Field(default=False, validation_alias=\"DEBUG\")\n    \n    @field_validator(\"debug\", mode=\"before\")\n    @classmethod\n    def parse_bool(cls, v):\n        if isinstance(v, bool):\n            return v\n        if isinstance(v, str):\n            return v.lower() in (\"true\", \"1\", \"yes\")\n        return False\n\n\nif __name__ == \"__main__\":\n    os.environ[\"DATABASE_URL\"] = \"postgresql://localhost/mydb\"\n    os.environ[\"DEBUG\"] = \"true\"\n    \n    config = Config.model_validate(os.environ)\n    print(f\"Database URL: {config.database_url}\")\n    print(f\"Debug: {config.debug}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1518,
+    "cache_read_tokens": 21341,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.009733100000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.2
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

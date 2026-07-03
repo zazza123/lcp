@@ -1,0 +1,31 @@
+{
+  "case_id": "hamana-internal-shortcuts",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana.connector.db.hamana import connect, execute, disconnect\n\n# Connect to the internal in-memory database\nconnect()\n\n# Execute a raw SQL statement\nresult = execute(\"SELECT 1 AS test_value, 'Hello' AS greeting\")\n\n# Disconnect from the database\ndisconnect()\n\n# Print the result (if needed)\nprint(result)",
+  "result_text": "```python\nfrom hamana.connector.db.hamana import connect, execute, disconnect\n\n# Connect to the internal in-memory database\nconnect()\n\n# Execute a raw SQL statement\nresult = execute(\"SELECT 1 AS test_value, 'Hello' AS greeting\")\n\n# Disconnect from the database\ndisconnect()\n\n# Print the result (if needed)\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 101,
+    "output_tokens": 3174,
+    "cache_read_tokens": 313403,
+    "cache_creation_tokens": 6570,
+    "cost_usd": 0.0604513,
+    "num_turns": 18,
+    "tool_calls": 17,
+    "duration_s": 56.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:connect",
+      "hamana:execute",
+      "hamana:disconnect"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

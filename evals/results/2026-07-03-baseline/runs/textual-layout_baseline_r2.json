@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-layout",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pathlib import Path\nfrom textual.app import App, ComposeResult\nfrom textual.binding import Binding\nfrom textual.containers import Horizontal\nfrom textual.widgets import Header, Footer, Tree, Static\n\n\nclass FileExplorerApp(App):\n    \"\"\"A Textual app with a directory tree on the left and text area on the right.\"\"\"\n    \n    BINDINGS = [\n        Binding(\"q\", \"quit\", \"Quit\"),\n    ]\n    \n    TITLE = \"File Explorer\"\n    SUB_TITLE = \"Browse files and view content\"\n    \n    def compose(self) -> ComposeResult:\n        \"\"\"Create the layout with tree and text area.\"\"\"\n        yield Header()\n        yield Horizontal(\n            Tree(\"\ud83d\udcc2 Current Directory\"),\n            Static(id=\"text_area\", expand=True),\n        )\n        yield Footer()\n    \n    def on_mount(self) -> None:\n        \"\"\"Initialize the tree with current directory structure.\"\"\"\n        tree = self.query_one(Tree)\n        self._populate_tree(tree.root, Path.cwd())\n        \n        text_area = self.query_one(\"#text_area\", Static)\n        text_area.update(\"Select a file to view content\")\n    \n    def _populate_tree(self, parent_node, path: Path, max_depth: int = 3, current_depth: int = 0) -> None:\n        \"\"\"Recursively populate the tree with directory contents.\"\"\"\n        if current_depth >= max_depth:\n            return\n        \n        try:\n            for item in sorted(path.iterdir()):\n                if item.name.startswith('.'):\n                    continue\n                \n                if item.is_dir():\n                    node = parent_node.add(f\"\ud83d\udcc1 {item.name}\")\n                    self._populate_tree(node, item, max_depth, current_depth + 1)\n                else:\n                    parent_node.add(f\"\ud83d\udcc4 {item.name}\")\n        except (PermissionError, OSError):\n            pass\n    \n    def on_tree_select(self, message: Tree.Selected) -> None:\n        \"\"\"Handle tree selection to display file info.\"\"\"\n        node = message.node\n        label = str(node.label)\n        clean_label = label.lstrip(\"\ud83d\udcc1\ud83d\udcc4 \")\n        \n        text_area = self.query_one(\"#text_area\", Static)\n        text_area.update(f\"Selected: {clean_label}\")\n\n\nif __name__ == \"__main__\":\n    app = FileExplorerApp()\n    app.run()",
+  "result_text": "```python\nfrom pathlib import Path\nfrom textual.app import App, ComposeResult\nfrom textual.binding import Binding\nfrom textual.containers import Horizontal\nfrom textual.widgets import Header, Footer, Tree, Static\n\n\nclass FileExplorerApp(App):\n    \"\"\"A Textual app with a directory tree on the left and text area on the right.\"\"\"\n    \n    BINDINGS = [\n        Binding(\"q\", \"quit\", \"Quit\"),\n    ]\n    \n    TITLE = \"File Explorer\"\n    SUB_TITLE = \"Browse files and view content\"\n    \n    def compose(self) -> ComposeResult:\n        \"\"\"Create the layout with tree and text area.\"\"\"\n        yield Header()\n        yield Horizontal(\n            Tree(\"\ud83d\udcc2 Current Directory\"),\n            Static(id=\"text_area\", expand=True),\n        )\n        yield Footer()\n    \n    def on_mount(self) -> None:\n        \"\"\"Initialize the tree with current directory structure.\"\"\"\n        tree = self.query_one(Tree)\n        self._populate_tree(tree.root, Path.cwd())\n        \n        text_area = self.query_one(\"#text_area\", Static)\n        text_area.update(\"Select a file to view content\")\n    \n    def _populate_tree(self, parent_node, path: Path, max_depth: int = 3, current_depth: int = 0) -> None:\n        \"\"\"Recursively populate the tree with directory contents.\"\"\"\n        if current_depth >= max_depth:\n            return\n        \n        try:\n            for item in sorted(path.iterdir()):\n                if item.name.startswith('.'):\n                    continue\n                \n                if item.is_dir():\n                    node = parent_node.add(f\"\ud83d\udcc1 {item.name}\")\n                    self._populate_tree(node, item, max_depth, current_depth + 1)\n                else:\n                    parent_node.add(f\"\ud83d\udcc4 {item.name}\")\n        except (PermissionError, OSError):\n            pass\n    \n    def on_tree_select(self, message: Tree.Selected) -> None:\n        \"\"\"Handle tree selection to display file info.\"\"\"\n        node = message.node\n        label = str(node.label)\n        clean_label = label.lstrip(\"\ud83d\udcc1\ud83d\udcc4 \")\n        \n        text_area = self.query_one(\"#text_area\", Static)\n        text_area.update(f\"Selected: {clean_label}\")\n\n\nif __name__ == \"__main__\":\n    app = FileExplorerApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3697,
+    "cache_read_tokens": 21250,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.020619,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 36.5
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "textual.widgets.Tree.Selected"
+    ],
+    "error": null
+  }
+}

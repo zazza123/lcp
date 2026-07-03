@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-json-schema",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel\n\nclass User(BaseModel):\n    name: str\n    age: int\n    email: str | None = None\n\n# Get JSON schema as dict\nschema = User.model_json_schema()\nprint(\"Schema as dict:\")\nprint(schema)\n\n# Create instance\nuser = User(name=\"Alice\", age=30, email=\"alice@example.com\")\n\n# Serialize instance to JSON string\njson_string = user.model_dump_json()\nprint(\"\\nSerialized instance:\")\nprint(json_string)",
+  "result_text": "```python\nfrom pydantic import BaseModel\n\nclass User(BaseModel):\n    name: str\n    age: int\n    email: str | None = None\n\n# Get JSON schema as dict\nschema = User.model_json_schema()\nprint(\"Schema as dict:\")\nprint(schema)\n\n# Create instance\nuser = User(name=\"Alice\", age=30, email=\"alice@example.com\")\n\n# Serialize instance to JSON string\njson_string = user.model_dump_json()\nprint(\"\\nSerialized instance:\")\nprint(json_string)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 416,
+    "cache_read_tokens": 21257,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0042147,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.9
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

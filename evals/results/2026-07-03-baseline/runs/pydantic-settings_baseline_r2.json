@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom pydantic_settings import BaseSettings\n\nclass Config(BaseSettings):\n    database_url: str\n    debug: bool = False\n\n# Set environment variables for demonstration\nos.environ['DATABASE_URL'] = 'postgresql://localhost/mydb'\nos.environ['DEBUG'] = 'true'\n\n# Load configuration from environment variables\nconfig = Config()\nprint(f\"Database URL: {config.database_url}\")\nprint(f\"Debug: {config.debug}\")",
+  "result_text": "```python\nimport os\nfrom pydantic_settings import BaseSettings\n\nclass Config(BaseSettings):\n    database_url: str\n    debug: bool = False\n\n# Set environment variables for demonstration\nos.environ['DATABASE_URL'] = 'postgresql://localhost/mydb'\nos.environ['DEBUG'] = 'true'\n\n# Load configuration from environment variables\nconfig = Config()\nprint(f\"Database URL: {config.database_url}\")\nprint(f\"Debug: {config.debug}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 928,
+    "cache_read_tokens": 21245,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0067735,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.1
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

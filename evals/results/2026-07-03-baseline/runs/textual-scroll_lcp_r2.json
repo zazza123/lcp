@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-scroll",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App\nfrom textual.widgets import ListView, ListItem, Label\n\nclass ItemApp(App):\n    def compose(self) -> ComposeResult:\n        items = [ListItem(Label(f\"Item {i}\")) for i in range(1, 101)]\n        yield ListView(*items)\n\nif __name__ == \"__main__\":\n    ItemApp().run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App\nfrom textual.widgets import ListView, ListItem, Label\n\nclass ItemApp(App):\n    def compose(self) -> ComposeResult:\n        items = [ListItem(Label(f\"Item {i}\")) for i in range(1, 101)]\n        yield ListView(*items)\n\nif __name__ == \"__main__\":\n    ItemApp().run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 975,
+    "cache_read_tokens": 21343,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0070183,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.0
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "textual.containers:VerticalScroll"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

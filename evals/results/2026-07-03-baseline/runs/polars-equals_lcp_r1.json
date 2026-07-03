@@ -1,0 +1,27 @@
+{
+  "case_id": "polars-equals",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndef dataframes_equal(df1: pl.DataFrame, df2: pl.DataFrame) -> bool:\n    \"\"\"\n    Returns True when two polars DataFrames are exactly equal (same schema and same values).\n    \n    Args:\n        df1: First polars DataFrame\n        df2: Second polars DataFrame\n    \n    Returns:\n        bool: True if schemas and values are identical, False otherwise\n    \"\"\"\n    return df1.equals(df2)\n\n\n# Test cases\nif __name__ == \"__main__\":\n    # Identical DataFrames\n    df1 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1.0, 2.0, 3.0]\n    })\n    df2 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1.0, 2.0, 3.0]\n    })\n    \n    # Different values\n    df3 = pl.DataFrame({\n        \"a\": [1, 2, 4],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1.0, 2.0, 3.0]\n    })\n    \n    # Different schema (column name)\n    df4 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"d\": [1.0, 2.0, 3.0]\n    })\n    \n    # Different schema (data type)\n    df5 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1, 2, 3]\n    })\n    \n    print(dataframes_equal(df1, df2))  # True\n    print(dataframes_equal(df1, df3))  # False (different values)\n    print(dataframes_equal(df1, df4))  # False (different column name)\n    print(dataframes_equal(df1, df5))  # False (different data type)",
+  "result_text": "```python\nimport polars as pl\n\ndef dataframes_equal(df1: pl.DataFrame, df2: pl.DataFrame) -> bool:\n    \"\"\"\n    Returns True when two polars DataFrames are exactly equal (same schema and same values).\n    \n    Args:\n        df1: First polars DataFrame\n        df2: Second polars DataFrame\n    \n    Returns:\n        bool: True if schemas and values are identical, False otherwise\n    \"\"\"\n    return df1.equals(df2)\n\n\n# Test cases\nif __name__ == \"__main__\":\n    # Identical DataFrames\n    df1 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1.0, 2.0, 3.0]\n    })\n    df2 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1.0, 2.0, 3.0]\n    })\n    \n    # Different values\n    df3 = pl.DataFrame({\n        \"a\": [1, 2, 4],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1.0, 2.0, 3.0]\n    })\n    \n    # Different schema (column name)\n    df4 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"d\": [1.0, 2.0, 3.0]\n    })\n    \n    # Different schema (data type)\n    df5 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"],\n        \"c\": [1, 2, 3]\n    })\n    \n    print(dataframes_equal(df1, df2))  # True\n    print(dataframes_equal(df1, df3))  # False (different values)\n    print(dataframes_equal(df1, df4))  # False (different column name)\n    print(dataframes_equal(df1, df5))  # False (different data type)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1455,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6310,
+    "cost_usd": 0.0214072,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.5
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

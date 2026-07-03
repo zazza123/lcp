@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport json\nfrom cyhole import Jupiter\n\nasync def main():\n    # Initialize Jupiter client\n    jupiter = Jupiter()\n    \n    # Define token addresses (Solana devnet/mainnet)\n    sol_mint = \"So11111111111111111111111111111111111111112\"  # SOL\n    usdc_mint = \"EPjFWaLb3odccccccccccccccccccccccccPmRNYy\"  # USDC\n    \n    # Amount to swap (in lamports for SOL, adjust as needed)\n    amount_in = 1_000_000  # 0.001 SOL\n    \n    # Step 1: Request a swap quote\n    quote_response = await jupiter.quote(\n        input_mint=sol_mint,\n        output_mint=usdc_mint,\n        amount=amount_in,\n        slippage_bps=100,  # 1% slippage\n    )\n    \n    print(\"Quote Response:\")\n    print(json.dumps(quote_response, indent=2))\n    \n    # Step 2: Execute the swap\n    # Note: This requires a wallet/keypair to sign the transaction\n    # For demonstration, we'll prepare the swap instruction\n    swap_response = await jupiter.swap(\n        quote_response=quote_response,\n        user_public_key=\"<YOUR_WALLET_PUBLIC_KEY>\",  # Replace with actual wallet\n    )\n    \n    print(\"Swap Response:\")\n    print(json.dumps(swap_response, indent=2))\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport json\nfrom cyhole import Jupiter\n\nasync def main():\n    # Initialize Jupiter client\n    jupiter = Jupiter()\n    \n    # Define token addresses (Solana devnet/mainnet)\n    sol_mint = \"So11111111111111111111111111111111111111112\"  # SOL\n    usdc_mint = \"EPjFWaLb3odccccccccccccccccccccccccPmRNYy\"  # USDC\n    \n    # Amount to swap (in lamports for SOL, adjust as needed)\n    amount_in = 1_000_000  # 0.001 SOL\n    \n    # Step 1: Request a swap quote\n    quote_response = await jupiter.quote(\n        input_mint=sol_mint,\n        output_mint=usdc_mint,\n        amount=amount_in,\n        slippage_bps=100,  # 1% slippage\n    )\n    \n    print(\"Quote Response:\")\n    print(json.dumps(quote_response, indent=2))\n    \n    # Step 2: Execute the swap\n    # Note: This requires a wallet/keypair to sign the transaction\n    # For demonstration, we'll prepare the swap instruction\n    swap_response = await jupiter.swap(\n        quote_response=quote_response,\n        user_public_key=\"<YOUR_WALLET_PUBLIC_KEY>\",  # Replace with actual wallet\n    )\n    \n    print(\"Swap Response:\")\n    print(json.dumps(swap_response, indent=2))\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1423,
+    "cache_read_tokens": 104861,
+    "cache_creation_tokens": 8152,
+    "cost_usd": 0.0339401,
+    "num_turns": 6,
+    "tool_calls": 4,
+    "duration_s": 20.2
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Jupiter"
+    ],
+    "error": null
+  }
+}

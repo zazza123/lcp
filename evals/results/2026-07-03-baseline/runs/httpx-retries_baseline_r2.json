@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-retries",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\n\n# Create an HTTP transport with 3 retries for failed connections\ntransport = httpx.HTTPTransport(retries=3)\n\n# Create a client using the configured transport for both HTTP and HTTPS\nclient = httpx.Client(\n    mounts={\n        \"http://\": transport,\n        \"https://\": transport,\n    }\n)\n\n# Example usage\ntry:\n    response = client.get(\"https://httpbin.org/status/200\")\n    print(f\"Status Code: {response.status_code}\")\n    print(f\"Response: {response.text}\")\nfinally:\n    client.close()",
+  "result_text": "```python\nimport httpx\n\n# Create an HTTP transport with 3 retries for failed connections\ntransport = httpx.HTTPTransport(retries=3)\n\n# Create a client using the configured transport for both HTTP and HTTPS\nclient = httpx.Client(\n    mounts={\n        \"http://\": transport,\n        \"https://\": transport,\n    }\n)\n\n# Example usage\ntry:\n    response = client.get(\"https://httpbin.org/status/200\")\n    print(f\"Status Code: {response.status_code}\")\n    print(f\"Response: {response.text}\")\nfinally:\n    client.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 677,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6211,
+    "cost_usd": 0.0173192,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.9
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

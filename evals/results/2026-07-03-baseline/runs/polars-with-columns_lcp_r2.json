@@ -1,0 +1,27 @@
+{
+  "case_id": "polars-with-columns",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [1, 2, 3],\n    \"b\": [4, 5, 6]\n})\n\ndf = df.with_columns((pl.col(\"a\") + pl.col(\"b\")).alias(\"c\"))\n\nprint(df)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [1, 2, 3],\n    \"b\": [4, 5, 6]\n})\n\ndf = df.with_columns((pl.col(\"a\") + pl.col(\"b\")).alias(\"c\"))\n\nprint(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 403,
+    "cache_read_tokens": 21349,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0041589,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 7.0
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

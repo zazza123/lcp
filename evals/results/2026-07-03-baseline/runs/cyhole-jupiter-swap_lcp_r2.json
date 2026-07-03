@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom cyhole import Jupiter\nfrom solders.keypair import Keypair\nfrom solders.pubkey import Pubkey\n\nasync def swap_sol_to_usdc():\n    # Initialize Jupiter client\n    jupiter = Jupiter()\n    \n    # Token mints\n    sol_mint = Pubkey.from_string(\"So11111111111111111111111111111111111111112\")\n    usdc_mint = Pubkey.from_string(\"EPjFWaJwqwqyqFvs96XewwohQVjccP6LNO5sqKSrm7K\")\n    \n    # Amount: 1 SOL in lamports\n    amount_in = 1_000_000_000\n    \n    # Step 1: Get quote\n    quote = await jupiter.get_quote(\n        input_mint=sol_mint,\n        output_mint=usdc_mint,\n        amount=amount_in\n    )\n    \n    print(f\"Quote received:\")\n    print(f\"  Input: {quote.in_amount} lamports\")\n    print(f\"  Output: {quote.out_amount} USDC\")\n    print(f\"  Price impact: {quote.price_impact}%\")\n    \n    # Step 2: Execute swap\n    # Note: Requires a valid keypair from environment or wallet\n    keypair = Keypair()  # Replace with actual wallet keypair\n    \n    swap_result = await jupiter.execute_swap(\n        quote=quote,\n        user_keypair=keypair\n    )\n    \n    print(f\"\\nSwap executed:\")\n    print(f\"  Transaction signature: {swap_result.signature}\")\n    print(f\"  Status: {swap_result.status}\")\n    \n    return swap_result\n\nif __name__ == \"__main__\":\n    result = asyncio.run(swap_sol_to_usdc())",
+  "result_text": "```python\nimport asyncio\nfrom cyhole import Jupiter\nfrom solders.keypair import Keypair\nfrom solders.pubkey import Pubkey\n\nasync def swap_sol_to_usdc():\n    # Initialize Jupiter client\n    jupiter = Jupiter()\n    \n    # Token mints\n    sol_mint = Pubkey.from_string(\"So11111111111111111111111111111111111111112\")\n    usdc_mint = Pubkey.from_string(\"EPjFWaJwqwqyqFvs96XewwohQVjccP6LNO5sqKSrm7K\")\n    \n    # Amount: 1 SOL in lamports\n    amount_in = 1_000_000_000\n    \n    # Step 1: Get quote\n    quote = await jupiter.get_quote(\n        input_mint=sol_mint,\n        output_mint=usdc_mint,\n        amount=amount_in\n    )\n    \n    print(f\"Quote received:\")\n    print(f\"  Input: {quote.in_amount} lamports\")\n    print(f\"  Output: {quote.out_amount} USDC\")\n    print(f\"  Price impact: {quote.price_impact}%\")\n    \n    # Step 2: Execute swap\n    # Note: Requires a valid keypair from environment or wallet\n    keypair = Keypair()  # Replace with actual wallet keypair\n    \n    swap_result = await jupiter.execute_swap(\n        quote=quote,\n        user_keypair=keypair\n    )\n    \n    print(f\"\\nSwap executed:\")\n    print(f\"  Transaction signature: {swap_result.signature}\")\n    print(f\"  Status: {swap_result.status}\")\n    \n    return swap_result\n\nif __name__ == \"__main__\":\n    result = asyncio.run(swap_sol_to_usdc())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1251,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6315,
+    "cost_usd": 0.0203972,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.3
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Jupiter"
+    ],
+    "error": null
+  }
+}

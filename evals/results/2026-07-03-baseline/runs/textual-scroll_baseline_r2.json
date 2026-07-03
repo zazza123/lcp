@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-scroll",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult\nfrom textual.containers import ScrollableContainer\nfrom textual.widgets import Header, Footer, Static\nfrom textual.app import App\n\n\nclass ScrollableListApp(App):\n    \"\"\"An app with a scrollable list of 100 labeled items.\"\"\"\n    \n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n    \n    #items_container {\n        height: 1fr;\n        border: solid green;\n    }\n    \n    Static {\n        height: 1;\n    }\n    \"\"\"\n    \n    def compose(self) -> ComposeResult:\n        yield Header()\n        with ScrollableContainer(id=\"items_container\"):\n            for i in range(1, 101):\n                yield Static(f\"Item {i}: Label {i}\")\n        yield Footer()\n\n\nif __name__ == \"__main__\":\n    app = ScrollableListApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult\nfrom textual.containers import ScrollableContainer\nfrom textual.widgets import Header, Footer, Static\nfrom textual.app import App\n\n\nclass ScrollableListApp(App):\n    \"\"\"An app with a scrollable list of 100 labeled items.\"\"\"\n    \n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n    \n    #items_container {\n        height: 1fr;\n        border: solid green;\n    }\n    \n    Static {\n        height: 1;\n    }\n    \"\"\"\n    \n    def compose(self) -> ComposeResult:\n        yield Header()\n        with ScrollableContainer(id=\"items_container\"):\n            for i in range(1, 101):\n                yield Static(f\"Item {i}: Label {i}\")\n        yield Footer()\n\n\nif __name__ == \"__main__\":\n    app = ScrollableListApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1655,
+    "cache_read_tokens": 21247,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0104087,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.9
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "textual.containers:VerticalScroll"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

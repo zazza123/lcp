@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Rugcheck\n\nmint_address = \"EPjFWaLb3bcrtedThq4rrq1ufxeQfZEbFXJVFfvYXuP\"\n\nrugcheck = Rugcheck()\nreport = rugcheck.get_report(mint_address)\nprint(report)",
+  "result_text": "```python\nfrom cyhole import Rugcheck\n\nmint_address = \"EPjFWaLb3bcrtedThq4rrq1ufxeQfZEbFXJVFfvYXuP\"\n\nrugcheck = Rugcheck()\nreport = rugcheck.get_report(mint_address)\nprint(report)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1547,
+    "cache_read_tokens": 21247,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0098687,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [
+      "cyhole:Rugcheck"
+    ],
+    "unresolved_usages": [
+      "cyhole.Rugcheck"
+    ],
+    "error": null
+  }
+}

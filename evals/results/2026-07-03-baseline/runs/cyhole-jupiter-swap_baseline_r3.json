@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Jupiter\n\n# Initialize Jupiter client\njupiter = Jupiter()\n\n# SOL and USDC mint addresses on Solana\nSOL_MINT = \"So11111111111111111111111111111111111111112\"\nUSDC_MINT = \"EPjFWaJy47glebZckbnY76kRCv1V5BJJoyX4bUEap2o\"\n\n# Request a swap quote: swap 1 SOL for USDC\nquote = jupiter.get_quote(\n    input_mint=SOL_MINT,\n    output_mint=USDC_MINT,\n    amount=1_000_000_000  # 1 SOL in lamports\n)\n\nprint(\"Quote received:\")\nprint(f\"  Input: {quote['inAmount']} lamports\")\nprint(f\"  Output: {quote['outAmount']} lamports\")\nprint(f\"  Route: {quote['route']}\")\n\n# Execute the swap using the quote\nswap_result = jupiter.execute_swap(quote)\n\nprint(\"\\nSwap executed:\")\nprint(f\"  Transaction ID: {swap_result['txid']}\")\nprint(f\"  Status: {swap_result['status']}\")\nprint(f\"  Output amount: {swap_result['outputAmount']}\")",
+  "result_text": "```python\nfrom cyhole import Jupiter\n\n# Initialize Jupiter client\njupiter = Jupiter()\n\n# SOL and USDC mint addresses on Solana\nSOL_MINT = \"So11111111111111111111111111111111111111112\"\nUSDC_MINT = \"EPjFWaJy47glebZckbnY76kRCv1V5BJJoyX4bUEap2o\"\n\n# Request a swap quote: swap 1 SOL for USDC\nquote = jupiter.get_quote(\n    input_mint=SOL_MINT,\n    output_mint=USDC_MINT,\n    amount=1_000_000_000  # 1 SOL in lamports\n)\n\nprint(\"Quote received:\")\nprint(f\"  Input: {quote['inAmount']} lamports\")\nprint(f\"  Output: {quote['outAmount']} lamports\")\nprint(f\"  Route: {quote['route']}\")\n\n# Execute the swap using the quote\nswap_result = jupiter.execute_swap(quote)\n\nprint(\"\\nSwap executed:\")\nprint(f\"  Transaction ID: {swap_result['txid']}\")\nprint(f\"  Status: {swap_result['status']}\")\nprint(f\"  Output amount: {swap_result['outputAmount']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1319,
+    "cache_read_tokens": 21251,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0087291,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Jupiter"
+    ],
+    "error": null
+  }
+}

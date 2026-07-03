@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-richlog",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult\nfrom textual.widgets import Header, Footer, Static\nfrom textual.binding import Binding\nfrom textual.app import App\n\n\nclass LogWidget(Static):\n    \"\"\"A scrollable log widget.\"\"\"\n    \n    DEFAULT_CSS = \"\"\"\n    LogWidget {\n        height: 1fr;\n        overflow-y: auto;\n    }\n    \"\"\"\n    \n    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        self.log_lines = []\n    \n    def append_line(self, line: str) -> None:\n        \"\"\"Append a line to the log.\"\"\"\n        self.log_lines.append(line)\n        self.update(\"\\n\".join(self.log_lines))\n\n\nclass LogApp(App):\n    BINDINGS = [\n        Binding(\"q\", \"quit\", \"Quit\"),\n    ]\n    \n    def compose(self) -> ComposeResult:\n        yield Header()\n        yield LogWidget(id=\"log\")\n        yield Footer()\n    \n    def on_mount(self) -> None:\n        log = self.query_one(\"#log\", LogWidget)\n        log.append_line(\"App started...\")\n\n\nif __name__ == \"__main__\":\n    app = LogApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult\nfrom textual.widgets import Header, Footer, Static\nfrom textual.binding import Binding\nfrom textual.app import App\n\n\nclass LogWidget(Static):\n    \"\"\"A scrollable log widget.\"\"\"\n    \n    DEFAULT_CSS = \"\"\"\n    LogWidget {\n        height: 1fr;\n        overflow-y: auto;\n    }\n    \"\"\"\n    \n    def __init__(self, *args, **kwargs):\n        super().__init__(*args, **kwargs)\n        self.log_lines = []\n    \n    def append_line(self, line: str) -> None:\n        \"\"\"Append a line to the log.\"\"\"\n        self.log_lines.append(line)\n        self.update(\"\\n\".join(self.log_lines))\n\n\nclass LogApp(App):\n    BINDINGS = [\n        Binding(\"q\", \"quit\", \"Quit\"),\n    ]\n    \n    def compose(self) -> ComposeResult:\n        yield Header()\n        yield LogWidget(id=\"log\")\n        yield Footer()\n    \n    def on_mount(self) -> None:\n        log = self.query_one(\"#log\", LogWidget)\n        log.append_line(\"App started...\")\n\n\nif __name__ == \"__main__\":\n    app = LogApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2623,
+    "cache_read_tokens": 21350,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.015259,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.5
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "textual.widgets:RichLog"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

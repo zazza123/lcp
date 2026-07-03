@@ -1,0 +1,27 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import json\nfrom mcp.server.fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config():\n    config = {\n        \"version\": \"1.0\",\n        \"environment\": \"production\",\n        \"debug_mode\": False,\n        \"timeout_seconds\": 30,\n        \"max_retries\": 3,\n        \"features\": {\n            \"caching\": True,\n            \"compression\": True,\n            \"logging\": True\n        },\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432,\n            \"name\": \"app_db\"\n        }\n    }\n    return json.dumps(config, indent=2)\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nimport json\nfrom mcp.server.fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config():\n    config = {\n        \"version\": \"1.0\",\n        \"environment\": \"production\",\n        \"debug_mode\": False,\n        \"timeout_seconds\": 30,\n        \"max_retries\": 3,\n        \"features\": {\n            \"caching\": True,\n            \"compression\": True,\n            \"logging\": True\n        },\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432,\n            \"name\": \"app_db\"\n        }\n    }\n    return json.dumps(config, indent=2)\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1606,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6215,
+    "cost_usd": 0.0219722,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.4
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

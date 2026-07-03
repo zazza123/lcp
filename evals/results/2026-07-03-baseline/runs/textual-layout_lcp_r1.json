@@ -1,0 +1,27 @@
+{
+  "case_id": "textual-layout",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, on\nfrom textual.containers import Horizontal\nfrom textual.widgets import Header, Footer, Tree, TextArea\nfrom textual.app import App\nimport os\n\n\nclass DirectoryExplorer(App):\n    \"\"\"A Textual app with a directory tree on the left and text area on the right.\"\"\"\n    \n    BINDINGS = [(\"d\", \"toggle_dark\", \"Toggle dark mode\")]\n    \n    def compose(self) -> ComposeResult:\n        yield Header()\n        with Horizontal():\n            yield Tree(\".\", id=\"directory_tree\")\n            yield TextArea(id=\"text_area\")\n        yield Footer()\n    \n    def on_mount(self) -> None:\n        tree = self.query_one(\"#directory_tree\", Tree)\n        tree.root.expand()\n        self._load_directory(tree.root, \".\")\n    \n    def _load_directory(self, node, path: str) -> None:\n        \"\"\"Recursively load directory structure.\"\"\"\n        try:\n            entries = sorted(os.listdir(path))\n            for entry in entries:\n                if entry.startswith('.'):\n                    continue\n                full_path = os.path.join(path, entry)\n                if os.path.isdir(full_path):\n                    child = node.add(entry, expand=False)\n                    self._load_directory(child, full_path)\n                else:\n                    node.add(entry)\n        except (PermissionError, OSError):\n            pass\n    \n    @on(Tree.NodeSelected)\n    def handle_tree_selection(self, event: Tree.NodeSelected) -> None:\n        \"\"\"Handle file selection in tree.\"\"\"\n        text_area = self.query_one(\"#text_area\", TextArea)\n        \n        path_parts = []\n        node = event.node\n        while node != node.tree.root:\n            path_parts.insert(0, str(node.label))\n            node = node.parent\n        path_parts.insert(0, \".\")\n        full_path = os.path.join(*path_parts)\n        \n        if os.path.isfile(full_path):\n            try:\n                with open(full_path, 'r', encoding='utf-8') as f:\n                    text_area.text = f.read()\n            except (UnicodeDecodeError, IOError):\n                text_area.text = \"[Unable to read file]\"\n    \n    def action_toggle_dark(self) -> None:\n        \"\"\"Toggle dark mode.\"\"\"\n        self.dark = not self.dark\n\n\nif __name__ == \"__main__\":\n    app = DirectoryExplorer()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, on\nfrom textual.containers import Horizontal\nfrom textual.widgets import Header, Footer, Tree, TextArea\nfrom textual.app import App\nimport os\n\n\nclass DirectoryExplorer(App):\n    \"\"\"A Textual app with a directory tree on the left and text area on the right.\"\"\"\n    \n    BINDINGS = [(\"d\", \"toggle_dark\", \"Toggle dark mode\")]\n    \n    def compose(self) -> ComposeResult:\n        yield Header()\n        with Horizontal():\n            yield Tree(\".\", id=\"directory_tree\")\n            yield TextArea(id=\"text_area\")\n        yield Footer()\n    \n    def on_mount(self) -> None:\n        tree = self.query_one(\"#directory_tree\", Tree)\n        tree.root.expand()\n        self._load_directory(tree.root, \".\")\n    \n    def _load_directory(self, node, path: str) -> None:\n        \"\"\"Recursively load directory structure.\"\"\"\n        try:\n            entries = sorted(os.listdir(path))\n            for entry in entries:\n                if entry.startswith('.'):\n                    continue\n                full_path = os.path.join(path, entry)\n                if os.path.isdir(full_path):\n                    child = node.add(entry, expand=False)\n                    self._load_directory(child, full_path)\n                else:\n                    node.add(entry)\n        except (PermissionError, OSError):\n            pass\n    \n    @on(Tree.NodeSelected)\n    def handle_tree_selection(self, event: Tree.NodeSelected) -> None:\n        \"\"\"Handle file selection in tree.\"\"\"\n        text_area = self.query_one(\"#text_area\", TextArea)\n        \n        path_parts = []\n        node = event.node\n        while node != node.tree.root:\n            path_parts.insert(0, str(node.label))\n            node = node.parent\n        path_parts.insert(0, \".\")\n        full_path = os.path.join(*path_parts)\n        \n        if os.path.isfile(full_path):\n            try:\n                with open(full_path, 'r', encoding='utf-8') as f:\n                    text_area.text = f.read()\n            except (UnicodeDecodeError, IOError):\n                text_area.text = \"[Unable to read file]\"\n    \n    def action_toggle_dark(self) -> None:\n        \"\"\"Toggle dark mode.\"\"\"\n        self.dark = not self.dark\n\n\nif __name__ == \"__main__\":\n    app = DirectoryExplorer()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4379,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6360,
+    "cost_usd": 0.0361272,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 87.6
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

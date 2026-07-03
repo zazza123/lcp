@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport logging\nfrom fastmcp import Server\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nserver = Server(\"progress-reporter\")\n\n@server.tool()\nasync def process_items(items: list[str]) -> dict:\n    \"\"\"Process a list of items and report progress via MCP context logging.\n    \n    Args:\n        items: List of items to process\n        \n    Returns:\n        Dictionary with processing results\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for i, item in enumerate(items, 1):\n        logger.info(f\"Progress: Processing item {i}/{total} - {item}\")\n        await asyncio.sleep(0.1)\n        results.append(f\"processed_{item}\")\n    \n    logger.info(f\"Progress: Completed processing all {total} items\")\n    \n    return {\n        \"total_items\": total,\n        \"processed_count\": len(results),\n        \"processed_items\": results,\n        \"status\": \"success\"\n    }\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server, host=\"localhost\", port=8000)",
+  "result_text": "```python\nimport asyncio\nimport logging\nfrom fastmcp import Server\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nserver = Server(\"progress-reporter\")\n\n@server.tool()\nasync def process_items(items: list[str]) -> dict:\n    \"\"\"Process a list of items and report progress via MCP context logging.\n    \n    Args:\n        items: List of items to process\n        \n    Returns:\n        Dictionary with processing results\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for i, item in enumerate(items, 1):\n        logger.info(f\"Progress: Processing item {i}/{total} - {item}\")\n        await asyncio.sleep(0.1)\n        results.append(f\"processed_{item}\")\n    \n    logger.info(f\"Progress: Completed processing all {total} items\")\n    \n    return {\n        \"total_items\": total,\n        \"processed_count\": len(results),\n        \"processed_items\": results,\n        \"status\": \"success\"\n    }\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server, host=\"localhost\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2614,
+    "cache_read_tokens": 21347,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0152137,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.6
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:Context"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

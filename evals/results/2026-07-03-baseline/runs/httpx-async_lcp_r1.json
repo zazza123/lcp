@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-async",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport httpx\n\nasync def main():\n    urls = [\n        \"https://www.example.com\",\n        \"https://www.google.com\",\n        \"https://www.github.com\"\n    ]\n    \n    async with httpx.AsyncClient() as client:\n        tasks = [client.get(url) for url in urls]\n        responses = await asyncio.gather(*tasks)\n        \n        for url, response in zip(urls, responses):\n            print(f\"{url}: {response.status_code}\")\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport httpx\n\nasync def main():\n    urls = [\n        \"https://www.example.com\",\n        \"https://www.google.com\",\n        \"https://www.github.com\"\n    ]\n    \n    async with httpx.AsyncClient() as client:\n        tasks = [client.get(url) for url in urls]\n        responses = await asyncio.gather(*tasks)\n        \n        for url, response in zip(urls, responses):\n            print(f\"{url}: {response.status_code}\")\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 675,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6354,
+    "cost_usd": 0.017595200000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.1
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

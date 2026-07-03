@@ -1,0 +1,311 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "arms": {
+    "baseline": {
+      "runs": 84,
+      "pass_rate": 0.4523809523809524,
+      "total_misuse": 39,
+      "misuse_rate": 0.4642857142857143,
+      "errors": 0,
+      "mean_input_tokens": 12.69047619047619,
+      "mean_output_tokens": 1487.8690476190477,
+      "mean_tool_calls": 0.5238095238095238,
+      "mean_cost_usd": 0.01650014761904762,
+      "total_cost_usd": 1.3860124
+    },
+    "lcp": {
+      "runs": 84,
+      "pass_rate": 0.5238095238095238,
+      "total_misuse": 36,
+      "misuse_rate": 0.42857142857142855,
+      "errors": 0,
+      "mean_input_tokens": 20.916666666666668,
+      "mean_output_tokens": 1621.642857142857,
+      "mean_tool_calls": 1.7023809523809523,
+      "mean_cost_usd": 0.024359614285714287,
+      "total_cost_usd": 2.0462076
+    }
+  },
+  "cases": {
+    "cyhole-birdeye-price": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 3
+      }
+    },
+    "cyhole-jupiter-swap": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 3
+      }
+    },
+    "cyhole-missing-api-key": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 1
+      }
+    },
+    "cyhole-rugcheck-report": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 6
+      }
+    },
+    "fastmcp-client": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 4
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 5
+      }
+    },
+    "fastmcp-context": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 2
+      }
+    },
+    "fastmcp-resource": {
+      "baseline": {
+        "passes": "1/3",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "2/3",
+        "misuse": 1
+      }
+    },
+    "fastmcp-server-tool": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 7
+      }
+    },
+    "hamana-connector-not-initialised": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "2/3",
+        "misuse": 1
+      }
+    },
+    "hamana-csv-to-sqlite": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 2
+      }
+    },
+    "hamana-internal-shortcuts": {
+      "baseline": {
+        "passes": "2/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "2/3",
+        "misuse": 0
+      }
+    },
+    "hamana-sqlite-execute": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 0
+      }
+    },
+    "httpx-async": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "httpx-client": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "httpx-retries": {
+      "baseline": {
+        "passes": "1/3",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "1/3",
+        "misuse": 2
+      }
+    },
+    "httpx-stream": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "polars-equals": {
+      "baseline": {
+        "passes": "1/3",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "2/3",
+        "misuse": 1
+      }
+    },
+    "polars-group-by": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "polars-map-elements": {
+      "baseline": {
+        "passes": "2/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "1/3",
+        "misuse": 0
+      }
+    },
+    "polars-with-columns": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "pydantic-field-validator": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "pydantic-json-schema": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "pydantic-settings": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "pydantic-validate-call": {
+      "baseline": {
+        "passes": "2/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "textual-layout": {
+      "baseline": {
+        "passes": "1/3",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "2/3",
+        "misuse": 1
+      }
+    },
+    "textual-post-message": {
+      "baseline": {
+        "passes": "3/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "textual-richlog": {
+      "baseline": {
+        "passes": "1/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "2/3",
+        "misuse": 0
+      }
+    },
+    "textual-scroll": {
+      "baseline": {
+        "passes": "0/3",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "0/3",
+        "misuse": 1
+      }
+    }
+  }
+}

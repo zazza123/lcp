@@ -1,0 +1,27 @@
+{
+  "case_id": "polars-equals",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndef dataframes_equal(df1: pl.DataFrame, df2: pl.DataFrame) -> bool:\n    \"\"\"\n    Check if two Polars DataFrames are exactly equal (same schema and same values).\n    \n    Args:\n        df1: First DataFrame\n        df2: Second DataFrame\n    \n    Returns:\n        True if both DataFrames have the same schema and values, False otherwise\n    \"\"\"\n    return df1.equals(df2)\n\n\n# Example usage\nif __name__ == \"__main__\":\n    df1 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"]\n    })\n    \n    df2 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"]\n    })\n    \n    df3 = pl.DataFrame({\n        \"a\": [1, 2, 4],\n        \"b\": [\"x\", \"y\", \"z\"]\n    })\n    \n    df4 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n    })\n    \n    print(f\"df1 == df2: {dataframes_equal(df1, df2)}\")  # True\n    print(f\"df1 == df3: {dataframes_equal(df1, df3)}\")  # False (different values)\n    print(f\"df1 == df4: {dataframes_equal(df1, df4)}\")  # False (different schema)",
+  "result_text": "```python\nimport polars as pl\n\ndef dataframes_equal(df1: pl.DataFrame, df2: pl.DataFrame) -> bool:\n    \"\"\"\n    Check if two Polars DataFrames are exactly equal (same schema and same values).\n    \n    Args:\n        df1: First DataFrame\n        df2: Second DataFrame\n    \n    Returns:\n        True if both DataFrames have the same schema and values, False otherwise\n    \"\"\"\n    return df1.equals(df2)\n\n\n# Example usage\nif __name__ == \"__main__\":\n    df1 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"]\n    })\n    \n    df2 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n        \"b\": [\"x\", \"y\", \"z\"]\n    })\n    \n    df3 = pl.DataFrame({\n        \"a\": [1, 2, 4],\n        \"b\": [\"x\", \"y\", \"z\"]\n    })\n    \n    df4 = pl.DataFrame({\n        \"a\": [1, 2, 3],\n    })\n    \n    print(f\"df1 == df2: {dataframes_equal(df1, df2)}\")  # True\n    print(f\"df1 == df3: {dataframes_equal(df1, df3)}\")  # False (different values)\n    print(f\"df1 == df4: {dataframes_equal(df1, df4)}\")  # False (different schema)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1689,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6214,
+    "cost_usd": 0.0223852,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.8
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

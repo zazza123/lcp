@@ -1,0 +1,29 @@
+{
+  "case_id": "cyhole-missing-api-key",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "\n\n\n\n\n\n",
+  "result_text": "Let me directly explore the cyhole package to understand the Birdeye API.\n\n```bash\npython3 -c \"import cyhole; import inspect; from cyhole.providers import birdeye; print(inspect.getfile(birdeye))\"\n```\n\n```bash\npython3 << 'EOF'\nimport cyhole\nfrom cyhole.providers import birdeye\nimport inspect\n\n# Get the Birdeye class\ntry:\n    birdeye_cls = birdeye.Birdeye\n    sig = inspect.signature(birdeye_cls.__init__)\n    print(f\"Birdeye.__init__ signature: {sig}\")\n    print(\"\\nBirdeye class docstring:\")\n    print(inspect.getdoc(birdeye_cls))\nexcept Exception as e:\n    print(f\"Error: {e}\")\nEOF\n```\n\n```bash\npython3 << 'EOF'\nfrom cyhole.providers import birdeye\nimport inspect\n\n# Look at source code for exception handling\nsource = inspect.getsource(birdeye.Birdeye.__init__)\nprint(source)\nEOF\n```\n\n```bash\npython3 << 'EOF'\n# Try to instantiate Birdeye without API key and see what happens\nfrom cyhole.providers import birdeye\n\ntry:\n    b = birdeye.Birdeye()\nexcept Exception as e:\n    print(f\"Exception type: {type(e).__name__}\")\n    print(f\"Exception module: {type(e).__module__}\")\n    print(f\"Exception message: {e}\")\n    print(f\"Full exception: {type(e)}\")\nEOF\n```\n\n```python\nfrom cyhole.providers.birdeye import Birdeye, BirdeyeException\n\ntry:\n    interaction = Birdeye()\nexcept BirdeyeException as e:\n    print(f\"Caught Birdeye exception: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 49,
+    "output_tokens": 1914,
+    "cache_read_tokens": 149313,
+    "cache_creation_tokens": 11892,
+    "cost_usd": 0.048334300000000004,
+    "num_turns": 10,
+    "tool_calls": 5,
+    "duration_s": 28.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.core.exception:MissingAPIKeyError"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport logging\nfrom fastmcp import FastMCP\nfrom typing import Any\n\nlogger = logging.getLogger(\"progress_processor\")\n\nmcp = FastMCP(\"progress-tool-server\")\n\n@mcp.tool()\nasync def process_items(items: list[str]) -> dict[str, Any]:\n    \"\"\"Process a list of items and report progress via MCP context.\n    \n    Args:\n        items: List of items to process\n        \n    Returns:\n        Dictionary containing processing results and status\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    logger.info(f\"Starting to process {total} items\")\n    \n    for current, item in enumerate(items, 1):\n        # Simulate processing work\n        await asyncio.sleep(0.1)\n        \n        # Calculate and report progress via MCP context logging\n        progress_percent = (current / total) * 100\n        logger.info(f\"Progress: {current}/{total} ({progress_percent:.0f}%) - Processing '{item}'\")\n        \n        results.append(item)\n    \n    logger.info(f\"Completed processing all {total} items\")\n    \n    return {\n        \"status\": \"completed\",\n        \"total_items\": total,\n        \"processed_items\": results\n    }\n\nif __name__ == \"__main__\":\n    logging.basicConfig(level=logging.INFO)\n    mcp.run()",
+  "result_text": "```python\nimport asyncio\nimport logging\nfrom fastmcp import FastMCP\nfrom typing import Any\n\nlogger = logging.getLogger(\"progress_processor\")\n\nmcp = FastMCP(\"progress-tool-server\")\n\n@mcp.tool()\nasync def process_items(items: list[str]) -> dict[str, Any]:\n    \"\"\"Process a list of items and report progress via MCP context.\n    \n    Args:\n        items: List of items to process\n        \n    Returns:\n        Dictionary containing processing results and status\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    logger.info(f\"Starting to process {total} items\")\n    \n    for current, item in enumerate(items, 1):\n        # Simulate processing work\n        await asyncio.sleep(0.1)\n        \n        # Calculate and report progress via MCP context logging\n        progress_percent = (current / total) * 100\n        logger.info(f\"Progress: {current}/{total} ({progress_percent:.0f}%) - Processing '{item}'\")\n        \n        results.append(item)\n    \n    logger.info(f\"Completed processing all {total} items\")\n    \n    return {\n        \"status\": \"completed\",\n        \"total_items\": total,\n        \"processed_items\": results\n    }\n\nif __name__ == \"__main__\":\n    logging.basicConfig(level=logging.INFO)\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4460,
+    "cache_read_tokens": 21251,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0244341,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 46.9
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:Context"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
