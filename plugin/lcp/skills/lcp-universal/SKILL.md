@@ -1,13 +1,18 @@
 ---
 name: lcp-universal
-description: This skill should be used when the user writes code that imports or uses a Python library, asks to "look up the X API", "check how to use X", "what's the signature of X.Y", "resolve library X", or encounters import errors or API misuse. Activates the lcp MCP server's resolve_library workflow for on-demand introspection of any pip-installed package.
+description: This skill should be used when the user writes code that imports or uses a Python library, asks to "look up the X API", "check how to use X", "what's the signature of X.Y", "resolve library X", or encounters import errors or API misuse. Activates the lcp MCP server's resolve → search → get_symbol workflow for on-demand introspection of any pip-installed package.
 ---
 
 # LCP Universal — On-demand Python Library Documentation
 
-This plugin starts the `lcp serve-all` MCP server automatically. It can scan any pip-installed Python library and expose its full public API — every function, class, method, signature, and docstring — as browsable MCP tools.
+The `lcp` MCP server (started automatically by this plugin) serves
+ground-truth API documentation for any pip-installed Python library —
+every public symbol, signature, and docstring, introspected from the
+installed version. Unlike training data, it is never stale.
 
-## Quick start
+**Verify before you write.** If you are not certain a symbol exists with
+the exact signature you are about to write — especially for niche, new, or
+fast-moving libraries — check it first. The whole workflow is 3 calls.
 
 If a library name is provided via arguments, resolve it immediately:
 
@@ -15,75 +20,48 @@ If a library name is provided via arguments, resolve it immediately:
 resolve_library("$ARGUMENTS")
 ```
 
-Then follow the workflow below to explore it.
-
-## Step 1: Resolve the library
-
-Before using any other tool, load the library:
+## The 3-call workflow
 
 ```
-resolve_library("requests")    # → scanned, cached, ready
-resolve_library("fastapi")     # → scanned, cached, ready
-resolve_library("numpy")       # → scanned, cached, ready
+resolve_library("polars")                  # 1. load (cache / scan / registry)
+search("read csv", library="polars")       # 2. find symbols, ranked
+get_symbol(ids=["polars:read_csv"])        # 3. exact signature + import line
 ```
 
-Returns `{ status: "loaded", symbol_count: ..., source: "cache"|"scan" }`.
+1. **`resolve_library(name, version?)`** — always first. Loads the library
+   and reports name, version, symbol count, and source.
+2. **`search(query, library?, module?, kind?, limit?)`** — ranked discovery.
+   Every hit carries the exact `import` line. An **empty query browses**:
+   `search("", module="polars.io", kind="function")` lists a module's
+   contents deterministically.
+3. **`get_symbol(ids, library?)`** — batch verification. Full signatures,
+   required/optional parameters, return types, and the correct import line.
+   Classes inline all members as one-line summaries; fetch
+   `"module:Class#member"` for a member's full signature.
+   `usage_hints.returns_classes` names the class a call returns — use it to
+   verify methods on returned objects instead of inventing them.
 
-The last resolved library becomes the **implicit default** for all other tools — no need to pass `library=` on every call.
+For orientation, `get_overview(library?)` returns the module tree with
+symbol counts.
 
-## Step 2: Explore the API
+## Multiple libraries
 
-```
-get_manifest()                                # name, version, language
-list_modules()                                # all module paths
-list_symbols(module="fastapi.routing", kind="class")
-get_symbol("fastapi.routing:APIRouter")       # full signature + params
-get_class_members("fastapi.routing:APIRouter")
-explore_return_type("fastapi.routing:APIRouter#add_api_route")
-search_symbols(query="middleware")            # text search (expensive)
-get_suggestions("handle HTTP routing")        # task-based suggestions
-```
+With one library loaded, `library=` may be omitted. With two or more, every
+call requires `library=<name>` — otherwise you get an
+`{"error": {"code": "ambiguous_library", "loaded_libraries": [...]}}`
+response naming the choices.
 
-## Working with multiple libraries
+## Errors
 
-All tools accept an optional `library=` parameter:
-
-```
-resolve_library("httpx")
-resolve_library("aiohttp")
-list_symbols(library="httpx", kind="class")
-list_symbols(library="aiohttp", kind="function")
-list_libraries()                              # see all loaded libraries
-```
-
-## Recommended workflow
-
-1. `resolve_library("pkg")` — load the library (checks cache first)
-2. `get_manifest()` — confirm name/version
-3. `list_modules()` — browse module structure
-4. `list_symbols(module="...", kind="...")` — browse candidates
-5. `get_symbol("module:Symbol")` — **always verify signature before writing code**
-6. `get_class_members("module:Class")` or `explore_return_type("module:func")` — understand returned objects
-
-## Tool reference
-
-| Tool | Purpose |
-|------|---------|
-| `resolve_library(name)` | **Call first** — load a library (cache or live scan) |
-| `list_libraries()` | List all currently loaded libraries |
-| `get_usage_guide()` | Full workflow and common mistakes |
-| `get_manifest(library?)` | Library name, version, language |
-| `list_modules(library?)` | All module paths |
-| `list_symbols(library?, module?, kind?)` | Browse symbols (filter by module and/or kind) |
-| `get_symbol(id, library?)` | Full signature, params, return type — **verify before every API call** |
-| `get_class_members(id, library?)` | All methods/attributes of a class |
-| `explore_return_type(id, library?)` | Discover available methods on a returned object |
-| `search_symbols(query, library?)` | Text search across all symbols (expensive) |
-| `get_suggestions(task, library?)` | Task-based module and symbol recommendations |
+All failures are structured:
+`{"error": {"code", "message", "hint", ...}}` — follow the `hint` (e.g.
+"call resolve_library first", "pass library=").
 
 ## Key rules
 
-- **Never assume** a parameter name, type, or default — always call `get_symbol` first.
-- **Never invent** methods on returned objects — always call `explore_return_type` or `get_class_members`.
-- Prefer `list_modules` → `list_symbols` over `search_symbols` (search scans everything, is slower).
+- **Never assume** a parameter name, type, or default — `get_symbol` first.
+- **Never invent** methods on returned objects — follow
+  `usage_hints.returns_classes`.
+- Batch related lookups into ONE `get_symbol(ids=[...])` call.
+- Truncated responses say so (`"truncated": true`) and hint at the follow-up.
 - Private packages work too — any pip-installed package can be scanned.
