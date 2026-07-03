@@ -445,6 +445,7 @@ def resolve_library_document(
     cache_dir: Path = _DEFAULT_CACHE_DIR,
     no_cache: bool = False,
     registry_url: str | None = None,
+    version: str | None = None,
 ) -> tuple[LCPDocument, str]:
     """Resolve an LCP document for *name* using the standard resolution order.
 
@@ -466,6 +467,9 @@ def resolve_library_document(
         registry_url: Optional base URL of an LCP registry to try when local
             scanning fails.  The default official registry is at
             ``https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main``.
+        version: Optional exact version to prefer; overrides the installed
+            version for cache lookup and registry fetch.  A live scan always
+            returns the installed version regardless.
 
     Returns:
         Tuple of (LCPDocument, source) where source is ``"cache"``,
@@ -478,18 +482,20 @@ def resolve_library_document(
     from .scanner import scan_package
     from .generator import generate_lcp
 
-    # Resolve the installed version once; used for both cache lookup and registry fetch
+    # Resolve the installed version once; used for both cache lookup and
+    # registry fetch. An explicit *version* takes precedence over it.
     installed_ver = _installed_version(name)
+    lookup_ver = version or installed_ver
 
     # 1. Cache lookup
     if not no_cache:
-        if installed_ver:
-            # If the package has a known installed version, look for an exact match
-            cached = _load_from_cache(cache_dir, name, installed_ver)
+        if lookup_ver:
+            # Exact-version match (requested version wins over installed)
+            cached = _load_from_cache(cache_dir, name, lookup_ver)
             if cached is not None:
                 return cached, "cache"
         else:
-            # No installed version metadata: return any cached entry for this package
+            # No version to pin: return any cached entry for this package
             cached = _find_any_cached(cache_dir, name)
             if cached is not None:
                 return cached, "cache"
@@ -511,7 +517,7 @@ def resolve_library_document(
     # 3. Registry fallback
     if registry_url:
         try:
-            doc = _fetch_from_registry(name, registry_url, version=installed_ver)
+            doc = _fetch_from_registry(name, registry_url, version=lookup_ver)
             if not no_cache:
                 try:
                     _save_to_cache(cache_dir, doc)
@@ -791,6 +797,50 @@ def _get_symbols(
             "Response byte cap reached; call get_symbol again with the "
             "ids in not_returned."
         )
+    return result
+
+
+def _overview(
+    index: LCPIndex,
+    source: str | None = None,
+    max_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+) -> dict[str, Any]:
+    """Build the get_overview payload: identity + module tree (spec D4).
+
+    Args:
+        index: The library index to summarize.
+        source: Resolution source recorded for the library, if known.
+        max_bytes: Byte budget for the modules list.
+
+    Returns:
+        ``{"library": {...}, "modules": [...], "total_symbols": N}``.
+    """
+    manifest = index.doc.manifest
+    library: dict[str, Any] = {
+        "name": manifest.library.name,
+        "version": manifest.library.version,
+        "language": manifest.library.language,
+        "schema_version": manifest.schema_version,
+    }
+    if source:
+        library["source"] = source
+    if manifest.compatibility:
+        library["compatibility"] = manifest.compatibility.model_dump(
+            exclude_none=True
+        )
+
+    modules = [
+        {"module": module, "symbols": len(index.symbols_by_module[module])}
+        for module in sorted(index.modules)
+    ]
+    modules, truncated = _fit_list(modules, max_bytes)
+    result: dict[str, Any] = {
+        "library": library,
+        "modules": modules,
+        "total_symbols": len(index.symbols_by_id),
+    }
+    if truncated:
+        result["truncated"] = True
     return result
 
 

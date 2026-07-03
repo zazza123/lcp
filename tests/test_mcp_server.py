@@ -21,7 +21,9 @@ from lcp.mcp_server import (
     _fit_list,
     _get_symbols,
     _import_statement,
+    _overview,
     _resolve_type_to_classes,
+    _save_to_cache,
     _search_index,
     _symbol_name,
     create_server,
@@ -423,6 +425,70 @@ class TestGetSymbolsBatch:
         assert sym["members_truncated"] is True
         assert 0 < len(sym["members"]) < 400
         assert "search" in sym["members_hint"]
+
+
+class TestOverview:
+    def test_shape(self, detail_index):
+        result = _overview(detail_index, source="scan")
+        assert result["library"]["name"] == "fake"
+        assert result["library"]["version"] == "1.0.0"
+        assert result["library"]["source"] == "scan"
+        modules = {m["module"]: m["symbols"] for m in result["modules"]}
+        assert modules["fake.io"] == 4
+        assert modules["fake"] == 2
+        assert result["total_symbols"] == 6
+
+    def test_modules_sorted(self, detail_index):
+        mods = [m["module"] for m in _overview(detail_index)["modules"]]
+        assert mods == sorted(mods)
+
+    def test_byte_cap(self):
+        idx = make_index(
+            {
+                f"fake.m{i:03d}:f": make_symbol("function", module=f"fake.m{i:03d}")
+                for i in range(600)
+            }
+        )
+        result = _overview(idx, max_bytes=1_000)
+        assert result["truncated"] is True
+        assert len(result["modules"]) < 600
+        assert result["total_symbols"] == 600
+
+
+class TestResolveDocumentVersion:
+    def test_version_pins_cache_lookup(self, tmp_path, sample_lcp_file):
+        """A cached doc for the requested version is used for the lookup."""
+        cache_dir = tmp_path / "cache"
+        doc = load_lcp_document(sample_lcp_file)
+        _save_to_cache(cache_dir, doc)
+        cached_version = doc.manifest.library.version
+
+        got, source = resolve_library_document(
+            "tests.sample_module",
+            cache_dir=cache_dir,
+            version=cached_version,
+        )
+        assert source == "cache"
+        assert got.manifest.library.version == cached_version
+
+    def test_version_passed_to_registry(self, tmp_path, sample_lcp_file):
+        doc = load_lcp_document(sample_lcp_file)
+        manifest_json = doc.model_dump_json().encode()
+        mock_response = MagicMock()
+        mock_response.read.return_value = manifest_json
+        mock_response.__enter__ = lambda s: s
+        mock_response.__exit__ = MagicMock(return_value=False)
+
+        with patch("urllib.request.urlopen", return_value=mock_response) as m:
+            resolve_library_document(
+                "nonexistent_package_xyz_123",
+                cache_dir=tmp_path / "cache",
+                no_cache=True,
+                registry_url="https://registry.example.com",
+                version="9.9.9",
+            )
+        called_url = m.call_args[0][0]
+        assert "9.9.9.lcp.json.gz" in called_url
 
 
 class TestLoadLCPDocument:
