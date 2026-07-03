@@ -84,12 +84,11 @@ Once connected, Claude Code uses the `lcp-universal` skill to guide the agent. T
 User: "Set up FastAPI routes with proper dependency injection"
 
 Agent:
-  1. resolve_library("fastapi")                → scanned + cached
-  2. list_modules()                            → finds fastapi.routing
-  3. list_symbols(module="fastapi.routing")    → finds APIRouter, Depends
-  4. get_symbol("fastapi.routing:APIRouter")   → full signature
-  5. get_class_members("fastapi:Depends")      → understands dependencies
-  6. Writes accurate code
+  1. resolve_library("fastapi")                       → scanned + cached
+  2. search("routing dependency", library="fastapi")  → ranked hits + import lines
+  3. get_symbol(ids=["fastapi.routing:APIRouter",
+                     "fastapi:Depends"])              → full signatures, members inline
+  4. Writes accurate code
 ```
 
 ## Options
@@ -147,7 +146,7 @@ resolve_library("requests")
 LCPIndex (in-memory)
       │
       ▼
-list_symbols / get_symbol / get_class_members / ...
+search / get_symbol / get_overview
 ```
 
 ## Works with private packages
