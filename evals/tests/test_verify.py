@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from harness.verify import resolve_dotted, resolve_symbol, Verification, symbol_used, verify_code
+from harness.verify import resolve_dotted, resolve_symbol, symbol_used, verify_code
 from harness.extract import CodeUsage
 
 
