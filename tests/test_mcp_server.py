@@ -1093,3 +1093,28 @@ class TestPreload:
         )
         assert server.index.names() == []
         assert "preload" in capsys.readouterr().err.lower()
+
+
+class TestCreateServerDeprecated:
+    def test_emits_deprecation_and_preloads(self, sample_lcp_file):
+        with pytest.warns(DeprecationWarning, match="serve-all"):
+            server = create_server(sample_lcp_file)
+        assert server.mcp.name == "lcp-tests.sample_module"
+        assert set(server.tools) == {
+            "resolve_library", "search", "get_symbol", "get_overview",
+        }
+        # manifest already loaded: tools work without resolve_library
+        overview = server.tools["get_overview"]()
+        assert overview["library"]["name"] == "tests.sample_module"
+        assert overview["library"]["source"] == "manifest"
+
+    def test_expose_locked_to_manifest_library(self, sample_lcp_file):
+        with pytest.warns(DeprecationWarning):
+            server = create_server(sample_lcp_file)
+        blocked = server.tools["resolve_library"](name="os")
+        assert blocked["error"]["code"] == "library_not_exposed"
+
+    def test_custom_name(self, sample_lcp_file):
+        with pytest.warns(DeprecationWarning):
+            server = create_server(sample_lcp_file, name="custom-name")
+        assert server.mcp.name == "custom-name"

@@ -336,6 +336,18 @@ class TestDiffCommand:
         assert "deprecations" not in data
 
 
+class TestServeCommand:
+    """Tests for the deprecated serve CLI command."""
+
+    def test_serve_warns_deprecated(self, runner, sample_lcp_file):
+        with patch("lcp.cli.run_mcp_server") as mock_run:
+            result = runner.invoke(main, ["serve", str(sample_lcp_file)])
+        assert result.exit_code == 0
+        assert "deprecated" in result.output.lower()
+        assert "serve-all" in result.output
+        mock_run.assert_called_once()
+
+
 class TestServeAllCommand:
     """Tests for the serve-all CLI command."""
 
@@ -346,6 +358,15 @@ class TestServeAllCommand:
         assert "resolve_library" in result.output
         assert "--cache-dir" in result.output
         assert "--no-cache" in result.output
+        assert "--max-response-bytes" in result.output
+
+    def test_max_response_bytes_flag(self, runner):
+        with patch("lcp.cli.run_universal_server") as mock_run:
+            result = runner.invoke(
+                main, ["serve-all", "--max-response-bytes", "10000"]
+            )
+        assert result.exit_code == 0
+        assert mock_run.call_args.kwargs["max_response_bytes"] == 10000
 
 
 class TestPublishCommand:

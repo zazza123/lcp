@@ -256,12 +256,12 @@ main.add_command(validate_cmd, name="validate")
     help="Server name for MCP identification (default: lcp-{library-name}).",
 )
 def serve(manifest: str, name: str | None):
-    """Start an MCP server for an LCP manifest.
+    """Start an MCP server for an LCP manifest (deprecated: use serve-all).
 
     MANIFEST is the path to an LCP JSON file to serve.
 
-    The server uses stdio transport and exposes tools for exploring
-    and querying the library's API.
+    The server uses stdio transport and exposes the same tools as
+    `lcp serve-all`, pre-loaded with the manifest and restricted to it.
 
     Examples:
 
@@ -269,6 +269,11 @@ def serve(manifest: str, name: str | None):
 
         lcp serve numpy.lcp.json --name numpy-docs
     """
+    click.echo(
+        "Warning: 'lcp serve' is deprecated; use "
+        "'lcp serve-all --expose <package>' instead.",
+        err=True,
+    )
     try:
         run_mcp_server(manifest, name=name)
     except FileNotFoundError as e:
@@ -329,6 +334,13 @@ def serve(manifest: str, name: str | None):
         "Repeat the flag for multiple packages."
     ),
 )
+@click.option(
+    "--max-response-bytes",
+    type=int,
+    default=25_000,
+    show_default=True,
+    help="Byte budget for list-returning tool responses (context blowout guard).",
+)
 def serve_all(
     cache_dir: str | None,
     name: str,
@@ -336,6 +348,7 @@ def serve_all(
     registry: str | None,
     expose: tuple[str, ...],
     preload: tuple[str, ...],
+    max_response_bytes: int,
 ):
     """Start a universal MCP server that resolves any installed Python library.
 
@@ -381,6 +394,7 @@ def serve_all(
             registry_url=registry,
             expose=list(expose) if expose else None,
             preload=list(preload) if preload else None,
+            max_response_bytes=max_response_bytes,
         )
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
