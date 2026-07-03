@@ -15,6 +15,7 @@ from lcp.mcp_server import (
     LCPIndex,
     MultiLibraryIndex,
     _DEFAULT_REGISTRY_URL,
+    _error,
     _fetch_from_registry,
     create_server,
     create_universal_server,
@@ -64,6 +65,25 @@ def _get_tool_fn(server, tool_name: str):
         return tool.fn
     except Exception:
         return None
+
+
+class TestErrorHelper:
+    """D5: structured error dicts with a stable shape."""
+
+    def test_minimal_shape(self):
+        err = _error("symbol_not_found", "Symbol not found: x:y")
+        assert err == {"error": {"code": "symbol_not_found",
+                                 "message": "Symbol not found: x:y"}}
+
+    def test_hint_and_extras(self):
+        err = _error(
+            "ambiguous_library", "Pass library=", hint="Pick one.",
+            loaded_libraries=["requests", "httpx"],
+        )
+        assert err["error"]["hint"] == "Pick one."
+        assert err["error"]["loaded_libraries"] == ["requests", "httpx"]
+        # stable outer shape: exactly one top-level key
+        assert set(err) == {"error"}
 
 
 class TestLoadLCPDocument:
@@ -447,53 +467,66 @@ class TestGetSuggestionsTool:
 
 
 class TestMultiLibraryIndex:
-    """Tests for MultiLibraryIndex class."""
+    """Tests for MultiLibraryIndex (D7 resolution rules)."""
 
     def test_add_and_get(self, lcp_index: LCPIndex):
-        """Should add and retrieve an index by name."""
         multi = MultiLibraryIndex()
         assert multi.get("mylib") is None
         multi.add("mylib", lcp_index)
         assert multi.get("mylib") is lcp_index
-
-    def test_default_library(self, lcp_index: LCPIndex):
-        """Last added library becomes the default."""
-        multi = MultiLibraryIndex()
-        multi.add("lib_a", lcp_index)
-        multi.add("lib_b", lcp_index)
-        assert multi.default_library == "lib_b"
-
-    def test_get_default(self, lcp_index: LCPIndex):
-        """get(None) returns the default library index."""
-        multi = MultiLibraryIndex()
-        multi.add("lib_a", lcp_index)
-        assert multi.get(None) is lcp_index
-
-    def test_get_none_empty(self):
-        """get(None) returns None when no libraries loaded."""
-        multi = MultiLibraryIndex()
-        assert multi.get(None) is None
-
-    def test_contains(self, lcp_index: LCPIndex):
-        """'in' operator works after add."""
-        multi = MultiLibraryIndex()
-        assert "mylib" not in multi
-        multi.add("mylib", lcp_index)
         assert "mylib" in multi
 
-    def test_list_libraries(self, lcp_index: LCPIndex):
-        """list_libraries returns one entry per registered library."""
+    def test_source_tracking(self, lcp_index: LCPIndex):
+        multi = MultiLibraryIndex()
+        multi.add("mylib", lcp_index, source="registry")
+        assert multi.source("mylib") == "registry"
+        assert multi.source("other") is None
+
+    def test_resolve_no_library_loaded(self):
+        multi = MultiLibraryIndex()
+        name, idx, err = multi.resolve(None)
+        assert (name, idx) == (None, None)
+        assert err["error"]["code"] == "library_not_loaded"
+        assert "resolve_library" in err["error"]["hint"]
+
+    def test_resolve_single_library_omitted(self, lcp_index: LCPIndex):
+        multi = MultiLibraryIndex()
+        multi.add("only", lcp_index)
+        name, idx, err = multi.resolve(None)
+        assert name == "only" and idx is lcp_index and err is None
+
+    def test_resolve_ambiguous(self, lcp_index: LCPIndex):
         multi = MultiLibraryIndex()
         multi.add("lib_a", lcp_index)
         multi.add("lib_b", lcp_index)
+        name, idx, err = multi.resolve(None)
+        assert idx is None
+        assert err["error"]["code"] == "ambiguous_library"
+        assert err["error"]["loaded_libraries"] == ["lib_a", "lib_b"]
+
+    def test_resolve_explicit_hit(self, lcp_index: LCPIndex):
+        multi = MultiLibraryIndex()
+        multi.add("lib_a", lcp_index)
+        multi.add("lib_b", lcp_index)
+        name, idx, err = multi.resolve("lib_a")
+        assert name == "lib_a" and idx is lcp_index and err is None
+
+    def test_resolve_explicit_miss(self, lcp_index: LCPIndex):
+        multi = MultiLibraryIndex()
+        multi.add("lib_a", lcp_index)
+        name, idx, err = multi.resolve("nope")
+        assert idx is None
+        assert err["error"]["code"] == "library_not_loaded"
+        assert err["error"]["loaded_libraries"] == ["lib_a"]
+
+    def test_list_libraries(self, lcp_index: LCPIndex):
+        multi = MultiLibraryIndex()
+        multi.add("lib_a", lcp_index, source="cache")
         libs = multi.list_libraries()
-        assert len(libs) == 2
-        names = {lib["name"] for lib in libs}
-        assert "lib_a" in names
-        assert "lib_b" in names
-        # The last-added library is the default
-        default_entry = next(lib for lib in libs if lib["is_default"])
-        assert default_entry["name"] == "lib_b"
+        assert len(libs) == 1
+        assert libs[0]["name"] == "lib_a"
+        assert libs[0]["source"] == "cache"
+        assert libs[0]["symbol_count"] > 0
 
 
 # ---------------------------------------------------------------------------
@@ -928,8 +961,8 @@ class TestResolveLibraryTool:
         assert result.get("status") == "loaded"
         assert result.get("source") == "registry"
 
-    def test_sets_default_library(self, universal_server):
-        """Resolved library should become the implicit default."""
+    def test_records_scan_source(self, universal_server):
+        """Resolved library should be listed with its resolution source."""
         resolve_fn = _get_tool_fn(universal_server, "resolve_library")
         list_libs_fn = _get_tool_fn(universal_server, "list_libraries")
         assert resolve_fn is not None
@@ -938,7 +971,7 @@ class TestResolveLibraryTool:
         resolve_fn(name="tests.sample_module")
         libs = list_libs_fn()
         assert len(libs) == 1
-        assert libs[0]["is_default"] is True
+        assert libs[0]["source"] == "scan"
 
 
 class TestListLibrariesTool:
