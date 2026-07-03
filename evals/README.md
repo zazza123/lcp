@@ -92,8 +92,8 @@ evals/.venv/bin/python evals/run.py validate [--cases evals/cases]
 
 # Run the benchmark: both arms x 28 cases x 3 reps by default.
 evals/.venv/bin/python evals/run.py run --out evals/results/<name> \
-    [--cases evals/cases] [--reps 3] [--arms both|baseline|lcp] \
-    [--workers 2] [--case-id ID ...]
+    [--cases evals/cases] [--reps 3] [--arms both|baseline|lcp|lcp-skill] \
+    [--model MODEL] [--workers 2] [--case-id ID ...]
 
 # Re-aggregate an existing results directory without re-running anything.
 evals/.venv/bin/python evals/run.py report --out evals/results/<name>
@@ -104,11 +104,19 @@ writes `<out>/summary.json` and `<out>/report.md`. It is resumable: if a
 run file already exists it is skipped (`SKIP ... (exists)`), so a failed or
 interrupted run can simply be re-invoked with the same `--out`.
 
-Defaults: `--reps 3`, `--arms both`, `--workers 2`. The model is pinned in
-code (`harness/agent.py: MODEL = "claude-haiku-4-5-20251001"`) and is not a
-CLI flag. Each agent invocation has a 600s subprocess timeout; a timeout is
-recorded as a failed run (`error: "timeout after 600s"`), not a crash of the
-harness.
+Defaults: `--reps 3`, `--arms both`, `--workers 2`. Each agent invocation
+has a 600s subprocess timeout; a timeout is recorded as a failed run
+(`error: "timeout after 600s"`), not a crash of the harness.
+
+Besides `baseline` and `lcp` there is a third arm, `lcp-skill`: the `lcp`
+arm plus `--append-system-prompt` carrying the `lcp-universal` skill body
+(`plugin/lcp/skills/lcp-universal/SKILL.md`, frontmatter stripped, injected
+verbatim) — it approximates what a developer with the plugin installed
+experiences. It is always explicit; `--arms both` still means
+`baseline` + `lcp` only. `--model` overrides the pinned default
+(`harness/agent.py: MODEL = "claude-haiku-4-5-20251001"`); it exists for
+the Phase 2b sonnet probe — results across different models are not
+directly comparable, so keep cross-model runs in separate results dirs.
 
 The first LCP-arm run for a given library is noticeably slower than the
 rest: `lcp serve-all` has to scan the package and populate

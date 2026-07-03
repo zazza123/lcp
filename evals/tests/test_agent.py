@@ -1,6 +1,15 @@
 import json
+from pathlib import Path
 
-from harness.agent import BUILTIN_TOOLS, MODEL, build_command, parse_stream
+import pytest
+
+from harness.agent import (
+    BUILTIN_TOOLS,
+    MODEL,
+    build_command,
+    load_skill_text,
+    parse_stream,
+)
 
 STREAM_LINES = [
     json.dumps({"type": "system", "subtype": "init", "tools": ["mcp__lcp__resolve_library"]}),
@@ -86,6 +95,28 @@ class TestBuildCommand:
         denied = cmd[idx + 1 : idx + 1 + len(BUILTIN_TOOLS)]
         assert set(denied) == set(BUILTIN_TOOLS)
 
+    def test_lcp_skill_arm_appends_system_prompt(self):
+        cmd = build_command(
+            "do things", "lcp-skill", "/tmp/mcp.json",
+            append_system="SKILL BODY",
+        )
+        assert "--mcp-config" in cmd
+        i = cmd.index("--append-system-prompt")
+        assert cmd[i + 1] == "SKILL BODY"
+
+    def test_lcp_skill_arm_requires_append_system(self):
+        with pytest.raises(ValueError):
+            build_command("p", "lcp-skill", "/tmp/mcp.json")
+
+    def test_model_override(self):
+        cmd = build_command("p", "baseline", None, model="claude-sonnet-5")
+        i = cmd.index("--model")
+        assert cmd[i + 1] == "claude-sonnet-5"
+
+    def test_default_model_unchanged(self):
+        cmd = build_command("p", "baseline", None)
+        assert cmd[cmd.index("--model") + 1] == MODEL
+
     def test_mcp_tools_preallowed(self):
         # Headless `-p` runs auto-deny any tool call that needs interactive
         # permission approval unless pre-approved via --allowedTools (see
@@ -98,3 +129,18 @@ class TestBuildCommand:
             assert "--allowedTools" in cmd
             idx = cmd.index("--allowedTools")
             assert cmd[idx + 1] == "mcp__lcp"
+
+
+class TestLoadSkillText:
+    def test_strips_frontmatter(self, tmp_path: Path):
+        skill = tmp_path / "SKILL.md"
+        skill.write_text("---\nname: x\ndescription: y\n---\n\n# Body\n\ntext\n")
+        body = load_skill_text(skill)
+        assert body.startswith("# Body")
+        assert "name: x" not in body
+
+    def test_real_skill_loads(self):
+        real = Path(__file__).parents[2] / "plugin/lcp/skills/lcp-universal/SKILL.md"
+        body = load_skill_text(real)
+        assert "resolve_library" in body
+        assert not body.startswith("---")

@@ -47,17 +47,25 @@ def _write_mcp_config(out_dir: Path, libraries: list[str]) -> Path:
     return path
 
 
-def _run_one(case, arm: str, rep: int, mcp_config: Path, runs_dir: Path) -> str:
+def _run_one(
+    case, arm: str, rep: int, mcp_config: Path, runs_dir: Path,
+    model: str, append_system: str | None,
+) -> str:
     out_path = runs_dir / f"{case.id}_{arm}_r{rep}.json"
     if out_path.exists():
         return f"SKIP     {out_path.name} (exists)"
-    result = agent.run_agent(case, arm, mcp_config if arm == "lcp" else None)
+    result = agent.run_agent(
+        case, arm,
+        mcp_config if arm in ("lcp", "lcp-skill") else None,
+        model=model,
+        append_system=append_system if arm == "lcp-skill" else None,
+    )
     verification = verify.verify_code(result.code, case)
     record = {
         "case_id": case.id,
         "arm": arm,
         "rep": rep,
-        "model": agent.MODEL,
+        "model": model,
         "code": result.code,
         "result_text": result.result_text,
         "error": result.error,
@@ -104,6 +112,12 @@ def cmd_run(args) -> int:
     mcp_config = _write_mcp_config(out_dir, libraries)
 
     arms = ["baseline", "lcp"] if args.arms == "both" else [args.arms]
+    append_system = None
+    if "lcp-skill" in arms:
+        skill_path = (
+            EVALS_DIR.parent / "plugin/lcp/skills/lcp-universal/SKILL.md"
+        )
+        append_system = agent.load_skill_text(skill_path)
     jobs = [
         (case, arm, rep)
         for case in loaded
@@ -113,7 +127,10 @@ def cmd_run(args) -> int:
     print(f"{len(jobs)} runs ({len(loaded)} cases x {arms} x {args.reps} reps)")
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures = [
-            pool.submit(_run_one, case, arm, rep, mcp_config, runs_dir)
+            pool.submit(
+                _run_one, case, arm, rep, mcp_config, runs_dir,
+                args.model, append_system,
+            )
             for case, arm, rep in jobs
         ]
         for future in as_completed(futures):
@@ -149,7 +166,12 @@ def main() -> int:
     p_run.add_argument("--out", required=True)
     p_run.add_argument("--cases", type=Path, default=EVALS_DIR / "cases")
     p_run.add_argument("--reps", type=int, default=3)
-    p_run.add_argument("--arms", choices=["both", "baseline", "lcp"], default="both")
+    p_run.add_argument(
+        "--arms",
+        choices=["both", "baseline", "lcp", "lcp-skill"],
+        default="both",
+    )
+    p_run.add_argument("--model", default=agent.MODEL)
     p_run.add_argument("--workers", type=int, default=2)
     p_run.add_argument("--case-id", action="append", default=[])
     p_run.set_defaults(func=cmd_run)
