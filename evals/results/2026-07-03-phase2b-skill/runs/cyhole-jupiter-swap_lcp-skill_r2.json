@@ -1,0 +1,196 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import JupiterClient\nfrom cyhole.jupiter.schema import GetSwapOrderParams, PostSwapExecuteBody\n\n# Initialize Jupiter interaction and client\njupiter = Jupiter()\nclient = JupiterClient(jupiter)\n\n# Request swap order (quote) for SOL \u2192 USDC\nquote_params = GetSwapOrderParams(\n    inputMint=\"So11111111111111111111111111111111111111112\",\n    outputMint=\"EPjFWaLb3hyccuBB7eSF6iYgArg4vvMVfvWnBQy9UnA\",\n    amount=1_000_000_000,\n    userPublicKey=\"G1icEJrT1RKbU5EQTBOakJoTVRKallUTXhNVEEzTXprek5EVTJPVGsz\",\n)\n\nquote = client.get_swap_order(quote_params)\nprint(\"Swap Quote:\", quote)\n\n# Execute the swap using the quote\nexecute_body = PostSwapExecuteBody(\n    **quote.dict() if hasattr(quote, \"dict\") else quote\n)\n\nresult = client.post_swap_execute(execute_body)\nprint(\"Swap Execution Result:\", result)",
+  "result_text": "```python\nfrom cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import JupiterClient\nfrom cyhole.jupiter.schema import GetSwapOrderParams, PostSwapExecuteBody\n\n# Initialize Jupiter interaction and client\njupiter = Jupiter()\nclient = JupiterClient(jupiter)\n\n# Request swap order (quote) for SOL \u2192 USDC\nquote_params = GetSwapOrderParams(\n    inputMint=\"So11111111111111111111111111111111111111112\",\n    outputMint=\"EPjFWaLb3hyccuBB7eSF6iYgArg4vvMVfvWnBQy9UnA\",\n    amount=1_000_000_000,\n    userPublicKey=\"G1icEJrT1RKbU5EQTBOakJoTVRKallUTXhNVEEzTXprek5EVTJPVGsz\",\n)\n\nquote = client.get_swap_order(quote_params)\nprint(\"Swap Quote:\", quote)\n\n# Execute the swap using the quote\nexecute_body = PostSwapExecuteBody(\n    **quote.dict() if hasattr(quote, \"dict\") else quote\n)\n\nresult = client.post_swap_execute(execute_body)\nprint(\"Swap Execution Result:\", result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 158,
+    "output_tokens": 6738,
+    "cache_read_tokens": 755383,
+    "cache_creation_tokens": 19894,
+    "cost_usd": 0.14917430000000004,
+    "num_turns": 22,
+    "tool_calls": 21,
+    "duration_s": 107.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "cyhole library resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap quote",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.client:JupiterClient",
+          "cyhole.jupiter.client:JupiterClient#get_swap_order",
+          "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapOrderParams",
+          "cyhole.jupiter.schema:PostSwapExecuteBody",
+          "cyhole.jupiter.interaction:Jupiter"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetSwapOrderParams input_mint output_mint",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.schema",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "input output amount SOL USDC",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SOL token USDC token core",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "solana SOL",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token.solana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "mint address",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.schema"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapBuildParams"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "quote",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.client"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapOrderResponse",
+          "cyhole.jupiter.schema:PostSwapExecuteResponse"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "PublicKey user address",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "execute swap params transaction",
+        "library": "cyhole"
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
