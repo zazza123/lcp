@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-server-tool",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\n\nserver = Server(\"calc\")\n\n@server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers together.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nfrom fastmcp import Server\n\nserver = Server(\"calc\")\n\n@server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers together.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1654,
+    "cache_read_tokens": 15795,
+    "cache_creation_tokens": 6377,
+    "cost_usd": 0.0226125,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.5
+  },
+  "tool_call_details": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:FastMCP"
+    ],
+    "forbidden_used": [
+      "fastmcp:Server"
+    ],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

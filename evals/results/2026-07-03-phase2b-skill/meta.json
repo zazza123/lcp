@@ -1,0 +1,22 @@
+{
+  "experiment": "Phase 2b Exp1 — skill-arm adoption probe",
+  "date": "2026-07-04",
+  "claude_version": "2.1.200 (Claude Code)",
+  "model": "claude-haiku-4-5-20251001",
+  "lcp_commit": "c5153f9 (Phase 2 V2 surface + Phase 2b harness)",
+  "arm": "lcp-skill (lcp-universal SKILL.md via --append-system-prompt)",
+  "cases": [
+    "fastmcp-server-tool",
+    "fastmcp-resource",
+    "fastmcp-client",
+    "fastmcp-context",
+    "cyhole-birdeye-price",
+    "cyhole-jupiter-swap",
+    "cyhole-rugcheck-report",
+    "cyhole-missing-api-key"
+  ],
+  "reps": 3,
+  "gate": "mean voluntary lcp calls on the fastmcp cases >= 1.0/run -> outcome A",
+  "reference": "Phase 2 lcp arm (phase2-mcp-iter2), same cases: fastmcp 0.0 calls 1/12 pass; cyhole 2.3-3.6 calls 2-4/12 pass",
+  "note": "tool_calls in metrics counts every tool_use block including the CLI's built-in ToolSearch; gate evaluated on mcp__lcp__* calls only (tool_call_details), which is the stricter reading. An earlier same-day run of this experiment accidentally executed against the pre-Phase-2 V1 server (lcp is installed editable and the branch was mis-based); those runs were discarded (branch backup/phase-2b-v1-results) and this is the valid V2 measurement."
+}

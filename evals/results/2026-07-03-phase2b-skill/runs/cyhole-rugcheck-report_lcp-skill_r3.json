@@ -1,0 +1,41 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom cyhole import Cyhole\n\nasync def get_rugcheck_report(mint_address: str) -> dict:\n    \"\"\"Retrieve full risk report for a Solana token from Rugcheck via cyhole.\"\"\"\n    cyhole_client = Cyhole()\n    report = await cyhole_client.rugcheck(mint_address)\n    return report\n\nasync def main():\n    # Example: Replace with your token mint address\n    mint_address = \"EPjFWaJQwLLncM6xQfh2kseV2GnKzmtqB91CsFtD3aAB\"  # USDC on Solana\n    \n    report = await get_rugcheck_report(mint_address)\n    print(report)\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom cyhole import Cyhole\n\nasync def get_rugcheck_report(mint_address: str) -> dict:\n    \"\"\"Retrieve full risk report for a Solana token from Rugcheck via cyhole.\"\"\"\n    cyhole_client = Cyhole()\n    report = await cyhole_client.rugcheck(mint_address)\n    return report\n\nasync def main():\n    # Example: Replace with your token mint address\n    mint_address = \"EPjFWaJQwLLncM6xQfh2kseV2GnKzmtqB91CsFtD3aAB\"  # USDC on Solana\n    \n    report = await get_rugcheck_report(mint_address)\n    print(report)\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 948,
+    "cache_read_tokens": 44312,
+    "cache_creation_tokens": 618,
+    "cost_usd": 0.0104232,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 14.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Cyhole"
+    ],
+    "error": null
+  }
+}
