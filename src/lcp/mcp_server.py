@@ -704,7 +704,13 @@ def _resolve_type_to_classes(index: LCPIndex, return_type: str) -> list[str]:
 def _symbol_detail(
     index: LCPIndex, symbol_id: str, symbol: Symbol, max_bytes: int
 ) -> dict[str, Any]:
-    """Build the full get_symbol payload for one symbol (spec D4)."""
+    """Build the full get_symbol payload for one symbol (spec D4).
+
+    The returned entry is guaranteed to fit *max_bytes*: the description is
+    truncated as a last resort, and inline class members get whatever budget
+    the body leaves over — so a symbol can degrade but never become
+    unfetchable.
+    """
     result = symbol.model_dump(exclude_none=True, mode="json")
     result["id"] = symbol_id
     result["import"] = _import_statement(symbol_id, symbol.kind)
@@ -737,6 +743,18 @@ def _symbol_detail(
                 )
         result["usage_hints"] = hints
 
+    # Enforce the byte budget on the entry itself: truncate the description
+    # as a last resort, then give members whatever the body leaves over.
+    slack = 400  # headroom for the truncation-marker fields added below
+    body_size = len(json.dumps(result, default=str))
+    description = result.get("semantics", {}).get("description")
+    if body_size + slack > max_bytes and description:
+        overshoot = body_size + slack - max_bytes
+        kept = max(0, len(description) - overshoot)
+        result["semantics"]["description"] = description[:kept]
+        result["description_truncated"] = True
+        body_size = len(json.dumps(result, default=str))
+
     if symbol.kind == SymbolKind.CLASS:
         member_ids = sorted(index.class_members.get(symbol_id, []))
         members = [
@@ -747,8 +765,8 @@ def _symbol_detail(
             }
             for mid in member_ids
         ]
-        # Members share the class's byte budget; leave headroom for the body.
-        members, truncated = _fit_list(members, int(max_bytes * 0.8))
+        member_budget = max(0, max_bytes - body_size - slack)
+        members, truncated = _fit_list(members, member_budget)
         result["members"] = members
         if truncated:
             result["members_truncated"] = True
@@ -786,19 +804,26 @@ def _get_symbols(
             details.append(_symbol_detail(index, symbol_id, symbol, max_bytes))
 
     kept, truncated = _fit_list(details, max_bytes)
+    if not kept and details:
+        # Every detail entry fits max_bytes by construction; never let the
+        # outer cap make a requested symbol unfetchable.
+        kept, truncated = details[:1], len(details) > 1
     result: dict[str, Any] = {"symbols": kept, "not_found": not_found}
+    hints: list[str] = []
     if not_found:
-        result["hint"] = (
+        hints.append(
             "Some ids were not found — take ids from search() results; the "
             "format is 'module:name' or 'module:Class#member'."
         )
     if truncated:
         result["truncated"] = True
         result["not_returned"] = [d["id"] for d in details[len(kept):]]
-        result["hint"] = (
+        hints.append(
             "Response byte cap reached; call get_symbol again with the "
             "ids in not_returned."
         )
+    if hints:
+        result["hint"] = " ".join(hints)
     return result
 
 
@@ -843,6 +868,10 @@ def _overview(
     }
     if truncated:
         result["truncated"] = True
+        result["hint"] = (
+            "Module list truncated to fit the response cap; search('<name>') "
+            "still finds symbols in any module, or raise --max-response-bytes."
+        )
     return result
 
 
@@ -947,6 +976,24 @@ def _register_tools(
                 hint="Ask for one of the exposed libraries instead.",
                 exposed=sorted(allow),
             )
+        if name in libraries and libraries.source(name) == "manifest":
+            # Manifest-pinned libraries (deprecated `lcp serve`) are the
+            # ground truth for this server — never re-resolve over them.
+            index = libraries.get(name)
+            lib = index.doc.manifest.library
+            return {
+                "status": "loaded",
+                "name": name,
+                "version": lib.version,
+                "language": lib.language,
+                "symbol_count": len(index.symbols_by_id),
+                "module_count": len(index.modules),
+                "source": "manifest",
+                "next_step": (
+                    f"search(<what you need>, library='{name}') to find "
+                    "symbols, then get_symbol(ids=[...]) to verify signatures."
+                ),
+            }
         try:
             doc, source = resolve_library_document(
                 name,
@@ -968,9 +1015,10 @@ def _register_tools(
         index = LCPIndex(doc)
         libraries.add(name, index, source=source)
         lib = doc.manifest.library
+        # Report the registration key: it is what library= accepts.
         result: dict[str, Any] = {
             "status": "loaded",
-            "name": lib.name,
+            "name": name,
             "version": lib.version,
             "language": lib.language,
             "symbol_count": len(index.symbols_by_id),
@@ -981,6 +1029,8 @@ def _register_tools(
                 "then get_symbol(ids=[...]) to verify signatures."
             ),
         }
+        if lib.name != name:
+            result["manifest_name"] = lib.name
         if version and lib.version != version:
             result["warning"] = {
                 "code": "version_mismatch",
@@ -1118,9 +1168,11 @@ def create_universal_server(
     resolved_cache_dir = Path(cache_dir) if cache_dir else _DEFAULT_CACHE_DIR
     libraries = MultiLibraryIndex()
     mcp = FastMCP(name, instructions=SERVER_INSTRUCTIONS)
-    allow: set[str] | None = (
-        {n.strip() for n in expose if n.strip()} or None
-    ) if expose else None
+    # An expose list that is non-empty but blank after stripping must fail
+    # closed (block everything), not fall back to allow-all.
+    allow: set[str] | None = None
+    if expose:
+        allow = {n.strip() for n in expose if n.strip()}
 
     tools = _register_tools(
         mcp,
