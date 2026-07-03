@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -660,6 +661,137 @@ def _normalize_return_type(returns: Any) -> str | None:
     if hasattr(returns, "kind") and returns.kind:
         return returns.kind
     return str(returns)
+
+
+_BUILTIN_TYPE_NAMES = {
+    "str", "int", "float", "bool", "bytes", "none", "nonetype", "list",
+    "dict", "tuple", "set", "frozenset", "optional", "any", "union",
+    "callable", "iterator", "iterable", "sequence", "mapping", "self",
+}
+
+
+def _resolve_type_to_classes(index: LCPIndex, return_type: str) -> list[str]:
+    """Resolve a return-type string to class ids by exact name match (D4).
+
+    Splits generics/unions (``list[Path]``, ``Path | None``), strips dotted
+    prefixes, skips builtins, and looks each token up in
+    ``index.classes_by_name`` — exact matches only, never ``endswith``.
+
+    Args:
+        index: The library index to resolve against.
+        return_type: Normalized return-type string.
+
+    Returns:
+        Sorted, de-duplicated list of matching class ids.
+    """
+    matches: set[str] = set()
+    for token in re.split(r"[\[\](),|\s]+", return_type):
+        bare = token.strip().split(".")[-1]
+        if not bare or bare.lower() in _BUILTIN_TYPE_NAMES:
+            continue
+        matches.update(index.classes_by_name.get(bare, []))
+    return sorted(matches)
+
+
+def _symbol_detail(
+    index: LCPIndex, symbol_id: str, symbol: Symbol, max_bytes: int
+) -> dict[str, Any]:
+    """Build the full get_symbol payload for one symbol (spec D4)."""
+    result = symbol.model_dump(exclude_none=True, mode="json")
+    result["id"] = symbol_id
+    result["import"] = _import_statement(symbol_id, symbol.kind)
+
+    if symbol.signatures:
+        sig = symbol.signatures[0]
+        hints: dict[str, Any] = {
+            "required_parameters": [
+                {"name": p.name, "type": p.type}
+                for p in (sig.params or [])
+                if p.required
+            ],
+            "optional_parameters": [
+                {"name": p.name, "type": p.type, "default": p.default}
+                for p in (sig.params or [])
+                if not p.required
+            ],
+            "is_async": sig.async_ if sig.async_ is not None else False,
+            "return_type": _normalize_return_type(sig.returns),
+        }
+        if hints["return_type"]:
+            returns_classes = _resolve_type_to_classes(
+                index, hints["return_type"]
+            )
+            if returns_classes:
+                hints["returns_classes"] = returns_classes
+                hints["next"] = (
+                    f"returns {hints['return_type']} → "
+                    f"get_symbol(ids=['{returns_classes[0]}']) to see its members"
+                )
+        result["usage_hints"] = hints
+
+    if symbol.kind == SymbolKind.CLASS:
+        member_ids = sorted(index.class_members.get(symbol_id, []))
+        members = [
+            {
+                "id": mid,
+                "kind": index.symbols_by_id[mid].kind.value,
+                "summary": index.symbols_by_id[mid].semantics.summary,
+            }
+            for mid in member_ids
+        ]
+        # Members share the class's byte budget; leave headroom for the body.
+        members, truncated = _fit_list(members, int(max_bytes * 0.8))
+        result["members"] = members
+        if truncated:
+            result["members_truncated"] = True
+            result["members_hint"] = (
+                "Member list truncated. Use search('<member name>', "
+                f"module='{symbol.module}') or get_symbol on "
+                f"'{symbol_id}#<member>' for the rest."
+            )
+    return result
+
+
+def _get_symbols(
+    index: LCPIndex,
+    ids: list[str],
+    max_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+) -> dict[str, Any]:
+    """Batch symbol lookup with per-response byte cap (spec D4/D6).
+
+    Args:
+        index: The library index to read from.
+        ids: Symbol ids, returned in request order.
+        max_bytes: Byte budget for the symbols list.
+
+    Returns:
+        ``{"symbols": [...], "not_found": [...]}``; adds ``truncated``,
+        ``not_returned`` and ``hint`` when the byte cap cut the batch short.
+    """
+    details: list[dict[str, Any]] = []
+    not_found: list[str] = []
+    for symbol_id in ids:
+        symbol = index.symbols_by_id.get(symbol_id)
+        if symbol is None:
+            not_found.append(symbol_id)
+        else:
+            details.append(_symbol_detail(index, symbol_id, symbol, max_bytes))
+
+    kept, truncated = _fit_list(details, max_bytes)
+    result: dict[str, Any] = {"symbols": kept, "not_found": not_found}
+    if not_found:
+        result["hint"] = (
+            "Some ids were not found — take ids from search() results; the "
+            "format is 'module:name' or 'module:Class#member'."
+        )
+    if truncated:
+        result["truncated"] = True
+        result["not_returned"] = [d["id"] for d in details[len(kept):]]
+        result["hint"] = (
+            "Response byte cap reached; call get_symbol again with the "
+            "ids in not_returned."
+        )
+    return result
 
 
 def create_server(
