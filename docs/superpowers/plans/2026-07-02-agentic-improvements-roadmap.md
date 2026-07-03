@@ -126,9 +126,48 @@ recorded in the results log; a `evals/README.md` documents how to re-run.
 
 ---
 
+### Phase 0 baseline findings (2026-07-03) — evidence for later phases
+
+Per-library numbers behind the aggregate 45%→52%; referenced below as F1–F4.
+Full data: `evals/results/2026-07-03-baseline/` (per-run JSON incl. generated
+code and verification detail).
+
+- **F1 — Adoption gap (the bottleneck).** The agent does not call the lcp
+  tools precisely where it errs most: fastmcp scored 1–2/12 with 12/24 runs
+  hallucinating `fastmcp.Server` (confusion with the official `mcp` SDK), yet
+  made **zero** lcp tool calls in the LCP arm. The model doesn't know that it
+  doesn't know, so it never asks. Manifest quality is irrelevant until the
+  agent queries the server. → attacked by Phases 1–2 (tool naming,
+  descriptions, MCP `instructions`, plugin skills).
+- **F2 — Information→code gap.** On cyhole (unknown lib) the agent *does*
+  call tools (4.3/run) but still scored 0/12: it writes
+  `from cyhole import Rugcheck` (root doesn't re-export) and invents method
+  names (`get_risk_report` vs the real `get_token_report`). Tool responses
+  don't currently make the correct import path obvious. → attacked by
+  Phase 3 (aliases) and the Phase 1 response-shape decisions (`get_symbol`
+  should state how to import the thing).
+- **F3 — Proof of concept.** hamana: 7.6 tool calls/run → pass rate doubled
+  (2/12→4/12), misuse halved (6→3). Where the agent engages, the mechanism
+  delivers.
+- **F4 — Ceiling + noise calibration.** pydantic/httpx/polars are at ceiling
+  (30/36 baseline) with 0 tool calls even in the LCP arm — they measure
+  little. textual "improved" 5/12→7/12 with zero tool calls in both arms:
+  pure stochasticity, validating the >20%-relative-effect rule. LCP arm cost
+  overhead when tools go unused: +48% cost, +9% tokens/task. → informs the
+  Phase 8 task mix and metrics.
+
+---
+
 ## Phase 1 — "V2 surface" design spec (interface + manifest additions)
 
 **Status:** not started
+
+**Baseline evidence (2026-07-03):** F1 makes tool *adoption* the design's
+first-class goal — tool names, descriptions and the MCP `instructions` field
+must be written so an agent that is guessing gets nudged to resolve+search
+first (fastmcp: 11/12 failures, zero calls). F2 binds the response-shape
+decisions: `search`/`get_symbol` results must carry the importable path
+(alias-aware) prominently, not just the definition-site ID.
 
 **Objective:** One short design document
 (`docs/superpowers/specs/YYYY-MM-DD-v2-surface-design.md`) that settles,
@@ -191,6 +230,12 @@ updated if the spec contradicts them.
 ## Phase 2 — MCP consolidation
 
 **Status:** not started — blocked by Phase 1
+
+**Baseline evidence (2026-07-03):** this phase carries F1 — the skills/
+`instructions` rewrite is where "the agent never asks" gets fixed. The
+phase-end eval re-run has a concrete target beyond pass rate: mean voluntary
+tool calls on the fastmcp/cyhole-class cases must rise from ~0/4.3 per run
+(if adoption doesn't move, iterate on descriptions before closing the phase).
 
 **Objective:** Implement the tool surface decided in Phase 1 in
 `src/lcp/mcp_server.py`; update the plugin skills to match.
@@ -259,6 +304,11 @@ signature question through the new surface in ≤3 tool calls.
 ## Phase 3 — Re-export aliases
 
 **Status:** not started — blocked by Phase 1
+
+**Baseline evidence (2026-07-03):** F2 is this phase's live repro: cyhole LCP
+runs called the tools yet wrote `from cyhole import Rugcheck` (0/12 passes) —
+"agents think in documented import paths" is now measured, not asserted. The
+eval harness has 8 cyhole/hamana cases specifically sensitive to this fix.
 
 **Objective:** A symbol re-exported at package level is findable under the
 name users actually import: `requests.get` resolves even though it is defined
@@ -576,6 +626,14 @@ registry in <2s.
 
 **Objective:** Run the grown-up version of the Phase 0 harness on the
 finished product and publish results as the launch asset.
+
+**Baseline evidence (2026-07-03):** F4 shapes the task mix — pydantic/httpx/
+polars-class libraries are at ceiling for current models and mostly measure
+noise; weight the expanded set toward niche/recently-churned libraries
+(cyhole/hamana-class), where both failure modes (F1, F2) actually show.
+Report tool-adoption rate and cost-overhead-when-unused (+48% cost at
+baseline) alongside the pre-registered metrics; note that `tool_calls`
+counts attempts including permission-denied ones.
 
 **Scope (in):**
 - Expand task set (target 75–100 tasks), add at least one non-Claude agent
