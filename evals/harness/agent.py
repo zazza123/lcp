@@ -4,6 +4,7 @@ import json
 import subprocess
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Iterable
 
 from harness import extract
@@ -26,8 +27,33 @@ BUILTIN_TOOLS = [
 ]
 
 
-def build_command(prompt: str, arm: str, mcp_config: str | None) -> list[str]:
-    """Build the claude CLI command; arms differ ONLY by --mcp-config.
+def load_skill_text(path) -> str:
+    """Return a SKILL.md body with the YAML frontmatter stripped.
+
+    Injected verbatim via --append-system-prompt: the experiment measures
+    the shipped skill artifact, not a paraphrase of it.
+    """
+    text = Path(path).read_text()
+    if text.startswith("---"):
+        end = text.index("---", 3)
+        text = text[end + 3:]
+    return text.strip() + "\n"
+
+
+def build_command(
+    prompt: str,
+    arm: str,
+    mcp_config: str | None,
+    model: str = MODEL,
+    append_system: str | None = None,
+) -> list[str]:
+    """Build the claude CLI command; arms differ ONLY by flags.
+
+    baseline    : no MCP config.
+    lcp         : + --mcp-config (the server's instructions are the only nudge).
+    lcp-skill   : lcp + --append-system-prompt with the lcp-universal skill
+                  body — approximates what a developer with the plugin
+                  installed experiences (the skill fires task-side).
 
     Built-in tools (Bash, Read, Write, etc.) are denied via --disallowedTools
     rather than `--tools ""`: the latter also strips MCP tools from the
@@ -43,16 +69,20 @@ def build_command(prompt: str, arm: str, mcp_config: str | None) -> list[str]:
     """
     cmd = [
         "claude", "-p", prompt,
-        "--model", MODEL,
+        "--model", model,
         "--output-format", "stream-json", "--verbose",
         "--strict-mcp-config",
         "--disallowedTools", *BUILTIN_TOOLS,
         "--allowedTools", "mcp__lcp",
     ]
-    if arm == "lcp":
+    if arm in ("lcp", "lcp-skill"):
         if mcp_config is None:
-            raise ValueError("lcp arm requires an mcp_config path")
+            raise ValueError(f"{arm} arm requires an mcp_config path")
         cmd += ["--mcp-config", str(mcp_config)]
+    if arm == "lcp-skill":
+        if append_system is None:
+            raise ValueError("lcp-skill arm requires append_system text")
+        cmd += ["--append-system-prompt", append_system]
     return cmd
 
 
@@ -129,12 +159,19 @@ class AgentRun:
     error: str | None = None
 
 
-def run_agent(case, arm: str, mcp_config=None, timeout: int = TIMEOUT_S) -> AgentRun:
+def run_agent(
+    case,
+    arm: str,
+    mcp_config=None,
+    timeout: int = TIMEOUT_S,
+    model: str = MODEL,
+    append_system: str | None = None,
+) -> AgentRun:
     """Run one case in one arm; never raises on agent failure (records error)."""
     prompt = PROMPT_TEMPLATE.format(
         prompt=case.prompt, library=case.library, version=case.version
     )
-    cmd = build_command(prompt, arm, mcp_config)
+    cmd = build_command(prompt, arm, mcp_config, model=model, append_system=append_system)
     start = time.monotonic()
     try:
         proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
