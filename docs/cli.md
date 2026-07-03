@@ -50,9 +50,10 @@ lcp validate FILE
 lcp validate requests.lcp.json
 ```
 
-## `lcp serve`
+## `lcp serve` (deprecated)
 
-Start an MCP server (stdio transport) for a single LCP manifest file, exposing tools for exploring and querying the library's API.
+!!! warning "Deprecated"
+    `lcp serve` is deprecated — use [`lcp serve-all`](#lcp-serve-all) with `--expose <package>` instead. The command still works: it starts the same universal server, pre-loaded with the manifest and restricted to that library, and prints a deprecation warning on stderr.
 
 ```bash
 lcp serve MANIFEST [OPTIONS]
@@ -63,16 +64,9 @@ lcp serve MANIFEST [OPTIONS]
 | `MANIFEST` | — | Path to an LCP JSON file to serve. |
 | `--name TEXT` | `lcp-{library-name}` | Server name for MCP identification. |
 
-**Example:**
-
-```bash
-lcp serve requests.lcp.json
-lcp serve numpy.lcp.json --name numpy-docs
-```
-
 ## `lcp serve-all`
 
-Start a universal MCP server that resolves any installed Python library on the fly. Unlike `lcp serve`, no pre-built manifest is required — AI agents call the `resolve_library` tool to load any pip-installed package. Manifests are cached locally and, when local scanning fails, can be fetched from a remote LCP registry.
+Start a universal MCP server that resolves any installed Python library on the fly. No pre-built manifest is required — AI agents call the `resolve_library` tool to load any pip-installed package, then `search` and `get_symbol` to explore it. Manifests are cached locally and, when local scanning fails, can be fetched from a remote LCP registry.
 
 Resolution order: local cache → live scan → registry fetch.
 
@@ -86,12 +80,16 @@ lcp serve-all [OPTIONS]
 | `--name TEXT` | `lcp-universal` | Server name for MCP identification. |
 | `--no-cache` | off | Disable reading from and writing to the local cache. |
 | `--registry TEXT` | — | Base URL of an LCP registry used as fallback when local scanning fails. Manifests are fetched from `{registry}/manifests/{language}/{first_letter}/{slug}/{version}.lcp.json.gz`, where `{slug}` is the hyphenated package name (`google.adk` → `google-adk`). |
+| `--expose TEXT` | all packages | Restrict `resolve_library` to these package names (repeatable). |
+| `--preload TEXT` | — | Resolve these packages at startup (repeatable). |
+| `--max-response-bytes INT` | `25000` | Byte budget for list-returning tool responses (context blowout guard). |
 
 **Example:**
 
 ```bash
 lcp serve-all
 lcp serve-all --registry https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main
+lcp serve-all --expose requests --preload requests
 ```
 
 ## `lcp coverage`
