@@ -12,6 +12,7 @@ from .generator import generate_lcp
 from .publish import PublishError, PublishResult, publish_manifest
 from .mcp_server import (
     LCPIndex,
+    LCPServer,
     MultiLibraryIndex,
     create_server,
     create_universal_server,
@@ -67,6 +68,7 @@ __all__ = [
     "generate_lcp",
     # MCP Server
     "LCPIndex",
+    "LCPServer",
     "MultiLibraryIndex",
     "create_server",
     "create_universal_server",

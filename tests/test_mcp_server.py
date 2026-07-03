@@ -97,96 +97,6 @@ def lcp_index(sample_lcp_file: Path) -> LCPIndex:
 
 
 @pytest.fixture
-def mcp_server(sample_lcp_file: Path):
-    """Create an MCP server from the sample LCP file."""
-    return create_server(sample_lcp_file)
-
-
-# ---------------------------------------------------------------------------
-# Helper: retrieve a tool's callable from a FastMCP server
-# ---------------------------------------------------------------------------
-
-def _get_tool_fn(server, tool_name: str):
-    """Return the raw callable for *tool_name* registered on *server*."""
-    try:
-        tool = asyncio.run(server.get_tool(tool_name))
-        return tool.fn
-    except Exception:
-        return None
-
-
-class TestErrorHelper:
-    """D5: structured error dicts with a stable shape."""
-
-    def test_minimal_shape(self):
-        err = _error("symbol_not_found", "Symbol not found: x:y")
-        assert err == {"error": {"code": "symbol_not_found",
-                                 "message": "Symbol not found: x:y"}}
-
-    def test_hint_and_extras(self):
-        err = _error(
-            "ambiguous_library", "Pass library=", hint="Pick one.",
-            loaded_libraries=["requests", "httpx"],
-        )
-        assert err["error"]["hint"] == "Pick one."
-        assert err["error"]["loaded_libraries"] == ["requests", "httpx"]
-        # stable outer shape: exactly one top-level key
-        assert set(err) == {"error"}
-
-
-class TestSymbolNameAndImport:
-    def test_symbol_name_plain(self):
-        assert _symbol_name("requests.api:get") == "get"
-
-    def test_symbol_name_member(self):
-        assert _symbol_name("pathlib:Path#resolve") == "resolve"
-
-    def test_import_function(self):
-        stmt = _import_statement("requests.api:get", SymbolKind.FUNCTION)
-        assert stmt == "from requests.api import get"
-
-    def test_import_class_member(self):
-        stmt = _import_statement("pathlib:Path#resolve", SymbolKind.METHOD)
-        assert stmt == "from pathlib import Path"
-
-    def test_import_module_kind(self):
-        stmt = _import_statement("json:decoder", SymbolKind.MODULE)
-        assert stmt == "import json.decoder"
-
-
-class TestClassesByName:
-    def test_exact_name_lookup(self):
-        idx = make_index(
-            {
-                "fake.io:Path": make_symbol("class"),
-                "fake.io:PurePath": make_symbol("class"),
-                "fake:get": make_symbol("function"),
-            }
-        )
-        assert idx.classes_by_name["Path"] == ["fake.io:Path"]
-        assert idx.classes_by_name["PurePath"] == ["fake.io:PurePath"]
-        assert "get" not in idx.classes_by_name
-
-
-class TestFitList:
-    def test_all_fit(self):
-        items = [{"id": "a"}, {"id": "b"}]
-        kept, truncated = _fit_list(items, 10_000)
-        assert kept == items and truncated is False
-
-    def test_truncates_prefix(self):
-        items = [{"pad": "x" * 100} for _ in range(100)]
-        kept, truncated = _fit_list(items, 500)
-        assert truncated is True
-        assert 0 < len(kept) < 100
-        # kept must be a prefix
-        assert kept == items[: len(kept)]
-
-    def test_default_budget_constant(self):
-        assert DEFAULT_MAX_RESPONSE_BYTES == 25_000
-
-
-@pytest.fixture
 def ranking_index() -> LCPIndex:
     """Synthetic index with one hit per ranking tier for query 'get'."""
     return make_index(
@@ -560,310 +470,6 @@ class TestLCPIndex:
     def test_modules_set(self, lcp_index: LCPIndex):
         """Should collect all unique modules."""
         assert "tests.sample_module" in lcp_index.modules
-
-
-class TestCreateServer:
-    """Tests for create_server function."""
-
-    def test_creates_server(self, sample_lcp_file: Path):
-        """Should create a FastMCP server."""
-        server = create_server(sample_lcp_file)
-        assert server is not None
-        assert server.name == "lcp-tests.sample_module"
-
-    def test_custom_name(self, sample_lcp_file: Path):
-        """Should use custom server name."""
-        server = create_server(sample_lcp_file, name="custom-name")
-        assert server.name == "custom-name"
-
-
-class TestGetManifestTool:
-    """Tests for get_manifest tool."""
-
-    def test_returns_manifest_info(self, mcp_server):
-        """Should return library metadata."""
-        # Get the tool function
-        tool_fn = _get_tool_fn(mcp_server, "get_manifest")
-        assert tool_fn is not None
-        result = tool_fn()
-
-        assert result["name"] == "tests.sample_module"
-        assert "version" in result
-        assert result["language"] == "python"
-        assert "schema_version" in result
-
-
-class TestListModulesTool:
-    """Tests for list_modules tool."""
-
-    def test_returns_modules(self, mcp_server):
-        """Should return list of modules."""
-        tool_fn = _get_tool_fn(mcp_server, "list_modules")
-        assert tool_fn is not None
-        result = tool_fn()
-
-        assert isinstance(result, list)
-        assert "tests.sample_module" in result
-
-
-class TestListSymbolsTool:
-    """Tests for list_symbols tool."""
-
-    def test_returns_all_symbols(self, mcp_server):
-        """Should return all symbols when no filter."""
-        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
-        assert tool_fn is not None
-        result = tool_fn()
-
-        assert isinstance(result, list)
-        assert len(result) > 0
-        # Check structure
-        assert all("id" in s and "kind" in s and "summary" in s for s in result)
-
-    def test_filter_by_module(self, mcp_server):
-        """Should filter by module."""
-        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
-        assert tool_fn is not None
-
-        result = tool_fn(module="tests.sample_module")
-        assert isinstance(result, list)
-        assert len(result) > 0
-
-    def test_filter_by_kind(self, mcp_server):
-        """Should filter by kind."""
-        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
-        assert tool_fn is not None
-
-        result = tool_fn(kind="function")
-        assert isinstance(result, list)
-        assert all(s["kind"] == "function" for s in result)
-
-    def test_invalid_kind(self, mcp_server):
-        """Should return error for invalid kind."""
-        tool_fn = _get_tool_fn(mcp_server, "list_symbols")
-        assert tool_fn is not None
-
-        result = tool_fn(kind="invalid_kind")
-        assert len(result) == 1
-        assert "error" in result[0]
-
-
-class TestGetSymbolTool:
-    """Tests for get_symbol tool."""
-
-    def test_returns_symbol(self, mcp_server, lcp_index):
-        """Should return full symbol data."""
-        tool_fn = _get_tool_fn(mcp_server, "get_symbol")
-        assert tool_fn is not None
-
-        # Get a known symbol ID
-        symbol_id = list(lcp_index.symbols_by_id.keys())[0]
-        result = tool_fn(symbol_id=symbol_id)
-
-        assert "id" in result
-        assert "kind" in result
-        assert "semantics" in result
-        assert "error" not in result
-
-    def test_not_found(self, mcp_server):
-        """Should return error for unknown symbol."""
-        tool_fn = _get_tool_fn(mcp_server, "get_symbol")
-        assert tool_fn is not None
-
-        result = tool_fn(symbol_id="nonexistent:symbol")
-        assert "error" in result
-        assert "not found" in result["error"].lower()
-
-
-class TestSearchSymbolsTool:
-    """Tests for search_symbols tool."""
-
-    def test_search_by_name(self, mcp_server):
-        """Should find symbols by name."""
-        tool_fn = _get_tool_fn(mcp_server, "search_symbols")
-        assert tool_fn is not None
-
-        result = tool_fn(query="simple")
-        assert isinstance(result, list)
-        assert len(result) > 0
-        # Should find simple_function and/or SimpleClass
-        assert any("simple" in s["id"].lower() for s in result)
-
-    def test_search_by_summary(self, mcp_server):
-        """Should find symbols by summary text."""
-        tool_fn = _get_tool_fn(mcp_server, "search_symbols")
-        assert tool_fn is not None
-
-        result = tool_fn(query="add two numbers")
-        assert isinstance(result, list)
-        # Should find simple_function which has "Add two numbers" in summary
-
-    def test_search_no_results(self, mcp_server):
-        """Should return empty list for no matches."""
-        tool_fn = _get_tool_fn(mcp_server, "search_symbols")
-        assert tool_fn is not None
-
-        result = tool_fn(query="xyznonexistent123")
-        assert result == []
-
-
-class TestGetClassMembersTool:
-    """Tests for get_class_members tool."""
-
-    def test_returns_members(self, mcp_server, lcp_index):
-        """Should return class members."""
-        tool_fn = _get_tool_fn(mcp_server, "get_class_members")
-        # Find a class ID
-        class_id = None
-        for sid, symbol in lcp_index.symbols_by_id.items():
-            if symbol.kind.value == "class" and "SimpleClass" in sid:
-                class_id = sid
-                break
-        assert tool_fn is not None
-
-        if class_id and class_id in lcp_index.class_members:
-            result = tool_fn(class_id=class_id)
-            assert isinstance(result, list)
-            # Check structure
-            for member in result:
-                if "error" not in member:
-                    assert "id" in member
-                    assert "kind" in member
-
-    def test_class_not_found(self, mcp_server):
-        """Should return error for unknown class."""
-        tool_fn = _get_tool_fn(mcp_server, "get_class_members")
-        assert tool_fn is not None
-
-        result = tool_fn(class_id="nonexistent:Class")
-        assert len(result) == 1
-        assert "error" in result[0]
-
-    def test_not_a_class(self, mcp_server, lcp_index):
-        """Should return error if symbol is not a class."""
-        tool_fn = _get_tool_fn(mcp_server, "get_class_members")
-        # Find a function ID
-        func_id = None
-        for sid, symbol in lcp_index.symbols_by_id.items():
-            if symbol.kind.value == "function":
-                func_id = sid
-                break
-        assert tool_fn is not None
-
-        if func_id:
-            result = tool_fn(class_id=func_id)
-            assert len(result) == 1
-            assert "error" in result[0]
-            assert "not a class" in result[0]["error"]
-
-
-class TestGetUsageGuideTool:
-    """Tests for get_usage_guide tool."""
-
-    def test_returns_workflow(self, mcp_server):
-        """Should return recommended workflow and tips."""
-        tool_fn = _get_tool_fn(mcp_server, "get_usage_guide")
-        assert tool_fn is not None
-        result = tool_fn()
-
-        assert "recommended_workflow" in result
-        assert isinstance(result["recommended_workflow"], list)
-        assert len(result["recommended_workflow"]) > 0
-
-        # Check workflow structure
-        first_step = result["recommended_workflow"][0]
-        assert "step" in first_step
-        assert "action" in first_step
-        assert "purpose" in first_step
-
-        assert "cost_optimization" in result
-        assert "common_mistakes" in result
-        assert isinstance(result["common_mistakes"], list)
-
-
-class TestExploreReturnTypeTool:
-    """Tests for explore_return_type tool."""
-
-    def test_returns_type_info(self, mcp_server, lcp_index):
-        """Should return return type information."""
-        tool_fn = _get_tool_fn(mcp_server, "explore_return_type")
-        assert tool_fn is not None
-
-        # Find a function with a return type
-        func_id = None
-        for sid, symbol in lcp_index.symbols_by_id.items():
-            if symbol.kind.value == "function" and symbol.signatures:
-                sig = symbol.signatures[0]
-                if sig.returns:
-                    func_id = sid
-                    break
-
-        if func_id:
-            result = tool_fn(symbol_id=func_id)
-            assert "symbol_id" in result
-            assert "return_type" in result or "error" in result or "message" in result
-
-    def test_symbol_not_found(self, mcp_server):
-        """Should return error for unknown symbol."""
-        tool_fn = _get_tool_fn(mcp_server, "explore_return_type")
-        assert tool_fn is not None
-
-        result = tool_fn(symbol_id="nonexistent:func")
-        assert "error" in result
-        assert "not found" in result["error"].lower()
-
-    def test_no_signature(self, mcp_server, lcp_index):
-        """Should handle symbols without signatures."""
-        tool_fn = _get_tool_fn(mcp_server, "explore_return_type")
-        # Find a module symbol (no signature)
-        module_id = None
-        for sid, symbol in lcp_index.symbols_by_id.items():
-            if symbol.kind.value == "module":
-                module_id = sid
-                break
-        assert tool_fn is not None
-
-        if module_id:
-            result = tool_fn(symbol_id=module_id)
-            assert "error" in result
-
-
-class TestGetSuggestionsTool:
-    """Tests for get_suggestions tool."""
-
-    def test_returns_suggestions(self, mcp_server):
-        """Should return suggestions based on task."""
-        tool_fn = _get_tool_fn(mcp_server, "get_suggestions")
-        assert tool_fn is not None
-        result = tool_fn(task_description="sample module function")
-
-        assert "task" in result
-        assert "suggested_modules" in result
-        assert "suggested_symbols" in result
-        assert "next_steps" in result
-        assert isinstance(result["next_steps"], list)
-
-    def test_no_matches(self, mcp_server):
-        """Should provide fallback suggestions when no matches."""
-        tool_fn = _get_tool_fn(mcp_server, "get_suggestions")
-        assert tool_fn is not None
-
-        result = tool_fn(task_description="xyznonexistent123")
-
-        assert "next_steps" in result
-        assert len(result["next_steps"]) > 0
-        # Should suggest browsing modules/symbols
-        assert any("list_modules" in step or "list_symbols" in step for step in result["next_steps"])
-
-    def test_finds_matching_modules(self, mcp_server):
-        """Should find modules matching task keywords."""
-        tool_fn = _get_tool_fn(mcp_server, "get_suggestions")
-        assert tool_fn is not None
-
-        result = tool_fn(task_description="sample")
-
-        # Should find tests.sample_module
-        assert "tests.sample_module" in result["suggested_modules"]
 
 
 # ---------------------------------------------------------------------------
@@ -1277,14 +883,15 @@ class TestFetchFromRegistry:
         assert called_url == "https://registry.example.com/manifests/python/r/requests/2.31.0.lcp.json.gz"
 
 
+
 # ---------------------------------------------------------------------------
-# Tests for create_universal_server
+# Tests for the V2 universal server surface (spec D1-D9)
 # ---------------------------------------------------------------------------
 
 
 @pytest.fixture
 def universal_server(tmp_path: Path):
-    """Universal MCP server with a temporary cache dir."""
+    """V2 universal server with a temporary cache dir."""
     return create_universal_server(
         name="lcp-test-universal",
         cache_dir=tmp_path / "cache",
@@ -1292,208 +899,197 @@ def universal_server(tmp_path: Path):
     )
 
 
+@pytest.fixture
+def loaded_server(universal_server):
+    """Universal server with tests.sample_module resolved."""
+    result = universal_server.tools["resolve_library"](name="tests.sample_module")
+    assert result.get("status") == "loaded", result
+    return universal_server
+
+
 class TestCreateUniversalServer:
-    """Tests for create_universal_server."""
+    def test_returns_lcp_server(self, universal_server):
+        from lcp.mcp_server import LCPServer
 
-    def test_creates_server(self, universal_server):
-        """Should create a FastMCP server."""
-        assert universal_server is not None
-        assert universal_server.name == "lcp-test-universal"
+        assert isinstance(universal_server, LCPServer)
+        assert universal_server.mcp.name == "lcp-test-universal"
 
-    def test_has_expected_tools(self, universal_server):
-        """Universal server should expose all expected tools."""
-        expected = {
+    def test_exactly_four_tools(self, universal_server):
+        assert set(universal_server.tools) == {
             "resolve_library",
-            "list_libraries",
-            "get_usage_guide",
-            "get_manifest",
-            "list_modules",
-            "list_symbols",
+            "search",
             "get_symbol",
-            "search_symbols",
-            "get_class_members",
-            "explore_return_type",
-            "get_suggestions",
+            "get_overview",
         }
-        for name in expected:
-            tool = asyncio.run(universal_server.get_tool(name))
-            assert tool is not None, f"Expected tool '{name}' not found"
+
+    def test_tools_registered_over_protocol(self, universal_server):
+        """FastMCP 3.x verification (spec D0): registration + in-process call."""
+        from fastmcp import Client
+
+        async def _probe():
+            async with Client(universal_server.mcp) as client:
+                tools = {t.name for t in await client.list_tools()}
+                assert tools == {
+                    "resolve_library", "search", "get_symbol", "get_overview",
+                }
+                result = await client.call_tool(
+                    "resolve_library", {"name": "tests.sample_module"}
+                )
+                assert result.data["status"] == "loaded"
+                result = await client.call_tool("search", {"query": "simple"})
+                assert result.data["results"]
+
+        asyncio.run(_probe())
+
+    def test_instructions_present(self, universal_server):
+        """D9: the instructions field is the always-on adoption lever."""
+        text = universal_server.mcp.instructions
+        assert text
+        for phrase in ("resolve_library", "search", "get_symbol"):
+            assert phrase in text
+
+    def test_no_tool_funcs_attribute(self, universal_server):
+        assert not hasattr(universal_server.mcp, "tool_funcs")
 
 
 class TestResolveLibraryTool:
-    """Tests for the resolve_library tool in the universal server."""
-
     def test_resolve_installed_package(self, universal_server):
-        """Should load an installed package and return summary."""
-        fn = _get_tool_fn(universal_server, "resolve_library")
-        assert fn is not None
-
-        result = fn(name="tests.sample_module")
-        assert result.get("status") == "loaded"
-        assert "symbol_count" in result
+        result = universal_server.tools["resolve_library"](
+            name="tests.sample_module"
+        )
+        assert result["status"] == "loaded"
         assert result["symbol_count"] > 0
         assert result["source"] == "scan"
+        assert "search" in result["next_step"]
 
     def test_resolve_missing_package(self, universal_server):
-        """Should return error dict for uninstalled package."""
-        fn = _get_tool_fn(universal_server, "resolve_library")
-        assert fn is not None
+        result = universal_server.tools["resolve_library"](
+            name="nonexistent_package_xyz_123"
+        )
+        assert result["error"]["code"] == "resolve_failed"
+        assert "message" in result["error"]
 
-        result = fn(name="nonexistent_package_xyz_123")
-        assert "error" in result
+    def test_expose_blocks_unlisted(self, tmp_path):
+        server = create_universal_server(
+            cache_dir=tmp_path / "cache", no_cache=True, expose=["json"]
+        )
+        result = server.tools["resolve_library"](name="os")
+        assert result["error"]["code"] == "library_not_exposed"
+        assert result["error"]["exposed"] == ["json"]
 
-    def test_resolve_via_registry_fallback(self, tmp_path: Path, sample_lcp_file: Path):
-        """resolve_library should use registry when scan fails and registry_url is set."""
+    def test_version_mismatch_warning(self, universal_server):
+        result = universal_server.tools["resolve_library"](
+            name="tests.sample_module", version="0.0.0-nonexistent"
+        )
+        # scan wins (installed version) and flags the mismatch
+        assert result["status"] == "loaded"
+        assert result["warning"]["code"] == "version_mismatch"
+        assert result["warning"]["requested"] == "0.0.0-nonexistent"
+
+    def test_registry_fallback(self, tmp_path, sample_lcp_file):
         doc = load_lcp_document(sample_lcp_file)
-        manifest_json = doc.model_dump_json().encode()
-
         mock_response = MagicMock()
-        mock_response.read.return_value = manifest_json
+        mock_response.read.return_value = doc.model_dump_json().encode()
         mock_response.__enter__ = lambda s: s
         mock_response.__exit__ = MagicMock(return_value=False)
 
         server = create_universal_server(
-            name="lcp-test-registry",
             cache_dir=tmp_path / "cache",
             no_cache=True,
             registry_url="https://registry.example.com",
         )
-        fn = _get_tool_fn(server, "resolve_library")
-
         with patch("urllib.request.urlopen", return_value=mock_response):
-            result = fn(name="nonexistent_package_xyz_123")
-
-        assert result.get("status") == "loaded"
-        assert result.get("source") == "registry"
-
-    def test_records_scan_source(self, universal_server):
-        """Resolved library should be listed with its resolution source."""
-        resolve_fn = _get_tool_fn(universal_server, "resolve_library")
-        list_libs_fn = _get_tool_fn(universal_server, "list_libraries")
-        assert resolve_fn is not None
-        assert list_libs_fn is not None
-
-        resolve_fn(name="tests.sample_module")
-        libs = list_libs_fn()
-        assert len(libs) == 1
-        assert libs[0]["source"] == "scan"
+            result = server.tools["resolve_library"](
+                name="nonexistent_package_xyz_123"
+            )
+        assert result["status"] == "loaded"
+        assert result["source"] == "registry"
 
 
-class TestListLibrariesTool:
-    """Tests for list_libraries tool."""
+class TestLibraryDisambiguation:
+    """D7 behaviour through the real tools."""
 
-    def test_empty_initially(self, universal_server):
-        """Should return empty list before any resolve_library calls."""
-        fn = _get_tool_fn(universal_server, "list_libraries")
-        assert fn is not None
-        assert fn() == []
+    def test_no_library_loaded(self, universal_server):
+        for call in (
+            lambda: universal_server.tools["search"](query="x"),
+            lambda: universal_server.tools["get_symbol"](ids=["a:b"]),
+            lambda: universal_server.tools["get_overview"](),
+        ):
+            result = call()
+            assert result["error"]["code"] == "library_not_loaded"
 
-    def test_lists_after_resolve(self, universal_server):
-        """Should list library after it has been resolved."""
-        resolve_fn = _get_tool_fn(universal_server, "resolve_library")
-        list_fn = _get_tool_fn(universal_server, "list_libraries")
-        assert resolve_fn is not None and list_fn is not None
+    def test_single_library_omitted_ok(self, loaded_server):
+        result = loaded_server.tools["search"](query="simple")
+        assert result["results"]
 
-        resolve_fn(name="tests.sample_module")
-        libs = list_fn()
-        assert len(libs) == 1
-        assert libs[0]["name"] == "tests.sample_module"
-
-
-class TestUniversalToolsWithoutLibrary:
-    """Universal tools should return error dicts when no library is loaded."""
-
-    def test_get_manifest_no_library(self, universal_server):
-        fn = _get_tool_fn(universal_server, "get_manifest")
-        assert fn is not None
-        result = fn()
-        assert "error" in result
-
-    def test_list_modules_no_library(self, universal_server):
-        fn = _get_tool_fn(universal_server, "list_modules")
-        assert fn is not None
-        result = fn()
-        assert "error" in result
-
-    def test_list_symbols_no_library(self, universal_server):
-        fn = _get_tool_fn(universal_server, "list_symbols")
-        assert fn is not None
-        result = fn()
-        assert len(result) == 1 and "error" in result[0]
-
-    def test_get_symbol_no_library(self, universal_server):
-        fn = _get_tool_fn(universal_server, "get_symbol")
-        assert fn is not None
-        result = fn(symbol_id="json:loads")
-        assert "error" in result
-
-    def test_search_symbols_no_library(self, universal_server):
-        fn = _get_tool_fn(universal_server, "search_symbols")
-        assert fn is not None
-        result = fn(query="test")
-        assert len(result) == 1 and "error" in result[0]
+    def test_two_libraries_require_param(self, loaded_server, sample_lcp_file):
+        doc = load_lcp_document(sample_lcp_file)
+        loaded_server.index.add("second_lib", LCPIndex(doc))
+        result = loaded_server.tools["search"](query="simple")
+        assert result["error"]["code"] == "ambiguous_library"
+        assert set(result["error"]["loaded_libraries"]) == {
+            "tests.sample_module",
+            "second_lib",
+        }
+        # explicit library recovers
+        ok = loaded_server.tools["search"](
+            query="simple", library="tests.sample_module"
+        )
+        assert ok["results"]
 
 
-class TestUniversalToolsWithLibrary:
-    """Universal tools should work correctly after resolve_library is called."""
+class TestSearchTool:
+    def test_end_to_end(self, loaded_server):
+        result = loaded_server.tools["search"](query="simple")
+        assert any("simple" in r["id"].lower() for r in result["results"])
+        assert all("import" in r for r in result["results"])
 
-    @pytest.fixture(autouse=True)
-    def _load_library(self, universal_server):
-        """Pre-load sample_module into the universal server."""
-        resolve_fn = _get_tool_fn(universal_server, "resolve_library")
-        resolve_fn(name="tests.sample_module")
+    def test_browse_empty_query(self, loaded_server):
+        result = loaded_server.tools["search"](
+            query="", module="tests.sample_module", kind="class"
+        )
+        assert result["results"]
+        assert all(r["kind"] == "class" for r in result["results"])
 
-    def test_get_manifest(self, universal_server):
-        fn = _get_tool_fn(universal_server, "get_manifest")
-        result = fn()
-        assert result.get("name") == "tests.sample_module"
-        assert "version" in result
 
-    def test_list_modules(self, universal_server):
-        fn = _get_tool_fn(universal_server, "list_modules")
-        result = fn()
-        assert isinstance(result, list)
-        assert "tests.sample_module" in result
+class TestGetSymbolTool:
+    def test_batch_end_to_end(self, loaded_server):
+        found = loaded_server.tools["search"](query="simple")["results"]
+        ids = [r["id"] for r in found[:2]]
+        result = loaded_server.tools["get_symbol"](ids=ids)
+        assert [s["id"] for s in result["symbols"]] == ids
 
-    def test_list_symbols(self, universal_server):
-        fn = _get_tool_fn(universal_server, "list_symbols")
-        result = fn()
-        assert isinstance(result, list)
-        assert len(result) > 0
+    def test_class_has_members(self, loaded_server):
+        result = loaded_server.tools["get_symbol"](
+            ids=["tests.sample_module:SimpleClass"]
+        )
+        sym = result["symbols"][0]
+        assert sym["kind"] == "class"
+        assert any("#instance_method" in m["id"] for m in sym["members"])
 
-    def test_list_symbols_with_library_param(self, universal_server):
-        """Explicit library= parameter should target that library."""
-        fn = _get_tool_fn(universal_server, "list_symbols")
-        result = fn(library="tests.sample_module")
-        assert isinstance(result, list)
-        assert len(result) > 0
 
-    def test_list_symbols_unknown_library(self, universal_server):
-        """Explicit library= for an unloaded library should return error."""
-        fn = _get_tool_fn(universal_server, "list_symbols")
-        result = fn(library="not_loaded")
-        assert len(result) == 1 and "error" in result[0]
+class TestGetOverviewTool:
+    def test_end_to_end(self, loaded_server):
+        result = loaded_server.tools["get_overview"]()
+        assert result["library"]["name"] == "tests.sample_module"
+        assert result["library"]["source"] == "scan"
+        assert result["total_symbols"] > 0
 
-    def test_get_symbol(self, universal_server, lcp_index):
-        fn = _get_tool_fn(universal_server, "get_symbol")
-        symbol_id = next(iter(lcp_index.symbols_by_id))
-        result = fn(symbol_id=symbol_id)
-        assert "id" in result or "error" in result
 
-    def test_search_symbols(self, universal_server):
-        fn = _get_tool_fn(universal_server, "search_symbols")
-        result = fn(query="simple")
-        assert isinstance(result, list)
-        assert any("simple" in s["id"].lower() for s in result)
+class TestPreload:
+    def test_preload_resolves_at_startup(self, tmp_path):
+        server = create_universal_server(
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+            preload=["tests.sample_module"],
+        )
+        assert "tests.sample_module" in server.index
 
-    def test_get_suggestions(self, universal_server):
-        fn = _get_tool_fn(universal_server, "get_suggestions")
-        result = fn(task_description="sample module function")
-        assert "task" in result
-        assert "suggested_modules" in result
-
-    def test_get_usage_guide_has_multi_library_tips(self, universal_server):
-        fn = _get_tool_fn(universal_server, "get_usage_guide")
-        result = fn()
-        assert "multi_library_tips" in result
-        assert "resolve_library" in result["recommended_workflow"][0]["action"]
+    def test_preload_failure_does_not_raise(self, tmp_path, capsys):
+        server = create_universal_server(
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+            preload=["nonexistent_package_xyz_123"],
+        )
+        assert server.index.names() == []
+        assert "preload" in capsys.readouterr().err.lower()
