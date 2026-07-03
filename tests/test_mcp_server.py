@@ -12,17 +12,59 @@ import pytest
 
 from lcp.generator import generate_lcp
 from lcp.mcp_server import (
+    DEFAULT_MAX_RESPONSE_BYTES,
     LCPIndex,
     MultiLibraryIndex,
     _DEFAULT_REGISTRY_URL,
     _error,
     _fetch_from_registry,
+    _fit_list,
+    _import_statement,
+    _symbol_name,
     create_server,
     create_universal_server,
     load_lcp_document,
     resolve_library_document,
 )
+from lcp.models import (
+    LCPDocument,
+    Library,
+    Manifest,
+    Semantics,
+    Signature,
+    Symbol,
+    SymbolKind,
+)
 from lcp.scanner import scan_package
+
+
+def make_symbol(
+    kind: str = "function",
+    module: str = "fake",
+    summary: str = "A symbol.",
+    description: str | None = None,
+    returns=None,
+    params=None,
+) -> Symbol:
+    """Build a minimal Symbol for synthetic-index tests."""
+    signatures = None
+    if returns is not None or params is not None:
+        signatures = [Signature(params=params, returns=returns)]
+    return Symbol(
+        kind=SymbolKind(kind),
+        module=module,
+        signatures=signatures,
+        semantics=Semantics(summary=summary, description=description),
+    )
+
+
+def make_index(symbols: dict[str, Symbol], name: str = "fake") -> LCPIndex:
+    """Build an LCPIndex from an in-code symbol table."""
+    doc = LCPDocument(
+        manifest=Manifest(library=Library(name=name, version="1.0.0")),
+        symbols=symbols,
+    )
+    return LCPIndex(doc)
 
 
 @pytest.fixture
@@ -84,6 +126,58 @@ class TestErrorHelper:
         assert err["error"]["loaded_libraries"] == ["requests", "httpx"]
         # stable outer shape: exactly one top-level key
         assert set(err) == {"error"}
+
+
+class TestSymbolNameAndImport:
+    def test_symbol_name_plain(self):
+        assert _symbol_name("requests.api:get") == "get"
+
+    def test_symbol_name_member(self):
+        assert _symbol_name("pathlib:Path#resolve") == "resolve"
+
+    def test_import_function(self):
+        stmt = _import_statement("requests.api:get", SymbolKind.FUNCTION)
+        assert stmt == "from requests.api import get"
+
+    def test_import_class_member(self):
+        stmt = _import_statement("pathlib:Path#resolve", SymbolKind.METHOD)
+        assert stmt == "from pathlib import Path"
+
+    def test_import_module_kind(self):
+        stmt = _import_statement("json:decoder", SymbolKind.MODULE)
+        assert stmt == "import json.decoder"
+
+
+class TestClassesByName:
+    def test_exact_name_lookup(self):
+        idx = make_index(
+            {
+                "fake.io:Path": make_symbol("class"),
+                "fake.io:PurePath": make_symbol("class"),
+                "fake:get": make_symbol("function"),
+            }
+        )
+        assert idx.classes_by_name["Path"] == ["fake.io:Path"]
+        assert idx.classes_by_name["PurePath"] == ["fake.io:PurePath"]
+        assert "get" not in idx.classes_by_name
+
+
+class TestFitList:
+    def test_all_fit(self):
+        items = [{"id": "a"}, {"id": "b"}]
+        kept, truncated = _fit_list(items, 10_000)
+        assert kept == items and truncated is False
+
+    def test_truncates_prefix(self):
+        items = [{"pad": "x" * 100} for _ in range(100)]
+        kept, truncated = _fit_list(items, 500)
+        assert truncated is True
+        assert 0 < len(kept) < 100
+        # kept must be a prefix
+        assert kept == items[: len(kept)]
+
+    def test_default_budget_constant(self):
+        assert DEFAULT_MAX_RESPONSE_BYTES == 25_000
 
 
 class TestLoadLCPDocument:

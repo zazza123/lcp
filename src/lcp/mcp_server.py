@@ -15,6 +15,59 @@ from fastmcp import FastMCP
 from .models import LCPDocument, Symbol, SymbolKind
 from .naming import normalize_package_name
 
+DEFAULT_MAX_RESPONSE_BYTES = 25_000
+"""Default byte budget for any list-returning tool payload (spec D6).
+
+Calibrated against polars 1.42.1: DataFrame's 159 member summaries alone are
+~30 KB, so heavy classes are expected to truncate; 25 KB is ~6k tokens.
+"""
+
+
+def _symbol_name(symbol_id: str) -> str:
+    """Return the bare symbol name (last segment after ':' and '#')."""
+    return symbol_id.split(":")[-1].split("#")[-1]
+
+
+def _import_statement(symbol_id: str, kind: SymbolKind) -> str:
+    """Return the import line an agent should write for *symbol_id*.
+
+    Args:
+        symbol_id: LCP symbol id (``module:entity`` or ``module:Class#member``).
+        kind: The symbol's kind; modules render as ``import a.b``.
+
+    Returns:
+        e.g. ``"from requests.api import get"``; class members import the
+        class (``pathlib:Path#resolve`` → ``"from pathlib import Path"``).
+    """
+    module, _, entity = symbol_id.partition(":")
+    if not entity:
+        return f"import {module}"
+    if kind == SymbolKind.MODULE:
+        return f"import {module}.{entity}"
+    top_level = entity.split("#")[0]
+    return f"from {module} import {top_level}"
+
+
+def _fit_list(items: list[Any], max_bytes: int) -> tuple[list[Any], bool]:
+    """Keep the longest prefix of *items* whose JSON size fits *max_bytes*.
+
+    Args:
+        items: JSON-serializable payload entries, already ordered.
+        max_bytes: Byte budget for the serialized list.
+
+    Returns:
+        Tuple of (kept prefix, truncated flag).
+    """
+    total = 2  # enclosing brackets
+    kept: list[Any] = []
+    for item in items:
+        size = len(json.dumps(item, default=str)) + 2
+        if total + size > max_bytes:
+            return kept, True
+        kept.append(item)
+        total += size
+    return kept, False
+
 
 class LCPIndex:
     """In-memory index of LCP document for fast lookups."""
@@ -25,6 +78,7 @@ class LCPIndex:
         self.symbols_by_module: dict[str, list[str]] = defaultdict(list)
         self.symbols_by_kind: dict[str, list[str]] = defaultdict(list)
         self.class_members: dict[str, list[str]] = defaultdict(list)
+        self.classes_by_name: dict[str, list[str]] = defaultdict(list)
         self.modules: set[str] = set()
 
         self._build_indexes()
@@ -44,6 +98,13 @@ class LCPIndex:
             if "#" in symbol_id:
                 class_id = symbol_id.split("#")[0]
                 self.class_members[class_id].append(symbol_id)
+
+            # Index classes by bare name for exact return-type resolution
+            if symbol.kind == SymbolKind.CLASS:
+                self.classes_by_name[_symbol_name(symbol_id)].append(symbol_id)
+
+        for ids in self.classes_by_name.values():
+            ids.sort()
 
 
 def _error(
