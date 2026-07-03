@@ -1,0 +1,36 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole import CyholeClient, Keypair\nfrom cyhole.jupiter import JupiterSwapClient\nfrom solders.pubkey import Pubkey\n\nasync def main():\n    # Initialize connection and keypair\n    rpc_endpoint = os.getenv(\"SOLANA_RPC_URL\", \"https://api.mainnet-beta.solana.com\")\n    keypair_path = os.getenv(\"KEYPAIR_PATH\", os.path.expanduser(\"~/.config/solana/id.json\"))\n    \n    keypair = Keypair.from_secret_key(\n        open(keypair_path).read().split(\"key_pair_bytes: \")[1].split(\"\\n\")[0]\n    )\n    \n    client = CyholeClient(rpc_endpoint)\n    jupiter = JupiterSwapClient(client)\n    \n    # Token addresses\n    sol_mint = Pubkey.from_string(\"So11111111111111111111111111111111111111112\")\n    usdc_mint = Pubkey.from_string(\"EPjFWdd5Au17hunznDAGiTstim1V2PaTY9aPXxr2adQ\")\n    \n    amount_in_lamports = int(1e9)  # 1 SOL\n    \n    # Get swap quote\n    quote = await jupiter.get_quote(\n        input_mint=sol_mint,\n        output_mint=usdc_mint,\n        amount=amount_in_lamports,\n        slippage_bps=50\n    )\n    \n    print(f\"Quote received: {quote.out_amount} USDC for {amount_in_lamports} lamports SOL\")\n    \n    # Execute swap\n    swap_tx = await jupiter.execute_swap(\n        keypair=keypair,\n        quote=quote,\n        user_public_key=keypair.pubkey()\n    )\n    \n    print(f\"Swap executed: {swap_tx}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole import CyholeClient, Keypair\nfrom cyhole.jupiter import JupiterSwapClient\nfrom solders.pubkey import Pubkey\n\nasync def main():\n    # Initialize connection and keypair\n    rpc_endpoint = os.getenv(\"SOLANA_RPC_URL\", \"https://api.mainnet-beta.solana.com\")\n    keypair_path = os.getenv(\"KEYPAIR_PATH\", os.path.expanduser(\"~/.config/solana/id.json\"))\n    \n    keypair = Keypair.from_secret_key(\n        open(keypair_path).read().split(\"key_pair_bytes: \")[1].split(\"\\n\")[0]\n    )\n    \n    client = CyholeClient(rpc_endpoint)\n    jupiter = JupiterSwapClient(client)\n    \n    # Token addresses\n    sol_mint = Pubkey.from_string(\"So11111111111111111111111111111111111111112\")\n    usdc_mint = Pubkey.from_string(\"EPjFWdd5Au17hunznDAGiTstim1V2PaTY9aPXxr2adQ\")\n    \n    amount_in_lamports = int(1e9)  # 1 SOL\n    \n    # Get swap quote\n    quote = await jupiter.get_quote(\n        input_mint=sol_mint,\n        output_mint=usdc_mint,\n        amount=amount_in_lamports,\n        slippage_bps=50\n    )\n    \n    print(f\"Quote received: {quote.out_amount} USDC for {amount_in_lamports} lamports SOL\")\n    \n    # Execute swap\n    swap_tx = await jupiter.execute_swap(\n        keypair=keypair,\n        quote=quote,\n        user_public_key=keypair.pubkey()\n    )\n    \n    print(f\"Swap executed: {swap_tx}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 39,
+    "output_tokens": 1859,
+    "cache_read_tokens": 111573,
+    "cache_creation_tokens": 2485,
+    "cost_usd": 0.0254613,
+    "num_turns": 6,
+    "tool_calls": 4,
+    "duration_s": 31.9
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.CyholeClient",
+      "cyhole.Keypair",
+      "cyhole.Keypair.from_secret_key",
+      "cyhole.jupiter.JupiterSwapClient"
+    ],
+    "error": null
+  }
+}

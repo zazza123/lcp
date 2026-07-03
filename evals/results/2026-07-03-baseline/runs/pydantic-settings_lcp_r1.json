@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom pydantic_settings import BaseSettings\nfrom pydantic import Field\n\nclass AppConfig(BaseSettings):\n    database_url: str = Field(description=\"Database connection URL\")\n    debug: bool = Field(default=False, description=\"Enable debug mode\")\n\n# Example: Set environment variables\nos.environ[\"DATABASE_URL\"] = \"postgresql://user:pass@localhost/mydb\"\nos.environ[\"DEBUG\"] = \"true\"\n\n# Load configuration from environment\nconfig = AppConfig()\n\nprint(f\"Database URL: {config.database_url}\")\nprint(f\"Debug: {config.debug}\")",
+  "result_text": "```python\nimport os\nfrom pydantic_settings import BaseSettings\nfrom pydantic import Field\n\nclass AppConfig(BaseSettings):\n    database_url: str = Field(description=\"Database connection URL\")\n    debug: bool = Field(default=False, description=\"Enable debug mode\")\n\n# Example: Set environment variables\nos.environ[\"DATABASE_URL\"] = \"postgresql://user:pass@localhost/mydb\"\nos.environ[\"DEBUG\"] = \"true\"\n\n# Load configuration from environment\nconfig = AppConfig()\n\nprint(f\"Database URL: {config.database_url}\")\nprint(f\"Debug: {config.debug}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1790,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6309,
+    "cost_usd": 0.023080200000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.6
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

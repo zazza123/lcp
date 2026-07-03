@@ -1,0 +1,32 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Client\n\ndef get_full_risk_report(mint_address: str) -> dict:\n    \"\"\"Retrieve the full risk report for a Solana token mint address using Rugcheck.\"\"\"\n    client = Client()\n    risk_report = client.rugcheck.get_risk_report(mint_address)\n    return risk_report\n\nif __name__ == \"__main__\":\n    mint = input(\"Enter Solana token mint address: \").strip()\n    report = get_full_risk_report(mint)\n    print(report)",
+  "result_text": "```python\nfrom cyhole import Client\n\ndef get_full_risk_report(mint_address: str) -> dict:\n    \"\"\"Retrieve the full risk report for a Solana token mint address using Rugcheck.\"\"\"\n    client = Client()\n    risk_report = client.rugcheck.get_risk_report(mint_address)\n    return risk_report\n\nif __name__ == \"__main__\":\n    mint = input(\"Enter Solana token mint address: \").strip()\n    report = get_full_risk_report(mint)\n    print(report)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1234,
+    "cache_read_tokens": 21247,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0083037,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Client"
+    ],
+    "error": null
+  }
+}

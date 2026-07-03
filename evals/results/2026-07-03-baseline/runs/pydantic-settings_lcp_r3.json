@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel, Field\nimport os\n\nclass AppConfig(BaseModel):\n    database_url: str\n    debug: bool\n\n# Load from environment variables\nconfig = AppConfig(\n    database_url=os.getenv('DATABASE_URL', 'sqlite:///app.db'),\n    debug=os.getenv('DEBUG', 'false').lower() in ('true', '1', 'yes')\n)\n\nif __name__ == '__main__':\n    print(f\"Database URL: {config.database_url}\")\n    print(f\"Debug: {config.debug}\")",
+  "result_text": "```python\nfrom pydantic import BaseModel, Field\nimport os\n\nclass AppConfig(BaseModel):\n    database_url: str\n    debug: bool\n\n# Load from environment variables\nconfig = AppConfig(\n    database_url=os.getenv('DATABASE_URL', 'sqlite:///app.db'),\n    debug=os.getenv('DEBUG', 'false').lower() in ('true', '1', 'yes')\n)\n\nif __name__ == '__main__':\n    print(f\"Database URL: {config.database_url}\")\n    print(f\"Debug: {config.debug}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1323,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6355,
+    "cost_usd": 0.0208372,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.0
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

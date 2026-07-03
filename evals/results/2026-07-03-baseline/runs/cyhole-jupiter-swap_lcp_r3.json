@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import JupiterSwap\nfrom solders.keypair import Keypair\n\n# Initialize Jupiter swap client\nswap_client = JupiterSwap()\n\n# Token mints (Solana mainnet)\nsol_mint = \"So11111111111111111111111111111111111111112\"  # WSOL\nusdc_mint = \"EPjFWaLb3hyccqaKM6tqx7Hx7hKQbGBhDXzLchsWR8Jh\"  # USDC\n\n# Amount to swap: 1 SOL (in lamports)\namount_in = 1_000_000_000\n\n# Get quote for swapping SOL to USDC\nquote = swap_client.get_quote(\n    input_mint=sol_mint,\n    output_mint=usdc_mint,\n    amount=amount_in,\n    slippage_bps=100  # 1% slippage tolerance\n)\n\nprint(\"Quote received:\")\nprint(f\"  Input amount: {quote['inAmount']} lamports\")\nprint(f\"  Output amount: {quote['outAmount']} lamports\")\nprint(f\"  Price impact: {quote['priceImpactPct']}%\")\n\n# Generate keypair for transaction signing (use actual keypair in production)\npayer_keypair = Keypair.generate()\n\n# Execute the swap\nswap_result = swap_client.execute_swap(\n    quote=quote,\n    payer_keypair=payer_keypair\n)\n\nprint(\"\\nSwap executed successfully!\")\nprint(f\"  Transaction signature: {swap_result['signature']}\")\nprint(f\"  Status: {swap_result['status']}\")",
+  "result_text": "```python\nfrom cyhole import JupiterSwap\nfrom solders.keypair import Keypair\n\n# Initialize Jupiter swap client\nswap_client = JupiterSwap()\n\n# Token mints (Solana mainnet)\nsol_mint = \"So11111111111111111111111111111111111111112\"  # WSOL\nusdc_mint = \"EPjFWaLb3hyccqaKM6tqx7Hx7hKQbGBhDXzLchsWR8Jh\"  # USDC\n\n# Amount to swap: 1 SOL (in lamports)\namount_in = 1_000_000_000\n\n# Get quote for swapping SOL to USDC\nquote = swap_client.get_quote(\n    input_mint=sol_mint,\n    output_mint=usdc_mint,\n    amount=amount_in,\n    slippage_bps=100  # 1% slippage tolerance\n)\n\nprint(\"Quote received:\")\nprint(f\"  Input amount: {quote['inAmount']} lamports\")\nprint(f\"  Output amount: {quote['outAmount']} lamports\")\nprint(f\"  Price impact: {quote['priceImpactPct']}%\")\n\n# Generate keypair for transaction signing (use actual keypair in production)\npayer_keypair = Keypair.generate()\n\n# Execute the swap\nswap_result = swap_client.execute_swap(\n    quote=quote,\n    payer_keypair=payer_keypair\n)\n\nprint(\"\\nSwap executed successfully!\")\nprint(f\"  Transaction signature: {swap_result['signature']}\")\nprint(f\"  Status: {swap_result['status']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2466,
+    "cache_read_tokens": 21393,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0144783,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.jupiter.interaction:Jupiter",
+      "cyhole.jupiter.client:JupiterClient#get_swap_order",
+      "cyhole.jupiter.client:JupiterClient#post_swap_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.JupiterSwap"
+    ],
+    "error": null
+  }
+}

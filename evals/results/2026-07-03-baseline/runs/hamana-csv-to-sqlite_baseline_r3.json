@@ -1,0 +1,32 @@
+{
+  "case_id": "hamana-csv-to-sqlite",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nimport pandas as pd\n\n# Read CSV file\ndf = pd.read_csv('sales.csv')\n\n# Get hamana's database connection and insert data\ndb = hamana.Database()\ndb.execute(f\"CREATE TABLE IF NOT EXISTS sales ({', '.join([f'{col} TEXT' for col in df.columns])})\")\n\nfor _, row in df.iterrows():\n    placeholders = ', '.join(['?' for _ in df.columns])\n    db.execute(f\"INSERT INTO sales VALUES ({placeholders})\", tuple(row))\n\ndb.commit()\ndb.close()",
+  "result_text": "```python\nimport hamana\nimport pandas as pd\n\n# Read CSV file\ndf = pd.read_csv('sales.csv')\n\n# Get hamana's database connection and insert data\ndb = hamana.Database()\ndb.execute(f\"CREATE TABLE IF NOT EXISTS sales ({', '.join([f'{col} TEXT' for col in df.columns])})\")\n\nfor _, row in df.iterrows():\n    placeholders = ', '.join(['?' for _ in df.columns])\n    db.execute(f\"INSERT INTO sales VALUES ({placeholders})\", tuple(row))\n\ndb.commit()\ndb.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2478,
+    "cache_read_tokens": 21255,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014524500000000003,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 38.1
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.file:CSV",
+      "hamana.connector.file:CSV#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.Database"
+    ],
+    "error": null
+  }
+}

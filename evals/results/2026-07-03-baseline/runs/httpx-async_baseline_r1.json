@@ -1,0 +1,27 @@
+{
+  "case_id": "httpx-async",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import httpx\nimport asyncio\n\nasync def fetch_urls():\n    urls = [\n        \"https://httpbin.org/status/200\",\n        \"https://httpbin.org/status/201\",\n        \"https://httpbin.org/status/202\"\n    ]\n    \n    async with httpx.AsyncClient() as client:\n        tasks = [client.get(url) for url in urls]\n        responses = await asyncio.gather(*tasks)\n        \n        for url, response in zip(urls, responses):\n            print(f\"{url}: {response.status_code}\")\n\nasyncio.run(fetch_urls())",
+  "result_text": "```python\nimport httpx\nimport asyncio\n\nasync def fetch_urls():\n    urls = [\n        \"https://httpbin.org/status/200\",\n        \"https://httpbin.org/status/201\",\n        \"https://httpbin.org/status/202\"\n    ]\n    \n    async with httpx.AsyncClient() as client:\n        tasks = [client.get(url) for url in urls]\n        responses = await asyncio.gather(*tasks)\n        \n        for url, response in zip(urls, responses):\n            print(f\"{url}: {response.status_code}\")\n\nasyncio.run(fetch_urls())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 902,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6212,
+    "cost_usd": 0.0184462,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.6
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

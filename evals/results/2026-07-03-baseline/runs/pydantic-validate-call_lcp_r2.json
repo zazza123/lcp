@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-validate-call",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import validate_call\n\n@validate_call\ndef add(a: int, b: int) -> int:\n    return a + b\n\n# Test cases\nprint(add(1, 2))           # Normal usage: 3\nprint(add(\"1\", \"2\"))       # Coerces strings to ints: 3\nprint(add(1.5, 2.5))       # Coerces floats to ints: 3\n\ntry:\n    print(add(\"a\", \"b\"))   # Fails validation\nexcept Exception as e:\n    print(f\"Validation error: {type(e).__name__}\")",
+  "result_text": "```python\nfrom pydantic import validate_call\n\n@validate_call\ndef add(a: int, b: int) -> int:\n    return a + b\n\n# Test cases\nprint(add(1, 2))           # Normal usage: 3\nprint(add(\"1\", \"2\"))       # Coerces strings to ints: 3\nprint(add(1.5, 2.5))       # Coerces floats to ints: 3\n\ntry:\n    print(add(\"a\", \"b\"))   # Fails validation\nexcept Exception as e:\n    print(f\"Validation error: {type(e).__name__}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 787,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6331,
+    "cost_usd": 0.0181092,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.7
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

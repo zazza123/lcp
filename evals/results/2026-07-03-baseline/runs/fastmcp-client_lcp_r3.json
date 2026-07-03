@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport subprocess\nfrom fastmcp import ClientSession\nfrom fastmcp.client import StdioTransport\n\n\nasync def main():\n    # Launch the MCP server process\n    server_process = subprocess.Popen(\n        [\"python\", \"server.py\"],\n        stdin=subprocess.PIPE,\n        stdout=subprocess.PIPE,\n        stderr=subprocess.PIPE,\n    )\n    \n    try:\n        # Create stdio transport connected to the server process\n        transport = StdioTransport(\n            read_stream=server_process.stdout,\n            write_stream=server_process.stdin,\n        )\n        \n        # Create and initialize client session\n        async with ClientSession(transport) as session:\n            # List available tools\n            tools_response = await session.list_tools()\n            print(\"Available tools:\")\n            for tool in tools_response.tools:\n                print(f\"  - {tool.name}\")\n            \n            # Call the add tool with a=1, b=2\n            result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n            print(f\"\\nResult of add(1, 2): {result}\")\n    \n    finally:\n        server_process.terminate()\n        server_process.wait()\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport subprocess\nfrom fastmcp import ClientSession\nfrom fastmcp.client import StdioTransport\n\n\nasync def main():\n    # Launch the MCP server process\n    server_process = subprocess.Popen(\n        [\"python\", \"server.py\"],\n        stdin=subprocess.PIPE,\n        stdout=subprocess.PIPE,\n        stderr=subprocess.PIPE,\n    )\n    \n    try:\n        # Create stdio transport connected to the server process\n        transport = StdioTransport(\n            read_stream=server_process.stdout,\n            write_stream=server_process.stdin,\n        )\n        \n        # Create and initialize client session\n        async with ClientSession(transport) as session:\n            # List available tools\n            tools_response = await session.list_tools()\n            print(\"Available tools:\")\n            for tool in tools_response.tools:\n                print(f\"  - {tool.name}\")\n            \n            # Call the add tool with a=1, b=2\n            result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n            print(f\"\\nResult of add(1, 2): {result}\")\n    \n    finally:\n        server_process.terminate()\n        server_process.wait()\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3173,
+    "cache_read_tokens": 21366,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.018010599999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.2
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.ClientSession"
+    ],
+    "error": null
+  }
+}

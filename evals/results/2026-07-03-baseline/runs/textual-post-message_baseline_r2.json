@@ -1,0 +1,27 @@
+{
+  "case_id": "textual-post-message",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App\nfrom textual.containers import Container\nfrom textual.message import Message\nfrom textual.widgets import Button, Label\n\n\nclass CustomWidget(Container):\n    class ButtonPressed(Message):\n        \"\"\"Custom message when button is pressed.\"\"\"\n        def __init__(self, label: str):\n            self.label = label\n            super().__init__()\n\n    def compose(self) -> ComposeResult:\n        yield Button(\"Click Me\", id=\"test_button\")\n\n    def on_button_pressed(self, event: Button.Pressed) -> None:\n        self.post_message(self.ButtonPressed(\"Button was clicked!\"))\n\n\nclass MyApp(App):\n    def compose(self) -> ComposeResult:\n        yield Label(\"Waiting for message...\", id=\"output\")\n        yield CustomWidget()\n\n    def on_custom_widget_button_pressed(self, message: CustomWidget.ButtonPressed) -> None:\n        self.query_one(\"#output\", Label).update(message.label)\n\n\nif __name__ == \"__main__\":\n    app = MyApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App\nfrom textual.containers import Container\nfrom textual.message import Message\nfrom textual.widgets import Button, Label\n\n\nclass CustomWidget(Container):\n    class ButtonPressed(Message):\n        \"\"\"Custom message when button is pressed.\"\"\"\n        def __init__(self, label: str):\n            self.label = label\n            super().__init__()\n\n    def compose(self) -> ComposeResult:\n        yield Button(\"Click Me\", id=\"test_button\")\n\n    def on_button_pressed(self, event: Button.Pressed) -> None:\n        self.post_message(self.ButtonPressed(\"Button was clicked!\"))\n\n\nclass MyApp(App):\n    def compose(self) -> ComposeResult:\n        yield Label(\"Waiting for message...\", id=\"output\")\n        yield CustomWidget()\n\n    def on_custom_widget_button_pressed(self, message: CustomWidget.ButtonPressed) -> None:\n        self.query_one(\"#output\", Label).update(message.label)\n\n\nif __name__ == \"__main__\":\n    app = MyApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1406,
+    "cache_read_tokens": 21254,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0091644,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.4
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

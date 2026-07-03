@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-settings",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel, Field\nimport os\n\nclass Settings(BaseModel):\n    database_url: str = Field(..., description=\"Database URL\")\n    debug: bool = Field(default=False, description=\"Debug mode\")\n\n# Set example environment variables\nos.environ[\"DATABASE_URL\"] = \"postgresql://user:password@localhost/mydb\"\nos.environ[\"DEBUG\"] = \"true\"\n\n# Load configuration from environment variables\nsettings = Settings(\n    database_url=os.getenv(\"DATABASE_URL\"),\n    debug=os.getenv(\"DEBUG\", \"false\").lower() in (\"true\", \"1\", \"yes\")\n)\n\nprint(f\"Database URL: {settings.database_url}\")\nprint(f\"Debug: {settings.debug}\")",
+  "result_text": "```python\nfrom pydantic import BaseModel, Field\nimport os\n\nclass Settings(BaseModel):\n    database_url: str = Field(..., description=\"Database URL\")\n    debug: bool = Field(default=False, description=\"Debug mode\")\n\n# Set example environment variables\nos.environ[\"DATABASE_URL\"] = \"postgresql://user:password@localhost/mydb\"\nos.environ[\"DEBUG\"] = \"true\"\n\n# Load configuration from environment variables\nsettings = Settings(\n    database_url=os.getenv(\"DATABASE_URL\"),\n    debug=os.getenv(\"DEBUG\", \"false\").lower() in (\"true\", \"1\", \"yes\")\n)\n\nprint(f\"Database URL: {settings.database_url}\")\nprint(f\"Debug: {settings.debug}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1922,
+    "cache_read_tokens": 21245,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0117435,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.8
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

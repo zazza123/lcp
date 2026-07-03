@@ -1,0 +1,29 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye import Birdeye\n\n# Instantiate Birdeye interaction (uses BIRDEYE_API_KEY env var by default)\nbirdeye = Birdeye()\n\n# Example Solana token address (Raydium)\ntoken_address = \"4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX4r\"\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(address=token_address)\n\n# Access the price data\nprint(f\"Price: ${response.data.value}\")\nprint(f\"Token: {response.data.address}\")\nprint(f\"Updated: {response.data.update_human_time}\")",
+  "result_text": "```python\nfrom cyhole.birdeye import Birdeye\n\n# Instantiate Birdeye interaction (uses BIRDEYE_API_KEY env var by default)\nbirdeye = Birdeye()\n\n# Example Solana token address (Raydium)\ntoken_address = \"4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX4r\"\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(address=token_address)\n\n# Access the price data\nprint(f\"Price: ${response.data.value}\")\nprint(f\"Token: {response.data.address}\")\nprint(f\"Updated: {response.data.update_human_time}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 118,
+    "output_tokens": 2436,
+    "cache_read_tokens": 422654,
+    "cache_creation_tokens": 22433,
+    "cost_usd": 0.0994294,
+    "num_turns": 16,
+    "tool_calls": 15,
+    "duration_s": 50.4
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.birdeye.interaction:Birdeye"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "textual-layout",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pathlib import Path\nfrom textual.app import App, ComposeResult, on\nfrom textual.containers import Horizontal\nfrom textual.widgets import Tree, TextArea, Footer\n\n\nclass FileExplorer(App):\n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n\n    #main-container {\n        height: 1fr;\n    }\n\n    #tree-panel {\n        width: 30%;\n        border: solid $accent;\n    }\n\n    #text-panel {\n        width: 1fr;\n        border: solid $accent;\n    }\n    \"\"\"\n\n    def compose(self) -> ComposeResult:\n        with Horizontal(id=\"main-container\"):\n            yield Tree(\".\", id=\"tree-panel\")\n            yield TextArea(id=\"text-panel\")\n        yield Footer()\n\n    def on_mount(self) -> None:\n        tree = self.query_one(Tree)\n        self._populate_tree(tree.root, Path(\".\"))\n\n    def _populate_tree(self, node: Tree.NodeType, path: Path) -> None:\n        try:\n            items = sorted(path.iterdir())\n        except (PermissionError, OSError):\n            return\n\n        for item in items:\n            if item.name.startswith(\".\"):\n                continue\n\n            if item.is_dir():\n                child = node.add(f\"\ud83d\udcc1 {item.name}\")\n                self._populate_tree(child, item)\n            else:\n                node.add(f\"\ud83d\udcc4 {item.name}\")\n\n    @on(Tree.NodeSelected)\n    def _on_node_selected(self, event: Tree.NodeSelected) -> None:\n        label = event.node.label.text\n        if label.startswith(\"\ud83d\udcc4\"):\n            path = self._get_file_path(event.node)\n            if path and path.is_file():\n                try:\n                    content = path.read_text()\n                    self.query_one(TextArea).text = content\n                except (PermissionError, UnicodeDecodeError, OSError):\n                    self.query_one(TextArea).text = \"Error reading file\"\n\n    def _get_file_path(self, node: Tree.NodeType) -> Path | None:\n        parts = []\n        current = node\n        while current.parent is not None:\n            label = current.label.text.lstrip(\"\ud83d\udcc1 \ud83d\udcc4 \")\n            parts.append(label)\n            current = current.parent\n\n        if parts:\n            return Path(\".\") / Path(*reversed(parts))\n        return None\n\n\nif __name__ == \"__main__\":\n    FileExplorer().run()",
+  "result_text": "```python\nfrom pathlib import Path\nfrom textual.app import App, ComposeResult, on\nfrom textual.containers import Horizontal\nfrom textual.widgets import Tree, TextArea, Footer\n\n\nclass FileExplorer(App):\n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n    CSS = \"\"\"\n    Screen {\n        layout: vertical;\n    }\n\n    #main-container {\n        height: 1fr;\n    }\n\n    #tree-panel {\n        width: 30%;\n        border: solid $accent;\n    }\n\n    #text-panel {\n        width: 1fr;\n        border: solid $accent;\n    }\n    \"\"\"\n\n    def compose(self) -> ComposeResult:\n        with Horizontal(id=\"main-container\"):\n            yield Tree(\".\", id=\"tree-panel\")\n            yield TextArea(id=\"text-panel\")\n        yield Footer()\n\n    def on_mount(self) -> None:\n        tree = self.query_one(Tree)\n        self._populate_tree(tree.root, Path(\".\"))\n\n    def _populate_tree(self, node: Tree.NodeType, path: Path) -> None:\n        try:\n            items = sorted(path.iterdir())\n        except (PermissionError, OSError):\n            return\n\n        for item in items:\n            if item.name.startswith(\".\"):\n                continue\n\n            if item.is_dir():\n                child = node.add(f\"\ud83d\udcc1 {item.name}\")\n                self._populate_tree(child, item)\n            else:\n                node.add(f\"\ud83d\udcc4 {item.name}\")\n\n    @on(Tree.NodeSelected)\n    def _on_node_selected(self, event: Tree.NodeSelected) -> None:\n        label = event.node.label.text\n        if label.startswith(\"\ud83d\udcc4\"):\n            path = self._get_file_path(event.node)\n            if path and path.is_file():\n                try:\n                    content = path.read_text()\n                    self.query_one(TextArea).text = content\n                except (PermissionError, UnicodeDecodeError, OSError):\n                    self.query_one(TextArea).text = \"Error reading file\"\n\n    def _get_file_path(self, node: Tree.NodeType) -> Path | None:\n        parts = []\n        current = node\n        while current.parent is not None:\n            label = current.label.text.lstrip(\"\ud83d\udcc1 \ud83d\udcc4 \")\n            parts.append(label)\n            current = current.parent\n\n        if parts:\n            return Path(\".\") / Path(*reversed(parts))\n        return None\n\n\nif __name__ == \"__main__\":\n    FileExplorer().run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2795,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6314,
+    "cost_usd": 0.0281152,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.8
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "textual.widgets.Tree.NodeType"
+    ],
+    "error": null
+  }
+}

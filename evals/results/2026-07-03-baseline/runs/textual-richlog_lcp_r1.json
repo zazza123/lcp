@@ -1,0 +1,27 @@
+{
+  "case_id": "textual-richlog",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from textual.app import ComposeResult, App\nfrom textual.widgets import RichLog, Footer\n\n\nclass LogViewerApp(App):\n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n\n    def compose(self) -> ComposeResult:\n        self.log_widget = RichLog()\n        yield self.log_widget\n        yield Footer()\n\n    def on_mount(self) -> None:\n        self.title = \"Log Viewer\"\n        self.append_log(\"Application started\")\n        self.append_log(\"Ready to receive log messages\")\n\n    def append_log(self, line: str) -> None:\n        \"\"\"Append a line to the log.\"\"\"\n        self.log_widget.write(line)\n\n\nif __name__ == \"__main__\":\n    app = LogViewerApp()\n    app.run()",
+  "result_text": "```python\nfrom textual.app import ComposeResult, App\nfrom textual.widgets import RichLog, Footer\n\n\nclass LogViewerApp(App):\n    BINDINGS = [(\"q\", \"quit\", \"Quit\")]\n\n    def compose(self) -> ComposeResult:\n        self.log_widget = RichLog()\n        yield self.log_widget\n        yield Footer()\n\n    def on_mount(self) -> None:\n        self.title = \"Log Viewer\"\n        self.append_log(\"Application started\")\n        self.append_log(\"Ready to receive log messages\")\n\n    def append_log(self, line: str) -> None:\n        \"\"\"Append a line to the log.\"\"\"\n        self.log_widget.write(line)\n\n\nif __name__ == \"__main__\":\n    app = LogViewerApp()\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1292,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6318,
+    "cost_usd": 0.0206082,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.7
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

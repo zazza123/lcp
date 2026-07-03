@@ -1,0 +1,27 @@
+{
+  "case_id": "pydantic-json-schema",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pydantic import BaseModel, Field\n\n# Define a Pydantic model\nclass User(BaseModel):\n    name: str = Field(..., description=\"The user's full name\")\n    email: str = Field(..., description=\"The user's email address\")\n    age: int = Field(default=0, ge=0, description=\"The user's age\")\n\n# Get JSON schema as a dict\nschema = User.model_json_schema()\nprint(\"JSON Schema (dict):\")\nprint(schema)\nprint()\n\n# Create a model instance\nuser = User(name=\"Alice Smith\", email=\"alice@example.com\", age=30)\n\n# Serialize to JSON string\njson_string = user.model_dump_json()\nprint(\"Model as JSON string:\")\nprint(json_string)\nprint()\n\n# Also show pretty-printed JSON string\njson_pretty = user.model_dump_json(indent=2)\nprint(\"Model as pretty JSON string:\")\nprint(json_pretty)",
+  "result_text": "```python\nfrom pydantic import BaseModel, Field\n\n# Define a Pydantic model\nclass User(BaseModel):\n    name: str = Field(..., description=\"The user's full name\")\n    email: str = Field(..., description=\"The user's email address\")\n    age: int = Field(default=0, ge=0, description=\"The user's age\")\n\n# Get JSON schema as a dict\nschema = User.model_json_schema()\nprint(\"JSON Schema (dict):\")\nprint(schema)\nprint()\n\n# Create a model instance\nuser = User(name=\"Alice Smith\", email=\"alice@example.com\", age=30)\n\n# Serialize to JSON string\njson_string = user.model_dump_json()\nprint(\"Model as JSON string:\")\nprint(json_string)\nprint()\n\n# Also show pretty-printed JSON string\njson_pretty = user.model_dump_json(indent=2)\nprint(\"Model as pretty JSON string:\")\nprint(json_pretty)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 393,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6321,
+    "cost_usd": 0.0161192,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.0
+  },
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

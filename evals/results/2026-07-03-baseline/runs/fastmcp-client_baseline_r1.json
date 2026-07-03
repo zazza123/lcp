@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport sys\nfrom mcp.client_session import ClientSession\nfrom mcp.client_options import StdioServerParameters\n\n\nasync def main():\n    server_params = StdioServerParameters(\n        command=sys.executable,\n        args=[\"server.py\"]\n    )\n    \n    async with ClientSession(server_params) as session:\n        await session.initialize()\n        \n        # List tools\n        tools = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult of add(1, 2): {result.content}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport sys\nfrom mcp.client_session import ClientSession\nfrom mcp.client_options import StdioServerParameters\n\n\nasync def main():\n    server_params = StdioServerParameters(\n        command=sys.executable,\n        args=[\"server.py\"]\n    )\n    \n    async with ClientSession(server_params) as session:\n        await session.initialize()\n        \n        # List tools\n        tools = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult of add(1, 2): {result.content}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4303,
+    "cache_read_tokens": 15032,
+    "cache_creation_tokens": 6238,
+    "cost_usd": 0.0355032,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.2
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

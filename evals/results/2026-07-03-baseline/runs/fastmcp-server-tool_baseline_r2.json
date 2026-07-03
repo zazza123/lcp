@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-server-tool",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\n\nserver = Server(\"calc\")\n\n@server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nfrom fastmcp import Server\n\nserver = Server(\"calc\")\n\n@server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 686,
+    "cache_read_tokens": 21263,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0055653000000000005,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.0
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:FastMCP"
+    ],
+    "forbidden_used": [
+      "fastmcp:Server"
+    ],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

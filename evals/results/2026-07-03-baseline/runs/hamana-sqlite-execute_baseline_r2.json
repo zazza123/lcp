@@ -1,0 +1,29 @@
+{
+  "case_id": "hamana-sqlite-execute",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import connect\n\nconnection = connect(\"data.db\")\ncursor = connection.cursor()\nresults = cursor.execute(\"SELECT * FROM users\").fetchall()\n\nfor row in results:\n    print(row)",
+  "result_text": "```python\nfrom hamana import connect\n\nconnection = connect(\"data.db\")\ncursor = connection.cursor()\nresults = cursor.execute(\"SELECT * FROM users\").fetchall()\n\nfor row in results:\n    print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1068,
+    "cache_read_tokens": 21254,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007474399999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.7
+  },
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
