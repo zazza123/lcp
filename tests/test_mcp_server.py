@@ -19,7 +19,9 @@ from lcp.mcp_server import (
     _error,
     _fetch_from_registry,
     _fit_list,
+    _get_symbols,
     _import_statement,
+    _resolve_type_to_classes,
     _search_index,
     _symbol_name,
     create_server,
@@ -31,6 +33,7 @@ from lcp.models import (
     LCPDocument,
     Library,
     Manifest,
+    Param,
     Semantics,
     Signature,
     Symbol,
@@ -296,6 +299,130 @@ class TestSearchBrowseMode:
     def test_query_with_kind_filter(self, ranking_index):
         result = _search_index(ranking_index, "get", kind="method")
         assert [r["id"] for r in result["results"]] == ["fake:Client#get"]
+
+
+@pytest.fixture
+def detail_index() -> LCPIndex:
+    symbols = {
+        "fake.io:Path": make_symbol("class", module="fake.io", summary="A path."),
+        "fake.io:PurePath": make_symbol(
+            "class", module="fake.io", summary="A pure path."
+        ),
+        "fake.io:Path#resolve": make_symbol(
+            "method", module="fake.io", summary="Resolve.", returns="Path"
+        ),
+        "fake.io:Path#name": make_symbol(
+            "attribute", module="fake.io", summary="Name."
+        ),
+        "fake:open_path": make_symbol(
+            "function",
+            summary="Open a path.",
+            returns="Path",
+            params=[
+                Param(name="target", type="str", required=True),
+                Param(name="strict", type="bool", required=False, default=False),
+            ],
+        ),
+        "fake:none_fn": make_symbol("function", summary="No sig."),
+    }
+    return make_index(symbols)
+
+
+class TestResolveTypeToClasses:
+    def test_exact_match(self, detail_index):
+        assert _resolve_type_to_classes(detail_index, "Path") == ["fake.io:Path"]
+
+    def test_no_endswith_false_positive(self, detail_index):
+        # 'PurePath' must NOT match a 'Path' lookup and vice versa (spec D2)
+        assert _resolve_type_to_classes(detail_index, "PurePath") == [
+            "fake.io:PurePath"
+        ]
+
+    def test_generic_types_are_split(self, detail_index):
+        assert _resolve_type_to_classes(detail_index, "list[Path]") == [
+            "fake.io:Path"
+        ]
+        assert _resolve_type_to_classes(detail_index, "Path | None") == [
+            "fake.io:Path"
+        ]
+
+    def test_dotted_prefix_stripped(self, detail_index):
+        assert _resolve_type_to_classes(detail_index, "fake.io.Path") == [
+            "fake.io:Path"
+        ]
+
+    def test_builtins_skipped(self, detail_index):
+        assert _resolve_type_to_classes(detail_index, "dict[str, int]") == []
+
+
+class TestGetSymbolsBatch:
+    def test_function_detail(self, detail_index):
+        result = _get_symbols(detail_index, ["fake:open_path"])
+        assert result["not_found"] == []
+        sym = result["symbols"][0]
+        assert sym["id"] == "fake:open_path"
+        assert sym["import"] == "from fake import open_path"
+        hints = sym["usage_hints"]
+        assert hints["required_parameters"] == [{"name": "target", "type": "str"}]
+        assert hints["optional_parameters"] == [
+            {"name": "strict", "type": "bool", "default": False}
+        ]
+        assert hints["is_async"] is False
+        assert hints["return_type"] == "Path"
+        assert hints["returns_classes"] == ["fake.io:Path"]
+        assert "fake.io:Path" in hints["next"]
+
+    def test_class_inlines_member_summaries(self, detail_index):
+        result = _get_symbols(detail_index, ["fake.io:Path"])
+        sym = result["symbols"][0]
+        assert sym["import"] == "from fake.io import Path"
+        members = {m["id"]: m for m in sym["members"]}
+        assert set(members) == {"fake.io:Path#resolve", "fake.io:Path#name"}
+        # summaries only — no full bodies, no per-member import
+        assert members["fake.io:Path#resolve"] == {
+            "id": "fake.io:Path#resolve",
+            "kind": "method",
+            "summary": "Resolve.",
+        }
+
+    def test_batch_order_and_not_found(self, detail_index):
+        result = _get_symbols(
+            detail_index, ["fake:none_fn", "fake:missing", "fake:open_path"]
+        )
+        assert [s["id"] for s in result["symbols"]] == [
+            "fake:none_fn",
+            "fake:open_path",
+        ]
+        assert result["not_found"] == ["fake:missing"]
+        assert "hint" in result
+
+    def test_no_signature_no_usage_hints(self, detail_index):
+        result = _get_symbols(detail_index, ["fake:none_fn"])
+        assert "usage_hints" not in result["symbols"][0]
+
+    def test_byte_cap_returns_not_returned(self, detail_index):
+        big = {
+            f"fake:f{i:02d}": make_symbol("function", summary="y" * 400)
+            for i in range(40)
+        }
+        idx = make_index(big)
+        result = _get_symbols(idx, sorted(big), max_bytes=2_000)
+        assert result["truncated"] is True
+        assert len(result["symbols"]) + len(result["not_returned"]) == 40
+        assert "hint" in result
+
+    def test_member_list_byte_capped(self):
+        symbols = {"fake:Big": make_symbol("class", summary="Big.")}
+        for i in range(400):
+            symbols[f"fake:Big#m{i:03d}"] = make_symbol(
+                "method", summary="z" * 200
+            )
+        idx = make_index(symbols)
+        result = _get_symbols(idx, ["fake:Big"], max_bytes=10_000)
+        sym = result["symbols"][0]
+        assert sym["members_truncated"] is True
+        assert 0 < len(sym["members"]) < 400
+        assert "search" in sym["members_hint"]
 
 
 class TestLoadLCPDocument:
