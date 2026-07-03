@@ -71,6 +71,7 @@ def _run_one(case, arm: str, rep: int, mcp_config: Path, runs_dir: Path) -> str:
             "tool_calls": result.tool_calls,
             "duration_s": round(result.duration_s, 1),
         },
+        "tool_call_details": result.tool_call_details,
         "verification": asdict(verification),
     }
     out_path.write_text(json.dumps(record, indent=2))
