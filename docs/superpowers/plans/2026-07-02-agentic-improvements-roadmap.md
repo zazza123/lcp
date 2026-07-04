@@ -341,10 +341,25 @@ signature question through the new surface in ≤3 tool calls.
 
 ## Phase 2b — Adoption probes (decide the F1 lever with data)
 
-**Status:** not started — plan ready at
-`docs/superpowers/plans/2026-07-03-phase-2b-adoption-probes.md` (written at
-Phase 2 close, execute in its own session, before Phase 3's eval re-run so
-later phases can measure the shipped product).
+**Status:** done (2026-07-04) — **outcome A: the shipped plugin skill closes
+F1.** Exp1 (arm `lcp-skill` = `lcp` + the `lcp-universal` SKILL.md body
+verbatim, pinned haiku, V2 surface) moved fastmcp from 0.0 voluntary lcp
+calls/run (both Phase 2 instruction iterations) to **1.42/run** — gate
+(≥1.0) passed; pass rates followed (fastmcp 3/12 vs 1/12 ref, cyhole 7/12 vs
+2–4/12, cyhole engagement 2.3–3.6 → 7.6 lcp calls/run). Engagement is
+bimodal: a run either ignores the tools or commits to a full
+resolve→search→get_symbol chain. Exp2 (sonnet, both arms, no skill):
+0.00 lcp calls in both arms but baseline at ceiling (12/12, zero misuse) —
+the F1 false-confidence failure is haiku-class-bound; for capable models
+these cases can't differentiate (Phase 8 task-mix note). **Binding
+consequence: Phase 8's harness MUST include an `lcp-skill` arm** — without
+it the benchmark measures a product configuration nobody installs. No new
+phase needed. Results: `evals/results/2026-07-03-phase2b-{skill,sonnet}/`
+(each with `analysis.md`); plan:
+`docs/superpowers/plans/2026-07-03-phase-2b-adoption-probes.md`. Secondary
+finding for Phase 3: on engaged cyhole runs the only residual failure
+pattern is "verify canonical id, write the package-root re-export import"
+(all 3 jupiter-swap failures) — zero hallucinated symbols on engaged runs.
 
 **Objective:** Phase 2 falsified the server-side persuasion lever (D9) for
 haiku-class agents; before adding any new phase, run two cheap, targeted
@@ -483,6 +498,17 @@ manifest).
   alias entries per member.
 - Aliasing must not defeat the id-based `_visited` module dedup nor trigger
   re-scans — record aliases during the existing pass, don't add a second one.
+- **Phase 2b evidence (2026-07-04):** the alias gap is now measured
+  end-to-end on engaged agents, not just asserted: in the Exp1 skill-arm
+  runs all 3 cyhole-jupiter-swap failures fetched the canonical
+  `cyhole.jupiter.interaction:Jupiter` via `get_symbol` and still wrote
+  `from cyhole.jupiter import Jupiter` (valid re-export) — agents write the
+  package-root import even *after* verifying the canonical id. See
+  `evals/results/2026-07-03-phase2b-skill/analysis.md`.
+- **Harness co-fix required:** `evals/harness/verify.py::symbol_used` has
+  the same canonical-only blind spot — it must accept alias paths in this
+  phase, or the eval re-run will under-count the improvement this phase
+  ships (jupiter-swap alone is +3/12 cyhole passes in the Phase 2b data).
 
 **Files:** `src/lcp/scanner.py`, `src/lcp/generator.py`,
 `src/lcp/models.py` (additive `Symbol.aliases`), `src/lcp/mcp_server.py`
@@ -768,6 +794,14 @@ counts attempts including permission-denied ones.
   pre-register the metric: API-misuse rate + task pass rate + tokens/task).
 - Comparison arms: (a) no assistance, (b) LCP MCP, (c) agent free to read
   site-packages, and — decide at phase start — (d) Context7 if reproducible.
+  **Binding (Phase 2b outcome A): the arm set MUST also include
+  `lcp-skill` (b + the plugin skill body)** — it is the shipped developer
+  experience and the only configuration where haiku-class models verify
+  false-confidence libraries at all (fastmcp 0.0 → 1.42 lcp calls/run).
+- Model mix (Phase 2b Exp2): pair a haiku-class and a sonnet-class model;
+  capable models pass well-known-library cases from parametric knowledge
+  (sonnet baseline 12/12 on fastmcp, zero calls), so the LCP delta for them
+  only shows on post-cutoff/niche cases — weight the task set accordingly.
   Arm (c) is the intellectually honest one and the most likely to be
   uncomfortable; run it anyway. If LCP doesn't beat (c) on accuracy, the
   token/latency delta is the story; if it loses both, that's a product
@@ -808,6 +842,8 @@ internal docs live on the roadmap branch during development but must not reach
 | 2026-07-03 | 2 (no LCP) | haiku-4.5, 28 cases, 3 reps | 0.31/run | 45% | ~1664 (11 in + 1653 out) | 0.3 | fresh baseline arm, same pass rate as Phase 0 |
 | 2026-07-03 | 2 (LCP V2 surface) | haiku-4.5, 28 cases, 3 reps | 0.32/run | 52% | ~1418 (13 in + 1405 out) | 0.65 | 4-tool surface: LCP-arm cost overhead 48%→7%, output tokens now BELOW baseline arm; cyhole 0/12→2/12 pass, misuse 13→8 (F2 import lines working); hamana same outcome at 7.6→1.0 calls/run; fastmcp still 0 voluntary calls |
 | 2026-07-03 | 2 iter2 (LCP arm, fastmcp+cyhole) | haiku-4.5, 8 cases, 3 reps | — | cyhole 4/12, fastmcp 1/12 | — | cyhole 2.3 | after unconditional-verification instructions rewrite: cyhole pass trend 0→2→4/12; fastmcp adoption stays 0 despite instructions verifiably reaching the model (quoted verbatim on probe) — model-compliance limit, see Phase 2 status |
+| 2026-07-04 | 2b Exp1 (lcp-skill arm) | haiku-4.5, 8 F1 cases, 3 reps | cyhole 3, fastmcp 10 | cyhole 7/12, fastmcp 3/12 | — | **fastmcp 1.42 lcp calls/run (gate ≥1.0 PASSED)**, cyhole 7.6 | skill body via --append-system-prompt on the V2 surface → outcome A; engagement bimodal (0 or full chain); engaged runs: zero hallucinated symbols, all 3 engaged failures are canonical-vs-alias import mismatches (Phase 3 evidence) |
+| 2026-07-04 | 2b Exp2 (sonnet, both arms) | sonnet-5, 4 fastmcp cases, 3 reps | 0 | 24/24 (both arms) | — | 0.00 lcp calls/run both arms | sonnet baseline at ceiling: correct fastmcp 2.x from parametric knowledge, nothing to verify → F1 is haiku-class-bound; fastmcp cases can't differentiate for capable models (Phase 8 task-mix note) |
 
 ---
 
