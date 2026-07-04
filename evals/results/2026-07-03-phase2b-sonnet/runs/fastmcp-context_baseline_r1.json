@@ -1,0 +1,28 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP, Context\n\nmcp = FastMCP(\"Progress Reporter\")\n\n\n@mcp.tool\nasync def process_items(items: list[str], ctx: Context) -> list[str]:\n    \"\"\"Process a list of items, logging progress via the MCP context.\n\n    Args:\n        items: The items to process.\n        ctx: The MCP request context, used to log progress messages.\n\n    Returns:\n        The processed items, uppercased.\n    \"\"\"\n    results: list[str] = []\n    total = len(items)\n\n    for index, item in enumerate(items, start=1):\n        await ctx.info(f\"Processing item {index}/{total}: {item}\")\n        results.append(item.upper())\n\n    await ctx.info(f\"Finished processing {total} item(s)\")\n    return results\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP, Context\n\nmcp = FastMCP(\"Progress Reporter\")\n\n\n@mcp.tool\nasync def process_items(items: list[str], ctx: Context) -> list[str]:\n    \"\"\"Process a list of items, logging progress via the MCP context.\n\n    Args:\n        items: The items to process.\n        ctx: The MCP request context, used to log progress messages.\n\n    Returns:\n        The processed items, uppercased.\n    \"\"\"\n    results: list[str] = []\n    total = len(items)\n\n    for index, item in enumerate(items, start=1):\n        await ctx.info(f\"Processing item {index}/{total}: {item}\")\n        results.append(item.upper())\n\n    await ctx.info(f\"Finished processing {total} item(s)\")\n    return results\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 1,
+    "output_tokens": 1252,
+    "cache_read_tokens": 20362,
+    "cache_creation_tokens": 9049,
+    "cost_usd": 0.0791856,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.9
+  },
+  "tool_call_details": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
