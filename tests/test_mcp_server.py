@@ -12,20 +12,15 @@ import pytest
 
 from lcp.generator import generate_lcp
 from lcp.mcp_server import (
-    DEFAULT_MAX_RESPONSE_BYTES,
     LCPIndex,
     MultiLibraryIndex,
     _DEFAULT_REGISTRY_URL,
-    _error,
     _fetch_from_registry,
-    _fit_list,
     _get_symbols,
-    _import_statement,
     _overview,
     _resolve_type_to_classes,
     _save_to_cache,
     _search_index,
-    _symbol_name,
     create_server,
     create_universal_server,
     load_lcp_document,
