@@ -1,0 +1,35 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\n\nfrom fastmcp import Client\n\nclient = Client(\"server.py\")\n\n\nasync def main() -> None:\n    async with client:\n        tools = await client.list_tools()\n        for tool in tools:\n            print(f\"Tool: {tool.name}\")\n\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"Result: {result}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\n\nfrom fastmcp import Client\n\nclient = Client(\"server.py\")\n\n\nasync def main() -> None:\n    async with client:\n        tools = await client.list_tools()\n        for tool in tools:\n            print(f\"Tool: {tool.name}\")\n\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"Result: {result}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 3,
+    "output_tokens": 842,
+    "cache_read_tokens": 49925,
+    "cache_creation_tokens": 9827,
+    "cost_usd": 0.0865785,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 15.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "claude-api"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
