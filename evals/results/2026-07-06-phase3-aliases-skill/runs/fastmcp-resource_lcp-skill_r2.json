@@ -1,0 +1,75 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\n        \"version\": \"1.0\",\n        \"environment\": \"development\",\n        \"debug\": True,\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432,\n            \"name\": \"myapp\"\n        },\n        \"api_keys_required\": False\n    }\n\nif __name__ == \"__main__\":\n    import asyncio\n    asyncio.run(server.run_async())",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\n        \"version\": \"1.0\",\n        \"environment\": \"development\",\n        \"debug\": True,\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432,\n            \"name\": \"myapp\"\n        },\n        \"api_keys_required\": False\n    }\n\nif __name__ == \"__main__\":\n    import asyncio\n    asyncio.run(server.run_async())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 53,
+    "output_tokens": 1272,
+    "cache_read_tokens": 172988,
+    "cache_creation_tokens": 5620,
+    "cost_usd": 0.0349518,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 27.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource static",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP#resource",
+          "fastmcp.resources:Resource"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

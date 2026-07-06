@@ -1,0 +1,8 @@
+{
+  "experiment": "Phase 3 — rescore of Phase 2b Exp1 with the alias-aware verifier",
+  "date": "2026-07-06",
+  "source": "evals/results/2026-07-03-phase2b-skill (agent runs unchanged, verification recomputed)",
+  "verifier": "alias-aware symbol_used (any used dotted path resolving to the same live object as the canonical path counts)",
+  "lcp_commit": "470bc9b (Phase 3 verifier co-fix; server code irrelevant — no agent runs)",
+  "note": "Isolates the verifier-fairness effect from the Phase 3 server changes: pass 10/24 -> 15/24 with identical generated code. cyhole 7/12 -> 10/12 (all 3 jupiter-swap runs flip: 'from cyhole.jupiter import Jupiter' is a valid re-export of cyhole.jupiter.interaction:Jupiter), fastmcp 3/12 -> 5/12 (client r2 required 'fastmcp:Client', context r3 required 'fastmcp:Context'; the generated code used a deeper module path resolving to the same object — the identity check is symmetric, so root-required/deep-written mismatches heal too). Remaining failures are real: non-engaged runs hallucinating symbols (rugcheck 2, server-tool 3) and unresolved usages. Compare the fresh Phase 3 run (2026-07-06-phase3-aliases-skill) against THIS dir, not against the 2026-07-03 numbers."
+}

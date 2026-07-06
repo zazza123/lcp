@@ -1,0 +1,83 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.rugcheck import Rugcheck\nimport json\n\ndef get_token_risk_report(mint_address: str, api_key: str | None = None) -> dict:\n    \"\"\"\n    Retrieve the full risk report for a Solana token using Rugcheck.\n    \n    Args:\n        mint_address: The token mint address (e.g., \"DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263\")\n        api_key: Optional API key for authenticated endpoints\n    \n    Returns:\n        The full risk report as a dictionary\n    \"\"\"\n    rugcheck = Rugcheck(api_key=api_key)\n    report = rugcheck.client.get_token_report(mint=mint_address)\n    return report.model_dump()\n\nif __name__ == \"__main__\":\n    mint_address = input(\"Enter Solana token mint address: \").strip()\n    report = get_token_risk_report(mint_address)\n    print(json.dumps(report, indent=2))",
+  "result_text": "```python\nfrom cyhole.rugcheck import Rugcheck\nimport json\n\ndef get_token_risk_report(mint_address: str, api_key: str | None = None) -> dict:\n    \"\"\"\n    Retrieve the full risk report for a Solana token using Rugcheck.\n    \n    Args:\n        mint_address: The token mint address (e.g., \"DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263\")\n        api_key: Optional API key for authenticated endpoints\n    \n    Returns:\n        The full risk report as a dictionary\n    \"\"\"\n    rugcheck = Rugcheck(api_key=api_key)\n    report = rugcheck.client.get_token_report(mint=mint_address)\n    return report.model_dump()\n\nif __name__ == \"__main__\":\n    mint_address = input(\"Enter Solana token mint address: \").strip()\n    report = get_token_risk_report(mint_address)\n    print(json.dumps(report, indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 46,
+    "output_tokens": 1523,
+    "cache_read_tokens": 148522,
+    "cache_creation_tokens": 23193,
+    "cost_usd": 0.06889920000000001,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 22.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp library introspection",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "rugcheck",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "report risk token",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.rugcheck.interaction:RugcheckClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.rugcheck.interaction:RugcheckClient#get_token_report",
+          "cyhole.rugcheck.interaction:Rugcheck"
+        ],
+        "library": "cyhole"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

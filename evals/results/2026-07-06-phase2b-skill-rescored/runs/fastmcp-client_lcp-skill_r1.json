@@ -1,0 +1,42 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.client import ClientSession\nfrom fastmcp.client.stdio import StdioClientTransport\n\n\nasync def main():\n    transport = StdioClientTransport(\n        command=\"python\",\n        args=[\"server.py\"]\n    )\n    \n    async with ClientSession(transport=transport) as session:\n        # List available tools\n        tools_response = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools_response.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult: {result.content}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.client import ClientSession\nfrom fastmcp.client.stdio import StdioClientTransport\n\n\nasync def main():\n    transport = StdioClientTransport(\n        command=\"python\",\n        args=[\"server.py\"]\n    )\n    \n    async with ClientSession(transport=transport) as session:\n        # List available tools\n        tools_response = await session.list_tools()\n        print(\"Available tools:\")\n        for tool in tools_response.tools:\n            print(f\"  - {tool.name}\")\n        \n        # Call the add tool\n        result = await session.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult: {result.content}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 1422,
+    "cache_read_tokens": 37974,
+    "cache_creation_tokens": 7579,
+    "cost_usd": 0.026081399999999998,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 19.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.client.ClientSession",
+      "fastmcp.client.stdio.StdioClientTransport"
+    ],
+    "error": null
+  },
+  "rescored_from": "evals/results/2026-07-03-phase2b-skill"
+}

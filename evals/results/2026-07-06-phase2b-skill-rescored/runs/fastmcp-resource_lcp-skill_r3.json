@@ -1,0 +1,83 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\n        \"name\": \"Example Configuration\",\n        \"version\": \"1.0.0\",\n        \"debug\": True,\n        \"features\": [\"feature1\", \"feature2\"],\n        \"settings\": {\n            \"timeout\": 30,\n            \"retries\": 3\n        }\n    }\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\n        \"name\": \"Example Configuration\",\n        \"version\": \"1.0.0\",\n        \"debug\": True,\n        \"features\": [\"feature1\", \"feature2\"],\n        \"settings\": {\n            \"timeout\": 30,\n            \"retries\": 3\n        }\n    }\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 64,
+    "output_tokens": 1658,
+    "cache_read_tokens": 188321,
+    "cache_creation_tokens": 12864,
+    "cost_usd": 0.052914100000000006,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 29.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource uri data",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.resources.resource:Resource",
+          "fastmcp.server.server:FastMCP#resource"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  },
+  "rescored_from": "evals/results/2026-07-03-phase2b-skill"
+}
