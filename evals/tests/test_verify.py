@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 
 from harness.verify import resolve_dotted, resolve_symbol, symbol_used, verify_code
 from harness.extract import CodeUsage
+from harness import extract
 
 
 @dataclass
@@ -112,3 +113,40 @@ class TestVerifyCode:
         v = verify_code("def broken(:", StubCase())
         assert v.passed is False
         assert v.error is not None and "syntax" in v.error
+
+
+class TestSymbolUsedAliases:
+    def test_reexport_alias_path_accepted(self):
+        # The Phase 2b jupiter-swap repro: canonical id is
+        # cyhole.jupiter.interaction:Jupiter, agents write the valid
+        # package-level re-export import.
+        usage = extract.extract_usage(
+            "from cyhole.jupiter import Jupiter\nj = Jupiter()",
+            "cyhole",
+        )
+        assert symbol_used("cyhole.jupiter.interaction:Jupiter", usage)
+
+    def test_canonical_path_still_accepted(self):
+        usage = extract.extract_usage(
+            "from cyhole.jupiter.interaction import Jupiter\nj = Jupiter()",
+            "cyhole",
+        )
+        assert symbol_used("cyhole.jupiter.interaction:Jupiter", usage)
+
+    def test_different_object_same_root_not_matched(self):
+        usage = extract.extract_usage(
+            "from cyhole.solscan import Solscan\ns = Solscan()",
+            "cyhole",
+        )
+        assert not symbol_used("cyhole.jupiter.interaction:Jupiter", usage)
+
+    def test_stdlib_alias_identity(self):
+        # os.path.join IS posixpath.join on this platform — identity match.
+        usage = extract.extract_usage(
+            "import os.path\nos.path.join('a', 'b')", "os"
+        )
+        assert symbol_used("posixpath:join", usage)
+
+    def test_unresolvable_symbol_never_matches(self):
+        usage = extract.extract_usage("import cyhole\ncyhole.x()", "cyhole")
+        assert not symbol_used("cyhole:does_not_exist_at_all", usage)
