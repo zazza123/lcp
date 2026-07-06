@@ -154,6 +154,35 @@ def cmd_report(args) -> int:
     return _report(Path(args.out))
 
 
+def cmd_rescore(args) -> int:
+    """Re-verify stored runs with the CURRENT verifier into a new dir.
+
+    Copies each <src>/runs/*.json record, recomputes its "verification"
+    against the (unchanged) generated code, and re-aggregates. Use when the
+    verifier changes (e.g. Phase 3 alias awareness) to separate "the
+    verifier got fairer" from "the server got better".
+    """
+    loaded = {c.id: c for c in cases.load_cases(args.cases)}
+    src = Path(args.src)
+    out = Path(args.out)
+    runs_dir = out / "runs"
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    for run_file in sorted((src / "runs").glob("*.json")):
+        record = json.loads(run_file.read_text())
+        case = loaded.get(record["case_id"])
+        if case is None:
+            print(f"SKIP     {run_file.name} (unknown case id)")
+            continue
+        record["verification"] = asdict(
+            verify.verify_code(record.get("code"), case)
+        )
+        record["rescored_from"] = str(src)
+        (runs_dir / run_file.name).write_text(json.dumps(record, indent=2))
+        status = "PASS" if record["verification"]["passed"] else "FAIL"
+        print(f"{status:8}{run_file.name}")
+    return _report(out)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -179,6 +208,15 @@ def main() -> int:
     p_report = sub.add_parser("report", help="re-aggregate an existing results dir")
     p_report.add_argument("--out", required=True)
     p_report.set_defaults(func=cmd_report)
+
+    p_rescore = sub.add_parser(
+        "rescore",
+        help="re-verify an existing results dir with the current verifier",
+    )
+    p_rescore.add_argument("--src", required=True)
+    p_rescore.add_argument("--out", required=True)
+    p_rescore.add_argument("--cases", type=Path, default=EVALS_DIR / "cases")
+    p_rescore.set_defaults(func=cmd_rescore)
 
     args = parser.parse_args()
     return args.func(args)

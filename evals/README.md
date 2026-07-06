@@ -97,6 +97,10 @@ evals/.venv/bin/python evals/run.py run --out evals/results/<name> \
 
 # Re-aggregate an existing results directory without re-running anything.
 evals/.venv/bin/python evals/run.py report --out evals/results/<name>
+
+# Re-verify an existing results dir with the current verifier (no agent runs).
+evals/.venv/bin/python evals/run.py rescore --src evals/results/<old> \
+    --out evals/results/<old>-rescored [--cases evals/cases]
 ```
 
 `run` writes one JSON file per (case, arm, rep) under `<out>/runs/`, then
@@ -151,7 +155,11 @@ at all. A run's `misuse_count` is the sum of (forbidden symbols used) +
 (unresolved library-rooted attribute chains) — this catches both direct
 use of a renamed/removed method and misuse on a chained/returned object
 (e.g. `df.group_by(...).frame_equal(...)`), which a regex-only check would
-miss.
+miss. `symbol_used` accepts any used dotted path that resolves (live
+introspection) to the same object as the required symbol's canonical path,
+so valid re-export imports (`from cyhole.jupiter import Jupiter` for
+`cyhole.jupiter.interaction:Jupiter`) count as usage; `rescore` exists to
+re-score older results dirs when the verifier changes.
 
 With ~28 tasks x 3 reps, the sample is far too small to distinguish a small
 true effect from run-to-run noise (agents are stochastic). Do not treat

@@ -6,8 +6,11 @@ from dataclasses import dataclass, field
 from harness import extract
 
 
-def resolve_dotted(path: str) -> bool:
-    """Return True if a dotted path like 'polars.DataFrame.group_by' resolves.
+_UNRESOLVED = object()
+
+
+def _resolve_object(path: str):
+    """Resolve a dotted path to the live object, or ``_UNRESOLVED``.
 
     Tries the longest importable module prefix, then getattr-walks the rest.
     Any exception during import or attribute access counts as unresolved.
@@ -22,9 +25,14 @@ def resolve_dotted(path: str) -> bool:
             for attr in parts[i:]:
                 obj = getattr(obj, attr)
         except Exception:
-            return False
-        return True
-    return False
+            return _UNRESOLVED
+        return obj
+    return _UNRESOLVED
+
+
+def resolve_dotted(path: str) -> bool:
+    """Return True if a dotted path like 'polars.DataFrame.group_by' resolves."""
+    return _resolve_object(path) is not _UNRESOLVED
 
 
 def resolve_symbol(symbol_id: str) -> bool:
@@ -44,16 +52,25 @@ def symbol_used(symbol_id: str, usage: "extract.CodeUsage") -> bool:
 
     'module:Class#method' matches by method name on any receiver (static
     analysis cannot type the receiver) or by full dotted path.
-    'module:entity' matches the canonical dotted path.
+    'module:entity' matches the canonical dotted path, or ANY used dotted
+    path that resolves to the same live object — so valid re-export
+    aliases (e.g. ``from cyhole.jupiter import Jupiter`` for
+    cyhole.jupiter.interaction:Jupiter) count as usage.
     """
     module, _, entity = symbol_id.partition(":")
     if "#" in entity:
         cls, _, method = entity.partition("#")
         if method in usage.method_names:
             return True
-        return f"{module}.{cls}.{method}" in usage.dotted_paths
-    dotted = f"{module}.{entity}" if entity else module
-    return dotted in usage.dotted_paths
+        canonical = f"{module}.{cls}.{method}"
+    else:
+        canonical = f"{module}.{entity}" if entity else module
+    if canonical in usage.dotted_paths:
+        return True
+    target = _resolve_object(canonical)
+    if target is _UNRESOLVED:
+        return False
+    return any(_resolve_object(p) is target for p in usage.dotted_paths)
 
 
 @dataclass
