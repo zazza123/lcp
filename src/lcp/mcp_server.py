@@ -31,6 +31,15 @@ def _symbol_name(symbol_id: str) -> str:
     return symbol_id.split(":")[-1].split("#")[-1]
 
 
+def _alias_rank(alias_id: str) -> tuple[int, int, str]:
+    """Order alias ids: fewest module dots, then shortest, then lexicographic.
+
+    The package-root re-export (``requests:get``) is the path users see in
+    documentation, so it wins the "preferred alias" slot.
+    """
+    return (alias_id.split(":")[0].count("."), len(alias_id), alias_id)
+
+
 def _import_statement(symbol_id: str, kind: SymbolKind) -> str:
     """Return the import line an agent should write for *symbol_id*.
 
@@ -83,6 +92,8 @@ class LCPIndex:
         self.class_members: dict[str, list[str]] = defaultdict(list)
         self.classes_by_name: dict[str, list[str]] = defaultdict(list)
         self.modules: set[str] = set()
+        self.alias_to_canonical: dict[str, str] = {}
+        self.preferred_alias: dict[str, str] = {}
 
         self._build_indexes()
 
@@ -108,6 +119,44 @@ class LCPIndex:
 
         for ids in self.classes_by_name.values():
             ids.sort()
+
+        # Alias indexes (spec D10): alias ids resolve to the canonical
+        # entry, and class aliases expand to member ids at build time —
+        # without materializing duplicate entries in the manifest.
+        for symbol_id, symbol in self.symbols_by_id.items():
+            aliases = [
+                a
+                for a in (symbol.aliases or [])
+                if a not in self.symbols_by_id
+            ]
+            if not aliases:
+                continue
+            for alias in aliases:
+                self.alias_to_canonical.setdefault(alias, symbol_id)
+            preferred = min(aliases, key=_alias_rank)
+            self.preferred_alias[symbol_id] = preferred
+            if symbol.kind == SymbolKind.CLASS:
+                for member_id in self.class_members.get(symbol_id, []):
+                    entity = member_id.split("#", 1)[1]
+                    for alias in aliases:
+                        self.alias_to_canonical.setdefault(
+                            f"{alias}#{entity}", member_id
+                        )
+                    self.preferred_alias[member_id] = f"{preferred}#{entity}"
+
+    def resolve_id(self, symbol_id: str) -> tuple[str | None, Symbol | None]:
+        """Resolve a possibly-aliased id to ``(canonical_id, symbol)``.
+
+        Returns ``(None, None)`` when the id matches neither a canonical
+        entry nor a known alias.
+        """
+        symbol = self.symbols_by_id.get(symbol_id)
+        if symbol is not None:
+            return symbol_id, symbol
+        canonical = self.alias_to_canonical.get(symbol_id)
+        if canonical is not None:
+            return canonical, self.symbols_by_id[canonical]
+        return None, None
 
 
 def _error(
