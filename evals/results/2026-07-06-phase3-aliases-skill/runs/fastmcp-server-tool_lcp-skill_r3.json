@@ -1,0 +1,101 @@
+{
+  "case_id": "fastmcp-server-tool",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\nimport asyncio\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"calc\")\n\n@server.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run(\"stdio\")",
+  "result_text": "```python\n#!/usr/bin/env python3\nimport asyncio\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"calc\")\n\n@server.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run(\"stdio\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1681,
+    "cache_read_tokens": 266341,
+    "cache_creation_tokens": 10442,
+    "cost_usd": 0.0559901,
+    "num_turns": 11,
+    "tool_calls": 9,
+    "duration_s": 85.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "class Server",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool",
+        "library": "fastmcp",
+        "kind": "function",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP#tool",
+          "fastmcp:FastMCP#run"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

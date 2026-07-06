@@ -1,0 +1,126 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye.interaction import Birdeye\n\n# Instantiate Birdeye interaction\nbirdeye = Birdeye()\n\n# Token address (example: SOL mint address)\ntoken_address = \"11111111111111111111111111111112\"\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(token_address)\n\n# Access the price from the response\nprint(f\"Token price: {response.data.value}\")",
+  "result_text": "```python\nfrom cyhole.birdeye.interaction import Birdeye\n\n# Instantiate Birdeye interaction\nbirdeye = Birdeye()\n\n# Token address (example: SOL mint address)\ntoken_address = \"11111111111111111111111111111112\"\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(token_address)\n\n# Access the price from the response\nprint(f\"Token price: {response.data.value}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 95,
+    "output_tokens": 2324,
+    "cache_read_tokens": 329141,
+    "cache_creation_tokens": 21486,
+    "cost_usd": 0.0876011,
+    "num_turns": 13,
+    "tool_calls": 12,
+    "duration_s": 56.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "claude-api"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "birdeye",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.interaction:Birdeye"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "price",
+        "library": "cyhole",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.client:BirdeyeClient#get_price"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.interaction:Birdeye#api_return_model",
+          "cyhole.birdeye.schema.price:GetPriceResponse"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "cyhole",
+        "module": "cyhole.birdeye.interaction",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.birdeye.interaction",
+        "kind": "class",
+        "limit": 5
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  },
+  "rescored_from": "evals/results/2026-07-03-phase2b-skill"
+}

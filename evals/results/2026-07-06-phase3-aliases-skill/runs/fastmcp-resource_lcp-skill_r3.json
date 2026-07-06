@@ -1,0 +1,86 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Server\n\nasync def main():\n    server = Server(\"config-server\")\n    \n    @server.resource(\"data://config\")\n    def get_config() -> dict:\n        \"\"\"Returns a static configuration dictionary.\"\"\"\n        return {\n            \"app_name\": \"ConfigServer\",\n            \"version\": \"1.0.0\",\n            \"environment\": \"production\",\n            \"debug\": False,\n            \"features\": {\n                \"auth\": True,\n                \"logging\": True,\n                \"caching\": True\n            }\n        }\n    \n    async with server:\n        await server.run_stdio()\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Server\n\nasync def main():\n    server = Server(\"config-server\")\n    \n    @server.resource(\"data://config\")\n    def get_config() -> dict:\n        \"\"\"Returns a static configuration dictionary.\"\"\"\n        return {\n            \"app_name\": \"ConfigServer\",\n            \"version\": \"1.0.0\",\n            \"environment\": \"production\",\n            \"debug\": False,\n            \"features\": {\n                \"auth\": True,\n                \"logging\": True,\n                \"caching\": True\n            }\n        }\n    \n    async with server:\n        await server.run_stdio()\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 77,
+    "output_tokens": 1281,
+    "cache_read_tokens": 220183,
+    "cache_creation_tokens": 12265,
+    "cost_usd": 0.0530303,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 22.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:ToolSearch"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "fastmcp resource",
+        "max_results": 5
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

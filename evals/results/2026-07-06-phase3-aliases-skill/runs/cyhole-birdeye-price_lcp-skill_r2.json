@@ -1,0 +1,42 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Birdeye\n\n# Initialize the Birdeye client\nbirdeye = Birdeye()\n\n# Solana token address (example: USDC)\ntoken_address = \"EPjFWdd5Au17hunZf0LCW6Acmom6RPqPPubEZwP1ievCF\"\n\n# Fetch the current price synchronously\nprice = birdeye.get_price(token_address)\n\nprint(f\"Token price: {price}\")",
+  "result_text": "```python\nfrom cyhole import Birdeye\n\n# Initialize the Birdeye client\nbirdeye = Birdeye()\n\n# Solana token address (example: USDC)\ntoken_address = \"EPjFWdd5Au17hunZf0LCW6Acmom6RPqPPubEZwP1ievCF\"\n\n# Fetch the current price synchronously\nprice = birdeye.get_price(token_address)\n\nprint(f\"Token price: {price}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 1334,
+    "cache_read_tokens": 33278,
+    "cache_creation_tokens": 12053,
+    "cost_usd": 0.0341198,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 17.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.birdeye.interaction:Birdeye"
+    ],
+    "forbidden_used": [
+      "cyhole:Birdeye"
+    ],
+    "unresolved_usages": [
+      "cyhole.Birdeye"
+    ],
+    "error": null
+  }
+}

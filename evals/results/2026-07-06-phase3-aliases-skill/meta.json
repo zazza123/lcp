@@ -1,0 +1,21 @@
+{
+  "experiment": "Phase 3 — alias-aware server, lcp-skill arm re-run on the 8 F1 cases",
+  "date": "2026-07-06",
+  "claude_version": "2.1.201 (Claude Code)",
+  "model": "claude-haiku-4-5-20251001",
+  "lcp_commit": "252ee4d (Phase 3 re-export aliases: scanner + Symbol.aliases + alias-first index/responses)",
+  "arm": "lcp-skill (lcp-universal SKILL.md via --append-system-prompt)",
+  "cases": [
+    "fastmcp-server-tool",
+    "fastmcp-resource",
+    "fastmcp-client",
+    "fastmcp-context",
+    "cyhole-birdeye-price",
+    "cyhole-jupiter-swap",
+    "cyhole-rugcheck-report",
+    "cyhole-missing-api-key"
+  ],
+  "reps": 3,
+  "reference": "evals/results/2026-07-06-phase2b-skill-rescored (Phase 2b Exp1 runs re-verified with the SAME alias-aware verifier — the fair baseline; do not compare against the 2026-07-03 numbers, which mix in the verifier fix)",
+  "note": "evals/.lcp-cache cleared before the run so manifests were regenerated with aliases by the editable install on this branch. CLI drift vs Phase 2b: 2.1.200 -> 2.1.201 (patch bump; same denied-builtin snapshot). Same-verifier comparison: cyhole 10/12 -> 11/12, fastmcp 5/12 -> 5/12, total 15/24 -> 16/24; misuse/run 0.54 -> 0.33."
+}

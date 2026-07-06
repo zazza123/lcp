@@ -1,0 +1,44 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Rugcheck\n\n# Initialize Rugcheck client\nrugcheck = Rugcheck()\n\n# Replace with actual Solana token mint address\nmint_address = \"EPjFWaLb3hy69Saeb9WQJwVFKQZMUKTpSsZJ4zj3iiU\"  # Example: USDC\n\n# Retrieve full risk report\nreport = rugcheck.token_risk(mint_address)\n\n# Print the complete risk report\nprint(report)",
+  "result_text": "```python\nfrom cyhole import Rugcheck\n\n# Initialize Rugcheck client\nrugcheck = Rugcheck()\n\n# Replace with actual Solana token mint address\nmint_address = \"EPjFWaLb3hy69Saeb9WQJwVFKQZMUKTpSsZJ4zj3iiU\"  # Example: USDC\n\n# Retrieve full risk report\nreport = rugcheck.token_risk(mint_address)\n\n# Print the complete risk report\nprint(report)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 764,
+    "cache_read_tokens": 37951,
+    "cache_creation_tokens": 6759,
+    "cost_usd": 0.021149099999999997,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 12.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [
+      "cyhole:Rugcheck"
+    ],
+    "unresolved_usages": [
+      "cyhole.Rugcheck"
+    ],
+    "error": null
+  },
+  "rescored_from": "evals/results/2026-07-03-phase2b-skill"
+}
