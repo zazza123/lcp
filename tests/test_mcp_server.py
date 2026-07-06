@@ -1201,3 +1201,104 @@ class TestReviewFindings:
         assert result["source"] == "manifest"
         overview = server.tools["get_overview"]()
         assert overview["library"]["source"] == "manifest"
+
+
+ALIASED_DOC = {
+    "manifest": {
+        "schema_version": "1.0",
+        "library": {"name": "pkg", "version": "1.0.0", "language": "python"},
+    },
+    "symbols": {
+        "pkg.core:Widget": {
+            "kind": "class",
+            "module": "pkg.core",
+            "semantics": {"summary": "A widget."},
+            "aliases": ["pkg:Widget", "pkg.convenience:Widget"],
+        },
+        "pkg.core:Widget#render": {
+            "kind": "method",
+            "module": "pkg.core",
+            "semantics": {"summary": "Render it."},
+        },
+        "pkg.core:make": {
+            "kind": "function",
+            "module": "pkg.core",
+            "semantics": {"summary": "Make a widget."},
+            "signatures": [{"params": [], "returns": "Widget"}],
+            "aliases": ["pkg:make"],
+        },
+        "pkg.other:plain": {
+            "kind": "function",
+            "module": "pkg.other",
+            "semantics": {"summary": "No aliases."},
+        },
+    },
+}
+
+
+def _aliased_index():
+    return LCPIndex(LCPDocument.model_validate(ALIASED_DOC))
+
+
+class TestAliasIndex:
+    def test_alias_maps_to_canonical(self):
+        index = _aliased_index()
+        assert index.alias_to_canonical["pkg:Widget"] == "pkg.core:Widget"
+        assert index.alias_to_canonical["pkg:make"] == "pkg.core:make"
+
+    def test_member_ids_expanded_for_every_alias(self):
+        index = _aliased_index()
+        assert (
+            index.alias_to_canonical["pkg:Widget#render"]
+            == "pkg.core:Widget#render"
+        )
+        assert (
+            index.alias_to_canonical["pkg.convenience:Widget#render"]
+            == "pkg.core:Widget#render"
+        )
+
+    def test_member_entries_not_materialized(self):
+        index = _aliased_index()
+        assert "pkg:Widget#render" not in index.symbols_by_id
+        assert len(index.symbols_by_id) == 4
+
+    def test_preferred_alias_is_shortest_module_path(self):
+        index = _aliased_index()
+        assert index.preferred_alias["pkg.core:Widget"] == "pkg:Widget"
+        assert (
+            index.preferred_alias["pkg.core:Widget#render"]
+            == "pkg:Widget#render"
+        )
+        assert "pkg.other:plain" not in index.preferred_alias
+
+    def test_resolve_id_direct_alias_and_miss(self):
+        index = _aliased_index()
+        canonical, symbol = index.resolve_id("pkg.core:Widget")
+        assert canonical == "pkg.core:Widget" and symbol is not None
+        canonical, symbol = index.resolve_id("pkg:Widget")
+        assert canonical == "pkg.core:Widget" and symbol is not None
+        canonical, symbol = index.resolve_id("pkg:Widget#render")
+        assert canonical == "pkg.core:Widget#render"
+        assert index.resolve_id("pkg:nope") == (None, None)
+
+    def test_alias_colliding_with_canonical_id_is_ignored(self):
+        doc = {
+            "manifest": ALIASED_DOC["manifest"],
+            "symbols": {
+                "pkg:real": {
+                    "kind": "function",
+                    "module": "pkg",
+                    "semantics": {"summary": "The real pkg:real."},
+                },
+                "pkg.impl:real": {
+                    "kind": "function",
+                    "module": "pkg.impl",
+                    "semantics": {"summary": "Impl."},
+                    "aliases": ["pkg:real"],
+                },
+            },
+        }
+        index = LCPIndex(LCPDocument.model_validate(doc))
+        assert "pkg:real" not in index.alias_to_canonical
+        canonical, _ = index.resolve_id("pkg:real")
+        assert canonical == "pkg:real"
