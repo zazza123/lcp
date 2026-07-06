@@ -284,3 +284,22 @@ class TestLCPValidationError:
         exc = LCPValidationError(errors)
         message = str(exc)
         assert "5 more errors" in message
+
+
+class TestAliasesValidation:
+    def test_manifest_with_aliases_validates(self, sample_lcp_dict):
+        sample_lcp_dict["symbols"]["test:func"]["aliases"] = ["pkg:func"]
+        errors = validate_dict(sample_lcp_dict)
+        assert errors == []
+
+    def test_manifest_without_aliases_still_validates(self, sample_lcp_dict):
+        errors = validate_dict(sample_lcp_dict)
+        assert errors == []
+
+    def test_generated_aliased_manifest_validates(self):
+        from lcp.generator import generate_lcp
+        from lcp.scanner import scan_package
+
+        doc = generate_lcp(scan_package("sample_package"))
+        errors = validate_document(doc)
+        assert errors == []

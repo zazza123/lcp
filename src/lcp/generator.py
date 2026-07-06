@@ -115,9 +115,16 @@ def _convert_symbol(scanned: ScannedSymbol) -> tuple[str, Symbol]:
     if scanned.signature and scanned.kind in ("function", "method", "class"):
         signatures = [_convert_signature(scanned.signature)]
 
+    alias_ids = (
+        sorted(f"{mod}:{name}" for mod, name in scanned.aliases)
+        if scanned.aliases
+        else None
+    )
+
     symbol = Symbol(
         kind=_symbol_kind_to_lcp(scanned.kind),
         module=scanned.module_path,
+        aliases=alias_ids,
         signatures=signatures,
         semantics=semantics,
         effects=None,

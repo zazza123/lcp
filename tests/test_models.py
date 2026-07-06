@@ -275,3 +275,17 @@ class TestDetailedIndex:
             implementation=Artifact(path="src/main.py", lines=[10, 20])
         )
         assert entry.implementation.path == "src/main.py"
+
+
+def test_symbol_aliases_field_roundtrip():
+    symbol = Symbol(
+        kind=SymbolKind.FUNCTION,
+        semantics=Semantics(summary="S."),
+        aliases=["pkg:f"],
+    )
+    assert symbol.model_dump(exclude_none=True)["aliases"] == ["pkg:f"]
+
+
+def test_symbol_aliases_default_none():
+    symbol = Symbol(kind=SymbolKind.FUNCTION, semantics=Semantics(summary="S."))
+    assert symbol.aliases is None
