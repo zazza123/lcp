@@ -32,6 +32,11 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
+          # tests/sample_package is a re-export fixture: its "unused"
+          # imports and star-import ARE the behavior under test.
+          config: |
+            paths-ignore:
+              - tests/sample_package
 
       - name: perform codeql analysis
         uses: github/codeql-action/analyze@v4
