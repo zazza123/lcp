@@ -47,6 +47,7 @@ The `semantics` sub-object is itself required to contain at least a `summary` st
 | `semantics.description` | string \| null | no | Extended prose; MAY use Markdown. |
 | `semantics.examples` | `array<{code, description?}>` \| null | no | Usage examples with required `code` field. |
 | `module` | string \| null | no | Dotted module path where the symbol is defined. |
+| `aliases` | `array<string>` \| null | no | Alternative full Symbol IDs where the symbol is re-exported inside its own package (e.g. `requests:get` for a symbol defined in `requests.api`). The map key remains the definition site. |
 | `signatures` | `array<signature>` \| null | no | Callable signatures (one per overload). Functions/methods typically have one entry. |
 | `effects` | object \| null | no | Observable side-effects: `categories`, `idempotent`, `thread_safe`, `deterministic`. |
 | `stability` | object \| null | no | API stability: `level` (`experimental`/`stable`/`deprecated`), `since`, `notes`, `tracking_issue`. |

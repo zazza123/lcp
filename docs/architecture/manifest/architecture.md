@@ -42,7 +42,16 @@ Modules that fail to import are silently skipped.
 2. Names in the **public dunders allowlist** always pass (e.g. `__init__`, `__call__`, operators). See [index.md](index.md#what-gets-scanned) for the full list.
 3. All other names starting with `_` are excluded.
 
-When a module defines `__all__`, that set takes precedence: only names listed there are scanned (after applying the public-name check). Re-exported symbols — where `obj.__module__` differs from the current module's name — are also skipped to avoid documenting the same symbol in multiple places.
+When a module defines `__all__`, that set takes precedence: only names listed there are scanned (after applying the public-name check).
+
+### Re-export Aliases
+
+Re-exported symbols — where `obj.__module__` differs from the current module's name — are never scanned twice. What happens instead depends on where the object comes from:
+
+- **Intra-package re-export** (the origin module is inside the scanned package, e.g. `requests/__init__.py` re-exporting `requests.api.get`): `scan_module()` records an `_AliasRecord` with the origin, the re-exporting module, and the local name (which may differ for `from x import y as z` renames). After all modules are scanned, `_attach_aliases()` resolves each record onto its canonical `ScannedSymbol`, filling its `aliases` list with `(module_path, name)` pairs. Records whose target was never scanned are dropped.
+- **External re-export** (the origin is another package, e.g. `from json import loads` inside a scanned package): skipped entirely, exactly as before.
+
+The definition site remains the canonical identity; the generator turns the recorded pairs into the additive `Symbol.aliases` field (a sorted list of full Symbol IDs, e.g. `requests:get`), so a symbol is findable under the import path users actually write while the `symbols` map key stays stable. Why this design: agents and users think in documented import paths (`requests.get`), but rewriting IDs to the re-export site would break ID stability across internal refactors — aliases give both.
 
 ### Docstring Parsing
 
@@ -154,5 +163,5 @@ The `detailed_index` dict maps symbol IDs to `DetailedIndexEntry` objects, each 
 - [MCP Server](../mcp_server/index.md) - Loads the `.lcp.json` output and exposes it over MCP
 
 ---
-**Last Updated:** February 2026
+**Last Updated:** July 2026
 **Status:** Implemented

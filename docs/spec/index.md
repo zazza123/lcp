@@ -144,6 +144,22 @@ Examples:
 
 Symbol IDs MUST be stable across patch releases and SHOULD be stable across minor releases. Renaming a symbol constitutes a breaking change and SHOULD be recorded in the `deprecations` section.
 
+### Re-export aliases
+
+Many libraries define a symbol in an internal module and re-export it at the package root — users write `requests.get` even though the function lives in `requests.api`. The optional `aliases` field lists the alternative Symbol IDs under which a symbol is importable:
+
+```json
+"requests.api:get": {
+  "kind": "function",
+  "aliases": ["requests:get"],
+  "semantics": {
+    "summary": "Send a GET request."
+  }
+}
+```
+
+The `symbols` map key remains the **definition site** (preserving ID stability across refactors of the re-export surface); each entry in `aliases` is a full Symbol ID following the same `<module_path>:<entity_path>` grammar. Consumers SHOULD treat an alias as resolving to the same symbol as its canonical entry. For an aliased **class**, member IDs under the alias (`requests:Session#get` for `requests.sessions:Session#get`) are derivable mechanically and MUST NOT require duplicated member entries in the document.
+
 ### Modules as symbols
 
 Modules are represented using an empty entity path:
