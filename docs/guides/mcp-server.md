@@ -98,8 +98,8 @@ Use `--expose` to restrict which packages the agent may load, `--preload` to war
 | Tool | Description |
 |---|---|
 | `resolve_library(name, version?)` | Load a library by pip package name: local cache → live scan → registry fetch. Returns name, version, symbol count, and resolution source. Call this first. |
-| `search(query, library?, module?, kind?, limit?)` | Ranked symbol search — the primary discovery tool. Every hit carries the exact `import` line. An empty query browses: combine with `module=` and/or `kind=` to list contents in deterministic `(kind, name)` order. Default `limit` 20, max 100. |
-| `get_symbol(ids, library?)` | Batch detail lookup: full signatures, required/optional parameters, return types, and the correct import line per symbol. Classes inline all members as one-line summaries. `usage_hints.returns_classes` resolves a return type to its class id. |
+| `search(query, library?, module?, kind?, limit?)` | Ranked symbol search — the primary discovery tool. Every hit carries the exact `import` line. Hits present the preferred importable id: a symbol re-exported at the package root appears as `requests:get` with `resolved_via_alias` naming its definition site (`requests.api:get`). An empty query browses: combine with `module=` and/or `kind=` to list contents in deterministic `(kind, name)` order. Default `limit` 20, max 100. |
+| `get_symbol(ids, library?)` | Batch detail lookup: full signatures, required/optional parameters, return types, and the correct import line per symbol. Both canonical ids and alias ids resolve (including `#member` forms like `requests:Session#get`); the entry echoes the id you asked for, and `resolved_via_alias` names the definition site when it differs. Classes inline all members as one-line summaries. `usage_hints.returns_classes` resolves a return type to its class id. |
 | `get_overview(library?)` | Library identity (name, version, resolution source) plus the module tree with per-module symbol counts. |
 
 ### The 3-call workflow

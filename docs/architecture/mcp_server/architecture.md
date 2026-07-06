@@ -32,7 +32,7 @@ Tool registration lives in a single function, `_register_tools()` in `src/lcp/mc
 
 ## Index Design
 
-`LCPIndex` is built once per library from its `LCPDocument` and kept in memory for the lifetime of the server. It maintains five lookup structures derived from a single pass over the symbol map:
+`LCPIndex` is built once per library from its `LCPDocument` and kept in memory for the lifetime of the server. It maintains seven lookup structures derived from two passes over the symbol map:
 
 | Index | Key | Value |
 |-------|-----|-------|
@@ -41,8 +41,16 @@ Tool registration lives in a single function, `_register_tools()` in `src/lcp/mc
 | `symbols_by_kind` | kind value (str) | list of `symbol_id` strings |
 | `class_members` | class `symbol_id` | list of member `symbol_id` strings |
 | `classes_by_name` | bare class name (str) | sorted list of class `symbol_id` strings |
+| `alias_to_canonical` | alias `symbol_id` | canonical `symbol_id` |
+| `preferred_alias` | canonical `symbol_id` | preferred display `symbol_id` |
 
 Class membership is determined by the presence of `#` in the symbol ID (e.g. `pathlib:Path#resolve` belongs to `pathlib:Path`). `classes_by_name` supports exact return-type-to-class resolution in `get_symbol`'s usage hints — an exact-name lookup that replaced the old suffix-matching heuristic and its false positives (e.g. `PurePath` matching a `Path` query).
+
+### Alias Resolution
+
+The alias structures are built in a second pass from each symbol's `aliases` manifest field (see the [manifest architecture](../manifest/architecture.md) for how the scanner records them). For an aliased **class**, member alias IDs (`requests:Session#get` → `requests.sessions:Session#get`) are derived at build time rather than materialized in the manifest, so alias support adds no manifest weight. An alias that collides with a real canonical ID is ignored — canonical entries always win.
+
+`preferred_alias` picks the most documentation-like path per symbol (fewest module dots, then shortest, then lexicographic — the package-root re-export wins) via `_alias_rank()`. Responses are **alias-first**: `search` hits present the preferred importable ID with `resolved_via_alias` naming the definition site; `get_symbol` accepts canonical and alias IDs alike through `LCPIndex.resolve_id()`, echoes the requested ID, and always renders the `import` line from the preferred path. This closes the measured "verify canonical, write package-root import" gap: agents copy the ID and import line they see.
 
 `MultiLibraryIndex` wraps the loaded libraries together with the source each was resolved from (`cache`, `scan`, `registry`, or `manifest`). There is deliberately **no** implicit default library: its `resolve()` method returns the single loaded library when the `library` argument is omitted, and a structured `ambiguous_library` error listing the loaded names when two or more are loaded. This replaced the last-resolved-wins default, whose silent reassignment made multi-library answers non-deterministic.
 
