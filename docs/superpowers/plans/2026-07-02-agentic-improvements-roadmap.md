@@ -443,7 +443,27 @@ with tests green.
 
 ## Phase 3 — Re-export aliases
 
-**Status:** not started — blocked by Phase 1
+**Status:** done (2026-07-06) — plan:
+`docs/superpowers/plans/2026-07-06-phase-3-reexport-aliases.md`. Shipped: the
+scanner records intra-package re-exports as aliases on the canonical symbol
+(external re-exports stay skipped; `__all__`, star and `as`-renamed
+re-exports covered via the `tests/sample_package` fixture); additive
+`Symbol.aliases` under schema `"1.0"` (both schema.json copies, old
+manifests still validate); `LCPIndex` maps alias ids — including
+build-time-derived class-member ids — to canonicals, and `search`/
+`get_symbol` are **alias-first** (preferred importable id presented,
+`resolved_via_alias` names the definition site, `import` line always the
+documented path; decisions settled with the user 2026-07-06). Harness
+co-fix landed in the same phase: `symbol_used` matches by live
+object-identity plus a new `rescore` subcommand. Eval: rescoring frozen
+Phase 2b runs with the fair verifier moved 10/24 → 15/24 (all 3
+jupiter-swap flips — the exact predicted blind spot); the fresh
+alias-server run adds 15/24 → 16/24 with misuse/run 0.54 → 0.33 and
+`tool_call_details` showing agents copying alias ids into `get_symbol`
+calls. Residual failures are F1 non-engagement and task compliance — F2
+(information→code gap) is considered closed. Secondary, tentative:
+fastmcp-server-tool engaged for the first time ever (0/3 all-time → 2/3,
+calls 1.42 → 2.08/run) — re-measure in Phase 8, do not attribute.
 
 **Baseline evidence (2026-07-03):** F2 is this phase's live repro: cyhole LCP
 runs called the tools yet wrote `from cyhole import Rugcheck` (0/12 passes) —
@@ -844,6 +864,8 @@ internal docs live on the roadmap branch during development but must not reach
 | 2026-07-03 | 2 iter2 (LCP arm, fastmcp+cyhole) | haiku-4.5, 8 cases, 3 reps | — | cyhole 4/12, fastmcp 1/12 | — | cyhole 2.3 | after unconditional-verification instructions rewrite: cyhole pass trend 0→2→4/12; fastmcp adoption stays 0 despite instructions verifiably reaching the model (quoted verbatim on probe) — model-compliance limit, see Phase 2 status |
 | 2026-07-04 | 2b Exp1 (lcp-skill arm) | haiku-4.5, 8 F1 cases, 3 reps | cyhole 3, fastmcp 10 | cyhole 7/12, fastmcp 3/12 | — | **fastmcp 1.42 lcp calls/run (gate ≥1.0 PASSED)**, cyhole 7.6 | skill body via --append-system-prompt on the V2 surface → outcome A; engagement bimodal (0 or full chain); engaged runs: zero hallucinated symbols, all 3 engaged failures are canonical-vs-alias import mismatches (Phase 3 evidence) |
 | 2026-07-04 | 2b Exp2 (sonnet, both arms) | sonnet-5, 4 fastmcp cases, 3 reps | 0 | 24/24 (both arms) | — | 0.00 lcp calls/run both arms | sonnet baseline at ceiling: correct fastmcp 2.x from parametric knowledge, nothing to verify → F1 is haiku-class-bound; fastmcp cases can't differentiate for capable models (Phase 8 task-mix note) |
+| 2026-07-06 | 3 rescore (2b Exp1 runs, alias-aware verifier) | haiku-4.5, 8 F1 cases, 3 reps (frozen code) | cyhole 3, fastmcp 10 | **15/24** (cyhole 10/12, fastmcp 5/12) | — | unchanged (no agent runs) | verifier-fairness effect isolated: 10/24 → 15/24 on identical generated code; all 3 jupiter-swap flips (predicted in 2b analysis) + 2 symmetric fastmcp flips (root-required, deep-written). THE baseline for Phase 3 comparisons |
+| 2026-07-06 | 3 (lcp-skill, alias server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.201 | cyhole 2, fastmcp 6 (0.33/run) | **16/24** (cyhole 11/12, fastmcp 5/12) | — | cyhole 9.0, fastmcp 2.08 lcp calls/run | vs rescored baseline: +1 pass, misuse/run 0.54→0.33; jupiter-swap & rugcheck 3/3; agents copy alias ids into get_symbol (tool_call_details); engaged-run hallucinations ≈0 (one invented classmethod); residual failures = non-engagement (F1) + task compliance. fastmcp-server-tool first-ever engagement 0/3→2/3 — tentative, re-measure in Phase 8 |
 
 ---
 
