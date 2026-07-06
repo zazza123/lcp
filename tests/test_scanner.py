@@ -432,3 +432,74 @@ class TestInheritedMemberFiltering:
 
         assert _is_member_from_package(MyDict, "get", "mypackage") is False
         assert _is_member_from_package(MyDict, "keys", "mypackage") is False
+
+
+class TestReexportAliases:
+    """Intra-package re-exports become aliases on the canonical symbol."""
+
+    @pytest.fixture(scope="class")
+    def scanned(self):
+        return scan_package("sample_package")
+
+    def _by_id(self, scanned):
+        return {
+            (s.module_path, s.qualified_name): s for s in scanned.symbols
+        }
+
+    def test_root_reexport_recorded_as_alias(self, scanned):
+        symbols = self._by_id(scanned)
+        core_class = symbols[("sample_package.core", "CoreClass")]
+        assert ("sample_package", "CoreClass") in core_class.aliases
+
+    def test_definition_site_remains_canonical(self, scanned):
+        symbols = self._by_id(scanned)
+        # No symbol is scanned AT the re-export site
+        assert ("sample_package", "CoreClass") not in symbols
+        assert ("sample_package", "core_function") not in symbols
+
+    def test_renamed_reexport_uses_alias_name(self, scanned):
+        symbols = self._by_id(scanned)
+        helper = symbols[("sample_package.extras", "helper")]
+        assert ("sample_package", "aliased_helper") in helper.aliases
+
+    def test_star_reexport_without_all_recorded(self, scanned):
+        symbols = self._by_id(scanned)
+        core_class = symbols[("sample_package.core", "CoreClass")]
+        core_function = symbols[("sample_package.core", "core_function")]
+        assert ("sample_package.convenience", "CoreClass") in core_class.aliases
+        assert (
+            "sample_package.convenience",
+            "core_function",
+        ) in core_function.aliases
+
+    def test_all_filter_limits_aliases(self, scanned):
+        symbols = self._by_id(scanned)
+        core_class = symbols[("sample_package.core", "CoreClass")]
+        core_function = symbols[("sample_package.core", "core_function")]
+        assert ("sample_package.allexport", "CoreClass") in core_class.aliases
+        # core_function is imported by allexport but excluded from __all__
+        assert (
+            "sample_package.allexport",
+            "core_function",
+        ) not in core_function.aliases
+
+    def test_external_reexports_still_skipped(self, scanned):
+        symbols = self._by_id(scanned)
+        # json.loads is re-exported at the root but is NOT part of the package
+        assert ("sample_package", "loads") not in symbols
+        for symbol in scanned.symbols:
+            for alias_module, alias_name in symbol.aliases:
+                assert alias_name != "loads"
+
+    def test_name_collision_keeps_aliases_separate(self, scanned):
+        symbols = self._by_id(scanned)
+        common_a = symbols[("sample_package.mod_a", "common")]
+        common_b = symbols[("sample_package.mod_b", "common")]
+        assert ("sample_package.re_a", "common") in common_a.aliases
+        assert ("sample_package.re_b", "common") not in common_a.aliases
+        assert ("sample_package.re_b", "common") in common_b.aliases
+        assert ("sample_package.re_a", "common") not in common_b.aliases
+
+    def test_symbols_without_reexports_have_no_aliases(self, sample_module):
+        symbols = scan_module(sample_module)
+        assert all(s.aliases == [] for s in symbols)

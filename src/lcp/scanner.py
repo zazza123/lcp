@@ -44,7 +44,13 @@ class ScannedSignature:
 
 @dataclass
 class ScannedSymbol:
-    """Scanned symbol information."""
+    """Scanned symbol information.
+
+    ``aliases`` holds ``(module_path, name)`` pairs where the symbol is
+    re-exported inside its own package (e.g. ``("requests", "get")`` for a
+    function defined in ``requests.api``); the definition site stays the
+    canonical identity.
+    """
 
     name: str
     qualified_name: str
@@ -56,6 +62,7 @@ class ScannedSymbol:
     members: list[ScannedSymbol] = field(default_factory=list)
     source_file: str | None = None
     source_lines: tuple[int, int] | None = None
+    aliases: list[tuple[str, str]] = field(default_factory=list)
 
 
 @dataclass
@@ -65,6 +72,39 @@ class ScannedModule:
     name: str
     version: str
     symbols: list[ScannedSymbol] = field(default_factory=list)
+
+
+@dataclass
+class _AliasRecord:
+    """A re-export observed while scanning, before its target is known.
+
+    ``scan_module`` records these when a member's ``__module__`` points at
+    another module inside the same package; ``_attach_aliases`` resolves
+    them onto the canonical scanned symbols once every module is scanned.
+    """
+
+    target_module: str
+    target_name: str
+    alias_module: str
+    alias_name: str
+
+
+def _attach_aliases(
+    symbols: list[ScannedSymbol], records: list[_AliasRecord]
+) -> None:
+    """Attach re-export aliases to their canonical scanned symbols.
+
+    Records whose target was never scanned (e.g. the defining module failed
+    to import, or the object is not a scannable kind) are dropped.
+    """
+    by_key = {(s.module_path, s.qualified_name): s for s in symbols}
+    for rec in records:
+        target = by_key.get((rec.target_module, rec.target_name))
+        if target is None:
+            continue
+        alias = (rec.alias_module, rec.alias_name)
+        if alias not in target.aliases:
+            target.aliases.append(alias)
 
 
 def _parse_docstring(docstring: str | None) -> tuple[str | None, str | None]:
@@ -395,10 +435,13 @@ def scan_module(
     include_private: bool = False,
     _visited: set | None = None,
     _package_root: str | None = None,
+    _alias_records: list[_AliasRecord] | None = None,
 ) -> list[ScannedSymbol]:
     """Scan a module for symbols."""
     if _visited is None:
         _visited = set()
+
+    records = _alias_records if _alias_records is not None else []
 
     if _package_root is None:
         _package_root = module.__name__.split(".")[0]
@@ -453,7 +496,24 @@ def scan_module(
             # Check if this symbol is defined in this module
             obj_module = getattr(obj, "__module__", None)
             if obj_module and obj_module != module_path:
-                # Skip re-exported symbols (documented in their origin module)
+                # Re-exported symbol: documented at its definition site.
+                # If the origin is inside the scanned package, record the
+                # re-export as an alias on the canonical symbol; external
+                # origins stay skipped entirely.
+                if isinstance(obj_module, str) and (
+                    obj_module == _package_root
+                    or obj_module.startswith(_package_root + ".")
+                ):
+                    target_name = getattr(obj, "__name__", None)
+                    if isinstance(target_name, str):
+                        records.append(
+                            _AliasRecord(
+                                target_module=obj_module,
+                                target_name=target_name,
+                                alias_module=module_path,
+                                alias_name=name,
+                            )
+                        )
                 continue
 
             if inspect.isclass(obj):
@@ -478,6 +538,9 @@ def scan_module(
             raise
         except Exception:
             continue
+
+    if _alias_records is None:
+        _attach_aliases(symbols, records)
 
     return symbols
 
@@ -582,15 +645,29 @@ def scan_package(
     version = _get_package_version(package_name)
     visited: set = set()
     package_root = package_name.split(".")[0]
+    alias_records: list[_AliasRecord] = []
 
     # Scan main module
-    symbols = scan_module(module, include_private, visited, _package_root=package_root)
+    symbols = scan_module(
+        module,
+        include_private,
+        visited,
+        _package_root=package_root,
+        _alias_records=alias_records,
+    )
 
     # Scan submodules if it's a package
     if recursive and hasattr(module, "__path__"):
         for submod in _iter_submodules(module):
             symbols.extend(
-                scan_module(submod, include_private, visited, _package_root=package_root)
+                scan_module(
+                    submod,
+                    include_private,
+                    visited,
+                    _package_root=package_root,
+                    _alias_records=alias_records,
+                )
             )
 
+    _attach_aliases(symbols, alias_records)
     return ScannedModule(name=package_name, version=version, symbols=symbols)
