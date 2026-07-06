@@ -399,8 +399,17 @@ class TestPublishCommand:
         assert "test-lib" in result.output
 
     def test_publish_no_token(self, runner):
-        """Publishing without a token should fail."""
-        result = runner.invoke(main, ["publish", "json"])
+        """Publishing without a token should fail.
+
+        The token env vars are removed for the invocation: --token reads
+        LCP_GITHUB_TOKEN / GITHUB_TOKEN, so on a machine where either is
+        set the un-isolated test would publish to the real registry.
+        """
+        result = runner.invoke(
+            main,
+            ["publish", "json"],
+            env={"LCP_GITHUB_TOKEN": None, "GITHUB_TOKEN": None},
+        )
         assert result.exit_code == 1
         assert "token" in result.output.lower()
 
