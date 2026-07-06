@@ -160,10 +160,16 @@ class Signature(BaseModel):
 
 
 class Symbol(BaseModel):
-    """A symbol in the library (function, class, method, etc.)."""
+    """A symbol in the library (function, class, method, etc.).
+
+    ``aliases`` lists alternative full symbol IDs where the symbol is
+    re-exported (e.g. ``["requests:get"]``); the ``symbols`` map key stays
+    the definition site.
+    """
 
     kind: SymbolKind
     module: str | None = None
+    aliases: list[str] | None = None
     signatures: list[Signature] | None = None
     semantics: Semantics
     effects: Effects | None = None

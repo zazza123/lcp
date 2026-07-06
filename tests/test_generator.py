@@ -20,6 +20,7 @@ from lcp.scanner import (
     ScannedParam,
     ScannedSignature,
     ScannedSymbol,
+    scan_package,
 )
 
 
@@ -326,3 +327,43 @@ class TestGenerateLcp:
         entry = doc.detailed_index["testlib:my_func"]
         assert entry.implementation.path == "/path/to/file.py"
         assert entry.implementation.lines == [10, 20]
+
+
+class TestAliasEmission:
+    def test_convert_symbol_emits_sorted_alias_ids(self):
+        scanned = ScannedSymbol(
+            name="CoreClass",
+            qualified_name="CoreClass",
+            module_path="sample_package.core",
+            kind="class",
+            summary="A class.",
+            aliases=[
+                ("sample_package", "CoreClass"),
+                ("sample_package.allexport", "CoreClass"),
+            ],
+        )
+        symbol_id, symbol = _convert_symbol(scanned)
+        assert symbol_id == "sample_package.core:CoreClass"
+        assert symbol.aliases == [
+            "sample_package.allexport:CoreClass",
+            "sample_package:CoreClass",
+        ]
+
+    def test_convert_symbol_without_aliases_emits_none(self):
+        scanned = ScannedSymbol(
+            name="f",
+            qualified_name="f",
+            module_path="m",
+            kind="function",
+            summary="F.",
+        )
+        _, symbol = _convert_symbol(scanned)
+        assert symbol.aliases is None
+
+    def test_generate_lcp_end_to_end_aliases(self):
+        scanned = scan_package("sample_package")
+        doc = generate_lcp(scanned)
+        core = doc.symbols["sample_package.core:CoreClass"]
+        assert "sample_package:CoreClass" in core.aliases
+        helper = doc.symbols["sample_package.extras:helper"]
+        assert "sample_package:aliased_helper" in helper.aliases

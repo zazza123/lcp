@@ -135,6 +135,11 @@
         },
         "module": { "type": ["string", "null"] },
 
+        "aliases": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        },
+
         "signatures": {
           "type": ["array", "null"],
           "items": { "$ref": "#/$defs/signature" }
