@@ -1302,3 +1302,100 @@ class TestAliasIndex:
         assert "pkg:real" not in index.alias_to_canonical
         canonical, _ = index.resolve_id("pkg:real")
         assert canonical == "pkg:real"
+
+
+class TestAliasResponses:
+    def test_search_hit_presents_preferred_alias(self):
+        index = _aliased_index()
+        result = _search_index(index, "widget")
+        widget = next(
+            r for r in result["results"] if r["kind"] == "class"
+        )
+        assert widget["id"] == "pkg:Widget"
+        assert widget["resolved_via_alias"] == "pkg.core:Widget"
+        assert widget["import"] == "from pkg import Widget"
+
+    def test_search_hit_without_alias_is_unmarked(self):
+        index = _aliased_index()
+        result = _search_index(index, "plain")
+        (hit,) = result["results"]
+        assert hit["id"] == "pkg.other:plain"
+        assert "resolved_via_alias" not in hit
+
+    def test_search_matches_renamed_alias_name(self):
+        doc = {
+            "manifest": ALIASED_DOC["manifest"],
+            "symbols": {
+                "pkg.extras:helper": {
+                    "kind": "function",
+                    "module": "pkg.extras",
+                    "semantics": {"summary": "Helps."},
+                    "aliases": ["pkg:aliased_helper"],
+                },
+            },
+        }
+        index = LCPIndex(LCPDocument.model_validate(doc))
+        result = _search_index(index, "aliased_helper")
+        (hit,) = result["results"]
+        assert hit["id"] == "pkg:aliased_helper"
+        assert hit["resolved_via_alias"] == "pkg.extras:helper"
+
+    def test_get_symbol_via_alias_echoes_requested_id(self):
+        index = _aliased_index()
+        result = _get_symbols(index, ["pkg:Widget"])
+        (entry,) = result["symbols"]
+        assert entry["id"] == "pkg:Widget"
+        assert entry["resolved_via_alias"] == "pkg.core:Widget"
+        assert entry["import"] == "from pkg import Widget"
+        assert result["not_found"] == []
+
+    def test_get_symbol_canonical_keeps_canonical_id(self):
+        index = _aliased_index()
+        result = _get_symbols(index, ["pkg.core:Widget"])
+        (entry,) = result["symbols"]
+        assert entry["id"] == "pkg.core:Widget"
+        assert "resolved_via_alias" not in entry
+        # import still prefers the documented path (F2)
+        assert entry["import"] == "from pkg import Widget"
+        assert entry["aliases"] == ["pkg:Widget", "pkg.convenience:Widget"]
+
+    def test_get_symbol_alias_member_id_resolves(self):
+        index = _aliased_index()
+        result = _get_symbols(index, ["pkg:Widget#render"])
+        (entry,) = result["symbols"]
+        assert entry["id"] == "pkg:Widget#render"
+        assert entry["resolved_via_alias"] == "pkg.core:Widget#render"
+        assert result["not_found"] == []
+
+    def test_class_members_prefixed_with_display_id(self):
+        index = _aliased_index()
+        via_alias = _get_symbols(index, ["pkg:Widget"])["symbols"][0]
+        assert [m["id"] for m in via_alias["members"]] == [
+            "pkg:Widget#render"
+        ]
+        canonical = _get_symbols(index, ["pkg.core:Widget"])["symbols"][0]
+        assert [m["id"] for m in canonical["members"]] == [
+            "pkg.core:Widget#render"
+        ]
+
+    def test_returns_classes_use_display_ids(self):
+        index = _aliased_index()
+        (entry,) = _get_symbols(index, ["pkg.core:make"])["symbols"]
+        assert entry["usage_hints"]["returns_classes"] == ["pkg:Widget"]
+
+    def test_unknown_id_still_not_found(self):
+        index = _aliased_index()
+        result = _get_symbols(index, ["pkg:nothing"])
+        assert result["not_found"] == ["pkg:nothing"]
+
+
+class TestAliasEndToEnd:
+    def test_scanned_package_resolves_root_alias(self):
+        doc = generate_lcp(scan_package("sample_package"))
+        index = LCPIndex(doc)
+        result = _get_symbols(index, ["sample_package:CoreClass"])
+        (entry,) = result["symbols"]
+        assert entry["resolved_via_alias"] == "sample_package.core:CoreClass"
+        assert entry["import"] == "from sample_package import CoreClass"
+        member = _get_symbols(index, ["sample_package:CoreClass#do_something"])
+        assert member["not_found"] == []

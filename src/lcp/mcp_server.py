@@ -607,14 +607,24 @@ def resolve_library_document(
 _VALID_KINDS = [k.value for k in SymbolKind]
 
 
-def _symbol_summary(symbol_id: str, symbol: Symbol) -> dict[str, Any]:
-    """Create a compact search/browse hit for a symbol (spec D4)."""
-    return {
-        "id": symbol_id,
+def _symbol_summary(
+    index: LCPIndex, symbol_id: str, symbol: Symbol
+) -> dict[str, Any]:
+    """Create a compact search/browse hit for a symbol (spec D4/D10).
+
+    Presents the preferred importable id; alias hits carry
+    ``resolved_via_alias`` pointing at the canonical definition site.
+    """
+    display_id = index.preferred_alias.get(symbol_id, symbol_id)
+    hit = {
+        "id": display_id,
         "kind": symbol.kind.value,
         "summary": symbol.semantics.summary,
-        "import": _import_statement(symbol_id, symbol.kind),
+        "import": _import_statement(display_id, symbol.kind),
     }
+    if display_id != symbol_id:
+        hit["resolved_via_alias"] = symbol_id
+    return hit
 
 
 def _search_index(
@@ -666,7 +676,7 @@ def _search_index(
             candidates,
             key=lambda sid: (
                 index.symbols_by_id[sid].kind.value,
-                _symbol_name(sid).lower(),
+                _symbol_name(index.preferred_alias.get(sid, sid)).lower(),
                 sid,
             ),
         )
@@ -674,12 +684,15 @@ def _search_index(
         scored: list[tuple[int, str]] = []
         for sid in candidates:
             symbol = index.symbols_by_id[sid]
-            name = _symbol_name(sid).lower()
-            if name == q:
+            names = {_symbol_name(sid).lower()}
+            names.update(
+                _symbol_name(a).lower() for a in (symbol.aliases or [])
+            )
+            if q in names:
                 score = 0
-            elif name.startswith(q):
+            elif any(n.startswith(q) for n in names):
                 score = 1
-            elif q in name:
+            elif any(q in n for n in names):
                 score = 2
             elif q in symbol.semantics.summary.lower():
                 score = 3
@@ -696,7 +709,8 @@ def _search_index(
 
     total = len(ranked)
     hits = [
-        _symbol_summary(sid, index.symbols_by_id[sid]) for sid in ranked[:limit]
+        _symbol_summary(index, sid, index.symbols_by_id[sid])
+        for sid in ranked[:limit]
     ]
     hits, byte_truncated = _fit_list(hits, max_bytes)
     return {
@@ -751,9 +765,18 @@ def _resolve_type_to_classes(index: LCPIndex, return_type: str) -> list[str]:
 
 
 def _symbol_detail(
-    index: LCPIndex, symbol_id: str, symbol: Symbol, max_bytes: int
+    index: LCPIndex,
+    symbol_id: str,
+    symbol: Symbol,
+    max_bytes: int,
+    requested_id: str | None = None,
 ) -> dict[str, Any]:
-    """Build the full get_symbol payload for one symbol (spec D4).
+    """Build the full get_symbol payload for one symbol (spec D4/D10).
+
+    *symbol_id* is always the canonical id; *requested_id* is echoed as the
+    entry's ``id`` when the caller reached the symbol through an alias, with
+    ``resolved_via_alias`` naming the definition site. The ``import`` line
+    always uses the preferred importable path (F2).
 
     The returned entry is guaranteed to fit *max_bytes*: the description is
     truncated as a last resort, and inline class members get whatever budget
@@ -761,8 +784,12 @@ def _symbol_detail(
     unfetchable.
     """
     result = symbol.model_dump(exclude_none=True, mode="json")
-    result["id"] = symbol_id
-    result["import"] = _import_statement(symbol_id, symbol.kind)
+    display_id = requested_id if requested_id is not None else symbol_id
+    result["id"] = display_id
+    if display_id != symbol_id:
+        result["resolved_via_alias"] = symbol_id
+    import_id = index.preferred_alias.get(symbol_id, display_id)
+    result["import"] = _import_statement(import_id, symbol.kind)
 
     if symbol.signatures:
         sig = symbol.signatures[0]
@@ -781,8 +808,9 @@ def _symbol_detail(
             "return_type": _normalize_return_type(sig.returns),
         }
         if hints["return_type"]:
-            returns_classes = _resolve_type_to_classes(
-                index, hints["return_type"]
+            returns_classes = sorted(
+                index.preferred_alias.get(c, c)
+                for c in _resolve_type_to_classes(index, hints["return_type"])
             )
             if returns_classes:
                 hints["returns_classes"] = returns_classes
@@ -808,7 +836,7 @@ def _symbol_detail(
         member_ids = sorted(index.class_members.get(symbol_id, []))
         members = [
             {
-                "id": mid,
+                "id": f"{display_id}#{mid.split('#', 1)[1]}",
                 "kind": index.symbols_by_id[mid].kind.value,
                 "summary": index.symbols_by_id[mid].semantics.summary,
             }
@@ -822,7 +850,7 @@ def _symbol_detail(
             result["members_hint"] = (
                 "Member list truncated. Use search('<member name>', "
                 f"module='{symbol.module}') or get_symbol on "
-                f"'{symbol_id}#<member>' for the rest."
+                f"'{display_id}#<member>' for the rest."
             )
     return result
 
@@ -845,12 +873,16 @@ def _get_symbols(
     """
     details: list[dict[str, Any]] = []
     not_found: list[str] = []
-    for symbol_id in ids:
-        symbol = index.symbols_by_id.get(symbol_id)
+    for requested in ids:
+        canonical, symbol = index.resolve_id(requested)
         if symbol is None:
-            not_found.append(symbol_id)
+            not_found.append(requested)
         else:
-            details.append(_symbol_detail(index, symbol_id, symbol, max_bytes))
+            details.append(
+                _symbol_detail(
+                    index, canonical, symbol, max_bytes, requested_id=requested
+                )
+            )
 
     kept, truncated = _fit_list(details, max_bytes)
     if not kept and details:
@@ -1143,7 +1175,9 @@ def _register_tools(
         answers "what can this object do"; fetch a member id (Class#member)
         for its full signature. usage_hints.returns_classes links a return
         type to its class id — verify methods on returned objects instead of
-        inventing them.
+        inventing them. Re-exported symbols resolve under both their
+        canonical id and their documented import path (aliases); alias
+        answers carry resolved_via_alias.
 
         Args:
             ids: Symbol ids from search results, e.g.
