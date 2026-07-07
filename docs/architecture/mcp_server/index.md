@@ -11,6 +11,7 @@ The universal server (`lcp serve-all`) is the single implementation: agents call
 - `lcp serve-all` command: single, always-on MCP server for any Python library
 - Four-tool surface designed around a three-call workflow: `resolve_library` → `search` → `get_symbol` (+ `get_overview` for orientation)
 - On-demand library resolution with three-tier fallback: local cache → live scan → remote registry
+- Live scans run in a disposable child interpreter by default (crash isolation, no import-lock stalls) and can target a different virtualenv via `--scan-python`
 - Ranked search with exact import lines in every hit; empty query browses deterministically
 - Batch `get_symbol` with inline class-member summaries and exact return-type-to-class resolution
 - Structured error dicts with stable shape and recovery hints on every failure path
@@ -40,6 +41,9 @@ The universal server (`lcp serve-all`) is the single implementation: agents call
 | `--expose TEXT` | all packages | Restrict `resolve_library` to these package names (repeatable) |
 | `--preload TEXT` | *(none)* | Resolve these packages at startup (repeatable) |
 | `--max-response-bytes INT` | `25000` | Byte budget for list-returning tool responses |
+| `--scan-mode [subprocess\|inprocess]` | `subprocess` | Whether live scans run in a child interpreter or in the server process |
+| `--scan-python TEXT` | server's interpreter | Interpreter whose environment live scans read |
+| `--scan-timeout FLOAT` | `60.0` | Seconds before a subprocess scan is killed |
 
 ### Setup (one-time)
 
@@ -61,6 +65,8 @@ claude mcp add lcp -- lcp serve-all
 | `MultiLibraryIndex` | `src/lcp/mcp_server.py` | Registry of loaded `LCPIndex` instances with per-library resolution source; enforces explicit-library disambiguation |
 | `LCPServer` | `src/lcp/mcp_server.py` | Dataclass bundling the FastMCP instance, the index registry, and the raw tool callables |
 | `resolve_library_document()` | `src/lcp/mcp_server.py` | Resolves a library via cache, live scan, or remote registry fetch |
+| `scan_package_subprocess()` | `src/lcp/subprocess_scan.py` | Runs a live scan in a child interpreter and classifies failures as typed exceptions |
+| `lcp.scanjson` | `src/lcp/scanjson.py` | Machine-mode scan entry point executed inside the scan interpreter (LCP JSON on stdout, structured errors on stderr, exit-code contract) |
 | `_register_tools()` | `src/lcp/mcp_server.py` | Single registration path for the four tools, shared by all entry points |
 | `create_universal_server()` | `src/lcp/mcp_server.py` | Constructs the universal `LCPServer` |
 | `run_universal_server()` | `src/lcp/mcp_server.py` | Starts the universal server |

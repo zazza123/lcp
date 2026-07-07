@@ -18,7 +18,7 @@ flowchart LR
     E --> F["resolve_library('pkg')"]
     F --> G{"Cache hit?"}
     G -- yes --> H["load from ~/.lcp/cache/"]
-    G -- no --> I["scan_package() + generate_lcp()"]
+    G -- no --> I["subprocess scan\n(lcp.scanjson in child interpreter)"]
     I --> J["save to cache"]
     I -- scan fails --> R{"--registry set?"}
     R -- yes --> S["_fetch_from_registry()"]
@@ -28,7 +28,26 @@ flowchart LR
     J --> K
 ```
 
-Tool registration lives in a single function, `_register_tools()` in `src/lcp/mcp_server.py`, parameterized by the `MultiLibraryIndex` registry, the cache/registry settings, an optional package allow-list, and the response byte budget. Both CLI entry points share it, which removed the ~450 lines previously duplicated between the two servers. `create_universal_server()` returns an `LCPServer` dataclass bundling the FastMCP instance, the index registry, and the raw tool callables — the latter is what the test suite and the startup preload loop invoke directly, replacing the former `tool_funcs` attribute-stuffing.
+Tool registration lives in a single function, `_register_tools()` in `src/lcp/mcp_server.py`, parameterized by the `MultiLibraryIndex` registry, the cache/registry settings, an optional package allow-list, the response byte budget, and the scan configuration (mode, interpreter, timeout). Both CLI entry points share it, which removed the ~450 lines previously duplicated between the two servers. `create_universal_server()` returns an `LCPServer` dataclass bundling the FastMCP instance, the index registry, and the raw tool callables — the latter is what the test suite and the startup preload loop invoke directly, replacing the former `tool_funcs` attribute-stuffing.
+
+## Subprocess Scanning
+
+The live-scan step of `resolve_library_document()` runs in a **disposable child interpreter** by default, implemented by `scan_package_subprocess()` in `src/lcp/subprocess_scan.py` with `lcp.scanjson` as the child-side entry point. Three problems motivated moving the scan out of the server process:
+
+1. **Crash isolation** — importing a package executes its import-time code; a package that raises `SystemExit` (or crashes the interpreter) must degrade to a structured `resolve_failed` error, not take the agent-facing server down.
+2. **Responsiveness** — FastMCP runs sync tools on worker threads, but the CPython import lock and the GIL still stall *concurrent* tool calls while a heavy import runs in-process. Waiting on a child process holds neither.
+3. **Cross-environment reach** — the server's environment is often not the project's environment (the #1 real-world friction). The child interpreter is configurable (`scan_python`), so the server can document packages installed in a different virtualenv.
+
+The subprocess protocol **is the public LCP document format**: the child writes the manifest JSON to stdout, one structured JSON error object to stderr, and signals the failure class by exit code (0 success, 3 import failure, 4 scan failure). There is no private IPC format to version — the contract is documented in the [CLI reference](../../cli.md).
+
+Two design rules keep the cross-environment path correct:
+
+- **Append, never prepend.** The child is bootstrapped with the server's `lcp` and `pydantic` locations *appended* to its `sys.path`, so the target environment's own packages always win and the server's site-packages can never shadow what is being scanned. The target environment therefore does not need `lcp` installed.
+- **Fallback only on spawn failure, and only for the server's own environment.** `_scan_live()` retries in-process solely when the subprocess could not be *spawned* (no package code ran) and no `scan_python` is configured. A spawn failure with a configured interpreter errors instead of silently scanning the wrong venv, and a scan *crash* is never retried in-process — that would re-import the crashing package inside the server.
+
+`resolve_library_document()` remains the single choke point: the cache write side effect and the cache → scan → registry resolution order are identical in both scan modes, and the "installed in a different environment" error now names the actual scan interpreter and its `.lcp.json` remedy (`scan_python` / `python`).
+
+**Residual trust model:** process isolation contains crashes and hangs; it is not a sandbox. The scanned package's import-time code still executes with the user's permissions, in the child. This is documented honestly in the [server guide](../../guides/mcp-server.md) rather than papered over.
 
 ## Index Design
 
@@ -112,7 +131,7 @@ This format is used as keys in all index structures, in `search` results, and as
 
 | Command | Delegates to |
 |---------|-------------|
-| `lcp serve-all` | `run_universal_server(name=..., cache_dir=..., expose=..., preload=..., max_response_bytes=...)` |
+| `lcp serve-all` | `run_universal_server(name=..., cache_dir=..., expose=..., preload=..., max_response_bytes=..., scan_mode=..., scan_python=..., scan_timeout=...)` |
 | `lcp serve <manifest>` (deprecated) | `run_server(manifest_path, name=...)`, which builds the universal server pre-loaded with the manifest |
 
 ## Related Documentation

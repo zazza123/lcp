@@ -74,6 +74,17 @@ flowchart TD
 
 The `SessionStart` hook in `hooks/hooks.json` is independent of the wrapper — it runs as a shell command at the start of every session to provide a human-readable warning if `lcp` is missing, even when the MCP server has already failed silently.
 
+### Launcher Interpreter vs Scan Interpreter
+
+`serve.sh` resolves **two distinct interpreters** from `.lcp.json`, and conflating them is how a server ends up scanning the wrong virtualenv:
+
+| Role | Config field | What it does |
+|------|--------------|--------------|
+| Launcher | `command` / `python` (probed, with venv and global fallbacks) | Runs the `lcp serve-all` server process |
+| Scan interpreter | `scan_python`, falling back to `python` | The environment `resolve_library` scans, passed as `--scan-python` |
+
+The fallback from `scan_python` to `python` is deliberate: the user's intent for `python` is "my project's interpreter". In the common friction case — `lcp` installed globally, project venv without `lcp` — the launcher probe rejects `python -m lcp` and starts the server from the global install, but the scan must still target the project venv the user pointed at. The server performs the scan in a child process spawned from that interpreter (see [MCP Server Architecture](../mcp_server/architecture.md)), so the target venv does not need `lcp` installed. When neither field is set, the server scans its own environment. Argument assembly lives in the `lcp_build_args` function of `bin/serve.sh`, sourceable in lib mode for the shell tests.
+
 ## Skills Design
 
 Skills are auto-invoked by Claude Code based on their `description` frontmatter. Both skills accept `$ARGUMENTS` for direct invocation:
@@ -149,5 +160,5 @@ flowchart LR
 - [Registry Publish](../publish/index.md) — How manifests are published to the remote registry used as plugin fallback
 
 ---
-**Last Updated:** May 2026 (updated: marketplace catalog)
+**Last Updated:** July 2026 (updated: scan interpreter pass-through)
 **Status:** Implemented

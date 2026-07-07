@@ -32,6 +32,26 @@ lcp scan requests -o requests.lcp.json
 lcp scan numpy --include-private
 ```
 
+### Machine-mode scanning: `python -m lcp.scanjson`
+
+For programmatic callers — including the MCP server's own [subprocess scanning](guides/mcp-server.md#scanning-environment) — `lcp.scanjson` is a machine-mode scan entry point with a strict output contract. It writes the LCP JSON document to stdout, reports errors as a single JSON object on stderr, and distinguishes failures by exit code:
+
+```bash
+python -m lcp.scanjson PACKAGE [--include-private] [--no-recursive]
+```
+
+| Exit code | Meaning | Output |
+|-----------|---------|--------|
+| `0` | Success | LCP JSON document on stdout |
+| `3` | Import failure — the package could not be imported | `{"type": "import_failure", "message": ...}` on stderr |
+| `4` | Scan failure — the package imported but scanning or generation failed (including `SystemExit` raised by import-time code) | `{"type": "scan_failure", "message": ...}` on stderr |
+
+Unlike `lcp scan`, this entry point never prints human-readable progress, and it only needs `lcp` and `pydantic` importable in the interpreter that runs it (no `click`) — so it can run inside a project virtualenv that does not have the full CLI installed. Import-time prints from the scanned package are redirected to stderr so they cannot corrupt the stdout document.
+
+```bash
+python -m lcp.scanjson requests > requests.lcp.json
+```
+
 ## `lcp validate`
 
 Validate an LCP JSON file against the LCP schema.
@@ -83,6 +103,9 @@ lcp serve-all [OPTIONS]
 | `--expose TEXT` | all packages | Restrict `resolve_library` to these package names (repeatable). |
 | `--preload TEXT` | — | Resolve these packages at startup (repeatable). |
 | `--max-response-bytes INT` | `25000` | Byte budget for list-returning tool responses (context blowout guard). |
+| `--scan-mode [subprocess\|inprocess]` | `subprocess` | How `resolve_library` scans installed packages. `subprocess` isolates package imports in a disposable child process (crash isolation, cross-venv scanning, no import-lock stalls); `inprocess` imports into the server process, for environments where spawning is restricted. |
+| `--scan-python TEXT` | server's interpreter | Python interpreter whose environment `resolve_library` scans. Lets the server document packages installed in a different venv. |
+| `--scan-timeout FLOAT` | `60.0` | Seconds before a subprocess scan is killed. |
 
 **Example:**
 
@@ -90,6 +113,7 @@ lcp serve-all [OPTIONS]
 lcp serve-all
 lcp serve-all --registry https://raw.githubusercontent.com/zazza123/lcp-registry/refs/heads/main
 lcp serve-all --expose requests --preload requests
+lcp serve-all --scan-python /path/to/project/.venv/bin/python
 ```
 
 ## `lcp coverage`

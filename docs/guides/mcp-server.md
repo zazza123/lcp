@@ -10,6 +10,8 @@ Model Context Protocol (MCP) is an open standard for connecting AI assistants to
 
 When `lcp serve-all` starts, it waits for the agent to load libraries. Each `resolve_library` call builds an in-memory `LCPIndex` from the library's LCP manifest (local cache → live scan of the installed package → optional registry fetch). The index organises every symbol by module path, kind, and class membership so that tool calls are answered without scanning the whole document each time.
 
+By default the live scan runs in a **disposable child interpreter** rather than inside the server process. Importing a package executes its import-time code, so isolating the scan means a package that crashes on import (or calls `sys.exit`) produces a clean, structured error instead of killing the server, and a slow, heavy import cannot stall concurrent tool calls. The child writes the standard LCP JSON document to stdout — the subprocess protocol is the public document format, nothing private. It also unlocks cross-environment scanning: the server can document packages installed in a *different* virtualenv (see [Scanning environment](#scanning-environment)).
+
 The server communicates over **stdio** using the MCP protocol. The client process spawns `lcp serve-all` as a subprocess and exchanges JSON-RPC messages with it. The server registers exactly **four tools**, designed around a three-call workflow: `resolve_library` → `search` → `get_symbol`. The server's MCP *instructions* field teaches connected agents this workflow automatically.
 
 ```mermaid
@@ -50,6 +52,26 @@ lcp serve-all --cache-dir /tmp/lcp-cache \
 ```
 
 Use `--expose` to restrict which packages the agent may load, `--preload` to warm specific libraries at startup, and `--max-response-bytes` to tune the response-size guard. See [CLI reference](../cli.md) for all flags.
+
+### Scanning environment
+
+Live scans run in a child interpreter, and three flags control how:
+
+```bash
+lcp serve-all --scan-python /path/to/project/.venv/bin/python --scan-timeout 120
+```
+
+- `--scan-python` selects the interpreter **whose environment gets scanned** (default: the interpreter running the server). This is how a globally installed `lcp` documents packages that live only in your project's virtualenv — the target environment does not need `lcp` installed; the server makes its own copy importable in the child without shadowing the target's packages.
+- `--scan-timeout` (default 60 s) kills scans that hang, e.g. a package whose import blocks on the network.
+- `--scan-mode inprocess` restores the old behavior of importing packages directly into the server process. Use it only where spawning subprocesses is restricted; the server also falls back to it automatically when a scan subprocess cannot be spawned at all and the scan targets the server's own environment.
+
+When using the [Claude Code plugin](claude-code-plugin.md), set `scan_python` (or `python`) in `.lcp.json` instead of passing flags — the plugin forwards them.
+
+!!! warning "Trust model"
+    Scanning imports the package, and importing executes the package's
+    import-time code. The subprocess contains crashes, hangs, and interpreter
+    exits — it is **not a sandbox**: the scanned code runs with your user's
+    permissions. Only resolve packages you would be willing to import yourself.
 
 !!! warning "`lcp serve` is deprecated"
     The single-manifest `lcp serve <manifest>` command is deprecated. It now starts the same universal server, pre-loaded with the manifest and restricted to that library, and prints a deprecation warning. Use `lcp serve-all --expose <package>` instead.

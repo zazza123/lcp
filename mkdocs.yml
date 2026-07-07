@@ -139,5 +139,6 @@ nav:
       - Diff: api/diff.md
       - Publish: api/publish.md
       - MCP Server: api/mcp-server.md
+      - Subprocess Scan: api/subprocess-scan.md
       - AI DocGen: api/ai.md
   - Registry: https://zazza123.github.io/lcp-registry/

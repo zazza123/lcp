@@ -14,6 +14,7 @@ Auto-generated reference for the public Python API of the LCP SDK, extracted dir
 | [Diff](diff.md) | Compares two LCP manifests and detects deprecations |
 | [Publish](publish.md) | Submits manifests to the registry via GitHub Pull Request |
 | [MCP Server](mcp-server.md) | Serves LCP manifests to AI agents over the Model Context Protocol |
+| [Subprocess Scan](subprocess-scan.md) | Runs live scans in a child interpreter; machine-mode `lcp.scanjson` entry point |
 | [AI DocGen](ai.md) | Optional LLM-based docstring generation (`lcp[ai]`) |
 
 !!! tip "Top-level entry point"
