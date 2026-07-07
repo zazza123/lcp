@@ -1101,6 +1101,9 @@ def _register_tools(
     registry_url: str | None = None,
     allow: set[str] | None = None,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+    scan_mode: str = "subprocess",
+    scan_python: str | None = None,
+    scan_timeout: float = DEFAULT_SCAN_TIMEOUT,
 ) -> dict[str, Callable[..., Any]]:
     """Register the four V2 tools on *mcp* against *libraries* (spec D1).
 
@@ -1116,6 +1119,11 @@ def _register_tools(
         registry_url: Optional registry fallback URL for resolve_library.
         allow: Optional allow-list of resolvable package names (None = all).
         max_response_bytes: Byte budget applied to list-returning payloads.
+        scan_mode: Live-scan strategy for resolve_library: ``"subprocess"``
+            (default) or ``"inprocess"``.
+        scan_python: Interpreter whose environment live scans read
+            (default: the interpreter running the server).
+        scan_timeout: Seconds before a subprocess scan is killed.
 
     Returns:
         Dict of tool name → raw callable for in-process invocation.
@@ -1172,6 +1180,9 @@ def _register_tools(
                 no_cache=no_cache,
                 registry_url=registry_url,
                 version=version,
+                scan_mode=scan_mode,
+                scan_python=scan_python,
+                scan_timeout=scan_timeout,
             )
         except ImportError as exc:
             return _error(
@@ -1318,6 +1329,9 @@ def create_universal_server(
     expose: list[str] | None = None,
     preload: list[str] | None = None,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+    scan_mode: str = "subprocess",
+    scan_python: str | None = None,
+    scan_timeout: float = DEFAULT_SCAN_TIMEOUT,
 ) -> LCPServer:
     """Create a universal MCP server that resolves any installed Python library.
 
@@ -1333,6 +1347,12 @@ def create_universal_server(
         expose: Optional allow-list of package names resolve_library may load.
         preload: Package names to resolve eagerly at startup.
         max_response_bytes: Byte budget for list-returning tool responses.
+        scan_mode: Live-scan strategy: ``"subprocess"`` (default) isolates
+            package imports in a child process; ``"inprocess"`` imports into
+            the server process.
+        scan_python: Interpreter whose environment live scans read
+            (default: the interpreter running the server).
+        scan_timeout: Seconds before a subprocess scan is killed.
 
     Returns:
         An :class:`LCPServer` bundling the FastMCP instance, the library
@@ -1355,6 +1375,9 @@ def create_universal_server(
         registry_url=registry_url,
         allow=allow,
         max_response_bytes=max_response_bytes,
+        scan_mode=scan_mode,
+        scan_python=scan_python,
+        scan_timeout=scan_timeout,
     )
 
     for pkg in preload or []:
@@ -1423,6 +1446,9 @@ def run_universal_server(
     expose: list[str] | None = None,
     preload: list[str] | None = None,
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
+    scan_mode: str = "subprocess",
+    scan_python: str | None = None,
+    scan_timeout: float = DEFAULT_SCAN_TIMEOUT,
 ) -> None:
     """Create and run a universal MCP server that resolves any installed Python library.
 
@@ -1436,6 +1462,11 @@ def run_universal_server(
             When ``None`` or empty, all packages are allowed.
         preload: Package names to resolve eagerly at startup.
         max_response_bytes: Byte budget for list-returning tool responses.
+        scan_mode: Live-scan strategy: ``"subprocess"`` (default) or
+            ``"inprocess"``.
+        scan_python: Interpreter whose environment live scans read
+            (default: the interpreter running the server).
+        scan_timeout: Seconds before a subprocess scan is killed.
     """
     server = create_universal_server(
         name=name,
@@ -1445,5 +1476,8 @@ def run_universal_server(
         expose=expose,
         preload=preload,
         max_response_bytes=max_response_bytes,
+        scan_mode=scan_mode,
+        scan_python=scan_python,
+        scan_timeout=scan_timeout,
     )
     server.run()

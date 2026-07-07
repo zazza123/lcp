@@ -272,3 +272,30 @@ class TestResolveViaSubprocess:
                 no_cache=True,
                 scan_timeout=1.0,
             )
+
+
+from lcp.mcp_server import create_universal_server
+
+
+class TestServerScanPlumbing:
+    def test_scan_params_reach_the_resolver(self, tmp_path, monkeypatch):
+        calls: dict = {}
+
+        def fake_resolve(name, **kwargs):
+            calls.update(kwargs)
+            raise ImportError("stop here")
+
+        monkeypatch.setattr(
+            "lcp.mcp_server.resolve_library_document", fake_resolve
+        )
+        server = create_universal_server(
+            cache_dir=tmp_path,
+            scan_mode="inprocess",
+            scan_python="/x/py",
+            scan_timeout=5.0,
+        )
+        result = server.tools["resolve_library"]("whatever")
+        assert result["error"]["code"] == "resolve_failed"
+        assert calls["scan_mode"] == "inprocess"
+        assert calls["scan_python"] == "/x/py"
+        assert calls["scan_timeout"] == 5.0

@@ -341,6 +341,36 @@ def serve(manifest: str, name: str | None):
     show_default=True,
     help="Byte budget for list-returning tool responses (context blowout guard).",
 )
+@click.option(
+    "--scan-mode",
+    type=click.Choice(["subprocess", "inprocess"]),
+    default="subprocess",
+    show_default=True,
+    help=(
+        "How resolve_library scans installed packages: 'subprocess' isolates "
+        "package imports in a disposable child process (crash isolation, "
+        "cross-venv scanning, no import-lock stalls); 'inprocess' imports "
+        "into the server process (for environments where spawning is "
+        "restricted)."
+    ),
+)
+@click.option(
+    "--scan-python",
+    type=str,
+    default=None,
+    help=(
+        "Python interpreter whose environment resolve_library scans "
+        "(default: the interpreter running the server). Lets the server "
+        "document packages installed in a different venv."
+    ),
+)
+@click.option(
+    "--scan-timeout",
+    type=float,
+    default=60.0,
+    show_default=True,
+    help="Seconds before a subprocess scan is killed.",
+)
 def serve_all(
     cache_dir: str | None,
     name: str,
@@ -349,6 +379,9 @@ def serve_all(
     expose: tuple[str, ...],
     preload: tuple[str, ...],
     max_response_bytes: int,
+    scan_mode: str,
+    scan_python: str | None,
+    scan_timeout: float,
 ):
     """Start a universal MCP server that resolves any installed Python library.
 
@@ -395,6 +428,9 @@ def serve_all(
             expose=list(expose) if expose else None,
             preload=list(preload) if preload else None,
             max_response_bytes=max_response_bytes,
+            scan_mode=scan_mode,
+            scan_python=scan_python,
+            scan_timeout=scan_timeout,
         )
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
