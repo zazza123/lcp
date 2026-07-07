@@ -154,6 +154,7 @@ class Signature(BaseModel):
     async_: bool = Field(default=False, alias="async")
     params: list[Param] | None = None
     returns: TypeRef | str | None = None
+    returns_description: str | None = None
     raises: list[RaisesEntry] | None = None
 
     model_config = ConfigDict(extra="allow", populate_by_name=True)

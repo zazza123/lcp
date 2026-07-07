@@ -21,16 +21,19 @@ from lcp.mcp_server import (
     _resolve_type_to_classes,
     _save_to_cache,
     _search_index,
+    _symbol_detail,
     create_server,
     create_universal_server,
     load_lcp_document,
     resolve_library_document,
 )
 from lcp.models import (
+    Example,
     LCPDocument,
     Library,
     Manifest,
     Param,
+    RaisesEntry,
     Semantics,
     Signature,
     Symbol,
@@ -1399,3 +1402,69 @@ class TestAliasEndToEnd:
         assert entry["import"] == "from sample_package import CoreClass"
         member = _get_symbols(index, ["sample_package:CoreClass#do_something"])
         assert member["not_found"] == []
+
+
+def _documented_symbol() -> Symbol:
+    return Symbol(
+        kind=SymbolKind.FUNCTION,
+        module="pkg",
+        signatures=[
+            Signature(
+                params=[Param(name="x", type="int", description="The x value.")],
+                returns="str",
+                returns_description="The rendered result.",
+                raises=[RaisesEntry(type="ValueError", condition="If x < 0.")],
+            )
+        ],
+        semantics=Semantics(
+            summary="Do a thing.",
+            examples=[
+                Example(code=">>> do_thing(1)\n'ok'", description="Basic."),
+                Example(code=">>> do_thing(2)\n'ok2'"),
+            ],
+        ),
+    )
+
+
+class TestStructuredFieldsInGetSymbol:
+    """Phase 4: structured docstring fields flow into get_symbol responses."""
+
+    def test_structured_fields_exposed(self):
+        symbol = _documented_symbol()
+        index = make_index({"pkg:do_thing": symbol}, name="pkg")
+        detail = _symbol_detail(index, "pkg:do_thing", symbol, 25_000)
+        sig = detail["signatures"][0]
+        assert sig["params"][0]["description"] == "The x value."
+        assert sig["returns_description"] == "The rendered result."
+        assert sig["raises"] == [{"type": "ValueError", "condition": "If x < 0."}]
+        assert len(detail["semantics"]["examples"]) == 2
+
+    def test_examples_truncated_before_description(self):
+        symbol = _documented_symbol()
+        symbol.semantics.description = "prose " * 50
+        big = Example(code=">>> big()\n" + "x" * 2000)
+        symbol.semantics.examples = [symbol.semantics.examples[0], big]
+        index = make_index({"pkg:do_thing": symbol}, name="pkg")
+        detail = _symbol_detail(index, "pkg:do_thing", symbol, 1_200)
+        assert detail.get("examples_truncated") is True
+        assert len(json.dumps(detail, default=str)) <= 1_200
+        # the description survived because examples were sacrificed first
+        assert detail["semantics"]["description"].startswith("prose")
+
+    def test_all_examples_dropped_when_budget_is_tiny(self):
+        symbol = _documented_symbol()
+        symbol.semantics.examples = [
+            Example(code=">>> big()\n" + "x" * 3000),
+            Example(code=">>> bigger()\n" + "y" * 3000),
+        ]
+        index = make_index({"pkg:do_thing": symbol}, name="pkg")
+        detail = _symbol_detail(index, "pkg:do_thing", symbol, 900)
+        assert detail.get("examples_truncated") is True
+        assert "examples" not in detail.get("semantics", {})
+        assert len(json.dumps(detail, default=str)) <= 900
+
+    def test_no_truncation_marker_when_within_budget(self):
+        symbol = _documented_symbol()
+        index = make_index({"pkg:do_thing": symbol}, name="pkg")
+        detail = _symbol_detail(index, "pkg:do_thing", symbol, 25_000)
+        assert "examples_truncated" not in detail

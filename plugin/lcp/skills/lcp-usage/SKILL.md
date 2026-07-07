@@ -40,7 +40,7 @@ browses a module's contents.
 |------|---------|
 | `resolve_library(name, version?)` | Load a library (cache / scan / registry). Always call first. |
 | `search(query, library?, module?, kind?, limit?)` | Ranked symbol search; empty query = browse. Hits include the import line and present the documented (re-export) id, with `resolved_via_alias` naming the definition site. |
-| `get_symbol(ids, library?)` | Batch: full signatures, params, return types, import lines; classes inline member summaries. Accepts canonical and alias ids alike — the `import` line is the documented path, copy it as-is. |
+| `get_symbol(ids, library?)` | Batch: full signatures, params with descriptions, return types + `returns_description`, `raises` conditions, docstring examples, import lines; classes inline member summaries. Accepts canonical and alias ids alike — the `import` line is the documented path, copy it as-is. |
 | `get_overview(library?)` | Library identity + module tree with symbol counts. |
 
 ## Rules

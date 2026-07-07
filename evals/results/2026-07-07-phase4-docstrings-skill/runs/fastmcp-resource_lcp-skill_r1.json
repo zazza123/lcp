@@ -1,0 +1,38 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\n\nserver = Server(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config():\n    return {\n        \"app_name\": \"MyApp\",\n        \"version\": \"1.0.0\",\n        \"debug\": True,\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432\n        },\n        \"features\": {\n            \"authentication\": True,\n            \"caching\": True\n        }\n    }\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nfrom fastmcp import Server\n\nserver = Server(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config():\n    return {\n        \"app_name\": \"MyApp\",\n        \"version\": \"1.0.0\",\n        \"debug\": True,\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432\n        },\n        \"features\": {\n            \"authentication\": True,\n            \"caching\": True\n        }\n    }\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 1941,
+    "cache_read_tokens": 38406,
+    "cache_creation_tokens": 7117,
+    "cost_usd": 0.027795600000000004,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 23.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

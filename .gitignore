@@ -32,6 +32,7 @@ MANIFEST
 *.manifest
 *.spec
 !docs/manifest/
+!docs/architecture/manifest/
 
 # Installer logs
 pip-log.txt

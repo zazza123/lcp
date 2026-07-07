@@ -63,7 +63,8 @@ Each entry in `signatures` describes one callable form:
 | `async` | boolean | Whether the call is asynchronous. Defaults to `false`. |
 | `params` | `array<param>` \| null | Ordered parameter list. |
 | `returns` | type_ref | Return type. A plain string or a structured type object. |
-| `raises` | `array<{type, condition?}>` \| null | Exceptions the callable may raise. |
+| `returns_description` | string \| null | Prose description of the return value, extracted from the docstring. |
+| `raises` | `array<{type, condition?}>` \| null | Exceptions the callable may raise, with the condition under which each is raised. |
 
 ## Validating a document
 

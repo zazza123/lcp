@@ -545,7 +545,26 @@ accepts both old and new manifests.
 
 ## Phase 4 — Structured docstrings + examples
 
-**Status:** not started — blocked by Phase 1
+**Status:** done (2026-07-07) — plan:
+`docs/superpowers/plans/2026-07-07-phase-4-structured-docstrings.md`. Shipped:
+`docstring_parser` as a core dep (D11 sign-off); new `src/lcp/docstrings.py`
+with fail-open `extract_structured()` (Google + NumPy; params, raises,
+returns, doctest/verbatim examples); scanner captures the raw docstring
+(capture only — resilience untouched); generator merges docstring params by
+name (introspection wins, unmatched entries never invent a `Param`),
+`semantics.description` keeps the full raw remainder (the parser drops
+mid-docstring `Note:`-style sections, so rebuilding it would lose prose);
+additive `Signature.returns_description` under schema `"1.0"` (settled with
+the user — `type_ref` has no description slot; both schema copies updated);
+`get_symbol` drops trailing examples before the description under the 25k cap
+(`examples_truncated`). Exit criteria (measured): documented params with
+description 98.9–99.6 % on fastmcp/polars/click (threshold ≥90 %); manifest
+gzip growth ×1.09–1.28 (≤2×, inline-vs-lazy not reopened); polars
+`DataFrame` entry 24 791 B under the cap. Doctest extraction was NOT
+de-scoped. Eval re-run recorded (see log + analysis.md: engaged-run quality
+unchanged, topline delta is F1 engagement variance). **The manifest format
+is now FROZEN for Phase 7 registry population** — additive ideas discovered
+from here on are post-launch.
 
 **Objective:** Populate the fields that differentiate LCP from "type stubs in
 JSON": per-parameter descriptions, `raises`, and usage examples extracted
@@ -605,6 +624,80 @@ fields exist), `pyproject.toml` (dependency, if approved),
 descriptions (set X from a quick pre-measurement, don't guess); eval re-run
 recorded; manifest size growth measured and reported (gzip) — if manifests
 balloon >2×, revisit what `get_symbol` inlines vs. lazy-loads.
+
+---
+
+## Phase 4b — Engagement iteration (skill + hooks)
+
+**Status:** not started — unblocked (added 2026-07-07 after the Phase 4
+retrospective; uses only the existing harness, no manifest/server changes)
+
+**Objective:** Raise lcp-skill engagement on the 8 F1 cases from the current
+13–15/24 to **≥18/24** without degrading engaged-run quality, by iterating on
+the plugin skill text and the plugin hooks — not on the server.
+
+**Why:** Phases 3–4 proved the product claim: engaged runs pass 27/28 with
+**zero** misuse, and every measured hallucination sits in a non-engaged run.
+Content work is frozen (Phase 4); engagement (F1) is now the binding
+constraint, and it is also the cheapest thing to iterate — a full F1
+comparison run costs ~$1.30 and ~30 minutes, so several variants fit in one
+session. Strategic framing confirmed 2026-07-07: the target user is agents
+working on code LLMs *don't* know (niche, churned, private packages), where
+the model cannot fall back on parametric knowledge — engagement is the whole
+game there.
+
+**Scope (in):**
+- A/B variants of `plugin/lcp/skills/lcp-universal/SKILL.md`, measured
+  independently with the existing harness (lcp-skill arm, 8 F1 cases,
+  3 reps, haiku pinned, `--case-id` filters — see the eval-runner memory):
+  - **Variant A — deferred-tools step:** the observed stall is a lone
+    `ToolSearch` call and nothing after it (the model loads the deferred MCP
+    tools and behaves as if it verified something). Add an explicit
+    instruction: load the lcp tools via ToolSearch, then **call**
+    `resolve_library` — loading is not verifying.
+  - **Variant B — unconditional first action:** engagement is bimodal
+    (0-or-full-chain), so the failure is the first step, not workflow
+    comprehension. Reframe: "before writing ANY import statement, your first
+    tool call is `resolve_library(<package>)`".
+  - **Variant C — shorter body:** haiku compliance may degrade with prompt
+    length; a compressed skill body tests that hypothesis. Optional few-shot
+    example if length allows.
+- **Hook experiment:** a `PreToolUse` hook on Write/Edit in
+  `plugin/lcp/hooks/hooks.json` that reminds the agent when no
+  `mcp__lcp__*` call has happened in the session — deterministic where
+  prose is probabilistic, and robust to CLI-version drift (the ToolSearch
+  stall pattern is harness-version-sensitive; 2.1.201→2.1.202 already
+  showed variance).
+- Every run records `claude --version` in meta.json; compare variants on
+  (1) engagement rate (runs with ≥1 `mcp__lcp__*` call in
+  `tool_call_details`), (2) pass rate, (3) engaged-run misuse — which MUST
+  stay 0 (a variant that raises engagement but degrades engaged quality
+  loses).
+- Ship the winning variant (skill + hook if it earns its keep) in the
+  plugin; docs-alignment rule applies (plugin skill files are shipped docs).
+
+**Scope (out):** manifest/server changes (format frozen at Phase 4), new
+eval cases or task-mix changes (Phase 8), non-Claude harnesses, statistical
+proof (3 reps per variant is a screening filter — Phase 8 confirms).
+
+**Code notes (2026-07-07):**
+- Engagement counting and the stall pattern are documented in
+  `evals/results/2026-07-07-phase4-docstrings-skill/analysis.md`; baselines:
+  Phase 3 engaged 15/24, Phase 4 engaged 13/24, fastmcp stuck at 4/12 in
+  both, cyhole 9–11/12.
+- The skill reaches the model via `--append-system-prompt` in the harness
+  (`evals/run.py`), but real users get it through the plugin's skill
+  auto-trigger — keep the two texts identical (single source of truth in
+  `plugin/lcp/skills/`).
+- `hooks/hooks.json` currently has only a `SessionStart` PATH check; hook
+  output conventions are documented in the Claude Code plugin docs.
+
+**Exit criteria:** best variant reaches ≥18/24 engaged with engaged-run
+misuse = 0 across the standard 24-run comparison; shipped in the plugin;
+results + per-variant table recorded in the eval log; if NO variant beats
+15/24 meaningfully, record that honestly and move the engagement problem to
+Phase 8's task-mix design (harder tasks on unknown code may engage
+naturally).
 
 ---
 
@@ -679,7 +772,7 @@ library doesn't freeze concurrent tool calls.
 
 ## Phase 6 — Documentation truth + positioning
 
-**Status:** 6a unblocked now; 6b blocked by Phases 2–4
+**Status:** 6a unblocked now; 6b unblocked (Phases 2–4 done as of 2026-07-07)
 
 **Objective:** Docs that validate, one consistent story, and explicit
 positioning against the alternatives every evaluator has in mind.
@@ -724,7 +817,7 @@ to choose LCP over Context7.
 
 ## Phase 7 — Registry: CI verification + pre-population
 
-**Status:** not started — blocked by Phases 3–4 (manifest format frozen)
+**Status:** not started — unblocked: manifest format frozen at end of Phase 4 (2026-07-07)
 
 **Objective:** The registry verifies submissions automatically and ships
 pre-built manifests for the top PyPI libraries, so `serve-all --registry`
@@ -748,6 +841,12 @@ has answers on day one.
   an isolated venv (Phase 5 machinery), and opens batched PRs via the
   existing `publish.py` flow. Target: top 100 by download count that aren't
   stdlib-trivial; 500 only if the pipeline proves cheap.
+- Regenerate the 10 pre-freeze manifests already published (6 libraries as
+  of 2026-07-07: azure-ai-contentunderstanding, firebase-admin, google-adk,
+  google-cloud-aiplatform, google-cloud-firestore, google-genai): they
+  validate fine under the frozen `"1.0"` schema but lack the Phase 4
+  structured fields (param descriptions, raises, returns_description,
+  examples). Fold them into the population batch.
 - Idempotent publish: `publish.py` currently fails on re-run for the same
   `(package, version)` (branch/file already exist) — make it upsert or
   cleanly no-op; needed for batch operation.
@@ -866,6 +965,7 @@ internal docs live on the roadmap branch during development but must not reach
 | 2026-07-04 | 2b Exp2 (sonnet, both arms) | sonnet-5, 4 fastmcp cases, 3 reps | 0 | 24/24 (both arms) | — | 0.00 lcp calls/run both arms | sonnet baseline at ceiling: correct fastmcp 2.x from parametric knowledge, nothing to verify → F1 is haiku-class-bound; fastmcp cases can't differentiate for capable models (Phase 8 task-mix note) |
 | 2026-07-06 | 3 rescore (2b Exp1 runs, alias-aware verifier) | haiku-4.5, 8 F1 cases, 3 reps (frozen code) | cyhole 3, fastmcp 10 | **15/24** (cyhole 10/12, fastmcp 5/12) | — | unchanged (no agent runs) | verifier-fairness effect isolated: 10/24 → 15/24 on identical generated code; all 3 jupiter-swap flips (predicted in 2b analysis) + 2 symmetric fastmcp flips (root-required, deep-written). THE baseline for Phase 3 comparisons |
 | 2026-07-06 | 3 (lcp-skill, alias server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.201 | cyhole 2, fastmcp 6 (0.33/run) | **16/24** (cyhole 11/12, fastmcp 5/12) | — | cyhole 9.0, fastmcp 2.08 lcp calls/run | vs rescored baseline: +1 pass, misuse/run 0.54→0.33; jupiter-swap & rugcheck 3/3; agents copy alias ids into get_symbol (tool_call_details); engaged-run hallucinations ≈0 (one invented classmethod); residual failures = non-engagement (F1) + task compliance. fastmcp-server-tool first-ever engagement 0/3→2/3 — tentative, re-measure in Phase 8 |
+| 2026-07-07 | 4 (lcp-skill, structured-docstrings server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 0.71/run (all 17 in non-engaged runs) | 13/24 (cyhole 8/12, fastmcp 5/12) | — | cyhole 8.67, fastmcp 2.08 lcp calls/run | topline down vs Phase 3 but NOT a server regression: engaged runs 12/13 pass with ZERO misuse (Phase 3: 15/15, 0) — agents consumed param descriptions/raises/returns_description/examples without confusion; the whole delta is engagement variance (engaged 15→13/24, cyhole draw 11→9/12; fastmcp stable 4/12) = the F1 bimodality with 3 reps. Exit criteria: param descriptions 98.9–99.6 %, gzip ×1.09–1.28, DataFrame under cap. See analysis.md |
 
 ---
 

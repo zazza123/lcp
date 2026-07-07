@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom typing import Annotated\nimport fastmcp\nfrom fastmcp.context import get_context\n\napp = fastmcp.FastMCP(\"progress-reporter\")\n\n@app.tool()\nasync def process_items(\n    items: Annotated[list[str], \"List of items to process\"]\n) -> str:\n    \"\"\"Process a list of items and report progress via MCP context logging.\"\"\"\n    context = get_context()\n    \n    total = len(items)\n    context.log.info(f\"Starting to process {total} items\")\n    \n    for i, item in enumerate(items, 1):\n        # Report progress via MCP context\n        context.log.info(f\"[{i}/{total}] Processing: {item}\")\n        \n        # Simulate processing work\n        await asyncio.sleep(0.1)\n    \n    context.log.info(f\"Completed processing all {total} items\")\n    return f\"Successfully processed {total} items\"\n\nif __name__ == \"__main__\":\n    fastmcp.run(app)",
+  "result_text": "```python\nimport asyncio\nfrom typing import Annotated\nimport fastmcp\nfrom fastmcp.context import get_context\n\napp = fastmcp.FastMCP(\"progress-reporter\")\n\n@app.tool()\nasync def process_items(\n    items: Annotated[list[str], \"List of items to process\"]\n) -> str:\n    \"\"\"Process a list of items and report progress via MCP context logging.\"\"\"\n    context = get_context()\n    \n    total = len(items)\n    context.log.info(f\"Starting to process {total} items\")\n    \n    for i, item in enumerate(items, 1):\n        # Report progress via MCP context\n        context.log.info(f\"[{i}/{total}] Processing: {item}\")\n        \n        # Simulate processing work\n        await asyncio.sleep(0.1)\n    \n    context.log.info(f\"Completed processing all {total} items\")\n    return f\"Successfully processed {total} items\"\n\nif __name__ == \"__main__\":\n    fastmcp.run(app)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1886,
+    "cache_read_tokens": 22461,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0116851,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.6
+  },
+  "tool_call_details": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:Context"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.context.get_context",
+      "fastmcp.run"
+    ],
+    "error": null
+  }
+}

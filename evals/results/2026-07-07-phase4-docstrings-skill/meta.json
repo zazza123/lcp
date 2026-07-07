@@ -1,0 +1,21 @@
+{
+  "experiment": "Phase 4 — structured docstrings server, lcp-skill arm re-run on the 8 F1 cases",
+  "date": "2026-07-07",
+  "claude_version": "2.1.202 (Claude Code)",
+  "model": "claude-haiku-4-5-20251001",
+  "lcp_commit": "347546a (Phase 4 structured docstrings: docstring_parser extraction, generator wiring, Signature.returns_description, examples byte budget in get_symbol)",
+  "arm": "lcp-skill (lcp-universal SKILL.md via --append-system-prompt)",
+  "cases": [
+    "fastmcp-server-tool",
+    "fastmcp-resource",
+    "fastmcp-client",
+    "fastmcp-context",
+    "cyhole-birdeye-price",
+    "cyhole-jupiter-swap",
+    "cyhole-rugcheck-report",
+    "cyhole-missing-api-key"
+  ],
+  "reps": 3,
+  "reference": "evals/results/2026-07-06-phase3-aliases-skill (same verifier — direct comparison, no rescore needed)",
+  "note": "evals/.lcp-cache cleared before the run so manifests were regenerated with the structured docstring fields by the editable install on this branch; docstring_parser installed manually in evals/.venv (fastmcp stays pinned at 2.14.4). CLI drift vs Phase 3: 2.1.201 -> 2.1.202 (patch bump). Runner was launched without --case-id by mistake and started 4 extra non-F1 (hamana) runs after the 24 F1 runs completed; it was stopped, the stray run files were deleted, and summary/report were re-aggregated with run.py report over the 24 F1 runs only. Topline: 13/24 (cyhole 8/12, fastmcp 5/12), misuse/run 0.71 — see analysis.md before reading this as a regression: engaged-run quality is unchanged (12/13 pass, 0 misuse) and the whole delta vs Phase 3's 16/24 is engagement variance (F1 bimodality), not a server change."
+}

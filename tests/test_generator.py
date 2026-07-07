@@ -367,3 +367,104 @@ class TestAliasEmission:
         assert "sample_package:CoreClass" in core.aliases
         helper = doc.symbols["sample_package.extras:helper"]
         assert "sample_package:aliased_helper" in helper.aliases
+
+
+DOCSTRING = '''Do a thing.
+
+Longer prose here.
+
+Args:
+    x (int): The x value.
+    missing: Documented but not introspected.
+
+Returns:
+    str: The rendered result.
+
+Raises:
+    ValueError: If x is negative.
+
+Examples:
+    >>> do_thing(1)
+    'ok'
+'''
+
+
+def _scanned_documented_function():
+    return ScannedSymbol(
+        name="do_thing",
+        qualified_name="do_thing",
+        module_path="pkg.mod",
+        kind="function",
+        summary="Do a thing.",
+        description="Longer prose here.\n\nArgs:\n    x (int): The x value.",
+        docstring=DOCSTRING,
+        signature=ScannedSignature(
+            params=[ScannedParam(name="x", type_hint="int")],
+            return_type="str",
+        ),
+    )
+
+
+class TestStructuredDocstrings:
+    """Generator merges docstring extras into the LCP models (spec D11)."""
+
+    def test_param_description_merged_by_name(self):
+        _, symbol = _convert_symbol(_scanned_documented_function())
+        params = symbol.signatures[0].params
+        assert params[0].name == "x"
+        assert params[0].description == "The x value."
+
+    def test_unmatched_docstring_entry_never_invents_a_param(self):
+        _, symbol = _convert_symbol(_scanned_documented_function())
+        names = [p.name for p in symbol.signatures[0].params]
+        assert names == ["x"]  # "missing" documented but not introspected
+
+    def test_raises_and_returns_description(self):
+        _, symbol = _convert_symbol(_scanned_documented_function())
+        sig = symbol.signatures[0]
+        assert sig.raises[0].type == "ValueError"
+        assert sig.raises[0].condition == "If x is negative."
+        assert sig.returns_description == "The rendered result."
+
+    def test_examples_populated(self):
+        _, symbol = _convert_symbol(_scanned_documented_function())
+        examples = symbol.semantics.examples
+        assert len(examples) == 1
+        assert ">>> do_thing(1)" in examples[0].code
+
+    def test_summary_and_description_unchanged(self):
+        scanned = _scanned_documented_function()
+        _, symbol = _convert_symbol(scanned)
+        # description keeps the scanner's full post-summary remainder —
+        # information the parser drops (mid-doc Note sections) must survive.
+        assert symbol.semantics.summary == scanned.summary
+        assert symbol.semantics.description == scanned.description
+
+    def test_introspection_wins_on_type(self):
+        _, symbol = _convert_symbol(_scanned_documented_function())
+        # docstring says "x (int)" but the introspected type is the source
+        # of truth; docstring only contributes the description text
+        assert symbol.signatures[0].params[0].type == "int"
+
+    def test_no_docstring_falls_back_to_today(self):
+        scanned = _scanned_documented_function()
+        scanned.docstring = None
+        _, symbol = _convert_symbol(scanned)
+        sig = symbol.signatures[0]
+        assert sig.raises is None
+        assert sig.returns_description is None
+        assert symbol.semantics.examples is None
+        assert sig.params[0].description is None
+
+    def test_fail_open_on_parser_exception(self, monkeypatch):
+        import lcp.docstrings as docstrings_mod
+
+        def boom(text):
+            raise RuntimeError("parser exploded")
+
+        monkeypatch.setattr(docstrings_mod, "_parse", boom)
+        scanned = _scanned_documented_function()
+        _, symbol = _convert_symbol(scanned)
+        assert symbol.semantics.summary == scanned.summary
+        assert symbol.semantics.description == scanned.description
+        assert symbol.signatures[0].raises is None

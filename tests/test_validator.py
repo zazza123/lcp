@@ -303,3 +303,16 @@ class TestAliasesValidation:
         doc = generate_lcp(scan_package("sample_package"))
         errors = validate_document(doc)
         assert errors == []
+
+
+class TestReturnsDescriptionValidation:
+    def test_signature_with_returns_description_validates(self, sample_lcp_dict):
+        sample_lcp_dict["symbols"]["test:func"]["signatures"] = [
+            {
+                "params": None,
+                "returns": "str",
+                "returns_description": "The rendered result.",
+            }
+        ]
+        errors = validate_dict(sample_lcp_dict)
+        assert errors == []
