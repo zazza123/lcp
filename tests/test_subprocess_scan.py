@@ -170,3 +170,105 @@ class TestCrossEnvironmentScan:
             "secondvenv_only_pkg", python=str(second_venv)
         )
         assert "secondvenv_only_pkg:greet" in doc.symbols
+
+
+from lcp.mcp_server import resolve_library_document
+
+
+class TestResolveViaSubprocess:
+    """resolve_library_document defaults to the subprocess path."""
+
+    def test_scan_runs_in_subprocess_and_preserves_cache_side_effect(
+        self, tmp_path, monkeypatch
+    ):
+        monkeypatch.chdir(TESTS_DIR)  # child inherits cwd → fixtures importable
+        cache_dir = tmp_path / "cache"
+        doc, source = resolve_library_document("sample_package", cache_dir=cache_dir)
+        assert source == "scan"
+        assert len(doc.symbols) > 0
+        _, source2 = resolve_library_document("sample_package", cache_dir=cache_dir)
+        assert source2 == "cache"
+
+    def test_crashing_import_degrades_to_clean_error(self, tmp_path, monkeypatch):
+        """Exit criterion: SystemExit at import must not kill the server."""
+        monkeypatch.chdir(TESTS_DIR)
+        with pytest.raises(ImportError, match="SystemExit"):
+            resolve_library_document(
+                "crashing_module", cache_dir=tmp_path, no_cache=True
+            )
+        # Reaching this line at all proves the crash stayed in the child.
+
+    def test_resolve_via_scan_python(self, tmp_path, second_venv):
+        """Exit criterion: package installed only in a second venv resolves."""
+        doc, source = resolve_library_document(
+            "secondvenv_only_pkg",
+            cache_dir=tmp_path / "cache",
+            no_cache=True,
+            scan_python=str(second_venv),
+        )
+        assert source == "scan"
+        assert "secondvenv_only_pkg:greet" in doc.symbols
+
+    def test_import_failure_message_names_configured_interpreter(
+        self, tmp_path, second_venv
+    ):
+        """The 'different environment' error now names the interpreter used."""
+        with pytest.raises(ImportError) as ei:
+            resolve_library_document(
+                "definitely_not_installed_xyz",
+                cache_dir=tmp_path,
+                no_cache=True,
+                scan_python=str(second_venv),
+            )
+        assert str(second_venv) in str(ei.value)
+        assert "not importable" in str(ei.value).lower()
+
+    def test_scan_mode_inprocess_still_works(self, tmp_path):
+        doc, source = resolve_library_document(
+            "tests.sample_module",
+            cache_dir=tmp_path,
+            no_cache=True,
+            scan_mode="inprocess",
+        )
+        assert source == "scan"
+        assert len(doc.symbols) > 0
+
+    def test_spawn_failure_falls_back_inprocess_for_own_env(
+        self, tmp_path, monkeypatch
+    ):
+        def blocked(*args, **kwargs):
+            raise ScanSpawnError("spawn blocked")
+
+        monkeypatch.setattr("lcp.mcp_server.scan_package_subprocess", blocked)
+        doc, source = resolve_library_document(
+            "tests.sample_module", cache_dir=tmp_path, no_cache=True
+        )
+        assert source == "scan"  # fell back to in-process, same environment
+
+    def test_spawn_failure_with_scan_python_does_not_fall_back(
+        self, tmp_path, monkeypatch
+    ):
+        """Falling back in-process would scan the WRONG environment."""
+
+        def blocked(*args, **kwargs):
+            raise ScanSpawnError("spawn blocked")
+
+        monkeypatch.setattr("lcp.mcp_server.scan_package_subprocess", blocked)
+        with pytest.raises(ImportError, match="spawn blocked"):
+            resolve_library_document(
+                "tests.sample_module",
+                cache_dir=tmp_path,
+                no_cache=True,
+                scan_python="/some/other/python",
+            )
+
+    def test_timeout_surfaces_actionable_error(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("LCP_TEST_IMPORT_SLEEP", "30")
+        monkeypatch.chdir(TESTS_DIR)
+        with pytest.raises(ImportError, match="timed out"):
+            resolve_library_document(
+                "slow_import_module",
+                cache_dir=tmp_path,
+                no_cache=True,
+                scan_timeout=1.0,
+            )

@@ -17,6 +17,14 @@ from fastmcp import FastMCP
 
 from .models import LCPDocument, Symbol, SymbolKind
 from .naming import normalize_package_name
+from .subprocess_scan import (
+    DEFAULT_SCAN_TIMEOUT,
+    ScanImportError,
+    ScanInterpreterNotFoundError,
+    ScanSpawnError,
+    ScanTimeoutError,
+    scan_package_subprocess,
+)
 
 DEFAULT_MAX_RESPONSE_BYTES = 25_000
 """Default byte budget for any list-returning tool payload (spec D6).
@@ -491,18 +499,55 @@ def _fetch_from_registry(
         ) from exc
 
 
+def _scan_inprocess(name: str) -> LCPDocument:
+    """Scan *name* by importing it into this process (legacy path)."""
+    from .generator import generate_lcp
+    from .scanner import scan_package
+
+    return generate_lcp(scan_package(name, include_private=False, recursive=True))
+
+
+def _scan_live(
+    name: str,
+    scan_mode: str,
+    scan_python: str | None,
+    scan_timeout: float,
+) -> LCPDocument:
+    """Run the live scan for *name* honoring the configured scan mode.
+
+    Falls back to in-process scanning only when the subprocess could not be
+    *spawned* (no package code ran) and the scan target is this very
+    environment — a spawn failure with a configured ``scan_python`` must
+    error instead, because scanning in-process would read the wrong venv,
+    and a scan *crash* must never re-run in-process at all.
+    """
+    if scan_mode == "inprocess":
+        return _scan_inprocess(name)
+    try:
+        return scan_package_subprocess(
+            name, python=scan_python, timeout=scan_timeout
+        )
+    except ScanSpawnError:
+        if scan_python is None or scan_python == sys.executable:
+            return _scan_inprocess(name)
+        raise
+
+
 def resolve_library_document(
     name: str,
     cache_dir: Path = _DEFAULT_CACHE_DIR,
     no_cache: bool = False,
     registry_url: str | None = None,
     version: str | None = None,
+    scan_mode: str = "subprocess",
+    scan_python: str | None = None,
+    scan_timeout: float = DEFAULT_SCAN_TIMEOUT,
 ) -> tuple[LCPDocument, str]:
     """Resolve an LCP document for *name* using the standard resolution order.
 
     Resolution order:
       1. Local cache  (~/.lcp/cache/{name}/{version}.lcp.json)
-      2. Live scan    (package is pip-installed)
+      2. Live scan    (subprocess by default; see *scan_mode*)
       3. Registry     (HTTP GET from *registry_url* if provided)
       4. Error
 
@@ -521,6 +566,14 @@ def resolve_library_document(
         version: Optional exact version to prefer; overrides the installed
             version for cache lookup and registry fetch.  A live scan always
             returns the installed version regardless.
+        scan_mode: ``"subprocess"`` (default) runs the live scan in a child
+            interpreter — import-time crashes and heavy imports stay out of
+            the server process; ``"inprocess"`` imports the package into
+            this process (for environments where spawning is restricted).
+        scan_python: Interpreter whose environment the live scan reads
+            (default: this process's interpreter). This is how packages
+            installed in a different venv get resolved.
+        scan_timeout: Seconds before a subprocess scan is killed.
 
     Returns:
         Tuple of (LCPDocument, source) where source is ``"cache"``,
@@ -530,9 +583,6 @@ def resolve_library_document(
         ImportError: If the package cannot be resolved via any available
             source (cache, scan, or registry).
     """
-    from .scanner import scan_package
-    from .generator import generate_lcp
-
     # Resolve the installed version once; used for both cache lookup and
     # registry fetch. An explicit *version* takes precedence over it.
     installed_ver = _installed_version(name)
@@ -554,8 +604,7 @@ def resolve_library_document(
     # 2. Live scan
     scan_error: Exception | None = None
     try:
-        scanned = scan_package(name, include_private=False, recursive=True)
-        doc = generate_lcp(scanned)
+        doc = _scan_live(name, scan_mode, scan_python, scan_timeout)
         if not no_cache:
             try:
                 _save_to_cache(cache_dir, doc)
@@ -578,14 +627,37 @@ def resolve_library_document(
         except ImportError:
             pass  # fall through to final error
 
-    if installed_ver:
-        # The package imports fine in this environment but scanning failed.
+    scan_interpreter = scan_python or sys.executable
+    if isinstance(scan_error, ScanImportError):
+        if scan_python:
+            remedy = (
+                "Check that the package is installed in that environment, "
+                "or fix 'scan_python' in .lcp.json"
+            )
+        else:
+            remedy = (
+                "It may be installed in a different environment — point the "
+                "server at that env via .lcp.json ('scan_python' or 'python')"
+            )
+        reason = (
+            f"'{name}' is not importable by the scan interpreter "
+            f"({scan_interpreter}). {remedy}; the distribution name may also "
+            f"differ from the import path (e.g. import 'google.adk' is "
+            f"provided by 'pip install google-adk')."
+        )
+    elif isinstance(
+        scan_error, (ScanTimeoutError, ScanInterpreterNotFoundError, ScanSpawnError)
+    ):
+        # The runner's messages are already agent-facing and actionable.
+        reason = str(scan_error)
+    elif installed_ver:
+        # The package is installed in this environment but scanning failed.
         reason = (
             f"'{name}' is installed (version {installed_ver}) in this environment "
             f"but the scan failed: {type(scan_error).__name__}: {scan_error}"
         )
     elif isinstance(scan_error, ImportError):
-        # Could not import it with the interpreter lcp is running under.
+        # In-process scan: could not import with the interpreter running lcp.
         reason = (
             f"'{name}' is not importable by the Python interpreter running lcp "
             f"({sys.executable}). It may be installed in a different environment "
