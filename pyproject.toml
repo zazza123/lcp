@@ -27,6 +27,7 @@ dependencies = [
     "click>=8.0",
     "jsonschema>=4.0",
     "fastmcp>=3.0,<4",
+    "docstring_parser>=0.16",
 ]
 
 [project.optional-dependencies]
