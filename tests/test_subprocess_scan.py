@@ -10,7 +10,23 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import threading
+import time
+import venv
 from pathlib import Path
+
+import pytest
+
+from lcp.mcp_server import create_universal_server, resolve_library_document
+from lcp.subprocess_scan import (
+    DEFAULT_SCAN_TIMEOUT,
+    ScanFailedError,
+    ScanImportError,
+    ScanInterpreterNotFoundError,
+    ScanSpawnError,
+    ScanTimeoutError,
+    scan_package_subprocess,
+)
 
 TESTS_DIR = Path(__file__).parent
 
@@ -66,22 +82,6 @@ class TestScanJsonEntryPoint:
         doc = json.loads(proc.stdout)  # fails if noise leaked onto stdout
         assert "printing_module:documented" in doc["symbols"]
         assert "import-time noise" in proc.stderr
-
-
-import time
-import venv
-
-import pytest
-
-from lcp.subprocess_scan import (
-    DEFAULT_SCAN_TIMEOUT,
-    ScanFailedError,
-    ScanImportError,
-    ScanInterpreterNotFoundError,
-    ScanSpawnError,
-    ScanTimeoutError,
-    scan_package_subprocess,
-)
 
 
 class TestScanPackageSubprocess:
@@ -170,9 +170,6 @@ class TestCrossEnvironmentScan:
             "secondvenv_only_pkg", python=str(second_venv)
         )
         assert "secondvenv_only_pkg:greet" in doc.symbols
-
-
-from lcp.mcp_server import resolve_library_document
 
 
 class TestResolveViaSubprocess:
@@ -274,9 +271,6 @@ class TestResolveViaSubprocess:
             )
 
 
-from lcp.mcp_server import create_universal_server
-
-
 class TestServerScanPlumbing:
     def test_scan_params_reach_the_resolver(self, tmp_path, monkeypatch):
         calls: dict = {}
@@ -299,9 +293,6 @@ class TestServerScanPlumbing:
         assert calls["scan_mode"] == "inprocess"
         assert calls["scan_python"] == "/x/py"
         assert calls["scan_timeout"] == 5.0
-
-
-import threading
 
 
 class TestConcurrency:
