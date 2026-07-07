@@ -820,10 +820,24 @@ def _symbol_detail(
                 )
         result["usage_hints"] = hints
 
-    # Enforce the byte budget on the entry itself: truncate the description
-    # as a last resort, then give members whatever the body leaves over.
+    # Enforce the byte budget on the entry itself. Cheapest sacrifice first:
+    # drop trailing examples, then truncate the description as a last resort,
+    # then give members whatever the body leaves over.
     slack = 400  # headroom for the truncation-marker fields added below
     body_size = len(json.dumps(result, default=str))
+    examples = result.get("semantics", {}).get("examples")
+    if body_size + slack > max_bytes and examples:
+        examples_size = len(json.dumps(examples, default=str))
+        example_budget = max(0, max_bytes - (body_size - examples_size) - slack)
+        kept_examples, examples_truncated = _fit_list(examples, example_budget)
+        if examples_truncated:
+            if kept_examples:
+                result["semantics"]["examples"] = kept_examples
+            else:
+                result["semantics"].pop("examples", None)
+            result["examples_truncated"] = True
+        body_size = len(json.dumps(result, default=str))
+
     description = result.get("semantics", {}).get("description")
     if body_size + slack > max_bytes and description:
         overshoot = body_size + slack - max_bytes
