@@ -503,3 +503,53 @@ class TestReexportAliases:
     def test_symbols_without_reexports_have_no_aliases(self, sample_module):
         symbols = scan_module(sample_module)
         assert all(s.aliases == [] for s in symbols)
+
+
+class TestDocstringCapture:
+    """The scanner carries the raw docstring for generator-level parsing."""
+
+    def test_scan_function_captures_raw_docstring(self):
+        def documented(x):
+            """Sum.
+
+            Args:
+                x: The value.
+            """
+
+        symbol = _scan_function(documented, "pkg.mod")
+        assert symbol.docstring == documented.__doc__
+
+    def test_scan_class_captures_raw_docstring_and_members(self):
+        class Widget:
+            """A widget.
+
+            Args:
+                size: The size.
+            """
+
+            def render(self, fmt):
+                """Render.
+
+                Args:
+                    fmt: Format string.
+                """
+
+        symbol = _scan_class(Widget, "pkg.mod")
+        assert symbol.docstring == Widget.__doc__
+        render = next(m for m in symbol.members if m.name == "render")
+        assert render.docstring == Widget.render.__doc__
+
+    def test_non_string_doc_captured_as_none(self):
+        class WeirdDoc:
+            pass
+
+        # sympy-style: __doc__ exposed as a descriptor on the class
+        WeirdDoc.__doc__ = property(lambda self: "computed")
+        symbol = _scan_class(WeirdDoc, "pkg.mod")
+        assert symbol.docstring is None
+        assert symbol.summary is None
+
+    def test_module_docstring_captured(self, sample_module):
+        symbols = scan_module(sample_module)
+        module_symbol = next(s for s in symbols if s.kind == "module")
+        assert module_symbol.docstring == sample_module.__doc__

@@ -58,6 +58,7 @@ class ScannedSymbol:
     kind: str  # function, class, method, attribute, constant, module
     summary: str | None = None
     description: str | None = None
+    docstring: str | None = None
     signature: ScannedSignature | None = None
     members: list[ScannedSymbol] = field(default_factory=list)
     source_file: str | None = None
@@ -105,6 +106,15 @@ def _attach_aliases(
         alias = (rec.alias_module, rec.alias_name)
         if alias not in target.aliases:
             target.aliases.append(alias)
+
+
+def _raw_docstring(doc: Any) -> str | None:
+    """Return *doc* when it is a plain string docstring, else ``None``.
+
+    Same non-string guard as ``_parse_docstring``: ``__doc__`` can be a
+    descriptor (e.g. sympy) and must never be parsed or stored as-is.
+    """
+    return doc if isinstance(doc, str) and doc else None
 
 
 def _parse_docstring(docstring: str | None) -> tuple[str | None, str | None]:
@@ -369,6 +379,7 @@ def _scan_class(
                     kind="method",
                     summary=member_summary,
                     description=member_desc,
+                    docstring=_raw_docstring(getattr(obj, "__doc__", None)),
                     signature=sig,
                 )
             )
@@ -382,6 +393,7 @@ def _scan_class(
                     kind="attribute",
                     summary=prop_summary,
                     description=prop_desc,
+                    docstring=_raw_docstring(obj.fget.__doc__ if obj.fget else None),
                 )
             )
 
@@ -392,6 +404,7 @@ def _scan_class(
         kind="class",
         summary=summary,
         description=description,
+        docstring=_raw_docstring(cls.__doc__),
         signature=init_sig,
         members=members,
         source_file=source_file,
@@ -415,6 +428,7 @@ def _scan_function(
         kind="function",
         summary=summary,
         description=description,
+        docstring=_raw_docstring(func.__doc__),
         signature=sig,
         source_file=source_file,
         source_lines=source_lines,
@@ -464,6 +478,7 @@ def scan_module(
             kind="module",
             summary=mod_summary or f"Module {module_path}",
             description=mod_desc,
+            docstring=_raw_docstring(module.__doc__),
         )
     )
 
