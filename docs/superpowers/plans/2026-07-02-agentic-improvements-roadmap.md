@@ -545,7 +545,26 @@ accepts both old and new manifests.
 
 ## Phase 4 — Structured docstrings + examples
 
-**Status:** not started — blocked by Phase 1
+**Status:** done (2026-07-07) — plan:
+`docs/superpowers/plans/2026-07-07-phase-4-structured-docstrings.md`. Shipped:
+`docstring_parser` as a core dep (D11 sign-off); new `src/lcp/docstrings.py`
+with fail-open `extract_structured()` (Google + NumPy; params, raises,
+returns, doctest/verbatim examples); scanner captures the raw docstring
+(capture only — resilience untouched); generator merges docstring params by
+name (introspection wins, unmatched entries never invent a `Param`),
+`semantics.description` keeps the full raw remainder (the parser drops
+mid-docstring `Note:`-style sections, so rebuilding it would lose prose);
+additive `Signature.returns_description` under schema `"1.0"` (settled with
+the user — `type_ref` has no description slot; both schema copies updated);
+`get_symbol` drops trailing examples before the description under the 25k cap
+(`examples_truncated`). Exit criteria (measured): documented params with
+description 98.9–99.6 % on fastmcp/polars/click (threshold ≥90 %); manifest
+gzip growth ×1.09–1.28 (≤2×, inline-vs-lazy not reopened); polars
+`DataFrame` entry 24 791 B under the cap. Doctest extraction was NOT
+de-scoped. Eval re-run recorded (see log + analysis.md: engaged-run quality
+unchanged, topline delta is F1 engagement variance). **The manifest format
+is now FROZEN for Phase 7 registry population** — additive ideas discovered
+from here on are post-launch.
 
 **Objective:** Populate the fields that differentiate LCP from "type stubs in
 JSON": per-parameter descriptions, `raises`, and usage examples extracted
@@ -679,7 +698,7 @@ library doesn't freeze concurrent tool calls.
 
 ## Phase 6 — Documentation truth + positioning
 
-**Status:** 6a unblocked now; 6b blocked by Phases 2–4
+**Status:** 6a unblocked now; 6b unblocked (Phases 2–4 done as of 2026-07-07)
 
 **Objective:** Docs that validate, one consistent story, and explicit
 positioning against the alternatives every evaluator has in mind.
@@ -724,7 +743,7 @@ to choose LCP over Context7.
 
 ## Phase 7 — Registry: CI verification + pre-population
 
-**Status:** not started — blocked by Phases 3–4 (manifest format frozen)
+**Status:** not started — unblocked: manifest format frozen at end of Phase 4 (2026-07-07)
 
 **Objective:** The registry verifies submissions automatically and ships
 pre-built manifests for the top PyPI libraries, so `serve-all --registry`
@@ -866,6 +885,7 @@ internal docs live on the roadmap branch during development but must not reach
 | 2026-07-04 | 2b Exp2 (sonnet, both arms) | sonnet-5, 4 fastmcp cases, 3 reps | 0 | 24/24 (both arms) | — | 0.00 lcp calls/run both arms | sonnet baseline at ceiling: correct fastmcp 2.x from parametric knowledge, nothing to verify → F1 is haiku-class-bound; fastmcp cases can't differentiate for capable models (Phase 8 task-mix note) |
 | 2026-07-06 | 3 rescore (2b Exp1 runs, alias-aware verifier) | haiku-4.5, 8 F1 cases, 3 reps (frozen code) | cyhole 3, fastmcp 10 | **15/24** (cyhole 10/12, fastmcp 5/12) | — | unchanged (no agent runs) | verifier-fairness effect isolated: 10/24 → 15/24 on identical generated code; all 3 jupiter-swap flips (predicted in 2b analysis) + 2 symmetric fastmcp flips (root-required, deep-written). THE baseline for Phase 3 comparisons |
 | 2026-07-06 | 3 (lcp-skill, alias server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.201 | cyhole 2, fastmcp 6 (0.33/run) | **16/24** (cyhole 11/12, fastmcp 5/12) | — | cyhole 9.0, fastmcp 2.08 lcp calls/run | vs rescored baseline: +1 pass, misuse/run 0.54→0.33; jupiter-swap & rugcheck 3/3; agents copy alias ids into get_symbol (tool_call_details); engaged-run hallucinations ≈0 (one invented classmethod); residual failures = non-engagement (F1) + task compliance. fastmcp-server-tool first-ever engagement 0/3→2/3 — tentative, re-measure in Phase 8 |
+| 2026-07-07 | 4 (lcp-skill, structured-docstrings server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 0.71/run (all 17 in non-engaged runs) | 13/24 (cyhole 8/12, fastmcp 5/12) | — | cyhole 8.67, fastmcp 2.08 lcp calls/run | topline down vs Phase 3 but NOT a server regression: engaged runs 12/13 pass with ZERO misuse (Phase 3: 15/15, 0) — agents consumed param descriptions/raises/returns_description/examples without confusion; the whole delta is engagement variance (engaged 15→13/24, cyhole draw 11→9/12; fastmcp stable 4/12) = the F1 bimodality with 3 reps. Exit criteria: param descriptions 98.9–99.6 %, gzip ×1.09–1.28, DataFrame under cap. See analysis.md |
 
 ---
 
