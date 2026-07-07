@@ -289,3 +289,16 @@ def test_symbol_aliases_field_roundtrip():
 def test_symbol_aliases_default_none():
     symbol = Symbol(kind=SymbolKind.FUNCTION, semantics=Semantics(summary="S."))
     assert symbol.aliases is None
+
+
+def test_signature_returns_description_roundtrip():
+    sig = Signature(returns="str", returns_description="The rendered result.")
+    dumped = sig.model_dump(exclude_none=True, by_alias=True)
+    assert dumped["returns_description"] == "The rendered result."
+    assert Signature.model_validate(dumped).returns_description == (
+        "The rendered result."
+    )
+
+
+def test_signature_returns_description_defaults_to_none():
+    assert Signature().returns_description is None

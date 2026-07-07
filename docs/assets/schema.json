@@ -173,6 +173,11 @@
 
         "returns": { "$ref": "#/$defs/type_ref" },
 
+        "returns_description": {
+          "type": ["string", "null"],
+          "description": "Prose description of the return value, extracted from the docstring."
+        },
+
         "raises": {
           "type": ["array", "null"],
           "items": {
