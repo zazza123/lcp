@@ -35,7 +35,9 @@ get_symbol(ids=["polars:read_csv"])        # 3. exact signature + import line
    `search("", module="polars.io", kind="function")` lists a module's
    contents deterministically.
 3. **`get_symbol(ids, library?)`** — batch verification. Full signatures,
-   required/optional parameters, return types, and the correct import line.
+   required/optional parameters (with docstring descriptions), return types
+   plus `returns_description`, `raises` conditions, docstring usage examples,
+   and the correct import line.
    Symbols re-exported at package level resolve under both the documented
    import path and the canonical id (`resolved_via_alias` names the
    definition site); the `import` line is always the documented path —

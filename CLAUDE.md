@@ -70,6 +70,7 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 | `models.py` | Pydantic models matching LCP v1 spec |
 | `scanner.py` | Python introspection logic |
 | `generator.py` | Scanned data → LCP conversion |
+| `docstrings.py` | Fail-open structured docstring extraction (Google/NumPy → params, raises, returns, examples) |
 | `validator.py` | JSON Schema validation |
 | `mcp_server.py` | MCP server for AI agent integration |
 | `coverage.py` | Documentation coverage analysis |

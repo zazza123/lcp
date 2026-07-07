@@ -99,7 +99,7 @@ Use `--expose` to restrict which packages the agent may load, `--preload` to war
 |---|---|
 | `resolve_library(name, version?)` | Load a library by pip package name: local cache → live scan → registry fetch. Returns name, version, symbol count, and resolution source. Call this first. |
 | `search(query, library?, module?, kind?, limit?)` | Ranked symbol search — the primary discovery tool. Every hit carries the exact `import` line. Hits present the preferred importable id: a symbol re-exported at the package root appears as `requests:get` with `resolved_via_alias` naming its definition site (`requests.api:get`). An empty query browses: combine with `module=` and/or `kind=` to list contents in deterministic `(kind, name)` order. Default `limit` 20, max 100. |
-| `get_symbol(ids, library?)` | Batch detail lookup: full signatures, required/optional parameters, return types, and the correct import line per symbol. Both canonical ids and alias ids resolve (including `#member` forms like `requests:Session#get`); the entry echoes the id you asked for, and `resolved_via_alias` names the definition site when it differs. Classes inline all members as one-line summaries. `usage_hints.returns_classes` resolves a return type to its class id. |
+| `get_symbol(ids, library?)` | Batch detail lookup: full signatures, required/optional parameters (with per-parameter docstring descriptions), return types and what the return value means (`returns_description`), the exceptions a call can raise (`raises`), usage examples extracted from the docstring (`semantics.examples`), and the correct import line per symbol. Both canonical ids and alias ids resolve (including `#member` forms like `requests:Session#get`); the entry echoes the id you asked for, and `resolved_via_alias` names the definition site when it differs. Classes inline all members as one-line summaries. `usage_hints.returns_classes` resolves a return type to its class id. |
 | `get_overview(library?)` | Library identity (name, version, resolution source) plus the module tree with per-module symbol counts. |
 
 ### The 3-call workflow
@@ -129,7 +129,7 @@ Rules worth knowing:
 
 - With **one** library loaded, the `library` parameter may be omitted; with **two or more**, it is required — otherwise the server returns `ambiguous_library` listing the loaded names.
 - Symbol ids that don't resolve are reported per-id in `not_found`, never as a protocol error.
-- Every list-returning response is size-capped (default 25 000 bytes, configurable with `--max-response-bytes`). Capped responses set `"truncated": true` and include a hint describing how to fetch the rest (e.g. narrower `search`, follow-up `get_symbol` with the `not_returned` ids).
+- Every list-returning response is size-capped (default 25 000 bytes, configurable with `--max-response-bytes`). Capped responses set `"truncated": true` and include a hint describing how to fetch the rest (e.g. narrower `search`, follow-up `get_symbol` with the `not_returned` ids). Within a single symbol entry, docstring examples are dropped first (`"examples_truncated": true`) before the description is shortened, so signature data always survives.
 
 ## Programmatic usage
 

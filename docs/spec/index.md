@@ -160,6 +160,25 @@ Many libraries define a symbol in an internal module and re-export it at the pac
 
 The `symbols` map key remains the **definition site** (preserving ID stability across refactors of the re-export surface); each entry in `aliases` is a full Symbol ID following the same `<module_path>:<entity_path>` grammar. Consumers SHOULD treat an alias as resolving to the same symbol as its canonical entry. For an aliased **class**, member IDs under the alias (`requests:Session#get` for `requests.sessions:Session#get`) are derivable mechanically and MUST NOT require duplicated member entries in the document.
 
+### Structured docstring fields
+
+Generators SHOULD populate the structured documentation fields by parsing each symbol's docstring (Google and NumPy styles at minimum):
+
+```json
+"signatures": [{
+  "params": [{"name": "path", "type": "str", "description": "Path to the CSV file."}],
+  "returns": "DataFrame",
+  "returns_description": "A new DataFrame holding the parsed rows.",
+  "raises": [{"type": "FileNotFoundError", "condition": "If path does not exist."}]
+}],
+"semantics": {
+  "summary": "Read a CSV file.",
+  "examples": [{"code": ">>> read_csv(\"data.csv\")", "description": "Basic usage."}]
+}
+```
+
+Extraction MUST be best-effort and lossless: a docstring entry that does not match an introspected parameter by name MUST NOT introduce a new `param` (introspection is the source of truth for existence and types), and `semantics.description` retains the full unparsed docstring body so that no prose is lost when a section cannot be parsed. `semantics.examples` entries come from doctest blocks (`>>>`) or verbatim code in `Examples` sections.
+
 ### Modules as symbols
 
 Modules are represented using an empty entity path:

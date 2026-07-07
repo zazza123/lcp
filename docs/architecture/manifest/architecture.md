@@ -59,7 +59,7 @@ The definition site remains the canonical identity; the generator turns the reco
 - **summary** — the first paragraph (consecutive non-empty lines joined with a space)
 - **description** — everything after the first blank line, stripped
 
-Both fields may be `None` if no docstring exists.
+Both fields may be `None` if no docstring exists. The scanner additionally captures the raw docstring verbatim on `ScannedSymbol.docstring` (guarded by the same non-string check — some classes expose `__doc__` as a descriptor). This is capture only: no structured parsing happens during member iteration, so a hostile package cannot crash the scan through its docstrings. Structured parsing is deferred to the generator stage.
 
 ### Type Hint Resolution
 
@@ -89,9 +89,20 @@ The generator converts the `ScannedModule` tree into an `LCPDocument`. All logic
 
 `_convert_symbol(scanned)` maps each `ScannedSymbol` to a `(symbol_id, Symbol)` pair:
 
-1. **Semantics**: `summary` from the parsed docstring, or a fallback `"{kind} {name}"` string; `description` if present.
-2. **Signatures**: constructed only for `function`, `method`, and `class` kinds. The class signature is the `__init__` signature captured by the scanner.
+1. **Semantics**: `summary` from the parsed docstring, or a fallback `"{kind} {name}"` string; `description` if present; `examples` extracted from the docstring's `Examples` sections (see below).
+2. **Signatures**: constructed only for `function`, `method`, and `class` kinds. The class signature is the `__init__` signature captured by the scanner. Parameter descriptions, `raises` entries and the `returns_description` come from the docstring (see below).
 3. **Kind mapping**: scanner strings (`"function"`, `"class"`, …) → `SymbolKind` enum values.
+
+### Structured Docstring Extraction
+
+`extract_structured()` in `src/lcp/docstrings.py` parses the raw docstring captured by the scanner (Google and NumPy styles, auto-detected via the `docstring_parser` dependency) and returns a `DocstringExtras` value holding per-parameter descriptions, `(exception, condition)` pairs, the return-value prose, and `(code, description)` example pairs. `_convert_symbol()` calls it once per symbol and threads the result through `_convert_signature()` and `_convert_param()`.
+
+Design rules, in order of importance:
+
+- **Fail-open.** Any parser exception makes `extract_structured()` return `None` and the generator emits exactly the pre-Phase-4 output (summary + raw description). A docstring can degrade the enrichment, never the manifest.
+- **Introspection wins.** Docstring parameter entries are merged with introspected parameters *by name*: a matching entry contributes only its description text; an unmatched entry (a renamed or removed parameter that the docstring still mentions) never invents a `Param`, and types always come from introspection.
+- **No information loss.** `semantics.description` keeps the scanner's full post-summary remainder even when parsing succeeds. This is deliberate duplication: the Google-style parser silently drops unknown sections (such as a `Note:` appearing after `Args:`), so rebuilding the description from parser output would lose prose. The measured gzip cost is ~10–30 % on real libraries.
+- **Examples via doctest.** `Examples` sections containing `>>>` blocks are re-rendered through the stdlib `doctest` parser (canonical prompts plus expected output, surrounding prose becoming the example description); sections without `>>>` are taken verbatim. A malformed doctest is dropped without discarding the docstring's other structured fields.
 
 ### Class Member Flattening
 

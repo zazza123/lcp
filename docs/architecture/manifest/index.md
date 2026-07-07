@@ -25,6 +25,7 @@ See [Architecture](architecture.md) for a deep dive into each stage.
 | `scan()` | `src/lcp/__init__.py` | Main SDK entry point: runs all three stages in one call |
 | `scan_package()` | `src/lcp/scanner.py` | Introspects an installed package into `ScannedModule` |
 | `generate_lcp()` | `src/lcp/generator.py` | Converts `ScannedModule` to `LCPDocument` |
+| `extract_structured()` | `src/lcp/docstrings.py` | Fail-open structured docstring extraction (params, raises, returns, examples) |
 | `validate_or_raise()` | `src/lcp/validator.py` | Validates `LCPDocument` against the JSON Schema |
 | `LCPDocument` | `src/lcp/models.py` | Pydantic model for the complete LCP document |
 | `Symbol` | `src/lcp/models.py` | Pydantic model for a single documented symbol |

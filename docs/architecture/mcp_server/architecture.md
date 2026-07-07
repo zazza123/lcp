@@ -60,7 +60,7 @@ Every tool returns a structured error dict with a stable shape on failure — `e
 
 ## Response Caps
 
-Every list-returning payload is capped by a configurable byte budget (`DEFAULT_MAX_RESPONSE_BYTES`, 25 000 bytes, CLI flag `--max-response-bytes`), enforced by keeping the longest prefix that fits and setting a `truncated` flag with a follow-up hint. `search` additionally caps by `limit` (default 20, max 100). Inline class members get 80 % of the budget so the class body always fits. The cap was calibrated against polars' `DataFrame` (159 members, ~30 KB of member summaries) — heavy classes are expected to truncate.
+Every list-returning payload is capped by a configurable byte budget (`DEFAULT_MAX_RESPONSE_BYTES`, 25 000 bytes, CLI flag `--max-response-bytes`), enforced by keeping the longest prefix that fits and setting a `truncated` flag with a follow-up hint. `search` additionally caps by `limit` (default 20, max 100). Inline class members get 80 % of the budget so the class body always fits. Within a single `get_symbol` entry the sacrifice order is: trailing `semantics.examples` entries first (`examples_truncated` marker), then the description text (`description_truncated`), then the member list (`members_truncated`) — structured signature data is never dropped. The cap was calibrated against polars' `DataFrame` (159 members, ~30 KB of member summaries) — heavy classes are expected to truncate.
 
 ## Cache Design
 
