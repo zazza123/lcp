@@ -95,12 +95,10 @@ class TestExtractStructured:
         assert extras is None or all(t for t, _ in extras.raises)
 
     def test_fail_open_on_parser_exception(self, monkeypatch):
-        import lcp.docstrings as docstrings_mod
-
         def boom(text):
             raise RuntimeError("parser exploded")
 
-        monkeypatch.setattr(docstrings_mod, "_parse", boom)
+        monkeypatch.setattr("lcp.docstrings._parse", boom)
         assert extract_structured(GOOGLE) is None
 
 
