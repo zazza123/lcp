@@ -38,7 +38,11 @@ def test_installed_but_scan_fails_message(tmp_path, monkeypatch):
     monkeypatch.setattr("lcp.scanner.scan_package", boom)
 
     with pytest.raises(ImportError) as ei:
-        mcp_server.resolve_library_document("somepkg", cache_dir=tmp_path, no_cache=True)
+        # scan_mode="inprocess": the monkeypatched scanner only exists in
+        # this process; the default subprocess path would never see it.
+        mcp_server.resolve_library_document(
+            "somepkg", cache_dir=tmp_path, no_cache=True, scan_mode="inprocess"
+        )
     msg = str(ei.value)
     # Must NOT claim it's not installed; must report the real scan failure + version
     assert "9.9.9" in msg

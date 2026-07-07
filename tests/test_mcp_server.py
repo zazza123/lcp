@@ -375,6 +375,7 @@ class TestResolveDocumentVersion:
             "tests.sample_module",
             cache_dir=cache_dir,
             version=cached_version,
+            scan_mode="inprocess",
         )
         assert source == "cache"
         assert got.manifest.library.version == cached_version
@@ -394,6 +395,7 @@ class TestResolveDocumentVersion:
                 no_cache=True,
                 registry_url="https://registry.example.com",
                 version="9.9.9",
+                scan_mode="inprocess",
             )
         called_url = m.call_args[0][0]
         assert "9.9.9.lcp.json.gz" in called_url
@@ -553,6 +555,7 @@ class TestResolveLibraryDocument:
             "tests.sample_module",
             cache_dir=tmp_path / "cache",
             no_cache=True,
+            scan_mode="inprocess",
         )
         assert doc is not None
         assert source == "scan"
@@ -566,6 +569,7 @@ class TestResolveLibraryDocument:
             "tests.sample_module",
             cache_dir=cache_dir,
             no_cache=False,
+            scan_mode="inprocess",
         )
         assert source1 == "scan"
         # Cache directory should exist
@@ -576,6 +580,7 @@ class TestResolveLibraryDocument:
             "tests.sample_module",
             cache_dir=cache_dir,
             no_cache=False,
+            scan_mode="inprocess",
         )
         assert source2 == "cache"
         assert len(doc2.symbols) == len(doc1.symbols)
@@ -588,12 +593,14 @@ class TestResolveLibraryDocument:
             "tests.sample_module",
             cache_dir=cache_dir,
             no_cache=False,
+            scan_mode="inprocess",
         )
         # Second call with no_cache=True should still scan
         _, source = resolve_library_document(
             "tests.sample_module",
             cache_dir=cache_dir,
             no_cache=True,
+            scan_mode="inprocess",
         )
         assert source == "scan"
 
@@ -604,6 +611,7 @@ class TestResolveLibraryDocument:
                 "nonexistent_package_xyz_123",
                 cache_dir=tmp_path / "cache",
                 no_cache=True,
+                scan_mode="inprocess",
             )
 
     def test_registry_fallback_on_scan_failure(self, tmp_path: Path, sample_lcp_file: Path):
@@ -622,6 +630,7 @@ class TestResolveLibraryDocument:
                 cache_dir=tmp_path / "cache",
                 no_cache=True,
                 registry_url="https://registry.example.com",
+                scan_mode="inprocess",
             )
 
         assert source == "registry"
@@ -635,6 +644,7 @@ class TestResolveLibraryDocument:
                 cache_dir=tmp_path / "cache",
                 no_cache=True,
                 registry_url="https://registry.example.com",
+                scan_mode="inprocess",
             )
 
         assert source == "scan"
@@ -648,6 +658,7 @@ class TestResolveLibraryDocument:
                 cache_dir=tmp_path / "cache",
                 no_cache=True,
                 registry_url=None,
+                scan_mode="inprocess",
             )
 
     def test_registry_http_error_propagates(self, tmp_path: Path):
@@ -664,6 +675,7 @@ class TestResolveLibraryDocument:
                     cache_dir=tmp_path / "cache",
                     no_cache=True,
                     registry_url="https://registry.example.com",
+                    scan_mode="inprocess",
                 )
 
     def test_registry_saves_to_cache(self, tmp_path: Path, sample_lcp_file: Path):
@@ -683,6 +695,7 @@ class TestResolveLibraryDocument:
                 cache_dir=cache_dir,
                 no_cache=False,
                 registry_url="https://registry.example.com",
+                scan_mode="inprocess",
             )
 
         assert source == "registry"

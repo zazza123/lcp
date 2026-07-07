@@ -469,3 +469,38 @@ class TestDocgenCommand:
         assert "--provider" in result.output
         assert "--dry-run" in result.output
         assert "--workers" in result.output
+
+
+class TestServeAllScanOptions:
+    """serve-all must pass the scan options through to the server."""
+
+    def _invoke_with_capture(self, runner, monkeypatch, args):
+        from lcp import cli
+
+        captured: dict = {}
+        monkeypatch.setattr(
+            cli, "run_universal_server", lambda **kw: captured.update(kw)
+        )
+        result = runner.invoke(main, ["serve-all", *args])
+        assert result.exit_code == 0, result.output
+        return captured
+
+    def test_scan_options_are_passed_through(self, runner, monkeypatch):
+        captured = self._invoke_with_capture(
+            runner,
+            monkeypatch,
+            [
+                "--scan-mode", "inprocess",
+                "--scan-python", "/x/py",
+                "--scan-timeout", "30",
+            ],
+        )
+        assert captured["scan_mode"] == "inprocess"
+        assert captured["scan_python"] == "/x/py"
+        assert captured["scan_timeout"] == 30.0
+
+    def test_scan_defaults(self, runner, monkeypatch):
+        captured = self._invoke_with_capture(runner, monkeypatch, [])
+        assert captured["scan_mode"] == "subprocess"
+        assert captured["scan_python"] is None
+        assert captured["scan_timeout"] == 60.0

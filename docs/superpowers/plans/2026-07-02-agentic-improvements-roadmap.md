@@ -711,7 +711,12 @@ naturally).
 
 ## Phase 5 — Subprocess scanning
 
-**Status:** not started — independent (can run any time after Phase 2)
+**Status:** done (2026-07-07) — subprocess scanning is the default
+(`lcp.scanjson` machine entry point + `lcp.subprocess_scan` runner);
+`.lcp.json` gains `scan_python`/`scan_timeout` (fallback: `python`);
+all three exit criteria covered by tests in
+`tests/test_subprocess_scan.py`; plan:
+`docs/superpowers/plans/2026-07-07-phase-5-subprocess-scan.md`.
 
 **Objective:** `resolve_library` no longer imports arbitrary package code
 into the MCP server process, and can scan packages installed in a *different*

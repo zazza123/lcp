@@ -69,6 +69,8 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 | `cli.py` | Click-based CLI (`scan`, `validate`, `serve`, `coverage`, `docgen` commands) |
 | `models.py` | Pydantic models matching LCP v1 spec |
 | `scanner.py` | Python introspection logic |
+| `scanjson.py` | Machine-mode scan entry point (`python -m lcp.scanjson`): LCP JSON on stdout, structured errors on stderr, exit codes 0/3/4 |
+| `subprocess_scan.py` | Runs live scans in a child interpreter (crash isolation, cross-venv scanning); typed failure exceptions |
 | `generator.py` | Scanned data → LCP conversion |
 | `docstrings.py` | Fail-open structured docstring extraction (Google/NumPy → params, raises, returns, examples) |
 | `validator.py` | JSON Schema validation |
@@ -136,6 +138,7 @@ Build the site locally with `mkdocs build --strict` (install deps via `pip insta
 - Private symbols (prefixed with `_`) are excluded by default; controlled via `include_private` flag
 - Public dunder methods (`__init__`, `__call__`, `__iter__`, `__getitem__`, operators) are considered public API
 - Pydantic models use `ConfigDict(extra="allow")` for forward compatibility with LCP spec extensions
+- The MCP server's live scans run in a subprocess by default (`scan_mode="subprocess"`); tests that monkeypatch scanner internals must pass `scan_mode="inprocess"` to `resolve_library_document`
 - The `ai` module is optional; its dependencies (`openai`, `anthropic`) are lazy-imported with clear error messages
 - LLM connectors extend `LLMProvider` ABC; new providers need `generate()`, `agenerate()`, and `name`
 - The AI writer injects docstrings bottom-up (by descending line number) to avoid line offset issues in batch operations

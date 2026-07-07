@@ -150,11 +150,13 @@ All fields are optional:
 
 ```jsonc
 {
-  "command":    "/path/to/lcp",            // explicit lcp binary
-  "python":     "/path/to/python",         // interpreter → `python -m lcp`
-  "registries": ["https://..."],           // registry URLs → lcp serve-all --registry
-  "expose":     ["fastapi", "pydantic"],   // allow-list; omitted/empty = expose all
-  "preload":    ["fastapi"]                // packages resolved at server startup
+  "command":      "/path/to/lcp",            // explicit lcp binary
+  "python":       "/path/to/python",         // interpreter → `python -m lcp`; also the default scan environment
+  "registries":   ["https://..."],           // registry URLs → lcp serve-all --registry
+  "expose":       ["fastapi", "pydantic"],   // allow-list; omitted/empty = expose all
+  "preload":      ["fastapi"],               // packages resolved at server startup
+  "scan_python":  "/path/to/venv/python",    // interpreter whose env gets SCANNED → --scan-python
+  "scan_timeout": 60                         // seconds before a scan subprocess is killed → --scan-timeout
 }
 ```
 
@@ -186,6 +188,21 @@ These two fields are per-project settings in `.lcp.json` only — they are not a
 }
 ```
 
+### `scan_python` and `scan_timeout`
+
+The server scans packages in a child interpreter, and `.lcp.json` chooses **which environment gets scanned**:
+
+- **`scan_python`**: explicit path to the Python interpreter whose installed packages `resolve_library` documents. The target environment does **not** need `lcp` installed — the server makes its own copy importable in the child without shadowing the target's packages.
+- **`scan_timeout`**: seconds before a hung scan subprocess is killed (default 60).
+
+When `scan_python` is absent, the plugin falls back to the `python` field: pointing `python` at your project venv means that venv is what gets scanned, *even when the server itself ends up running from a global `lcp` install* (for example because `lcp` is not installed in the project venv and the launcher probe moved on). Set `scan_python` explicitly only when the environment to scan differs from the interpreter in `python`.
+
+```jsonc
+{
+  "python": "/path/to/project/.venv/bin/python"   // scanned env, and launcher if lcp is installed there
+}
+```
+
 ## Launcher resolution order
 
 The wrapper probes each candidate with `--version` before use; the first that succeeds is used to run `lcp serve-all`:
@@ -200,10 +217,14 @@ The wrapper probes each candidate with `--version` before use; the first that su
 If none of the above resolve, the plugin emits an actionable error explaining how to install or configure `lcp` — never a bare `-32000`.
 
 !!! tip "Why the project venv matters"
-    `lcp` introspects packages by importing them in-process via `importlib`. It can only
-    document libraries installed in the **same environment it runs in**. Steps 1–4 specifically
-    target your project's environment so private dependencies are reachable. Step 5 (global)
-    is a fallback that covers publicly registered packages only.
+    `lcp` introspects packages by importing them, so it must know **which
+    environment to import from**. Steps 1–4 target your project's environment
+    directly. And even when the *launcher* falls through to a global `lcp`
+    (steps 5–6), scanning still reaches your project venv: scans run in a
+    child interpreter chosen by `scan_python` — or, in its absence, the
+    `python` field — so private dependencies stay reachable. A global install
+    with no `python`/`scan_python` configured scans its own (global)
+    environment and covers publicly registered packages only.
 
 ## Troubleshooting
 
@@ -232,10 +253,16 @@ If none of the above resolve, the plugin emits an actionable error explaining ho
     { "python": "/path/to/venv/bin/python" }
     ```
 
-    **Or install globally** (public packages and registry-backed manifests only):
+    **Or install globally** and point the scan at your project venv:
     ```bash
     pipx install lcp
     ```
+    ```jsonc
+    { "python": "/path/to/project/.venv/bin/python" }
+    ```
+    With `python` (or `scan_python`) set, a global `lcp` still documents the
+    packages installed in your project venv; without it, a global install
+    covers publicly registered packages only.
 
 !!! warning "MCP server not starting"
     Run `lcp serve-all` manually in your terminal to check for errors. On Unix systems, `bin/serve.sh` must be executable — run `chmod +x plugin/lcp/bin/serve.sh` if needed. Confirm Claude Code shows `lcp` in its active MCP servers list.
