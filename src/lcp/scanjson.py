@@ -9,8 +9,7 @@ Exit codes:
     0: success — the LCP JSON document is on stdout.
     3: import failure — the target package could not be imported.
     4: scan failure — the package imported but scanning or generation failed,
-       including ``SystemExit`` (or any other ``BaseException``) raised by
-       import-time code.
+       including ``SystemExit`` raised by import-time code.
 
 Deliberately imports only the stdlib until arguments are parsed, and never
 imports ``click``: the scan environment only needs ``lcp`` and ``pydantic``
@@ -70,7 +69,9 @@ def main(argv: list[str] | None = None) -> None:
             )
         except ImportError as exc:
             _fail(3, "import_failure", str(exc))
-        except BaseException as exc:  # SystemExit & co. from import-time code
+        except (SystemExit, KeyboardInterrupt, Exception) as exc:
+            # Import-time code can raise SystemExit (or anything else);
+            # convert it into the exit-code contract instead of dying with it.
             _fail(
                 4,
                 "scan_failure",
