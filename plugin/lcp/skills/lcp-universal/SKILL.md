@@ -10,9 +10,11 @@ ground-truth API documentation for any pip-installed Python library —
 every public symbol, signature, and docstring, introspected from the
 installed version. Unlike training data, it is never stale.
 
-**Verify before you write.** If you are not certain a symbol exists with
-the exact signature you are about to write — especially for niche, new, or
-fast-moving libraries — check it first. The whole workflow is 3 calls.
+**Before you write ANY import statement, your FIRST tool call is
+`resolve_library("<package>")`.** This is unconditional — do it even when
+you feel certain, because memory of library APIs is stale and unreliable.
+Code written before `resolve_library` returns is guessed code. The whole
+workflow is 3 calls.
 
 If a library name is provided via arguments, resolve it immediately:
 
