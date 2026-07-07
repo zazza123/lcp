@@ -9,10 +9,12 @@ iteration, so hostile-package resilience is unaffected.
 
 from __future__ import annotations
 
+import doctest
 import inspect
 from dataclasses import dataclass, field
 
 from docstring_parser import parse as _parse
+from docstring_parser.common import DocstringExample
 
 
 @dataclass
@@ -38,6 +40,41 @@ class DocstringExtras:
             and self.returns_description is None
             and not self.examples
         )
+
+
+def _render_doctest_block(text: str) -> tuple[str, str | None]:
+    """Re-render a doctest block as canonical ``>>>`` code plus prose.
+
+    Uses the stdlib doctest parser so statements, continuation lines and
+    expected output are split exactly like the doctest runner would.
+    """
+    pieces = doctest.DocTestParser().parse(text)
+    code_lines: list[str] = []
+    prose: list[str] = []
+    for piece in pieces:
+        if isinstance(piece, doctest.Example):
+            source = piece.source.rstrip("\n").split("\n")
+            code_lines.append(">>> " + source[0])
+            code_lines.extend("... " + line for line in source[1:])
+            if piece.want:
+                code_lines.extend(piece.want.rstrip("\n").split("\n"))
+        elif piece.strip():
+            prose.append(piece.strip())
+    return "\n".join(code_lines), "\n\n".join(prose) or None
+
+
+def _extract_examples(meta: DocstringExample) -> list[tuple[str, str | None]]:
+    """Turn one Examples-section meta entry into ``(code, description)``."""
+    text = "\n".join(part for part in (meta.snippet, meta.description) if part)
+    if not text.strip():
+        return []
+    if ">>>" not in text:
+        # Fenced/indented (non-doctest) example code is taken verbatim.
+        return [(text.strip(), None)]
+    code, prose = _render_doctest_block(text)
+    if not code:
+        return []
+    return [(code, prose)]
 
 
 def extract_structured(docstring: object) -> DocstringExtras | None:
@@ -67,6 +104,13 @@ def extract_structured(docstring: object) -> DocstringExtras | None:
                 extras.raises.append((entry.type_name, condition))
         if parsed.returns is not None and parsed.returns.description:
             extras.returns_description = parsed.returns.description.strip()
+        for meta in parsed.meta:
+            if isinstance(meta, DocstringExample):
+                try:
+                    extras.examples.extend(_extract_examples(meta))
+                except Exception:
+                    # A malformed doctest must not discard params/raises.
+                    continue
         return None if extras.is_empty() else extras
     except Exception:
         return None

@@ -102,3 +102,79 @@ class TestExtractStructured:
 
         monkeypatch.setattr(docstrings_mod, "_parse", boom)
         assert extract_structured(GOOGLE) is None
+
+
+GOOGLE_EXAMPLES = '''Do a thing.
+
+Examples:
+    Basic usage:
+
+    >>> do_thing(1)
+    'ok'
+    >>> do_thing(2)
+    'ok2'
+'''
+
+NUMPY_EXAMPLES = '''Compute stuff.
+
+Examples
+--------
+>>> compute(3)
+9
+'''
+
+VERBATIM = '''Run it.
+
+Examples:
+    result = run(cfg)
+    print(result)
+'''
+
+
+class TestExamples:
+    """Doctest and verbatim extraction from Examples sections."""
+
+    def test_google_doctest_block(self):
+        extras = extract_structured(GOOGLE_EXAMPLES)
+        assert len(extras.examples) == 1
+        code, description = extras.examples[0]
+        assert ">>> do_thing(1)" in code
+        assert "'ok'" in code  # expected output preserved
+        assert ">>> do_thing(2)" in code
+        assert description == "Basic usage:"
+
+    def test_numpy_doctest_block(self):
+        extras = extract_structured(NUMPY_EXAMPLES)
+        assert len(extras.examples) == 1
+        code, _ = extras.examples[0]
+        assert ">>> compute(3)" in code
+        assert "9" in code
+
+    def test_multiline_doctest_statement(self):
+        doc = (
+            "T.\n\nExamples:\n"
+            "    >>> for i in range(2):\n"
+            "    ...     print(i)\n"
+            "    0\n"
+            "    1\n"
+        )
+        code, _ = extract_structured(doc).examples[0]
+        assert ">>> for i in range(2):" in code
+        assert "...     print(i)" in code
+
+    def test_non_doctest_block_verbatim(self):
+        extras = extract_structured(VERBATIM)
+        code, description = extras.examples[0]
+        assert code == "result = run(cfg)\nprint(result)"
+        assert description is None
+
+    def test_malformed_doctest_does_not_kill_params(self, monkeypatch):
+        import doctest
+
+        def boom(self, text, name="<string>"):
+            raise ValueError("bad doctest")
+
+        monkeypatch.setattr(doctest.DocTestParser, "parse", boom)
+        extras = extract_structured(GOOGLE + "\nExamples:\n    >>> x(1)\n")
+        assert extras.param_descriptions["x"] == "The x value."
+        assert extras.examples == []
