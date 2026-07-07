@@ -21,6 +21,10 @@
 # guidance instead.
 #
 # Config is read from $CLAUDE_PROJECT_DIR/.lcp.json or ~/.lcp/config.json.
+#
+# Scan interpreter: .lcp.json `scan_python` (fallback: `python`) is passed to
+# the server as --scan-python — that is the environment resolve_library
+# scans; `scan_timeout` is passed as --scan-timeout.
 
 set -euo pipefail
 
@@ -91,6 +95,25 @@ lcp_resolve_launcher() {
   return 1
 }
 
+# lcp_build_args — echo the `lcp serve-all` argv, one element per line.
+# The scan interpreter resolution implements the documented double duty:
+# `scan_python` wins; else `python` (the user's "my project env" intent —
+# even when the launcher probe rejected it for *running* the server, it is
+# still the environment the user wants scanned); else the server scans its
+# own environment.
+lcp_build_args() {
+  local out=(serve-all) r e p sp st
+  for r in $(lcp_config_get registries); do out+=(--registry "$r"); break; done
+  for e in $(lcp_config_get expose);  do out+=(--expose "$e");  done
+  for p in $(lcp_config_get preload); do out+=(--preload "$p"); done
+  sp="$(lcp_config_get scan_python)"
+  if [ -z "$sp" ]; then sp="$(lcp_config_get python)"; fi
+  if [ -n "$sp" ]; then out+=(--scan-python "$sp"); fi
+  st="$(lcp_config_get scan_timeout)"
+  if [ -n "$st" ]; then out+=(--scan-timeout "$st"); fi
+  printf '%s\n' "${out[@]}"
+}
+
 # When sourced for tests, stop here.
 if [ -n "${LCP_SERVE_LIB:-}" ]; then return 0 2>/dev/null || true; fi
 
@@ -108,10 +131,8 @@ EOF
   exit 1
 }
 
-ARGS=(serve-all)
-for r in $(lcp_config_get registries); do ARGS+=(--registry "$r"); break; done
-for e in $(lcp_config_get expose);  do ARGS+=(--expose "$e");  done
-for p in $(lcp_config_get preload); do ARGS+=(--preload "$p"); done
+ARGS=()
+while IFS= read -r a; do ARGS+=("$a"); done < <(lcp_build_args)
 
 # shellcheck disable=SC2086
 exec $LAUNCHER "${ARGS[@]}"
