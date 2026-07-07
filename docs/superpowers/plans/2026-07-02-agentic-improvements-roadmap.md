@@ -629,8 +629,16 @@ balloon >2×, revisit what `get_symbol` inlines vs. lazy-loads.
 
 ## Phase 4b — Engagement iteration (skill + hooks)
 
-**Status:** not started — unblocked (added 2026-07-07 after the Phase 4
-retrospective; uses only the existing harness, no manifest/server changes)
+**Status:** done (2026-07-07) — variant B (unconditional first action)
+shipped in the plugin skill: engagement 18/24 (exit target ≥18 met;
+baselines 13–15/24), engaged misuse 0, fastmcp engagement 8/12 (was 4/12).
+Variant A hit 22/24 engaged but was disqualified by one engaged-run misuse
+(rule 1; Phase 8 revisit noted); variant C (short body) refuted the
+prompt-length hypothesis (11/24, below baseline). PreToolUse
+verify-reminder hook shipped (unit tests + headless smoke: fire-once,
+redirect, no interference; eval-neutral — the F1 harness denies
+Write/Edit). Analysis: `evals/results/2026-07-07-phase4b/analysis.md`;
+plan: `docs/superpowers/plans/2026-07-07-phase-4b-engagement.md`.
 
 **Objective:** Raise lcp-skill engagement on the 8 F1 cases from the current
 13–15/24 to **≥18/24** without degrading engaged-run quality, by iterating on
@@ -966,6 +974,9 @@ internal docs live on the roadmap branch during development but must not reach
 | 2026-07-06 | 3 rescore (2b Exp1 runs, alias-aware verifier) | haiku-4.5, 8 F1 cases, 3 reps (frozen code) | cyhole 3, fastmcp 10 | **15/24** (cyhole 10/12, fastmcp 5/12) | — | unchanged (no agent runs) | verifier-fairness effect isolated: 10/24 → 15/24 on identical generated code; all 3 jupiter-swap flips (predicted in 2b analysis) + 2 symmetric fastmcp flips (root-required, deep-written). THE baseline for Phase 3 comparisons |
 | 2026-07-06 | 3 (lcp-skill, alias server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.201 | cyhole 2, fastmcp 6 (0.33/run) | **16/24** (cyhole 11/12, fastmcp 5/12) | — | cyhole 9.0, fastmcp 2.08 lcp calls/run | vs rescored baseline: +1 pass, misuse/run 0.54→0.33; jupiter-swap & rugcheck 3/3; agents copy alias ids into get_symbol (tool_call_details); engaged-run hallucinations ≈0 (one invented classmethod); residual failures = non-engagement (F1) + task compliance. fastmcp-server-tool first-ever engagement 0/3→2/3 — tentative, re-measure in Phase 8 |
 | 2026-07-07 | 4 (lcp-skill, structured-docstrings server) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 0.71/run (all 17 in non-engaged runs) | 13/24 (cyhole 8/12, fastmcp 5/12) | — | cyhole 8.67, fastmcp 2.08 lcp calls/run | topline down vs Phase 3 but NOT a server regression: engaged runs 12/13 pass with ZERO misuse (Phase 3: 15/15, 0) — agents consumed param descriptions/raises/returns_description/examples without confusion; the whole delta is engagement variance (engaged 15→13/24, cyhole draw 11→9/12; fastmcp stable 4/12) = the F1 bimodality with 3 reps. Exit criteria: param descriptions 98.9–99.6 %, gzip ×1.09–1.28, DataFrame under cap. See analysis.md |
+| 2026-07-07 | 4b variant A (deferred-tools step) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 4 total (1 in an ENGAGED run) | 20/24 (best ever) | — | cyhole 7.67, fastmcp 5.42 lcp calls/run | engaged 22/24 (cyhole 11/12, fastmcp 11/12), engaged pass 20/22 — but DISQUALIFIED by rule 1: one engaged misuse (missing-api-key r3 imported MissingAPIKeyError from cyhole.birdeye, not cyhole.core.exception, despite 4 lcp calls). Strongest anti-stall treatment measured (only 2 non-engaged runs, both lone-ToolSearch); Phase 8 should re-measure A and an A+B combo with more reps (4.5% engaged-misuse rate on n=1) |
+| 2026-07-07 | 4b variant B (unconditional first action) — **SHIPPED** | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 8 total (ALL in non-engaged runs) | 17/24 | — | cyhole 6.67, fastmcp 5.00 lcp calls/run | WINNER: engaged 18/24 (≥18 exit target met; cyhole 10/12, fastmcp 8/12 vs 4/12 stuck since 2b), engaged pass 17/18, engaged misuse 0; single engaged fail = task-compliance residual (mcp.run() omitted). Shipped byte-identical into plugin/lcp/skills/lcp-universal/SKILL.md. Hook smoke in the same session: PreToolUse verify-reminder fires once, redirects to resolve_library, no interference (3+1 reps) → shipped. Incident: 18 runs killed by a network outage were deleted and re-run identically (meta.json) |
+| 2026-07-07 | 4b variant C (short body, ~36% length) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 15 total (all in non-engaged runs) | 11/24 | — | cyhole 7.08, fastmcp 1.00 lcp calls/run | engaged 11/24 — BELOW the Phase 4 baseline (13/24); prompt-length compliance hypothesis refuted, compression alone reduces engagement (fastmcp 2/12); engaged quality clean (10/11, 0 misuse). Archived for reference |
 
 ---
 
