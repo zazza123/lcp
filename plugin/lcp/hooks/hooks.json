@@ -8,6 +8,16 @@
             "timeout": 10 }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          { "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/verify_reminder.py\"",
+            "timeout": 10 }
+        ]
+      }
     ]
   }
 }
