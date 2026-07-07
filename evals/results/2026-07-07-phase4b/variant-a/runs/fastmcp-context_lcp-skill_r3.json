@@ -1,0 +1,110 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import FastMCP, Context\n\n\nserver = FastMCP(\"progress-reporter\")\n\n\n@server.tool\nasync def process_items(items: list[str], ctx: Context) -> dict:\n    \"\"\"Process a list of items and report progress via logging.\n    \n    Args:\n        items: List of items to process\n        ctx: MCP context for logging progress\n        \n    Returns:\n        Dictionary with results and summary\n    \"\"\"\n    total = len(items)\n    results = []\n    \n    await ctx.info(f\"Starting to process {total} items\")\n    \n    for index, item in enumerate(items, 1):\n        await ctx.info(f\"[{index}/{total}] Processing: {item}\")\n        \n        processed = item.upper()\n        results.append(processed)\n        \n        if index % 5 == 0:\n            await ctx.info(f\"Progress: {index}/{total} items completed ({100*index//total}%)\")\n    \n    await ctx.info(f\"Completed processing all {total} items\")\n    \n    return {\n        \"total_items\": total,\n        \"processed_items\": len(results),\n        \"results\": results\n    }\n\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP, Context\n\n\nserver = FastMCP(\"progress-reporter\")\n\n\n@server.tool\nasync def process_items(items: list[str], ctx: Context) -> dict:\n    \"\"\"Process a list of items and report progress via logging.\n    \n    Args:\n        items: List of items to process\n        ctx: MCP context for logging progress\n        \n    Returns:\n        Dictionary with results and summary\n    \"\"\"\n    total = len(items)\n    results = []\n    \n    await ctx.info(f\"Starting to process {total} items\")\n    \n    for index, item in enumerate(items, 1):\n        await ctx.info(f\"[{index}/{total}] Processing: {item}\")\n        \n        processed = item.upper()\n        results.append(processed)\n        \n        if index % 5 == 0:\n            await ctx.info(f\"Progress: {index}/{total} items completed ({100*index//total}%)\")\n    \n    await ctx.info(f\"Completed processing all {total} items\")\n    \n    return {\n        \"total_items\": total,\n        \"processed_items\": len(results),\n        \"results\": results\n    }\n\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 60,
+    "output_tokens": 2357,
+    "cache_read_tokens": 205515,
+    "cache_creation_tokens": 11941,
+    "cost_usd": 0.0562785,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 64.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "context log info",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "logging",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "RequestContext",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:Context",
+          "fastmcp:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP#tool"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

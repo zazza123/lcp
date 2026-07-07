@@ -1,0 +1,80 @@
+{
+  "case_id": "fastmcp-client",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Client\nfrom fastmcp.client import StdioTransport\n\nasync def main():\n    # Create a stdio transport for the server.py script\n    transport = StdioTransport(command=\"python\", args=[\"server.py\"])\n    \n    # Create a client with the transport\n    client = Client(transport)\n    \n    async with client:\n        # List available tools\n        tools = await client.list_tools()\n        print(\"Available tools:\")\n        for tool in tools:\n            print(f\"  - {tool.name}: {tool.description}\")\n        \n        # Call the 'add' tool with a=1, b=2\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult of add(a=1, b=2):\")\n        print(result)\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Client\nfrom fastmcp.client import StdioTransport\n\nasync def main():\n    # Create a stdio transport for the server.py script\n    transport = StdioTransport(command=\"python\", args=[\"server.py\"])\n    \n    # Create a client with the transport\n    client = Client(transport)\n    \n    async with client:\n        # List available tools\n        tools = await client.list_tools()\n        print(\"Available tools:\")\n        for tool in tools:\n            print(f\"  - {tool.name}: {tool.description}\")\n        \n        # Call the 'add' tool with a=1, b=2\n        result = await client.call_tool(\"add\", {\"a\": 1, \"b\": 2})\n        print(f\"\\nResult of add(a=1, b=2):\")\n        print(result)\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 53,
+    "output_tokens": 2106,
+    "cache_read_tokens": 173302,
+    "cache_creation_tokens": 18351,
+    "cost_usd": 0.0646152,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 36.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "stdio transport",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:Client",
+          "fastmcp.client:StdioTransport",
+          "fastmcp.client:StdioTransport#__init__"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:Client#list_tools",
+          "fastmcp:Client#call_tool"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

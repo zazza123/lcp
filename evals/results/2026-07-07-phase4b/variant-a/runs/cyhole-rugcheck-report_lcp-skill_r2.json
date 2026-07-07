@@ -1,0 +1,43 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import Rugcheck\n\n# Replace with your token mint address\nmint_address = \"EPjFWdd5Au...\"\n\nrugcheck = Rugcheck()\nrisk_report = rugcheck.get_full_report(mint_address)\nprint(risk_report)",
+  "result_text": "I need the Solana token mint address you want to check. Please provide it, and I'll give you the code to retrieve its full risk report from cyhole.\n\nAlternatively, here's a template you can use with any mint address:\n\n```python\nfrom cyhole import Rugcheck\n\n# Replace with your token mint address\nmint_address = \"EPjFWdd5Au...\"\n\nrugcheck = Rugcheck()\nrisk_report = rugcheck.get_full_report(mint_address)\nprint(risk_report)\n```\n\nWhich mint address would you like to analyze?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 891,
+    "cache_read_tokens": 45248,
+    "cache_creation_tokens": 615,
+    "cost_usd": 0.0102258,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 15.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [
+      "cyhole:Rugcheck"
+    ],
+    "unresolved_usages": [
+      "cyhole.Rugcheck"
+    ],
+    "error": null
+  }
+}

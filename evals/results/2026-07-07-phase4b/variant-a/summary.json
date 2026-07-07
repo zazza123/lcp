@@ -1,0 +1,67 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "arms": {
+    "lcp-skill": {
+      "runs": 24,
+      "pass_rate": 0.8333333333333334,
+      "total_misuse": 4,
+      "misuse_rate": 0.16666666666666666,
+      "errors": 0,
+      "mean_input_tokens": 70.125,
+      "mean_output_tokens": 2092.4583333333335,
+      "mean_tool_calls": 8.541666666666666,
+      "mean_cost_usd": 0.06902266666666666,
+      "total_cost_usd": 1.656544
+    }
+  },
+  "cases": {
+    "cyhole-birdeye-price": {
+      "lcp-skill": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "cyhole-jupiter-swap": {
+      "lcp-skill": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "cyhole-missing-api-key": {
+      "lcp-skill": {
+        "passes": "2/3",
+        "misuse": 1
+      }
+    },
+    "cyhole-rugcheck-report": {
+      "lcp-skill": {
+        "passes": "2/3",
+        "misuse": 2
+      }
+    },
+    "fastmcp-client": {
+      "lcp-skill": {
+        "passes": "2/3",
+        "misuse": 1
+      }
+    },
+    "fastmcp-context": {
+      "lcp-skill": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "fastmcp-resource": {
+      "lcp-skill": {
+        "passes": "3/3",
+        "misuse": 0
+      }
+    },
+    "fastmcp-server-tool": {
+      "lcp-skill": {
+        "passes": "2/3",
+        "misuse": 0
+      }
+    }
+  }
+}
