@@ -5,16 +5,19 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
+from .docstrings import DocstringExtras, extract_structured
 from .models import (
     Artifact,
     DetailedIndexEntry,
     Distribution,
+    Example,
     Generation,
     LCPDocument,
     Library,
     Manifest,
     Param,
     ParamKind,
+    RaisesEntry,
     Semantics,
     Signature,
     Symbol,
@@ -63,7 +66,7 @@ def _build_symbol_id(scanned: ScannedSymbol) -> str:
     return f"{module_path}:{entity_path}"
 
 
-def _convert_param(param: ScannedParam) -> Param:
+def _convert_param(param: ScannedParam, extras: DocstringExtras | None = None) -> Param:
     """Convert a scanned parameter to LCP Param."""
     default_value: Any = None
     if param.has_default:
@@ -76,6 +79,10 @@ def _convert_param(param: ScannedParam) -> Param:
             # For complex defaults, just note that there is one
             default_value = "..."
 
+    description = param.description
+    if description is None and extras is not None:
+        description = extras.param_descriptions.get(param.name)
+
     return Param(
         name=param.name,
         type=param.type_hint or "Any",
@@ -83,19 +90,36 @@ def _convert_param(param: ScannedParam) -> Param:
         default=default_value if param.has_default else None,
         variadic=param.is_variadic,
         kind=_param_kind_to_lcp(param.kind),
-        description=param.description,
+        description=description,
     )
 
 
-def _convert_signature(sig: ScannedSignature) -> Signature:
-    """Convert a scanned signature to LCP Signature."""
-    params = [_convert_param(p) for p in sig.params] if sig.params else None
+def _convert_signature(
+    sig: ScannedSignature, extras: DocstringExtras | None = None
+) -> Signature:
+    """Convert a scanned signature to LCP Signature.
+
+    Docstring extras only decorate introspected params (matched by name);
+    an unmatched docstring entry never invents a Param.
+    """
+    params = [_convert_param(p, extras) for p in sig.params] if sig.params else None
+
+    raises = None
+    returns_description = None
+    if extras is not None:
+        if extras.raises:
+            raises = [
+                RaisesEntry(type=exc_type, condition=condition)
+                for exc_type, condition in extras.raises
+            ]
+        returns_description = extras.returns_description
 
     return Signature(
         async_=sig.is_async,
         params=params,
         returns=sig.return_type,
-        raises=None,  # Could be extracted from docstrings in future
+        returns_description=returns_description,
+        raises=raises,
     )
 
 
@@ -103,17 +127,27 @@ def _convert_symbol(scanned: ScannedSymbol) -> tuple[str, Symbol]:
     """Convert a scanned symbol to LCP Symbol with its ID."""
     symbol_id = _build_symbol_id(scanned)
 
-    # Build semantics
+    extras = extract_structured(scanned.docstring)
+
+    examples = None
+    if extras is not None and extras.examples:
+        examples = [
+            Example(code=code, description=description)
+            for code, description in extras.examples
+        ]
+
+    # Build semantics — summary and description are the scanner's values,
+    # unchanged: the raw remainder must survive even when parsing succeeds.
     semantics = Semantics(
         summary=scanned.summary or f"{scanned.kind.capitalize()} {scanned.name}",
         description=scanned.description,
-        examples=None,
+        examples=examples,
     )
 
     # Build signatures for callables
     signatures = None
     if scanned.signature and scanned.kind in ("function", "method", "class"):
-        signatures = [_convert_signature(scanned.signature)]
+        signatures = [_convert_signature(scanned.signature, extras)]
 
     alias_ids = (
         sorted(f"{mod}:{name}" for mod, name in scanned.aliases)
