@@ -299,3 +299,44 @@ class TestServerScanPlumbing:
         assert calls["scan_mode"] == "inprocess"
         assert calls["scan_python"] == "/x/py"
         assert calls["scan_timeout"] == 5.0
+
+
+import threading
+
+
+class TestConcurrency:
+    def test_slow_scan_does_not_block_other_resolves(self, tmp_path, monkeypatch):
+        """Exit criterion: a heavy import in one scan must not stall other
+        tool calls. In-process, the CPython import lock + GIL would hold the
+        quick resolve hostage for the full sleep; the subprocess releases
+        the GIL while waiting on the child.
+        """
+        monkeypatch.setenv("LCP_TEST_IMPORT_SLEEP", "4")
+        monkeypatch.chdir(TESTS_DIR)
+        slow_done = threading.Event()
+
+        def slow_scan():
+            try:
+                resolve_library_document(
+                    "slow_import_module",
+                    cache_dir=tmp_path / "slow-cache",
+                    no_cache=True,
+                )
+            finally:
+                slow_done.set()
+
+        thread = threading.Thread(target=slow_scan)
+        thread.start()
+        try:
+            time.sleep(0.5)  # let the slow child get going
+            doc, _ = resolve_library_document(
+                "sample_package",
+                cache_dir=tmp_path / "quick-cache",
+                no_cache=True,
+            )
+            assert len(doc.symbols) > 0
+            assert not slow_done.is_set(), (
+                "quick resolve should complete while the slow scan is running"
+            )
+        finally:
+            thread.join(timeout=30)
