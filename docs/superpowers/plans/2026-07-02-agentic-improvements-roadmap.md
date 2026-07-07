@@ -767,6 +767,12 @@ has answers on day one.
   an isolated venv (Phase 5 machinery), and opens batched PRs via the
   existing `publish.py` flow. Target: top 100 by download count that aren't
   stdlib-trivial; 500 only if the pipeline proves cheap.
+- Regenerate the 10 pre-freeze manifests already published (6 libraries as
+  of 2026-07-07: azure-ai-contentunderstanding, firebase-admin, google-adk,
+  google-cloud-aiplatform, google-cloud-firestore, google-genai): they
+  validate fine under the frozen `"1.0"` schema but lack the Phase 4
+  structured fields (param descriptions, raises, returns_description,
+  examples). Fold them into the population batch.
 - Idempotent publish: `publish.py` currently fails on re-run for the same
   `(package, version)` (branch/file already exist) — make it upsert or
   cleanly no-op; needed for batch operation.
