@@ -1,0 +1,30 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nimport asyncio\n\nserver = Server(\"config-server\")\n\n@server.resource(uri=\"data://config\")\nasync def get_config():\n    return {\n        \"api_endpoint\": \"https://api.example.com\",\n        \"timeout\": 30,\n        \"retries\": 3,\n        \"logging\": True,\n        \"features\": {\n            \"caching\": True,\n            \"compression\": True\n        }\n    }\n\nif __name__ == \"__main__\":\n    asyncio.run(server.run())",
+  "result_text": "```python\nfrom fastmcp import Server\nimport asyncio\n\nserver = Server(\"config-server\")\n\n@server.resource(uri=\"data://config\")\nasync def get_config():\n    return {\n        \"api_endpoint\": \"https://api.example.com\",\n        \"timeout\": 30,\n        \"retries\": 3,\n        \"logging\": True,\n        \"features\": {\n            \"caching\": True,\n            \"compression\": True\n        }\n    }\n\nif __name__ == \"__main__\":\n    asyncio.run(server.run())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2044,
+    "cache_read_tokens": 22670,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.012496,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.4
+  },
+  "tool_call_details": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}
