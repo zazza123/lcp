@@ -1,0 +1,41 @@
+{
+  "case_id": "cyhole-rugcheck-report",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom cyhole import RugCheckWrapper\n\nasync def get_token_risk_report(mint_address: str) -> dict:\n    \"\"\"\n    Retrieve the full risk report for a Solana token from Rugcheck.\n    \n    Args:\n        mint_address: The Solana token mint address (e.g., \"EPjFWaJy47gUNzceGzLs1mJAf3gqpm3sqbckP8qofFk\" for USDC)\n    \n    Returns:\n        Full risk report dictionary from Rugcheck\n    \"\"\"\n    rugcheck = RugCheckWrapper()\n    report = await rugcheck.get_token_risk_report(mint_address)\n    return report\n\n\n# Example usage\nif __name__ == \"__main__\":\n    # Replace with your token mint address\n    mint = \"EPjFWaJy47gUNzceGzLs1mJAf3gqpm3sqbckP8qofFk\"  # USDC\n    \n    report = asyncio.run(get_token_risk_report(mint))\n    print(report)",
+  "result_text": "```python\nimport asyncio\nfrom cyhole import RugCheckWrapper\n\nasync def get_token_risk_report(mint_address: str) -> dict:\n    \"\"\"\n    Retrieve the full risk report for a Solana token from Rugcheck.\n    \n    Args:\n        mint_address: The Solana token mint address (e.g., \"EPjFWaJy47gUNzceGzLs1mJAf3gqpm3sqbckP8qofFk\" for USDC)\n    \n    Returns:\n        Full risk report dictionary from Rugcheck\n    \"\"\"\n    rugcheck = RugCheckWrapper()\n    report = await rugcheck.get_token_risk_report(mint_address)\n    return report\n\n\n# Example usage\nif __name__ == \"__main__\":\n    # Replace with your token mint address\n    mint = \"EPjFWaJy47gUNzceGzLs1mJAf3gqpm3sqbckP8qofFk\"  # USDC\n    \n    report = asyncio.run(get_token_risk_report(mint))\n    print(report)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 833,
+    "cache_read_tokens": 44202,
+    "cache_creation_tokens": 438,
+    "cost_usd": 0.0094772,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 11.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:lcp",
+        "max_results": 1
+      }
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.rugcheck.interaction:Rugcheck",
+      "cyhole.rugcheck.client:RugcheckClient#get_token_report"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.RugCheckWrapper"
+    ],
+    "error": null
+  }
+}

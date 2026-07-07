@@ -10,11 +10,15 @@ ground-truth API documentation for any pip-installed Python library —
 every public symbol, signature, and docstring, introspected from the
 installed version. Unlike training data, it is never stale.
 
-**Before you write ANY import statement, your FIRST tool call is
-`resolve_library("<package>")`.** This is unconditional — do it even when
-you feel certain, because memory of library APIs is stale and unreliable.
-Code written before `resolve_library` returns is guessed code. The whole
-workflow is 3 calls.
+**Verify before you write.** If you are not certain a symbol exists with
+the exact signature you are about to write — especially for niche, new, or
+fast-moving libraries — check it first. The whole workflow is 3 calls.
+
+**Loading tools is not verifying.** If the lcp tools are deferred (their
+names are listed but their schemas are not loaded), load them with
+ToolSearch and then IMMEDIATELY make the first real call:
+`resolve_library("<package>")`. ToolSearch retrieves no documentation —
+if your last tool call was ToolSearch, you have verified nothing yet.
 
 If a library name is provided via arguments, resolve it immediately:
 

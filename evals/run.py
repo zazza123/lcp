@@ -15,7 +15,7 @@ from pathlib import Path
 EVALS_DIR = Path(__file__).parent
 sys.path.insert(0, str(EVALS_DIR))
 
-from harness import agent, cases, report, verify  # noqa: E402
+from harness import agent, cases, engagement, report, verify  # noqa: E402
 
 
 def cmd_validate(args) -> int:
@@ -114,10 +114,7 @@ def cmd_run(args) -> int:
     arms = ["baseline", "lcp"] if args.arms == "both" else [args.arms]
     append_system = None
     if "lcp-skill" in arms:
-        skill_path = (
-            EVALS_DIR.parent / "plugin/lcp/skills/lcp-universal/SKILL.md"
-        )
-        append_system = agent.load_skill_text(skill_path)
+        append_system = agent.load_skill_text(args.skill_file)
     jobs = [
         (case, arm, rep)
         for case in loaded
@@ -154,6 +151,17 @@ def cmd_report(args) -> int:
     return _report(Path(args.out))
 
 
+def cmd_engagement(args) -> int:
+    for out in args.out:
+        runs = report.load_runs(Path(out))
+        if not runs:
+            print(f"{out}: no runs found", file=sys.stderr)
+            return 1
+        print(f"== {out}")
+        print(json.dumps(engagement.engagement_stats(runs), indent=2))
+    return 0
+
+
 def cmd_rescore(args) -> int:
     """Re-verify stored runs with the CURRENT verifier into a new dir.
 
@@ -183,7 +191,7 @@ def cmd_rescore(args) -> int:
     return _report(out)
 
 
-def main() -> int:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -203,11 +211,24 @@ def main() -> int:
     p_run.add_argument("--model", default=agent.MODEL)
     p_run.add_argument("--workers", type=int, default=2)
     p_run.add_argument("--case-id", action="append", default=[])
+    p_run.add_argument(
+        "--skill-file", type=Path,
+        default=EVALS_DIR.parent / "plugin/lcp/skills/lcp-universal/SKILL.md",
+        help="SKILL.md injected in the lcp-skill arm "
+             "(default: the shipped plugin skill)",
+    )
     p_run.set_defaults(func=cmd_run)
 
     p_report = sub.add_parser("report", help="re-aggregate an existing results dir")
     p_report.add_argument("--out", required=True)
     p_report.set_defaults(func=cmd_report)
+
+    p_eng = sub.add_parser(
+        "engagement",
+        help="engagement-conditioned stats for one or more results dirs",
+    )
+    p_eng.add_argument("--out", action="append", required=True)
+    p_eng.set_defaults(func=cmd_engagement)
 
     p_rescore = sub.add_parser(
         "rescore",
@@ -218,7 +239,11 @@ def main() -> int:
     p_rescore.add_argument("--cases", type=Path, default=EVALS_DIR / "cases")
     p_rescore.set_defaults(func=cmd_rescore)
 
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
     return args.func(args)
 
 

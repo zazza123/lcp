@@ -1,0 +1,22 @@
+{
+  "experiment": "Phase 4b variant C — compressed skill body (haiku prompt-length compliance test), lcp-skill arm, 8 F1 cases",
+  "date": "2026-07-07",
+  "claude_version": "2.1.202 (Claude Code)",
+  "model": "claude-haiku-4-5-20251001",
+  "lcp_commit": "7cee88c (server code unchanged since the Phase 4 merge — skill text experiment only; runner gained --skill-file and the engagement subcommand on this branch)",
+  "arm": "lcp-skill (variant SKILL.md via --skill-file / --append-system-prompt)",
+  "skill_file": "evals/results/2026-07-07-phase4b/variant-c/SKILL.md",
+  "cases": [
+    "fastmcp-server-tool",
+    "fastmcp-resource",
+    "fastmcp-client",
+    "fastmcp-context",
+    "cyhole-birdeye-price",
+    "cyhole-jupiter-swap",
+    "cyhole-rugcheck-report",
+    "cyhole-missing-api-key"
+  ],
+  "reps": 3,
+  "reference": "evals/results/2026-07-07-phase4-docstrings-skill and evals/results/2026-07-06-phase3-aliases-skill (same verifier — direct comparison)",
+  "note": "evals/.lcp-cache retained from the Phase 4 run (same server code on this branch). Decision metric: engaged runs (>=1 mcp__lcp__* call), engaged misuse must stay 0."
+}

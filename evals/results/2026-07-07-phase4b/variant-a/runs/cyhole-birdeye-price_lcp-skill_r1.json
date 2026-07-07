@@ -1,0 +1,90 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye import Birdeye\n\n# Replace with your Solana token address and API key\ntoken_address = \"EPjFWaJY3RL7peKH3NHARVjVH7vwmnemonZ2kerKep5t\"  # USDC on Solana\napi_key = \"YOUR_BIRDEYE_API_KEY\"  # or set BIRDEYE_API_KEY environment variable\n\n# Instantiate Birdeye interaction\nbirdeye = Birdeye(api_key=api_key, chain=\"solana\")\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(address=token_address)\n\n# Print the price data\nprint(f\"Token Address: {token_address}\")\nprint(f\"Current Price: ${response.data.value}\")\nprint(f\"Price Update Time: {response.data.update_time}\")\nprint(f\"Full Response: {response}\")",
+  "result_text": "```python\nfrom cyhole.birdeye import Birdeye\n\n# Replace with your Solana token address and API key\ntoken_address = \"EPjFWaJY3RL7peKH3NHARVjVH7vwmnemonZ2kerKep5t\"  # USDC on Solana\napi_key = \"YOUR_BIRDEYE_API_KEY\"  # or set BIRDEYE_API_KEY environment variable\n\n# Instantiate Birdeye interaction\nbirdeye = Birdeye(api_key=api_key, chain=\"solana\")\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(address=token_address)\n\n# Print the price data\nprint(f\"Token Address: {token_address}\")\nprint(f\"Current Price: ${response.data.value}\")\nprint(f\"Price Update Time: {response.data.update_time}\")\nprint(f\"Full Response: {response}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1593,
+    "cache_read_tokens": 236085,
+    "cache_creation_tokens": 24961,
+    "cost_usd": 0.08156250000000001,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 28.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp library documentation",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Birdeye",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "price current",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get price",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye:Birdeye",
+          "cyhole.birdeye.interaction:BirdeyeClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.interaction:BirdeyeClient#get_price"
+        ],
+        "library": "cyhole"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

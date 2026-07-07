@@ -1,0 +1,161 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import FastMCP, Context\n\n\nserver = FastMCP(name=\"progress-reporter\")\n\n\n@server.tool\nasync def process_items(items: list[str], ctx: Context) -> dict:\n    \"\"\"\n    Process a list of items and report progress via MCP context logging.\n    \n    Args:\n        items: List of items to process\n        ctx: FastMCP Context for logging and reporting progress\n        \n    Returns:\n        Dictionary with processing results\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for i, item in enumerate(items, 1):\n        # Log progress info message\n        await ctx.info(f\"Processing item {i}/{total}: {item}\")\n        \n        # Simulate processing\n        await asyncio.sleep(0.1)\n        results.append(f\"Processed: {item}\")\n    \n    await ctx.info(f\"Completed processing all {total} items\")\n    return {\"count\": total, \"results\": results}\n\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP, Context\n\n\nserver = FastMCP(name=\"progress-reporter\")\n\n\n@server.tool\nasync def process_items(items: list[str], ctx: Context) -> dict:\n    \"\"\"\n    Process a list of items and report progress via MCP context logging.\n    \n    Args:\n        items: List of items to process\n        ctx: FastMCP Context for logging and reporting progress\n        \n    Returns:\n        Dictionary with processing results\n    \"\"\"\n    results = []\n    total = len(items)\n    \n    for i, item in enumerate(items, 1):\n        # Log progress info message\n        await ctx.info(f\"Processing item {i}/{total}: {item}\")\n        \n        # Simulate processing\n        await asyncio.sleep(0.1)\n        results.append(f\"Processed: {item}\")\n    \n    await ctx.info(f\"Completed processing all {total} items\")\n    return {\"count\": total, \"results\": results}\n\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 123,
+    "output_tokens": 2836,
+    "cache_read_tokens": 524132,
+    "cache_creation_tokens": 19789,
+    "cost_usd": 0.10629420000000002,
+    "num_turns": 17,
+    "tool_calls": 16,
+    "duration_s": 63.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "fastmcp library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool context logging",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "context",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator info logging",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server tool",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:Context",
+          "fastmcp.server.server:Server"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP Server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool",
+        "library": "fastmcp",
+        "module": "fastmcp.tools.tool",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "class server",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

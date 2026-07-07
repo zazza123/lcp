@@ -1,0 +1,239 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import (\n    GetSwapOrderParams,\n    PostSwapExecuteBody,\n    JupiterClient,\n)\n\n# Initialize Jupiter client\njupiter = Jupiter()\nclient = jupiter.client\n\n# Define token addresses\nSOL = \"So11111111111111111111111111111111111111112\"\nUSDC = \"EPjFWaLb3hyccqaB3JgRe8NqtwybKt7H91mM4BmwQmk\"\n\n# Amount to swap (1 SOL in lamports: 1 * 10^9)\namount = 1_000_000_000\n\n# Step 1: Request a swap quote/order\nswap_order_params = GetSwapOrderParams(\n    input_token=SOL,\n    output_token=USDC,\n    amount=amount,\n)\n\nswap_quote = client.get_swap_order(swap_order_params)\nprint(\"Swap Quote Response:\")\nprint(f\"Input: {swap_quote.input_token}\")\nprint(f\"Output: {swap_quote.output_token}\")\nprint(f\"Output Amount: {swap_quote.out_amount}\")\n\n# Step 2: Execute the swap\nswap_execute_body = PostSwapExecuteBody(\n    swap_order=swap_quote,\n)\n\nswap_result = client.post_swap_execute(swap_execute_body)\nprint(\"\\nSwap Execution Result:\")\nprint(f\"Tx ID: {swap_result.tx_id}\")\nprint(f\"Status: {swap_result.status}\")",
+  "result_text": "```python\nfrom cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import (\n    GetSwapOrderParams,\n    PostSwapExecuteBody,\n    JupiterClient,\n)\n\n# Initialize Jupiter client\njupiter = Jupiter()\nclient = jupiter.client\n\n# Define token addresses\nSOL = \"So11111111111111111111111111111111111111112\"\nUSDC = \"EPjFWaLb3hyccqaB3JgRe8NqtwybKt7H91mM4BmwQmk\"\n\n# Amount to swap (1 SOL in lamports: 1 * 10^9)\namount = 1_000_000_000\n\n# Step 1: Request a swap quote/order\nswap_order_params = GetSwapOrderParams(\n    input_token=SOL,\n    output_token=USDC,\n    amount=amount,\n)\n\nswap_quote = client.get_swap_order(swap_order_params)\nprint(\"Swap Quote Response:\")\nprint(f\"Input: {swap_quote.input_token}\")\nprint(f\"Output: {swap_quote.output_token}\")\nprint(f\"Output Amount: {swap_quote.out_amount}\")\n\n# Step 2: Execute the swap\nswap_execute_body = PostSwapExecuteBody(\n    swap_order=swap_quote,\n)\n\nswap_result = client.post_swap_execute(swap_execute_body)\nprint(\"\\nSwap Execution Result:\")\nprint(f\"Tx ID: {swap_result.tx_id}\")\nprint(f\"Status: {swap_result.status}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 179,
+    "output_tokens": 4648,
+    "cache_read_tokens": 791721,
+    "cache_creation_tokens": 30269,
+    "cost_usd": 0.16312910000000003,
+    "num_turns": 25,
+    "tool_calls": 24,
+    "duration_s": 90.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap quote",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "quote",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_quote",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Jupiter",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.interaction",
+        "kind": "method",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.interaction",
+        "kind": "method",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.jupiter",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.interaction:JupiterClient",
+          "cyhole.jupiter.interaction:JupiterClient#get_swap_order",
+          "cyhole.jupiter.interaction:JupiterClient#post_swap_execute"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter:Jupiter",
+          "cyhole.jupiter.client:GetSwapOrderParams",
+          "cyhole.jupiter.client:PostSwapExecuteBody"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "input_token output_token amount",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.schema",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.schema",
+        "kind": "class",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapOrderParams",
+          "cyhole.jupiter.schema:PostSwapExecuteBody",
+          "cyhole.jupiter.schema:GetSwapOrderResponse"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SOL USDC token",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "solana token",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token.solana",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token.solana",
+        "kind": "constant",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SOL USDC JUP",
+        "library": "cyhole",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "order swap input output",
+        "library": "cyhole",
+        "limit": 20
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

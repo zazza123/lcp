@@ -1,0 +1,118 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import json\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config() -> dict:\n    config = {\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432,\n            \"name\": \"myapp\"\n        },\n        \"api\": {\n            \"timeout\": 30,\n            \"retries\": 3\n        },\n        \"features\": {\n            \"debug\": False,\n            \"caching\": True\n        }\n    }\n    return config\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nimport json\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"config-server\")\n\n@server.resource(\"data://config\")\ndef get_config() -> dict:\n    config = {\n        \"database\": {\n            \"host\": \"localhost\",\n            \"port\": 5432,\n            \"name\": \"myapp\"\n        },\n        \"api\": {\n            \"timeout\": 30,\n            \"retries\": 3\n        },\n        \"features\": {\n            \"debug\": False,\n            \"caching\": True\n        }\n    }\n    return config\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 88,
+    "output_tokens": 2329,
+    "cache_read_tokens": 324410,
+    "cache_creation_tokens": 14045,
+    "cost_usd": 0.072264,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 50.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "fastmcp lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource uri static data",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server class",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP",
+          "fastmcp:FastMCP#add_resource"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.resources:Resource"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP#resource"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import GetSwapOrderParams, PostSwapExecuteBody\nfrom cyhole.core.token.solana import SOL, USDC\n\n# Initialize Jupiter client\njupiter = Jupiter()\nclient = jupiter.client\n\n# Define swap parameters for SOL to USDC\nswap_params = GetSwapOrderParams(\n    inputMint=SOL.address,\n    outputMint=USDC.address,\n    amount=int(1e9),  # 1 SOL in lamports\n)\n\n# Get swap quote (order)\nquote_response = client.get_swap_order(swap_params)\nprint(f\"Quote received: {quote_response}\")\n\n# Execute the swap using the quote\nexecute_body = PostSwapExecuteBody(\n    quoteResponse=quote_response,\n)\n\nexecute_response = client.post_swap_execute(execute_body)\nprint(f\"Swap executed: {execute_response}\")",
+  "result_text": "```python\nfrom cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import GetSwapOrderParams, PostSwapExecuteBody\nfrom cyhole.core.token.solana import SOL, USDC\n\n# Initialize Jupiter client\njupiter = Jupiter()\nclient = jupiter.client\n\n# Define swap parameters for SOL to USDC\nswap_params = GetSwapOrderParams(\n    inputMint=SOL.address,\n    outputMint=USDC.address,\n    amount=int(1e9),  # 1 SOL in lamports\n)\n\n# Get swap quote (order)\nquote_response = client.get_swap_order(swap_params)\nprint(f\"Quote received: {quote_response}\")\n\n# Execute the swap using the quote\nexecute_body = PostSwapExecuteBody(\n    quoteResponse=quote_response,\n)\n\nexecute_response = client.post_swap_execute(execute_body)\nprint(f\"Swap executed: {execute_response}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 116,
+    "output_tokens": 2691,
+    "cache_read_tokens": 482810,
+    "cache_creation_tokens": 21641,
+    "cost_usd": 0.10513399999999999,
+    "num_turns": 17,
+    "tool_calls": 15,
+    "duration_s": 58.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation",
+        "args": "resolve_library(\"cyhole\")"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap quote order",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.interaction:JupiterClient#get_swap_order",
+          "cyhole.jupiter.interaction:JupiterClient#post_swap_execute"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.client:GetSwapOrderParams",
+          "cyhole.jupiter.client:GetSwapOrderResponse",
+          "cyhole.jupiter.client:PostSwapExecuteBody",
+          "cyhole.jupiter.client:PostSwapExecuteResponse",
+          "cyhole.jupiter.interaction:JupiterClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Jupiter class initialization",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter:Jupiter"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetSwapOrderParams",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "quote",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_quote",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.client",
+        "kind": "function",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapBuildParams"
+        ],
+        "library": "cyhole"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

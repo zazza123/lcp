@@ -17,6 +17,7 @@ When you install the plugin, Claude Code gets:
 | **`/lcp:configure`** | Slash command: guided, step-by-step `.lcp.json` setup with verification; pass a symptom to jump straight to repair |
 | **Library explorer subagent** | A read-only Claude Haiku subagent for deep API research; runs independently so it doesn't consume your session's context |
 | **Session hook** | Auto-generates `.lcp.json` for the active project when absent, seeding it from `settings.json` `pluginConfigs` values |
+| **Verification reminder hook** | If Claude reaches its first Python file write without having consulted `lcp`, a `PreToolUse` hook holds that one write and reminds it to verify the library APIs first — at most once per session, Python files only |
 | **Registry support** | `registries` field in `.lcp.json` for connecting to a private or team registry with pre-built manifests |
 
 ## Installation
@@ -122,7 +123,7 @@ Claude:
 
 The `lcp-universal` skill drives this flow automatically: whenever Claude detects that a task involves an external Python library, it calls `resolve_library("package")` first. The MCP server checks `~/.lcp/cache/` for a cached manifest; if none is found, it scans the pip-installed package on the fly and caches the result. Subsequent calls to the same library in the same session are instant.
 
-The skills, commands, and subagent are guidance and convenience layers on top of the MCP server — they don't change what the server does, they change how Claude uses it.
+The skills, commands, and subagent are guidance and convenience layers on top of the MCP server — they don't change what the server does, they change how Claude uses it. A `PreToolUse` hook backs the skill deterministically: the first time a session writes a `.py` file without any prior `lcp` call, the write is held once with a reminder to verify — repeating the write (or calling `resolve_library`) proceeds normally.
 
 ## Configuration: `.lcp.json`
 
