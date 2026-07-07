@@ -114,10 +114,7 @@ def cmd_run(args) -> int:
     arms = ["baseline", "lcp"] if args.arms == "both" else [args.arms]
     append_system = None
     if "lcp-skill" in arms:
-        skill_path = (
-            EVALS_DIR.parent / "plugin/lcp/skills/lcp-universal/SKILL.md"
-        )
-        append_system = agent.load_skill_text(skill_path)
+        append_system = agent.load_skill_text(args.skill_file)
     jobs = [
         (case, arm, rep)
         for case in loaded
@@ -183,7 +180,7 @@ def cmd_rescore(args) -> int:
     return _report(out)
 
 
-def main() -> int:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -203,6 +200,12 @@ def main() -> int:
     p_run.add_argument("--model", default=agent.MODEL)
     p_run.add_argument("--workers", type=int, default=2)
     p_run.add_argument("--case-id", action="append", default=[])
+    p_run.add_argument(
+        "--skill-file", type=Path,
+        default=EVALS_DIR.parent / "plugin/lcp/skills/lcp-universal/SKILL.md",
+        help="SKILL.md injected in the lcp-skill arm "
+             "(default: the shipped plugin skill)",
+    )
     p_run.set_defaults(func=cmd_run)
 
     p_report = sub.add_parser("report", help="re-aggregate an existing results dir")
@@ -218,7 +221,11 @@ def main() -> int:
     p_rescore.add_argument("--cases", type=Path, default=EVALS_DIR / "cases")
     p_rescore.set_defaults(func=cmd_rescore)
 
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
     return args.func(args)
 
 
