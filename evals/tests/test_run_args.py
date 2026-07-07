@@ -20,3 +20,11 @@ class TestSkillFileFlag:
             ["run", "--out", "x", "--skill-file", str(skill)]
         )
         assert args.skill_file == skill
+
+
+class TestEngagementSubcommand:
+    def test_accepts_multiple_out_dirs(self):
+        args = build_parser().parse_args(
+            ["engagement", "--out", "a", "--out", "b"]
+        )
+        assert args.out == ["a", "b"]

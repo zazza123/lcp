@@ -15,7 +15,7 @@ from pathlib import Path
 EVALS_DIR = Path(__file__).parent
 sys.path.insert(0, str(EVALS_DIR))
 
-from harness import agent, cases, report, verify  # noqa: E402
+from harness import agent, cases, engagement, report, verify  # noqa: E402
 
 
 def cmd_validate(args) -> int:
@@ -151,6 +151,17 @@ def cmd_report(args) -> int:
     return _report(Path(args.out))
 
 
+def cmd_engagement(args) -> int:
+    for out in args.out:
+        runs = report.load_runs(Path(out))
+        if not runs:
+            print(f"{out}: no runs found", file=sys.stderr)
+            return 1
+        print(f"== {out}")
+        print(json.dumps(engagement.engagement_stats(runs), indent=2))
+    return 0
+
+
 def cmd_rescore(args) -> int:
     """Re-verify stored runs with the CURRENT verifier into a new dir.
 
@@ -211,6 +222,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_report = sub.add_parser("report", help="re-aggregate an existing results dir")
     p_report.add_argument("--out", required=True)
     p_report.set_defaults(func=cmd_report)
+
+    p_eng = sub.add_parser(
+        "engagement",
+        help="engagement-conditioned stats for one or more results dirs",
+    )
+    p_eng.add_argument("--out", action="append", required=True)
+    p_eng.set_defaults(func=cmd_engagement)
 
     p_rescore = sub.add_parser(
         "rescore",
