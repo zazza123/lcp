@@ -627,6 +627,80 @@ balloon >2×, revisit what `get_symbol` inlines vs. lazy-loads.
 
 ---
 
+## Phase 4b — Engagement iteration (skill + hooks)
+
+**Status:** not started — unblocked (added 2026-07-07 after the Phase 4
+retrospective; uses only the existing harness, no manifest/server changes)
+
+**Objective:** Raise lcp-skill engagement on the 8 F1 cases from the current
+13–15/24 to **≥18/24** without degrading engaged-run quality, by iterating on
+the plugin skill text and the plugin hooks — not on the server.
+
+**Why:** Phases 3–4 proved the product claim: engaged runs pass 27/28 with
+**zero** misuse, and every measured hallucination sits in a non-engaged run.
+Content work is frozen (Phase 4); engagement (F1) is now the binding
+constraint, and it is also the cheapest thing to iterate — a full F1
+comparison run costs ~$1.30 and ~30 minutes, so several variants fit in one
+session. Strategic framing confirmed 2026-07-07: the target user is agents
+working on code LLMs *don't* know (niche, churned, private packages), where
+the model cannot fall back on parametric knowledge — engagement is the whole
+game there.
+
+**Scope (in):**
+- A/B variants of `plugin/lcp/skills/lcp-universal/SKILL.md`, measured
+  independently with the existing harness (lcp-skill arm, 8 F1 cases,
+  3 reps, haiku pinned, `--case-id` filters — see the eval-runner memory):
+  - **Variant A — deferred-tools step:** the observed stall is a lone
+    `ToolSearch` call and nothing after it (the model loads the deferred MCP
+    tools and behaves as if it verified something). Add an explicit
+    instruction: load the lcp tools via ToolSearch, then **call**
+    `resolve_library` — loading is not verifying.
+  - **Variant B — unconditional first action:** engagement is bimodal
+    (0-or-full-chain), so the failure is the first step, not workflow
+    comprehension. Reframe: "before writing ANY import statement, your first
+    tool call is `resolve_library(<package>)`".
+  - **Variant C — shorter body:** haiku compliance may degrade with prompt
+    length; a compressed skill body tests that hypothesis. Optional few-shot
+    example if length allows.
+- **Hook experiment:** a `PreToolUse` hook on Write/Edit in
+  `plugin/lcp/hooks/hooks.json` that reminds the agent when no
+  `mcp__lcp__*` call has happened in the session — deterministic where
+  prose is probabilistic, and robust to CLI-version drift (the ToolSearch
+  stall pattern is harness-version-sensitive; 2.1.201→2.1.202 already
+  showed variance).
+- Every run records `claude --version` in meta.json; compare variants on
+  (1) engagement rate (runs with ≥1 `mcp__lcp__*` call in
+  `tool_call_details`), (2) pass rate, (3) engaged-run misuse — which MUST
+  stay 0 (a variant that raises engagement but degrades engaged quality
+  loses).
+- Ship the winning variant (skill + hook if it earns its keep) in the
+  plugin; docs-alignment rule applies (plugin skill files are shipped docs).
+
+**Scope (out):** manifest/server changes (format frozen at Phase 4), new
+eval cases or task-mix changes (Phase 8), non-Claude harnesses, statistical
+proof (3 reps per variant is a screening filter — Phase 8 confirms).
+
+**Code notes (2026-07-07):**
+- Engagement counting and the stall pattern are documented in
+  `evals/results/2026-07-07-phase4-docstrings-skill/analysis.md`; baselines:
+  Phase 3 engaged 15/24, Phase 4 engaged 13/24, fastmcp stuck at 4/12 in
+  both, cyhole 9–11/12.
+- The skill reaches the model via `--append-system-prompt` in the harness
+  (`evals/run.py`), but real users get it through the plugin's skill
+  auto-trigger — keep the two texts identical (single source of truth in
+  `plugin/lcp/skills/`).
+- `hooks/hooks.json` currently has only a `SessionStart` PATH check; hook
+  output conventions are documented in the Claude Code plugin docs.
+
+**Exit criteria:** best variant reaches ≥18/24 engaged with engaged-run
+misuse = 0 across the standard 24-run comparison; shipped in the plugin;
+results + per-variant table recorded in the eval log; if NO variant beats
+15/24 meaningfully, record that honestly and move the engagement problem to
+Phase 8's task-mix design (harder tasks on unknown code may engage
+naturally).
+
+---
+
 ## Phase 5 — Subprocess scanning
 
 **Status:** not started — independent (can run any time after Phase 2)
