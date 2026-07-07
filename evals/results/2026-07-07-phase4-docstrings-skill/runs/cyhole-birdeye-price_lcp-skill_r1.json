@@ -1,0 +1,149 @@
+{
+  "case_id": "cyhole-birdeye-price",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.birdeye import Birdeye\n\n# Example Solana token address (USDC on Solana)\ntoken_address = \"EPjFWaJF3gscFNsYjgzHzv1uAjbzrCn1z6LmjJrNYLj\"\n\n# Instantiate Birdeye interaction\nbirdeye = Birdeye()\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(address=token_address)\n\n# Print price information\nprint(f\"Token: {response.data.value}\")\nprint(f\"Price: ${response.data.value}\")\nprint(f\"Update Time: {response.data.update_human_time}\")",
+  "result_text": "```python\nfrom cyhole.birdeye import Birdeye\n\n# Example Solana token address (USDC on Solana)\ntoken_address = \"EPjFWaJF3gscFNsYjgzHzv1uAjbzrCn1z6LmjJrNYLj\"\n\n# Instantiate Birdeye interaction\nbirdeye = Birdeye()\n\n# Fetch current price synchronously\nresponse = birdeye.client.get_price(address=token_address)\n\n# Print price information\nprint(f\"Token: {response.data.value}\")\nprint(f\"Price: ${response.data.value}\")\nprint(f\"Update Time: {response.data.update_human_time}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 116,
+    "output_tokens": 3366,
+    "cache_read_tokens": 492777,
+    "cache_creation_tokens": 28778,
+    "cost_usd": 0.1237797,
+    "num_turns": 16,
+    "tool_calls": 15,
+    "duration_s": 67.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "+lcp resolve search symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "birdeye",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye:Birdeye",
+          "cyhole.birdeye.interaction:BirdeyeClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.interaction:BirdeyeClient#get_price"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye:Birdeye#api_return_model"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client property Birdeye attribute",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.birdeye.interaction",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "birdeye client sync async_client",
+        "library": "cyhole",
+        "module": "cyhole.birdeye"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "cyhole",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Interaction class base",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.birdeye"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.birdeye.interaction"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.birdeye.interaction:Birdeye"
+        ],
+        "library": "cyhole"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

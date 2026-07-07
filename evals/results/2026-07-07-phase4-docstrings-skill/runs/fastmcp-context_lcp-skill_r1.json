@@ -1,0 +1,128 @@
+{
+  "case_id": "fastmcp-context",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP, Context\n\nserver = FastMCP(\"Progress Logger Example\", version=\"1.0.0\")\n\n\n@server.tool(description=\"Process a list of items and report progress via logging\")\nasync def process_items(items: list[str], ctx: Context) -> str:\n    \"\"\"Process a list of items, logging progress information to the client.\"\"\"\n    results = []\n    \n    for i, item in enumerate(items, 1):\n        # Log progress for each item\n        await ctx.info(f\"Processing item {i}/{len(items)}: {item}\")\n        \n        # Simulate processing\n        processed = item.upper()\n        results.append(processed)\n    \n    await ctx.info(f\"Completed processing all {len(items)} items\")\n    return f\"Processed {len(results)} items: {', '.join(results)}\"\n\n\nif __name__ == \"__main__\":\n    # Run with stdio transport\n    server.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP, Context\n\nserver = FastMCP(\"Progress Logger Example\", version=\"1.0.0\")\n\n\n@server.tool(description=\"Process a list of items and report progress via logging\")\nasync def process_items(items: list[str], ctx: Context) -> str:\n    \"\"\"Process a list of items, logging progress information to the client.\"\"\"\n    results = []\n    \n    for i, item in enumerate(items, 1):\n        # Log progress for each item\n        await ctx.info(f\"Processing item {i}/{len(items)}: {item}\")\n        \n        # Simulate processing\n        processed = item.upper()\n        results.append(processed)\n    \n    await ctx.info(f\"Completed processing all {len(items)} items\")\n    return f\"Processed {len(results)} items: {', '.join(results)}\"\n\n\nif __name__ == \"__main__\":\n    # Run with stdio transport\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 2038,
+    "cache_read_tokens": 241220,
+    "cache_creation_tokens": 22528,
+    "cost_usd": 0.07943499999999999,
+    "num_turns": 13,
+    "tool_calls": 12,
+    "duration_s": 42.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool context logging",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "mcp server context",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Request context",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "log info",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP",
+          "fastmcp:Context"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP#tool",
+          "fastmcp:Context#info"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "case_id": "cyhole-jupiter-swap",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import GetSwapOrderParams, PostSwapExecuteBody\n\n# Initialize Jupiter client (lite tier doesn't require API key)\njupiter = Jupiter()\n\n# Token mint addresses on Solana\nSOL_MINT = \"So11111111111111111111111111111111111111112\"\nUSDC_MINT = \"EPjFWdd5Au17FBzMuMvrEB4ORCa5a6ZL7zJBNWfLvD8\"\n\n# Amount to swap (1 SOL in lamports, where 1 SOL = 1,000,000,000 lamports)\namount_in_lamports = 1_000_000_000\n\n# Step 1: Get swap quote/order\norder_params = GetSwapOrderParams(\n    inputMint=SOL_MINT,\n    outputMint=USDC_MINT,\n    amount=amount_in_lamports,\n    slippageBps=50  # 0.5% slippage\n)\n\nswap_quote = jupiter.client.get_swap_order(order_params)\nprint(\"Swap Quote:\")\nprint(f\"  Input Amount: {swap_quote.inAmount}\")\nprint(f\"  Output Amount: {swap_quote.outAmount}\")\nprint(f\"  Route Plans: {len(swap_quote.routePlan)}\")\n\n# Step 2: Execute the swap\n# Note: In a real scenario, you would need to:\n# 1. Sign the transaction with your wallet's private key\n# 2. Provide your actual public key instead of placeholder\n# 3. Submit the signed transaction to the network\n\nexecute_body = PostSwapExecuteBody(\n    swapResult=swap_quote,\n    userPublicKey=\"YourWalletPublicKeyHere\"  # Replace with actual public key\n)\n\nswap_result = jupiter.client.post_swap_execute(execute_body)\nprint(\"\\nSwap Execution Result:\")\nprint(f\"  Status: {swap_result.status}\")\nprint(f\"  Transaction Signature: {swap_result.txid}\")",
+  "result_text": "```python\nfrom cyhole.jupiter import Jupiter\nfrom cyhole.jupiter.client import GetSwapOrderParams, PostSwapExecuteBody\n\n# Initialize Jupiter client (lite tier doesn't require API key)\njupiter = Jupiter()\n\n# Token mint addresses on Solana\nSOL_MINT = \"So11111111111111111111111111111111111111112\"\nUSDC_MINT = \"EPjFWdd5Au17FBzMuMvrEB4ORCa5a6ZL7zJBNWfLvD8\"\n\n# Amount to swap (1 SOL in lamports, where 1 SOL = 1,000,000,000 lamports)\namount_in_lamports = 1_000_000_000\n\n# Step 1: Get swap quote/order\norder_params = GetSwapOrderParams(\n    inputMint=SOL_MINT,\n    outputMint=USDC_MINT,\n    amount=amount_in_lamports,\n    slippageBps=50  # 0.5% slippage\n)\n\nswap_quote = jupiter.client.get_swap_order(order_params)\nprint(\"Swap Quote:\")\nprint(f\"  Input Amount: {swap_quote.inAmount}\")\nprint(f\"  Output Amount: {swap_quote.outAmount}\")\nprint(f\"  Route Plans: {len(swap_quote.routePlan)}\")\n\n# Step 2: Execute the swap\n# Note: In a real scenario, you would need to:\n# 1. Sign the transaction with your wallet's private key\n# 2. Provide your actual public key instead of placeholder\n# 3. Submit the signed transaction to the network\n\nexecute_body = PostSwapExecuteBody(\n    swapResult=swap_quote,\n    userPublicKey=\"YourWalletPublicKeyHere\"  # Replace with actual public key\n)\n\nswap_result = jupiter.client.post_swap_execute(execute_body)\nprint(\"\\nSwap Execution Result:\")\nprint(f\"  Status: {swap_result.status}\")\nprint(f\"  Transaction Signature: {swap_result.txid}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 144,
+    "output_tokens": 4876,
+    "cache_read_tokens": 669579,
+    "cache_creation_tokens": 29751,
+    "cost_usd": 0.15098389999999998,
+    "num_turns": 21,
+    "tool_calls": 20,
+    "duration_s": 88.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "swap",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.interaction:JupiterClient#get_swap_order",
+          "cyhole.jupiter.interaction:JupiterClient#post_swap_execute",
+          "cyhole.jupiter.interaction:JupiterClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.client:GetSwapOrderParams",
+          "cyhole.jupiter.client:PostSwapExecuteBody",
+          "cyhole.jupiter.interaction:Jupiter"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetSwapOrderParams fields",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.jupiter.schema",
+        "kind": "class",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetSwapOrderResponse",
+        "library": "cyhole",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapOrderParams",
+          "cyhole.jupiter.schema:GetSwapOrderResponse",
+          "cyhole.jupiter.schema:PostSwapExecuteBody"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.jupiter.schema:GetSwapBuildParams"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SOL USDC token",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "token address mint",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token.solana",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "EPjFWdd5",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "constants predefined",
+        "library": "cyhole",
+        "kind": "attribute",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "JUP",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "USDC SOL",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token.solana",
+        "kind": "attribute",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.core.token.solana",
+        "limit": 100
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
