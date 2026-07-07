@@ -1,0 +1,84 @@
+{
+  "case_id": "fastmcp-resource",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(name=\"config-server\")\n\n@mcp.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\n        \"name\": \"example-config\",\n        \"version\": \"1.0.0\",\n        \"settings\": {\n            \"debug\": False,\n            \"timeout\": 30,\n            \"retries\": 3\n        }\n    }\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(name=\"config-server\")\n\n@mcp.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\n        \"name\": \"example-config\",\n        \"version\": \"1.0.0\",\n        \"settings\": {\n            \"debug\": False,\n            \"timeout\": 30,\n            \"retries\": 3\n        }\n    }\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 60,
+    "output_tokens": 3238,
+    "cache_read_tokens": 217747,
+    "cache_creation_tokens": 12797,
+    "cost_usd": 0.0636187,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 58.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "2.14.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP#resource"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP class init",
+        "library": "fastmcp",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
