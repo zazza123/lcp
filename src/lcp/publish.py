@@ -200,6 +200,10 @@ def _create_branch(
 ) -> str:
     """Create a new branch on the fork from the default branch HEAD.
 
+    If the branch already exists (a leftover from a previous run), it is
+    force-reset to the current default branch HEAD so the manifest commit
+    applies cleanly on a fresh base — re-running publish is idempotent.
+
     Args:
         fork_repo: Fork repo in ``owner/name`` format.
         branch_name: Name of the new branch.
@@ -219,16 +223,27 @@ def _create_branch(
     )
     base_sha = ref_data["object"]["sha"]
 
-    # Create the branch
-    _github_request(
-        "POST",
-        f"{_GITHUB_API_BASE}/repos/{fork_repo}/git/refs",
-        token,
-        data={
-            "ref": f"refs/heads/{branch_name}",
-            "sha": base_sha,
-        },
-    )
+    # Create the branch; tolerate a leftover from a previous run by
+    # force-resetting it to the current main HEAD.
+    try:
+        _github_request(
+            "POST",
+            f"{_GITHUB_API_BASE}/repos/{fork_repo}/git/refs",
+            token,
+            data={
+                "ref": f"refs/heads/{branch_name}",
+                "sha": base_sha,
+            },
+        )
+    except PublishError as exc:
+        if "already exists" not in str(exc).lower():
+            raise
+        _github_request(
+            "PATCH",
+            f"{_GITHUB_API_BASE}/repos/{fork_repo}/git/refs/heads/{branch_name}",
+            token,
+            data={"sha": base_sha, "force": True},
+        )
 
     return base_sha
 
@@ -245,7 +260,9 @@ def _upload_manifest(
     """Upload the manifest file to the fork.
 
     Uses the GitHub Contents API to create or update the file on the
-    specified branch.
+    specified branch. When the file already exists on the branch, its
+    blob ``sha`` is looked up first and included in the PUT — GitHub
+    rejects updates without it — so re-uploads are idempotent.
 
     Args:
         fork_repo: Fork repo in ``owner/name`` format.
@@ -261,17 +278,24 @@ def _upload_manifest(
         PublishError: If file upload fails.
     """
     encoded_content = base64.b64encode(content).decode("ascii")
+    url = f"{_GITHUB_API_BASE}/repos/{fork_repo}/contents/{file_path}"
 
-    _github_request(
-        "PUT",
-        f"{_GITHUB_API_BASE}/repos/{fork_repo}/contents/{file_path}",
-        token,
-        data={
-            "message": f"Add {package_name} v{package_version} LCP manifest",
-            "content": encoded_content,
-            "branch": branch_name,
-        },
-    )
+    existing_sha: str | None = None
+    try:
+        existing = _github_request("GET", f"{url}?ref={branch_name}", token)
+        if isinstance(existing, dict):
+            existing_sha = existing.get("sha")
+    except PublishError:
+        pass  # file does not exist on the branch yet
+
+    data: dict = {
+        "message": f"Add {package_name} v{package_version} LCP manifest",
+        "content": encoded_content,
+        "branch": branch_name,
+    }
+    if existing_sha:
+        data["sha"] = existing_sha
+    _github_request("PUT", url, token, data=data)
 
 
 def _build_pr_body(
@@ -337,6 +361,9 @@ def _create_pull_request(
 ) -> dict:
     """Create a pull request from the fork branch to the registry main.
 
+    If an open PR for the same head already exists (a previous run),
+    it is returned instead of raising.
+
     Args:
         registry_repo: Upstream registry repo in ``owner/name`` format.
         fork_repo: Fork repo in ``owner/name`` format.
@@ -356,17 +383,31 @@ def _create_pull_request(
     fork_owner = fork_repo.split("/")[0]
     title = f"NEW: Manifest {package_name} {package_version} ({language})"
 
-    pr_data = _github_request(
-        "POST",
-        f"{_GITHUB_API_BASE}/repos/{registry_repo}/pulls",
-        token,
-        data={
-            "title": title,
-            "body": pr_body,
-            "head": f"{fork_owner}:{branch_name}",
-            "base": "main",
-        },
-    )
+    try:
+        pr_data = _github_request(
+            "POST",
+            f"{_GITHUB_API_BASE}/repos/{registry_repo}/pulls",
+            token,
+            data={
+                "title": title,
+                "body": pr_body,
+                "head": f"{fork_owner}:{branch_name}",
+                "base": "main",
+            },
+        )
+    except PublishError as exc:
+        if "already exists" not in str(exc).lower():
+            raise
+        # A PR for this head is already open: reuse it instead of failing.
+        existing = _github_request(
+            "GET",
+            f"{_GITHUB_API_BASE}/repos/{registry_repo}/pulls"
+            f"?head={fork_owner}:{branch_name}&state=open",
+            token,
+        )
+        if isinstance(existing, list) and existing:
+            return existing[0]
+        raise
 
     return pr_data
 
@@ -413,6 +454,10 @@ def publish_manifest(
     3. Creates a branch for the new manifest
     4. Uploads the manifest file to the correct registry path
     5. Opens a pull request with structured content and labels
+
+    Re-running for the same ``(package, version)`` is idempotent: the
+    branch is reset, the file is updated in place, and an already-open
+    pull request is reused instead of raising.
 
     Args:
         document: Validated LCP document to publish.

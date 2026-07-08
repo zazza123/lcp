@@ -119,10 +119,28 @@ When using the [Claude Code plugin](claude-code-plugin.md), set `scan_python` (o
 
 | Tool | Description |
 |---|---|
-| `resolve_library(name, version?)` | Load a library by pip package name: local cache → live scan → registry fetch. Returns name, version, symbol count, and resolution source. Call this first. |
+| `resolve_library(name, version?)` | Load a library by pip package name: local cache → live scan → registry fetch. Returns name, version, symbol count, and resolution source. Call this first. When the cache or registry serves a version that differs from the locally installed one (or the package is not installed at all), the response carries an honesty flag — see below. |
 | `search(query, library?, module?, kind?, limit?)` | Ranked symbol search — the primary discovery tool. Every hit carries the exact `import` line. Hits present the preferred importable id: a symbol re-exported at the package root appears as `requests:get` with `resolved_via_alias` naming its definition site (`requests.api:get`). An empty query browses: combine with `module=` and/or `kind=` to list contents in deterministic `(kind, name)` order. Default `limit` 20, max 100. |
 | `get_symbol(ids, library?)` | Batch detail lookup: full signatures, required/optional parameters (with per-parameter docstring descriptions), return types and what the return value means (`returns_description`), the exceptions a call can raise (`raises`), usage examples extracted from the docstring (`semantics.examples`), and the correct import line per symbol. Both canonical ids and alias ids resolve (including `#member` forms like `requests:Session#get`); the entry echoes the id you asked for, and `resolved_via_alias` names the definition site when it differs. Classes inline all members as one-line summaries. `usage_hints.returns_classes` resolves a return type to its class id. |
 | `get_overview(library?)` | Library identity (name, version, resolution source) plus the module tree with per-module symbol counts. |
+
+### Version-mismatch honesty
+
+A live scan always describes the installed package, but a cache or registry hit can describe a different version — for example when the package is not installed locally and the registry's `latest` entry is served. In that case the `resolve_library` response says so explicitly:
+
+```json
+{
+  "status": "loaded",
+  "name": "polars",
+  "version": "1.42.1",
+  "source": "registry",
+  "version_mismatch": true,
+  "installed_version": null,
+  "resolved_version": "1.42.1"
+}
+```
+
+`installed_version` is `null` when the package is not installed in the scanned environment. Requesting an explicit `version=` that cannot be honoured additionally produces a `warning` block with code `version_mismatch`, as before.
 
 ### The 3-call workflow
 

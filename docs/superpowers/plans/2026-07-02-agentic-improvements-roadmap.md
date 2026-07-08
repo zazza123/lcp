@@ -838,7 +838,31 @@ to choose LCP over Context7.
 
 ## Phase 7 — Registry: CI verification + pre-population
 
-**Status:** not started — unblocked: manifest format frozen at end of Phase 4 (2026-07-07)
+**Status:** done (2026-07-08) — plan:
+`docs/superpowers/plans/2026-07-08-phase-7-registry.md`. SDK side (this
+repo): idempotent `publish.py` (branch reset + contents-sha upsert + PR
+reuse), top-level `version_mismatch` honesty flag in `resolve_library`
+for cache/registry hits, docs updated. Registry side (lcp-registry PRs
+#15–#23): `verify-manifests.yml` (layout/schema/latest checks +
+per-manifest regenerate-and-compare in secretless `pull_request` CI, lcp
+pinned to 98efe823), `populate.py` + frozen top-100 `population.yaml`,
+review-gated `verify-overrides.yaml`. Population: **93/100 top-PyPI
+packages published** + all 10 pre-freeze manifests regenerated with
+Phase 4 structured fields (99 packages, 103 manifests on main). Dropped
+with documented causes: pandas/scipy/pyarrow (scanner crashes on
+`*.tests` submodules raising `pytest.Skipped` — post-launch SDK fix),
+pydantic-core (pydantic version conflict in the scan bootstrap), sglang
+(no macOS-installable release), soupsieve (imports undeclared bs4 at
+import time), opentelemetry-semantic-conventions (no stable release).
+Exit criteria: tampered-signature manifest **rejected by CI**
+(lcp-registry PR #24, closed unmerged); fresh venv without polars
+resolves `resolve_library("polars")` from the registry in **1.11s
+median** (3 runs, 4150 symbols). Key operational finding: the scan
+child appends the host env's site-packages (`_bootstrap_paths`), so
+population MUST run from a minimal requirements.txt venv or local scans
+include optional submodules CI cannot import (google-genai: 5691 vs
+4635 symbols) — documented in populate.py; a real SDK isolation fix is
+post-launch backlog.
 
 **Objective:** The registry verifies submissions automatically and ships
 pre-built manifests for the top PyPI libraries, so `serve-all --registry`

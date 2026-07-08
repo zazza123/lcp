@@ -95,9 +95,9 @@ Before uploading a manifest, the module ensures the authenticated user has a for
 
 **Functions:** `_create_branch()` and `_upload_manifest()` in `src/lcp/publish.py`
 
-Branch creation reads the SHA of the fork's `main` branch head, then creates a new ref at `refs/heads/lcp/add/{slug}/{version}`, where `{slug}` is the canonical, hyphenated package name (see Registry Path Convention below). The branch naming convention prevents collisions between different packages and versions.
+Branch creation reads the SHA of the fork's `main` branch head, then creates a new ref at `refs/heads/lcp/add/{slug}/{version}`, where `{slug}` is the canonical, hyphenated package name (see Registry Path Convention below). The branch naming convention prevents collisions between different packages and versions. When the branch already exists — a leftover from a previous run — it is force-reset to the current `main` head instead of failing, which makes re-publishing the same `(package, version)` idempotent.
 
-File upload uses the GitHub Contents API to commit the manifest directly to the branch. The manifest JSON is first gzip-compressed and then Base64-encoded before submission, as required by the API. The commit message follows the format `Add {name} v{version} LCP manifest`.
+File upload uses the GitHub Contents API to commit the manifest directly to the branch. The manifest JSON is first gzip-compressed and then Base64-encoded before submission, as required by the API. Before the upload, the module looks up the blob SHA of any existing file at the target path and includes it in the request — the Contents API requires the SHA to update a pre-existing file, so re-uploads overwrite in place rather than erroring. The commit message follows the format `Add {name} v{version} LCP manifest`.
 
 ---
 
@@ -117,6 +117,8 @@ Each PR created by the publish command follows a consistent format:
 The PR body is built by `_build_pr_body()` and contains a metadata table (package name, version, language, symbol count, schema version), the manifest file path within the registry, requested labels, generation details (SDK version and schema version), and a checklist confirming the manifest was generated, validated, and placed in the correct path.
 
 Label application is best-effort via `_try_add_labels()` — contributors typically lack write access to the upstream registry, so label failures are silently ignored. The `lcp-publish` label marks PRs opened automatically by the publish command, distinguishing them from manual contributions. The `NEW: Manifest` title prefix and the language keep PRs filterable even when labels cannot be applied.
+
+If an open pull request for the same fork branch already exists, `_create_pull_request()` returns that PR instead of raising — the third leg of the idempotent re-run behaviour alongside branch reset and file upsert.
 
 ---
 
