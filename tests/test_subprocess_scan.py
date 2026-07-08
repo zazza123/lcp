@@ -349,3 +349,51 @@ class TestChildCodeIsolation:
 
         assert "sys.path[:0] = []" in _build_child_code([])
         assert "sys.path[:0] = ['/tmp/fixtures']" in _build_child_code(["/tmp/fixtures"])
+
+
+@pytest.fixture(scope="module")
+def bare_target_venv(tmp_path_factory) -> str:
+    """A pip-less venv (stdlib only) used as an isolated scan target."""
+    root = tmp_path_factory.mktemp("bare-target")
+    try:
+        venv.create(root, with_pip=False)
+    except Exception as exc:  # pragma: no cover - CI/platform guard
+        pytest.skip(f"cannot create venv: {exc}")
+    bin_dir = "Scripts" if sys.platform == "win32" else "bin"
+    vpy = root / bin_dir / ("python.exe" if sys.platform == "win32" else "python")
+    if not vpy.exists():  # pragma: no cover - platform guard
+        pytest.skip("venv python interpreter missing")
+    return str(vpy)
+
+
+class TestHostLeakIsolation:
+    """Host site-packages must not make target submodules importable (#52)."""
+
+    def test_host_only_package_does_not_leak_into_target(
+        self, bare_target_venv, tmp_path
+    ):
+        # pytest is importable in the host but NOT in the pip-less target venv.
+        pkg = tmp_path / "contam_pkg"
+        pkg.mkdir()
+        (pkg / "__init__.py").write_text(
+            '"""Root package."""\n\n'
+            "def core():\n"
+            '    """Core function."""\n'
+            "    return 1\n",
+            encoding="utf-8",
+        )
+        (pkg / "opt.py").write_text(
+            '"""Optional submodule that needs a host-only package."""\n\n'
+            "import pytest  # only importable if the host env leaks in\n\n"
+            "def optional_fn():\n"
+            '    """Should never be scanned in an isolated child."""\n'
+            "    return 2\n",
+            encoding="utf-8",
+        )
+
+        doc = scan_package_subprocess(
+            "contam_pkg", python=bare_target_venv, extra_paths=[str(tmp_path)]
+        )
+
+        assert "contam_pkg:core" in doc.symbols
+        assert not any(sid.startswith("contam_pkg.opt") for sid in doc.symbols)
