@@ -48,10 +48,11 @@ lcp scan requests -o requests.lcp.json --include-private
 The generated file is a JSON document. You can pipe it through `jq` or open it in any editor.
 
 ```bash
-jq '.symbols[0]' requests.lcp.json
+jq '.symbols | keys | .[:5]' requests.lcp.json          # first few symbol IDs
+jq '.symbols["requests.api:get"]' requests.lcp.json     # one full entry
 ```
 
-Each entry has a stable `id` (`module:symbol`), a `kind` (`function`, `class`, `method`, `module`...), a `signature`, and optional fields for `summary`, `stability`, `deprecations`, and `effects`.
+The `symbols` object is a map keyed by stable symbol IDs (`module:symbol`; class members use `#`, e.g. `requests.sessions:Session#get`). Each entry has a `kind` (`function`, `class`, `method`, `module`...), a `semantics.summary`, and optional `signatures`, `stability`, `effects`, and `aliases` fields.
 
 ## Validate
 

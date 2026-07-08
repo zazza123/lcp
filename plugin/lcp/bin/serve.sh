@@ -2,8 +2,8 @@
 # LCP plugin wrapper — starts the lcp serve-all MCP server.
 #
 # Resolution order for the launcher (first one whose --version probe succeeds):
-#   1.  .lcp.json `command`                         — explicit path to an `lcp` binary
-#   2.  .lcp.json `python` -m lcp                   — a python interpreter + lcp
+#   1.  .lcp-config.json `command`                  — explicit path to an `lcp` binary
+#   2.  .lcp-config.json `python` -m lcp            — a python interpreter + lcp
 #   3.  $CLAUDE_PROJECT_DIR/.venv/bin/lcp            — project venv (.venv) lcp
 #   4.  $CLAUDE_PROJECT_DIR/.venv/bin/python -m lcp  — project venv (.venv) python -m lcp
 #   5.  $CLAUDE_PROJECT_DIR/venv/bin/lcp             — project venv (venv) lcp
@@ -20,18 +20,25 @@
 # runtime with a cryptic MCP `-32000`. If nothing works we emit actionable
 # guidance instead.
 #
-# Config is read from $CLAUDE_PROJECT_DIR/.lcp.json or ~/.lcp/config.json.
+# Config is read from $CLAUDE_PROJECT_DIR/.lcp-config.json (legacy fallback:
+# .lcp.json, deprecated) or ~/.lcp/config.json.
 #
-# Scan interpreter: .lcp.json `scan_python` (fallback: `python`) is passed to
-# the server as --scan-python — that is the environment resolve_library
+# Scan interpreter: the config's `scan_python` (fallback: `python`) is passed
+# to the server as --scan-python — that is the environment resolve_library
 # scans; `scan_timeout` is passed as --scan-timeout.
 
 set -euo pipefail
 
-# Resolve config file: project first, then global.
+# Resolve config file: project .lcp-config.json, legacy project .lcp.json
+# (deprecated), then global.
 lcp_config_file() {
-  if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -f "${CLAUDE_PROJECT_DIR}/.lcp.json" ]; then
-    printf '%s\n' "${CLAUDE_PROJECT_DIR}/.lcp.json"; return 0
+  if [ -n "${CLAUDE_PROJECT_DIR:-}" ]; then
+    if [ -f "${CLAUDE_PROJECT_DIR}/.lcp-config.json" ]; then
+      printf '%s\n' "${CLAUDE_PROJECT_DIR}/.lcp-config.json"; return 0
+    fi
+    if [ -f "${CLAUDE_PROJECT_DIR}/.lcp.json" ]; then
+      printf '%s\n' "${CLAUDE_PROJECT_DIR}/.lcp.json"; return 0
+    fi
   fi
   if [ -f "${HOME}/.lcp/config.json" ]; then
     printf '%s\n' "${HOME}/.lcp/config.json"; return 0
@@ -117,6 +124,13 @@ lcp_build_args() {
 # When sourced for tests, stop here.
 if [ -n "${LCP_SERVE_LIB:-}" ]; then return 0 2>/dev/null || true; fi
 
+# One-shot deprecation notice when only the legacy config name is present.
+if [ -n "${CLAUDE_PROJECT_DIR:-}" ] \
+     && [ ! -f "${CLAUDE_PROJECT_DIR}/.lcp-config.json" ] \
+     && [ -f "${CLAUDE_PROJECT_DIR}/.lcp.json" ]; then
+  echo "lcp plugin: reading deprecated config .lcp.json — rename it to .lcp-config.json" >&2
+fi
+
 LAUNCHER="$(lcp_resolve_launcher)" || {
   cat >&2 <<'EOF'
 Error: could not resolve a runnable `lcp` for this project.
@@ -124,7 +138,7 @@ Error: could not resolve a runnable `lcp` for this project.
 Fix it one of these ways:
   1. Install lcp in your project venv:   uv pip install lcp   (or: pip install lcp)
   2. Install a global lcp:                pipx install lcp     (or: uv tool install lcp)
-  3. Point .lcp.json at it:               {"command": "/path/to/lcp"}
+  3. Point .lcp-config.json at it:        {"command": "/path/to/lcp"}
 
 Verify with:  <that path> --version
 EOF

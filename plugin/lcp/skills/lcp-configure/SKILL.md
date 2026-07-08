@@ -5,24 +5,24 @@ description: >-
   `lcp serve-all` MCP server actually starts and resolves libraries — the
   configuration side of LCP, not its lookup tools. Reach for it the moment LCP
   isn't working or needs adjusting, including right after installing the plugin
-  when the user doesn't know what to do next or what belongs in its `.lcp.json`.
+  when the user doesn't know what to do next or what belongs in its `.lcp-config.json`.
   Trigger it when: the lcp MCP server won't start or errors on launch (e.g.
   `-32000`, "could not resolve a runnable lcp"); LCP can't find, resolve, or
   load the user's libraries; LCP must launch from a specific lcp binary, venv,
   pyenv, conda, or Python interpreter; the user wants a private/team registry, a
   whitelist of served libraries (`expose`), or libraries preloaded at startup
   for fast first lookups. Treat "get LCP working", "set up LCP", or "fix LCP" as
-  a trigger even when no config file, JSON, or `.lcp.json` is named — these are
+  a trigger even when no config file, JSON, or `.lcp-config.json` is named — these are
   all configuration tasks. Do not use it for running LCP's lookup tools
   (resolving or browsing a library's API), setting an editor's Python
   interpreter, or writing code that parses the config.
 ---
 
-# Configure the LCP plugin (`.lcp.json`)
+# Configure the LCP plugin (`.lcp-config.json`)
 
 The LCP plugin runs a single MCP server, `lcp serve-all`, started by
 `${CLAUDE_PLUGIN_ROOT}/bin/serve.sh`. That wrapper reads a small JSON config
-file — `.lcp.json` — to decide **which `lcp` to launch** and **how the server
+file — `.lcp-config.json` — to decide **which `lcp` to launch** and **how the server
 should behave**. Most users never need to touch it (the plugin auto-detects a
 runnable `lcp` and uses the official registry), but it matters when `lcp` lives
 in a virtualenv that isn't on `PATH`, when a team runs a private registry, or
@@ -37,14 +37,14 @@ the best config you can and tell them exactly what to fix by hand.
 
 `serve.sh` looks for config in this order and uses the **first** it finds:
 
-1. **Project:** `.lcp.json` at the project root (the session's working
+1. **Project:** `.lcp-config.json` at the project root (the session's working
    directory — `$CLAUDE_PROJECT_DIR`).
 2. **Global:** `~/.lcp/config.json`.
 
-Default target: **project `.lcp.json` when working inside a project**, otherwise
+Default target: **project `.lcp-config.json` when working inside a project**, otherwise
 the **global** `~/.lcp/config.json`. Always let the user choose — a project file
 is right for "this repo uses a private registry", a global file for "set up lcp
-on my machine once". Note that a project `.lcp.json` *shadows* the global file,
+on my machine once". Note that a project `.lcp-config.json` *shadows* the global file,
 so if a user has a working global config and you create an empty/partial project
 file, you can accidentally hide it. Only write keys you actually set.
 
@@ -146,9 +146,12 @@ fix only that:
 - **Server won't start / `-32000` / "could not resolve a runnable lcp":** the
   launcher can't be found. Go to Step 1 — probe auto-detect, and if it fails,
   set `command`/`python` to a path that passes `--version`.
-- **Malformed `.lcp.json`:** Step 0 — show the parse error, rewrite cleanly.
+- **Malformed `.lcp-config.json`:** Step 0 — show the parse error, rewrite cleanly.
+- **Legacy `.lcp.json` config found:** offer to rename it to `.lcp-config.json`
+  (same content); the old name is a deprecated fallback and prints a notice on
+  the server's stderr.
 - **A project file is shadowing a good global one:** check whether an
-  almost-empty project `.lcp.json` is hiding `~/.lcp/config.json`; offer to
+  almost-empty project `.lcp-config.json` is hiding `~/.lcp/config.json`; offer to
   remove or complete it.
 - **Library never resolves:** check whether `expose` is set and is excluding it,
   or whether the active registry URL is wrong/unreachable.

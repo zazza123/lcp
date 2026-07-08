@@ -632,12 +632,12 @@ def resolve_library_document(
         if scan_python:
             remedy = (
                 "Check that the package is installed in that environment, "
-                "or fix 'scan_python' in .lcp.json"
+                "or fix 'scan_python' in .lcp-config.json"
             )
         else:
             remedy = (
                 "It may be installed in a different environment — point the "
-                "server at that env via .lcp.json ('scan_python' or 'python')"
+                "server at that env via .lcp-config.json ('scan_python' or 'python')"
             )
         reason = (
             f"'{name}' is not importable by the scan interpreter "
@@ -661,7 +661,7 @@ def resolve_library_document(
         reason = (
             f"'{name}' is not importable by the Python interpreter running lcp "
             f"({sys.executable}). It may be installed in a different environment "
-            f"(point the plugin at that env via .lcp.json), or the distribution "
+            f"(point the plugin at that env via .lcp-config.json), or the distribution "
             f"name may differ from the import path "
             f"(e.g. import 'google.adk' is provided by 'pip install google-adk')."
         )

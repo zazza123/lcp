@@ -23,31 +23,25 @@ pip install "lcp[ai]"
 export OPENAI_API_KEY=sk-...
 ```
 
-Generate a coverage report first, then run the agent:
+Generate a coverage report, preview with `--dry-run`, then run for real:
 
 ```bash
 lcp coverage mypackage -o coverage.json
+lcp docgen coverage.json --dry-run
+lcp docgen coverage.json --workers 8
 ```
 
-Then in Python:
+The writer modifies the package's source files in place. Review the diff with `git diff` before committing. All flags are listed in the [CLI reference](../cli.md#lcp-docgen); the same run is available from Python:
 
 ```python
 from lcp.ai import DocGenAgent, HierarchicalConfig, OpenAIProvider
 
 provider = OpenAIProvider(model="gpt-4o-mini")
-config = HierarchicalConfig(
-    max_workers=8,
-)
-agent = DocGenAgent(provider=provider, config=config)
+agent = DocGenAgent(provider=provider, config=HierarchicalConfig(max_workers=8))
 result = agent.run_sync("coverage.json")
 
 print(f"Updated: {result.symbols_updated}/{result.symbols_processed}")
 ```
-
-The writer modifies the package's source files in place. Review the diff with `git diff` before committing.
-
-!!! note "CLI status"
-    A `lcp docgen` CLI wrapper around this Python API is planned. Until it ships, use the `DocGenAgent` class directly as shown above.
 
 ## Providers
 
@@ -120,5 +114,6 @@ for sym in result.results:
 
 ## See also
 
+- [`lcp docgen`](../cli.md#lcp-docgen) — CLI reference for the command.
 - [`lcp coverage`](../cli.md#lcp-coverage) — produces the coverage JSON consumed by `DocGenAgent`.
 - [LCP v1 spec](../spec/index.md) — the manifest that documentation is generated for.

@@ -65,7 +65,7 @@ lcp serve-all --scan-python /path/to/project/.venv/bin/python --scan-timeout 120
 - `--scan-timeout` (default 60 s) kills scans that hang, e.g. a package whose import blocks on the network.
 - `--scan-mode inprocess` restores the old behavior of importing packages directly into the server process. Use it only where spawning subprocesses is restricted; the server also falls back to it automatically when a scan subprocess cannot be spawned at all and the scan targets the server's own environment.
 
-When using the [Claude Code plugin](claude-code-plugin.md), set `scan_python` (or `python`) in `.lcp.json` instead of passing flags — the plugin forwards them.
+When using the [Claude Code plugin](claude-code-plugin.md), set `scan_python` (or `python`) in `.lcp-config.json` instead of passing flags — the plugin forwards them.
 
 !!! warning "Trust model"
     Scanning imports the package, and importing executes the package's

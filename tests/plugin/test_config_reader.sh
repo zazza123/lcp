@@ -6,7 +6,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 SERVE="$HERE/../../plugin/lcp/bin/serve.sh"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 
-cat > "$TMP/.lcp.json" <<JSON
+cat > "$TMP/.lcp-config.json" <<JSON
 { "command": "/x/lcp", "registries": ["https://a", "https://b"], "expose": ["json","os"] }
 JSON
 
@@ -21,3 +21,17 @@ source "$SERVE"
 [ "$(lcp_config_get expose)" = "json os" ] || { echo "FAIL expose"; exit 1; }
 [ -z "$(lcp_config_get python)" ] || { echo "FAIL python empty"; exit 1; }
 echo "OK config_reader"
+
+# Legacy fallback: a deprecated .lcp.json is still read when .lcp-config.json
+# is absent
+LEGACY="$(mktemp -d)"
+echo '{"command":"/legacy/lcp"}' > "$LEGACY/.lcp.json"
+export CLAUDE_PROJECT_DIR="$LEGACY"
+[ "$(lcp_config_get command)" = "/legacy/lcp" ] || { echo "FAIL legacy fallback"; exit 1; }
+echo "OK legacy fallback"
+
+# Precedence: .lcp-config.json wins over a legacy .lcp.json
+echo '{"command":"/new/lcp"}' > "$LEGACY/.lcp-config.json"
+[ "$(lcp_config_get command)" = "/new/lcp" ] || { echo "FAIL precedence"; exit 1; }
+echo "OK precedence"
+rm -rf "$LEGACY"

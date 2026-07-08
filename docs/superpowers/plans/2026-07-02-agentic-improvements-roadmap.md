@@ -785,7 +785,15 @@ library doesn't freeze concurrent tool calls.
 
 ## Phase 6 — Documentation truth + positioning
 
-**Status:** 6a unblocked now; 6b unblocked (Phases 2–4 done as of 2026-07-07)
+**Status:** done (2026-07-08) — 6a + 6b landed; plan:
+`docs/superpowers/plans/2026-07-08-phase-6-docs-truth.md`. Docs JSON examples
+now validate and are guarded by `tests/test_docs_examples.py`; docgen story
+unified on `src/lcp/cli.py`; spec `members` prose aligned with the schema;
+plugin config renamed to `.lcp-config.json` (legacy `.lcp.json` fallback,
+plugin 0.3.0); positioning (LCP vs Context7 vs llms.txt vs site-packages) in
+`docs/introduction.md` + README "When to choose LCP"; plugin architecture
+docs refreshed. Suite 570 passed / 0 failed, plugin shell tests green,
+`mkdocs build --strict` clean.
 
 **Objective:** Docs that validate, one consistent story, and explicit
 positioning against the alternatives every evaluator has in mind.

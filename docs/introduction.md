@@ -8,16 +8,24 @@ AI code assistants are trained on large datasets, but libraries evolve constantl
 
 ```json
 {
-  "id": "json:loads",
-  "kind": "function",
-  "module": "json",
-  "signature": "loads(s, *, cls=None, object_hook=None) -> Any",
-  "summary": "Deserialize a JSON document to a Python object.",
-  "stability": "stable"
+  "json:loads": {
+    "kind": "function",
+    "module": "json",
+    "signatures": [
+      {
+        "params": [{ "name": "s", "type": "str", "required": true }],
+        "returns": "Any"
+      }
+    ],
+    "semantics": {
+      "summary": "Deserialize a JSON document to a Python object."
+    },
+    "stability": { "level": "stable" }
+  }
 }
 ```
 
-A full manifest contains many such symbols, plus module-level metadata. See [Examples](spec/examples.md) for more.
+A full manifest contains a `manifest` header plus many such entries in the `symbols` map, keyed by stable symbol IDs. The LCP *format* is language-agnostic JSON; the scanner shipped in this SDK introspects **Python** packages — other languages need their own producers. See [Examples](spec/examples.md) for more.
 
 ## Who benefits from LCP?
 
@@ -35,21 +43,26 @@ An IDE plugin can load an LCP manifest to provide autocomplete, inline documenta
 
 ## LCP vs. alternatives
 
-Several existing approaches give AI systems and tools some information about library APIs, but each has gaps that LCP is designed to fill.
+Several existing approaches give AI agents some information about library APIs. They solve different problems, and an honest comparison helps you pick the right one — or combine them.
 
-**Training data** is the default for LLMs: the model has seen API usage in its training corpus. This is not reliable for version-specific accuracy — the model may know `requests.get` but not which keyword arguments are valid in the version the user has installed — and it cannot be updated without retraining.
+**Context7 and similar remote documentation services** serve curated, narrative documentation for popular public libraries, fetched from a remote service. They are strongest when you want prose: tutorials, guides, upgrade notes. LCP does not compete on narrative quality — it answers a different question: *what exactly does the version installed in this environment expose?* LCP introspects the installed package itself, so it covers private and internal packages no documentation service has ever seen, works fully offline, and returns token-dense structured records (signatures, parameters, raised exceptions, examples) rather than prose pages.
 
-**Source parsing and AST analysis** can extract accurate signatures, but the output is not portable. Each consuming tool must implement its own parser, the result is typically language-specific, and semantic information (summaries, deprecation notices, stability) is not captured unless docstrings happen to follow a parseable format.
+**llms.txt** is a hand-maintained, site-level summary that a project publishes for crawlers and LLMs. It is coarse-grained (library level, not symbol level), only exists if the maintainer writes one, and says nothing about the version you actually installed.
 
-**Type stubs** (`.pyi` files) provide accurate signatures and are versioned, but they carry no semantic content — no summaries, no deprecation text, no examples. They are also not designed for consumption by LLMs directly.
+**Letting the agent read `site-packages`** is always available and version-accurate, but token-expensive: the agent navigates raw source files to answer one signature question, with no ranked search and no pre-digested structure. LCP is that same ground truth, pre-indexed — one `search` call returns ranked hits, each with its exact import line.
 
-| Approach | Accurate | Portable | Semantic | Versioned |
+**Training data** is the zero-setup default: the model has seen API usage in its corpus. It cannot be version-accurate — the model may know `requests.get` but not which keyword arguments exist in the release you installed — and it silently degrades on niche or recently-changed libraries.
+
+| | LCP | Context7 | llms.txt | Reading site-packages |
 |---|:---:|:---:|:---:|:---:|
-| **LCP** | yes | yes | yes | yes |
-| Training data | no | yes | partial | no |
-| Source parsing | yes | no | no | yes |
-| Type stubs | yes | no | no | yes |
-| Inline docs | yes | no | yes | partial |
+| Matches the *installed* version | yes | no — upstream docs | no | yes |
+| Works offline | yes | no | no | yes |
+| Private / internal packages | yes | no | only self-published | yes |
+| Token-dense structured answers | yes | narrative text | coarse summary | raw source (expensive) |
+| Symbol-level signatures | yes | partial | no | yes (manual digging) |
+| Narrative guides & tutorials | no | yes | partial | no |
+
+In one sentence: **choose LCP when the agent needs exact, offline ground truth about the library versions installed in your environment — including private packages; choose Context7 when you want curated narrative documentation for popular public libraries.**
 
 ## Next steps
 
