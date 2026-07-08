@@ -228,6 +228,30 @@ class TestCreateBranch:
         assert sha == "abc123"
         assert mock_request.call_count == 2
 
+    @patch("lcp.publish._github_request")
+    def test_branch_already_exists_is_reset(self, mock_request):
+        """Re-running publish for the same (package, version) must not fail."""
+        mock_request.side_effect = [
+            {"object": {"sha": "base-sha"}},  # GET ref main
+            PublishError("GitHub API error (HTTP 422): Reference already exists"),
+            {},  # PATCH force-reset
+        ]
+        sha = _create_branch("user/lcp-registry", "lcp/add/foo/1.0", "tok")
+        assert sha == "base-sha"
+        patch_call = mock_request.call_args_list[2]
+        assert patch_call.args[0] == "PATCH"
+        assert patch_call.args[1].endswith("git/refs/heads/lcp/add/foo/1.0")
+        assert patch_call.kwargs["data"] == {"sha": "base-sha", "force": True}
+
+    @patch("lcp.publish._github_request")
+    def test_other_create_branch_error_still_raises(self, mock_request):
+        mock_request.side_effect = [
+            {"object": {"sha": "base-sha"}},
+            PublishError("GitHub API error (HTTP 500): boom"),
+        ]
+        with pytest.raises(PublishError, match="boom"):
+            _create_branch("user/lcp-registry", "lcp/add/foo/1.0", "tok")
+
 
 class TestUploadManifest:
     """Tests for _upload_manifest."""
@@ -236,7 +260,10 @@ class TestUploadManifest:
     def test_uploads_file(self, mock_request):
         import gzip
 
-        mock_request.return_value = {"content": {"sha": "def456"}}
+        mock_request.side_effect = [
+            PublishError("GitHub API error (HTTP 404): Not Found"),  # GET (new file)
+            {"content": {"sha": "def456"}},  # PUT
+        ]
         content_bytes = gzip.compress(b'{"test": true}')
         _upload_manifest(
             "testuser/lcp-registry",
@@ -247,7 +274,7 @@ class TestUploadManifest:
             "test",
             "1.0.0",
         )
-        assert mock_request.call_count == 1
+        assert mock_request.call_count == 2
 
         # Verify the content is base64-encoded gzip bytes
         call_args = mock_request.call_args
@@ -255,6 +282,43 @@ class TestUploadManifest:
         encoded = base64.b64encode(content_bytes).decode("ascii")
         assert data["content"] == encoded
         assert data["branch"] == "lcp/add/test/1.0.0"
+
+    @patch("lcp.publish._github_request")
+    def test_existing_file_upserts_with_sha(self, mock_request):
+        mock_request.side_effect = [
+            {"sha": "old-file-sha"},  # GET contents?ref=branch
+            {},  # PUT
+        ]
+        _upload_manifest(
+            "user/lcp-registry",
+            "lcp/add/foo/1.0",
+            "manifests/python/f/foo/1.0.lcp.json.gz",
+            b"data",
+            "tok",
+            "foo",
+            "1.0",
+        )
+        put_call = mock_request.call_args_list[1]
+        assert put_call.args[0] == "PUT"
+        assert put_call.kwargs["data"]["sha"] == "old-file-sha"
+
+    @patch("lcp.publish._github_request")
+    def test_new_file_puts_without_sha(self, mock_request):
+        mock_request.side_effect = [
+            PublishError("GitHub API error (HTTP 404): Not Found"),  # GET
+            {},  # PUT
+        ]
+        _upload_manifest(
+            "user/lcp-registry",
+            "lcp/add/foo/1.0",
+            "manifests/python/f/foo/1.0.lcp.json.gz",
+            b"data",
+            "tok",
+            "foo",
+            "1.0",
+        )
+        put_call = mock_request.call_args_list[1]
+        assert "sha" not in put_call.kwargs["data"]
 
 
 class TestBuildPrBody:
@@ -306,6 +370,47 @@ class TestCreatePullRequest:
         assert data["title"] == "NEW: Manifest mylib 1.0.0 (python)"
         assert data["head"] == "testuser:lcp/add/mylib/1.0.0"
         assert data["base"] == "main"
+
+    @patch("lcp.publish._github_request")
+    def test_existing_open_pr_is_returned(self, mock_request):
+        mock_request.side_effect = [
+            PublishError(
+                "GitHub API error (HTTP 422): A pull request already exists "
+                "for user:lcp/add/foo/1.0."
+            ),
+            [{"html_url": "https://github.com/z/r/pull/7", "number": 7}],  # GET list
+        ]
+        pr = _create_pull_request(
+            "zazza123/lcp-registry",
+            "user/lcp-registry",
+            "lcp/add/foo/1.0",
+            "foo",
+            "1.0",
+            "python",
+            "body",
+            "tok",
+        )
+        assert pr["number"] == 7
+        get_call = mock_request.call_args_list[1]
+        assert get_call.args[0] == "GET"
+        assert "head=user:lcp/add/foo/1.0" in get_call.args[1]
+
+    @patch("lcp.publish._github_request")
+    def test_other_create_pr_error_still_raises(self, mock_request):
+        mock_request.side_effect = [
+            PublishError("GitHub API error (HTTP 500): boom"),
+        ]
+        with pytest.raises(PublishError, match="boom"):
+            _create_pull_request(
+                "zazza123/lcp-registry",
+                "user/lcp-registry",
+                "lcp/add/foo/1.0",
+                "foo",
+                "1.0",
+                "python",
+                "body",
+                "tok",
+            )
 
 
 class TestTryAddLabels:
