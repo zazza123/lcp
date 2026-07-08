@@ -121,7 +121,7 @@ Only `kind` and `semantics.summary` are required in a symbol object. The smalles
 }
 ```
 
-All other fields (`signatures`, `stability`, `effects`, `members`, etc.) are optional.
+All other fields (`signatures`, `stability`, `effects`, `aliases`, etc.) are optional.
 
 ### Symbol identification
 
@@ -191,13 +191,13 @@ This convention allows a module itself to carry a symbol entry with `"kind": "mo
 
 ### Members and nesting
 
-Class members appear in two places: as top-level symbols (using the `#` separator) and optionally as entries in a `members` array on the parent class symbol. Nested types use the dot separator in the entity path:
+Class members appear as top-level symbols using the `#` separator; the symbol schema does not define a nested member array, so a class entry never embeds its members. Nested types use the dot separator in the entity path:
 
 - Class member: `module:Class#method`
 - Nested type: `module:Outer.Inner`
 - Nested member: `module:Outer.Inner#method`
 
-Producers MAY choose to emit members only at the top level, only nested under their parent's `members` array, or both. Consumers MUST be prepared to handle all three forms.
+Consumers reconstruct class membership from the ID grammar: every key containing `#` belongs to the class named by its prefix.
 
 ### Overloads
 
@@ -384,4 +384,4 @@ Extension keys MUST begin with `x-` followed by at least one character. The core
 
 ## Summary
 
-LCP provides a **compact, precise, and extensible** way to describe libraries at the semantic level. The two required sections — `manifest` and `symbols` — are sufficient to produce a useful document. Optional sections (`deprecations`, `detailed_index`) and optional fields within symbols (`signatures`, `effects`, `stability`, `members`) add progressively more information without breaking basic consumers. By standardising symbol identity and behaviour, LCP enables tools — and AI systems in particular — to understand APIs by intent, contract, and effect, not just syntax.
+LCP provides a **compact, precise, and extensible** way to describe libraries at the semantic level. The two required sections — `manifest` and `symbols` — are sufficient to produce a useful document. Optional sections (`deprecations`, `detailed_index`) and optional fields within symbols (`signatures`, `effects`, `stability`, `aliases`) add progressively more information without breaking basic consumers. By standardising symbol identity and behaviour, LCP enables tools — and AI systems in particular — to understand APIs by intent, contract, and effect, not just syntax.
