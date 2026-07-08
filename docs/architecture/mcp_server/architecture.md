@@ -18,7 +18,7 @@ flowchart LR
     E --> F["resolve_library('pkg')"]
     F --> G{"Cache hit?"}
     G -- yes --> H["load from ~/.lcp/cache/"]
-    G -- no --> I["subprocess scan\n(lcp.scanjson in child interpreter)"]
+    G -- no --> I["subprocess scan\n(isolated child interpreter)"]
     I --> J["save to cache"]
     I -- scan fails --> R{"--registry set?"}
     R -- yes --> S["_fetch_from_registry()"]
@@ -32,17 +32,17 @@ Tool registration lives in a single function, `_register_tools()` in `src/lcp/mc
 
 ## Subprocess Scanning
 
-The live-scan step of `resolve_library_document()` runs in a **disposable child interpreter** by default, implemented by `scan_package_subprocess()` in `src/lcp/subprocess_scan.py` with `lcp.scanjson` as the child-side entry point. Three problems motivated moving the scan out of the server process:
+The live-scan step of `resolve_library_document()` runs in a **disposable, isolated child interpreter** by default, implemented by `scan_package_subprocess()` in `src/lcp/subprocess_scan.py`. The child runs *only* raw introspection: it loads the self-contained `scanner.py` and the stdlib-only `_childscan.py` **by absolute file path** and emits the `ScannedModule` tree as JSON via `scanned_to_dict()`. The host then rebuilds it with `scanned_from_dict()` and runs `generate_lcp()` with its own `pydantic`. Three problems motivated moving the scan out of the server process:
 
 1. **Crash isolation** — importing a package executes its import-time code; a package that raises `SystemExit` (or crashes the interpreter) must degrade to a structured `resolve_failed` error, not take the agent-facing server down.
 2. **Responsiveness** — FastMCP runs sync tools on worker threads, but the CPython import lock and the GIL still stall *concurrent* tool calls while a heavy import runs in-process. Waiting on a child process holds neither.
 3. **Cross-environment reach** — the server's environment is often not the project's environment (the #1 real-world friction). The child interpreter is configurable (`scan_python`), so the server can document packages installed in a different virtualenv.
 
-The subprocess protocol **is the public LCP document format**: the child writes the manifest JSON to stdout, one structured JSON error object to stderr, and signals the failure class by exit code (0 success, 3 import failure, 4 scan failure). There is no private IPC format to version — the contract is documented in the [CLI reference](../../cli.md).
+The child signals success and failure class by exit code (0 success, 3 import failure, 4 scan failure), with one structured JSON error object on stderr; the same contract as the public same-venv entry point `lcp.scanjson`, documented in the [CLI reference](../../cli.md). On success the child's stdout carries the raw `ScannedModule` tree rather than a finished LCP document — a format that never needs versioning, because the host hands the child the very same `scanner.py` it deserializes with.
 
 Two design rules keep the cross-environment path correct:
 
-- **Append, never prepend.** The child is bootstrapped with the server's `lcp` and `pydantic` locations *appended* to its `sys.path`, so the target environment's own packages always win and the server's site-packages can never shadow what is being scanned. The target environment therefore does not need `lcp` installed.
+- **Isolate the child; load by path, never leak site-packages.** The child adds only the caller's `extra_paths` to its `sys.path` and loads `scanner.py`/`_childscan.py` by absolute path, so `lcp/__init__.py` — and thus `pydantic` and `fastmcp` — never runs in the target interpreter. The host's `site-packages` is never exposed: target submodules cannot import host packages (so the same package/version yields the same manifest from any host), and the target's `pydantic_core` cannot collide with the host's `pydantic` (so `pydantic-core` itself is scannable). The target environment needs neither `lcp` nor `pydantic` installed. This is the fix for the contamination and `pydantic-core` failures reported in issue #52.
 - **Fallback only on spawn failure, and only for the server's own environment.** `_scan_live()` retries in-process solely when the subprocess could not be *spawned* (no package code ran) and no `scan_python` is configured. A spawn failure with a configured interpreter errors instead of silently scanning the wrong venv, and a scan *crash* is never retried in-process — that would re-import the crashing package inside the server.
 
 `resolve_library_document()` remains the single choke point: the cache write side effect and the cache → scan → registry resolution order are identical in both scan modes, and the "installed in a different environment" error now names the actual scan interpreter and its `.lcp-config.json` remedy (`scan_python` / `python`).

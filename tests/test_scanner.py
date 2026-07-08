@@ -654,3 +654,86 @@ class TestDocstringCapture:
         symbols = scan_module(sample_module)
         module_symbol = next(s for s in symbols if s.kind == "module")
         assert module_symbol.docstring == sample_module.__doc__
+
+
+class TestScannedSerialization:
+    """Round-trip Scanned* dataclasses through a plain JSON dict (#52)."""
+
+    def test_round_trip_preserves_default_states_and_tuples(self):
+        import inspect
+        import json
+
+        from lcp.scanner import (
+            ScannedModule,
+            ScannedParam,
+            ScannedSignature,
+            ScannedSymbol,
+            scanned_from_dict,
+            scanned_to_dict,
+        )
+
+        module = ScannedModule(
+            name="pkg",
+            version="1.2.3",
+            symbols=[
+                ScannedSymbol(
+                    name="f",
+                    qualified_name="f",
+                    module_path="pkg",
+                    kind="function",
+                    summary="s",
+                    signature=ScannedSignature(
+                        params=[
+                            ScannedParam(name="a"),  # empty (no default)
+                            ScannedParam(name="b", default=None),  # primitive None
+                            ScannedParam(name="c", default=5),  # primitive
+                            ScannedParam(name="d", default=object()),  # complex
+                        ],
+                        return_type="int",
+                        is_async=True,
+                        raises=["ValueError"],
+                    ),
+                    source_lines=(3, 9),
+                    aliases=[("pkg", "g")],
+                    members=[
+                        ScannedSymbol(
+                            name="m",
+                            qualified_name="C.m",
+                            module_path="pkg",
+                            kind="method",
+                        )
+                    ],
+                )
+            ],
+        )
+
+        rebuilt = scanned_from_dict(json.loads(json.dumps(scanned_to_dict(module))))
+        params = rebuilt.symbols[0].signature.params
+        assert params[0].default is inspect.Parameter.empty
+        assert params[0].has_default is False
+        assert params[1].default is None
+        assert params[1].has_default is True
+        assert params[2].default == 5
+        assert params[3].has_default is True
+        assert not isinstance(params[3].default, (str, int, float, bool))
+        assert rebuilt.symbols[0].source_lines == (3, 9)
+        assert rebuilt.symbols[0].aliases == [("pkg", "g")]
+        assert rebuilt.symbols[0].signature.is_async is True
+        assert rebuilt.symbols[0].members[0].qualified_name == "C.m"
+
+    def test_round_trip_matches_direct_generation(self):
+        """A rebuilt module generates the identical LCP document (symbols)."""
+        import json
+
+        from lcp.generator import generate_lcp
+        from lcp.scanner import scan_package, scanned_from_dict, scanned_to_dict
+
+        scanned = scan_package("json", recursive=False)
+        wire = json.loads(json.dumps(scanned_to_dict(scanned)))
+        rebuilt = scanned_from_dict(wire)
+
+        # Compare the symbol content; the manifest carries a generation
+        # timestamp that differs between two generate_lcp() calls.
+        direct = json.loads(generate_lcp(scanned).to_json())["symbols"]
+        round_tripped = json.loads(generate_lcp(rebuilt).to_json())["symbols"]
+        assert direct == round_tripped

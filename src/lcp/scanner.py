@@ -75,6 +75,140 @@ class ScannedModule:
     symbols: list[ScannedSymbol] = field(default_factory=list)
 
 
+class _ComplexDefault:
+    """Sentinel for a parameter default that is not a JSON primitive.
+
+    Round-trips ``ScannedParam.default`` across the subprocess boundary: it is
+    not ``inspect.Parameter.empty`` (so ``has_default`` stays ``True``) and not
+    a primitive, so the generator renders it as ``"..."`` — identical to how it
+    would render the original object.
+    """
+
+    __slots__ = ()
+
+    def __repr__(self) -> str:  # pragma: no cover - debugging aid
+        return "<complex default>"
+
+
+_COMPLEX_DEFAULT = _ComplexDefault()
+_PRIMITIVE_DEFAULT_TYPES = (str, int, float, bool)
+
+
+def _default_to_dict(default: Any) -> dict:
+    """Encode a ``ScannedParam.default`` into a JSON-safe descriptor."""
+    if default is inspect.Parameter.empty:
+        return {"kind": "empty"}
+    if default is None or isinstance(default, _PRIMITIVE_DEFAULT_TYPES):
+        return {"kind": "primitive", "value": default}
+    return {"kind": "complex"}
+
+
+def _default_from_dict(d: dict) -> Any:
+    """Decode the descriptor produced by :func:`_default_to_dict`."""
+    kind = d.get("kind", "empty")
+    if kind == "primitive":
+        return d.get("value")
+    if kind == "complex":
+        return _COMPLEX_DEFAULT
+    return inspect.Parameter.empty
+
+
+def _param_to_dict(p: ScannedParam) -> dict:
+    return {
+        "name": p.name,
+        "type_hint": p.type_hint,
+        "default": _default_to_dict(p.default),
+        "kind": p.kind,
+        "description": p.description,
+    }
+
+
+def _param_from_dict(d: dict) -> ScannedParam:
+    return ScannedParam(
+        name=d["name"],
+        type_hint=d.get("type_hint"),
+        default=_default_from_dict(d.get("default", {})),
+        kind=d.get("kind", "positional"),
+        description=d.get("description"),
+    )
+
+
+def _signature_to_dict(s: ScannedSignature) -> dict:
+    return {
+        "params": [_param_to_dict(p) for p in s.params],
+        "return_type": s.return_type,
+        "is_async": s.is_async,
+        "raises": list(s.raises),
+    }
+
+
+def _signature_from_dict(d: dict) -> ScannedSignature:
+    return ScannedSignature(
+        params=[_param_from_dict(p) for p in d.get("params", [])],
+        return_type=d.get("return_type"),
+        is_async=d.get("is_async", False),
+        raises=list(d.get("raises", [])),
+    )
+
+
+def _symbol_to_dict(s: ScannedSymbol) -> dict:
+    return {
+        "name": s.name,
+        "qualified_name": s.qualified_name,
+        "module_path": s.module_path,
+        "kind": s.kind,
+        "summary": s.summary,
+        "description": s.description,
+        "docstring": s.docstring,
+        "signature": _signature_to_dict(s.signature) if s.signature else None,
+        "members": [_symbol_to_dict(m) for m in s.members],
+        "source_file": s.source_file,
+        "source_lines": list(s.source_lines) if s.source_lines else None,
+        "aliases": [list(a) for a in s.aliases],
+    }
+
+
+def _symbol_from_dict(d: dict) -> ScannedSymbol:
+    signature = d.get("signature")
+    source_lines = d.get("source_lines")
+    return ScannedSymbol(
+        name=d["name"],
+        qualified_name=d["qualified_name"],
+        module_path=d["module_path"],
+        kind=d["kind"],
+        summary=d.get("summary"),
+        description=d.get("description"),
+        docstring=d.get("docstring"),
+        signature=_signature_from_dict(signature) if signature else None,
+        members=[_symbol_from_dict(m) for m in d.get("members", [])],
+        source_file=d.get("source_file"),
+        source_lines=tuple(source_lines) if source_lines else None,
+        aliases=[tuple(a) for a in d.get("aliases", [])],
+    )
+
+
+def scanned_to_dict(module: ScannedModule) -> dict:
+    """Serialize a :class:`ScannedModule` tree into a JSON-safe dict.
+
+    Total by construction: complex parameter defaults degrade to a marker
+    rather than raising, so the child can always emit a document.
+    """
+    return {
+        "name": module.name,
+        "version": module.version,
+        "symbols": [_symbol_to_dict(s) for s in module.symbols],
+    }
+
+
+def scanned_from_dict(d: dict) -> ScannedModule:
+    """Rebuild a :class:`ScannedModule` tree from :func:`scanned_to_dict` output."""
+    return ScannedModule(
+        name=d["name"],
+        version=d["version"],
+        symbols=[_symbol_from_dict(s) for s in d.get("symbols", [])],
+    )
+
+
 @dataclass
 class _AliasRecord:
     """A re-export observed while scanning, before its target is known.

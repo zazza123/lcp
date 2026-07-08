@@ -37,7 +37,7 @@ lcp scan numpy --include-private
 
 ### Machine-mode scanning: `python -m lcp.scanjson`
 
-For programmatic callers — including the MCP server's own [subprocess scanning](guides/mcp-server.md#scanning-environment) — `lcp.scanjson` is a machine-mode scan entry point with a strict output contract. It writes the LCP JSON document to stdout, reports errors as a single JSON object on stderr, and distinguishes failures by exit code:
+For programmatic callers, `lcp.scanjson` is a machine-mode scan entry point with a strict output contract. It writes the LCP JSON document to stdout, reports errors as a single JSON object on stderr, and distinguishes failures by exit code:
 
 ```bash
 python -m lcp.scanjson PACKAGE [--include-private] [--no-recursive] [--include-tests]
@@ -50,6 +50,8 @@ python -m lcp.scanjson PACKAGE [--include-private] [--no-recursive] [--include-t
 | `4` | Scan failure — the package imported but scanning or generation failed (including `SystemExit` raised by import-time code) | `{"type": "scan_failure", "message": ...}` on stderr |
 
 Unlike `lcp scan`, this entry point never prints human-readable progress, and it only needs `lcp` and `pydantic` importable in the interpreter that runs it (no `click`) — so it can run inside a project virtualenv that does not have the full CLI installed. Import-time prints from the scanned package are redirected to stderr so they cannot corrupt the stdout document.
+
+`lcp.scanjson` is a **same-venv** entry point: it emits the full LCP document and expects `lcp` installed in the interpreter running it. Cross-venv scans — the MCP server documenting a package in a *different* virtualenv — instead go through [`lcp.subprocess_scan`](guides/mcp-server.md#scanning-environment), which runs an isolated child that loads only the scanner by file path (never importing the host's `lcp`/`pydantic`) and hands the raw scan back to the host for generation, so the host environment can never contaminate the target scan.
 
 ```bash
 python -m lcp.scanjson requests > requests.lcp.json
