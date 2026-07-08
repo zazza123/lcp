@@ -139,6 +139,37 @@ lcp coverage requests -o coverage.json
 lcp coverage numpy -o coverage.md --format markdown
 ```
 
+## `lcp docgen`
+
+Generate missing docstrings for the symbols listed in a coverage report, using an LLM provider. Requires the optional AI extra (`pip install "lcp[ai]"`). Processing is hierarchical bottom-up (methods → classes → modules) with parallel LLM calls; generated docstrings are injected into the package's source files in place.
+
+```bash
+lcp docgen COVERAGE_JSON [OPTIONS]
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `COVERAGE_JSON` | — | Path to a coverage report produced by [`lcp coverage`](#lcp-coverage). |
+| `--provider [openai\|anthropic]` | `openai` | LLM provider. |
+| `--model TEXT` | provider default | Model name. |
+| `--api-key TEXT` | env var | API key; defaults to `OPENAI_API_KEY` / `ANTHROPIC_API_KEY`. |
+| `--kinds TEXT` | all | Filter by symbol kind, comma-separated (e.g. `class,function,method`). |
+| `--description TEXT` | — | Package description used to guide the model. |
+| `--reasoning` | off | Enable reasoning mode for OpenAI models (o1, o3, ...). |
+| `--dry-run` | off | Show what would be modified without writing files. |
+| `--workers INTEGER` | `4` | Max concurrent LLM calls. |
+| `--failure-threshold FLOAT` | `0.5` | Ratio (0.0–1.0) of failed children that skips the parent symbol. |
+
+**Example:**
+
+```bash
+lcp coverage mypackage -o coverage.json
+lcp docgen coverage.json --provider openai --dry-run
+lcp docgen coverage.json --provider anthropic --workers 8
+```
+
+See the [AI DocGen guide](guides/ai-docgen.md) for how hierarchical processing works and the Python API.
+
 ## `lcp publish`
 
 Publish an LCP manifest to the registry by opening a GitHub Pull Request. The command scans the package (or uses an existing manifest via `--file`), validates it, then submits the PR to the registry repository.
@@ -192,4 +223,5 @@ lcp diff v1.lcp.json v2.lcp.json -o diff.json --update
 
 - [Quickstart](quickstart.md) — first-time usage.
 - [MCP Server guide](guides/mcp-server.md) — using `lcp serve` and `lcp serve-all` in depth.
+- [AI DocGen guide](guides/ai-docgen.md) — generating missing docstrings with `lcp docgen`.
 - [Publishing guide](guides/publishing.md) — using `lcp publish` to submit to the registry.
