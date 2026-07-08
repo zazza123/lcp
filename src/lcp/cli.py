@@ -101,7 +101,7 @@ def scan(
             package,
             include_private=include_private,
             recursive=not no_recursive,
-            exclude_tests=not include_tests,
+            include_tests=include_tests,
         )
 
         # Generate LCP
@@ -209,7 +209,7 @@ def coverage(
             package,
             include_private=include_private,
             recursive=not no_recursive,
-            exclude_tests=not include_tests,
+            include_tests=include_tests,
         )
 
         # Determine output format

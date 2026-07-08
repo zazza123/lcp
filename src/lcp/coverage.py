@@ -232,7 +232,7 @@ def generate_coverage(
     package_name: str,
     include_private: bool = False,
     recursive: bool = True,
-    exclude_tests: bool = True,
+    include_tests: bool = False,
 ) -> CoverageReport:
     """Generate documentation coverage report for a package.
 
@@ -240,8 +240,8 @@ def generate_coverage(
         package_name: The name of an installed Python package to analyze.
         include_private: Include private symbols (starting with _).
         recursive: Scan submodules recursively.
-        exclude_tests: Skip ``*.tests`` subpackages (default); ``numpy.testing``
-            and other public utilities are unaffected.
+        include_tests: When ``False`` (default), skip ``*.tests`` subpackages;
+            ``numpy.testing`` and other public utilities are always included.
 
     Returns:
         A CoverageReport containing coverage statistics and undocumented symbols.
@@ -255,7 +255,7 @@ def generate_coverage(
         >>> print(f"Coverage: {report.summary.coverage_percent}%")
         >>> report.to_file("coverage.json")
     """
-    scanned = scan_package(package_name, include_private, recursive, exclude_tests)
+    scanned = scan_package(package_name, include_private, recursive, include_tests)
     return _analyze_coverage(scanned)
 
 

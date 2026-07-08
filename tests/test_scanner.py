@@ -455,7 +455,7 @@ class TestScanPackage:
         assert (f"{package_name}.testing", "assert_something") in function_symbols
 
     def test_scan_package_includes_tests_when_opted_in(self, tmp_path, monkeypatch):
-        """``exclude_tests=False`` restores scanning of ``*.tests`` subpackages."""
+        """``include_tests=True`` restores scanning of ``*.tests`` subpackages."""
         package_name = "scan_tests_optin_pkg"
         package_dir = tmp_path / package_name
         package_dir.mkdir()
@@ -471,7 +471,7 @@ class TestScanPackage:
         )
 
         monkeypatch.syspath_prepend(str(tmp_path))
-        result = scan_package(package_name, recursive=True, exclude_tests=False)
+        result = scan_package(package_name, recursive=True, include_tests=True)
 
         module_paths = {s.module_path for s in result.symbols if s.kind == "module"}
         assert f"{package_name}.tests" in module_paths

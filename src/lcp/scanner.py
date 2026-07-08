@@ -569,16 +569,16 @@ def _get_package_version(package_name: str) -> str:
 
 
 def _iter_submodules(
-    package: ModuleType, exclude_tests: bool = True
+    package: ModuleType, include_tests: bool = False
 ) -> list[ModuleType]:
     """Iterate over all submodules of a package, including namespace packages.
 
     Args:
         package: The imported package to walk.
-        exclude_tests: When ``True`` (default), subpackages whose leaf name is
+        include_tests: When ``False`` (default), subpackages whose leaf name is
             exactly ``tests`` are skipped — they are not public API and pollute
             manifests. Public utilities like ``numpy.testing`` (leaf
-            ``testing``) are unaffected.
+            ``testing``) are always included.
     """
     if not hasattr(package, "__path__"):
         return []
@@ -606,7 +606,7 @@ def _iter_submodules(
             # Test subpackages are not public API and pollute manifests; their
             # modules also frequently call ``pytest.importorskip`` at import,
             # raising ``Skipped`` (a ``BaseException``). Skip before importing.
-            if exclude_tests and leaf == "tests":
+            if not include_tests and leaf == "tests":
                 continue
             try:
                 submod = importlib.import_module(module_info.name)
@@ -642,7 +642,7 @@ def _iter_submodules(
                     or child.name == "__pycache__"
                     or not child.name.isidentifier()
                     or (child / "__init__.py").exists()
-                    or (exclude_tests and child.name == "tests")
+                    or (not include_tests and child.name == "tests")
                 ):
                     continue
 
@@ -671,7 +671,7 @@ def scan_package(
     package_name: str,
     include_private: bool = False,
     recursive: bool = True,
-    exclude_tests: bool = True,
+    include_tests: bool = False,
 ) -> ScannedModule:
     """Scan an installed package and return scanned information.
 
@@ -679,9 +679,9 @@ def scan_package(
         package_name: Import path of the package to scan.
         include_private: Include private symbols (names starting with ``_``).
         recursive: Walk submodules recursively.
-        exclude_tests: When ``True`` (default), skip ``*.tests`` subpackages —
+        include_tests: When ``False`` (default), skip ``*.tests`` subpackages —
             they are not public API and pollute manifests. Public utilities like
-            ``numpy.testing`` are unaffected.
+            ``numpy.testing`` are always included.
     """
     try:
         module = importlib.import_module(package_name)
@@ -704,7 +704,7 @@ def scan_package(
 
     # Scan submodules if it's a package
     if recursive and hasattr(module, "__path__"):
-        for submod in _iter_submodules(module, exclude_tests=exclude_tests):
+        for submod in _iter_submodules(module, include_tests=include_tests):
             symbols.extend(
                 scan_module(
                     submod,

@@ -68,7 +68,7 @@ def main(argv: list[str] | None = None) -> None:
                 args.package,
                 include_private=args.include_private,
                 recursive=not args.no_recursive,
-                exclude_tests=not args.include_tests,
+                include_tests=args.include_tests,
             )
         except ImportError as exc:
             _fail(3, "import_failure", str(exc))
