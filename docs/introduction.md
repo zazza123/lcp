@@ -8,16 +8,24 @@ AI code assistants are trained on large datasets, but libraries evolve constantl
 
 ```json
 {
-  "id": "json:loads",
-  "kind": "function",
-  "module": "json",
-  "signature": "loads(s, *, cls=None, object_hook=None) -> Any",
-  "summary": "Deserialize a JSON document to a Python object.",
-  "stability": "stable"
+  "json:loads": {
+    "kind": "function",
+    "module": "json",
+    "signatures": [
+      {
+        "params": [{ "name": "s", "type": "str", "required": true }],
+        "returns": "Any"
+      }
+    ],
+    "semantics": {
+      "summary": "Deserialize a JSON document to a Python object."
+    },
+    "stability": { "level": "stable" }
+  }
 }
 ```
 
-A full manifest contains many such symbols, plus module-level metadata. See [Examples](spec/examples.md) for more.
+A full manifest contains a `manifest` header plus many such entries in the `symbols` map, keyed by stable symbol IDs. The LCP *format* is language-agnostic JSON; the scanner shipped in this SDK introspects **Python** packages — other languages need their own producers. See [Examples](spec/examples.md) for more.
 
 ## Who benefits from LCP?
 

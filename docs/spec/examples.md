@@ -16,12 +16,21 @@ LCP fragment:
 
 ```json
 {
-  "id": "mymath:add",
-  "kind": "function",
-  "module": "mymath",
-  "signature": "add(a: int, b: int) -> int",
-  "summary": "Add two integers.",
-  "stability": "stable"
+  "mymath:add": {
+    "kind": "function",
+    "module": "mymath",
+    "signatures": [
+      {
+        "params": [
+          { "name": "a", "type": "int", "required": true },
+          { "name": "b", "type": "int", "required": true }
+        ],
+        "returns": "int"
+      }
+    ],
+    "semantics": { "summary": "Add two integers." },
+    "stability": { "level": "stable" }
+  }
 }
 ```
 
@@ -42,23 +51,28 @@ class Counter:
         return self.value
 ```
 
-LCP fragment (truncated to the class and one method):
+LCP fragment — the class and its method are **separate top-level entries** in the `symbols` map (the class signature is the `__init__` signature):
 
 ```json
 {
-  "id": "mymath:Counter",
-  "kind": "class",
-  "module": "mymath",
-  "summary": "Monotonically increasing counter.",
-  "members": [
-    {
-      "id": "mymath:Counter#increment",
-      "kind": "method",
-      "signature": "increment(self) -> int",
-      "summary": "Bump the counter and return the new value.",
-      "stability": "stable"
-    }
-  ]
+  "mymath:Counter": {
+    "kind": "class",
+    "module": "mymath",
+    "signatures": [
+      {
+        "params": [
+          { "name": "start", "type": "int", "required": false, "default": 0 }
+        ]
+      }
+    ],
+    "semantics": { "summary": "Monotonically increasing counter." }
+  },
+  "mymath:Counter#increment": {
+    "kind": "method",
+    "module": "mymath",
+    "signatures": [{ "params": [], "returns": "int" }],
+    "semantics": { "summary": "Bump the counter and return the new value." }
+  }
 }
 ```
 
