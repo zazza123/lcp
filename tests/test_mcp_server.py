@@ -1017,6 +1017,71 @@ class TestResolveLibraryTool:
         assert result["status"] == "loaded"
         assert result["source"] == "registry"
 
+    def test_version_mismatch_flag_when_cache_differs_from_installed(
+        self, tmp_path, sample_lcp_file, monkeypatch
+    ):
+        """A cache hit for a version other than the installed one is flagged."""
+        monkeypatch.setattr(
+            "lcp.mcp_server._installed_version", lambda name: "1.0.0"
+        )
+        cache_dir = tmp_path / "cache"
+        doc = load_lcp_document(sample_lcp_file)
+        doc.manifest.library.version = "9.9.9"
+        _save_to_cache(cache_dir, doc)
+
+        server = create_universal_server(cache_dir=cache_dir)
+        result = server.tools["resolve_library"](
+            name="tests.sample_module", version="9.9.9"
+        )
+        assert result["status"] == "loaded"
+        assert result["source"] == "cache"
+        assert result["version_mismatch"] is True
+        assert result["installed_version"] == "1.0.0"
+        assert result["resolved_version"] == "9.9.9"
+
+    def test_version_mismatch_flag_when_not_installed(
+        self, tmp_path, sample_lcp_file, monkeypatch
+    ):
+        """Cache/registry hit with no local install → flagged, installed None."""
+        monkeypatch.setattr(
+            "lcp.mcp_server._installed_version", lambda name: None
+        )
+        cache_dir = tmp_path / "cache"
+        doc = load_lcp_document(sample_lcp_file)
+        _save_to_cache(cache_dir, doc)
+
+        server = create_universal_server(cache_dir=cache_dir)
+        result = server.tools["resolve_library"](name="tests.sample_module")
+        assert result["status"] == "loaded"
+        assert result["source"] == "cache"
+        assert result["version_mismatch"] is True
+        assert result["installed_version"] is None
+        assert result["resolved_version"] == doc.manifest.library.version
+
+    def test_no_mismatch_flag_on_scan_source(self, universal_server):
+        """A live scan is the installed version by definition — never flagged."""
+        result = universal_server.tools["resolve_library"](
+            name="tests.sample_module"
+        )
+        assert result["source"] == "scan"
+        assert "version_mismatch" not in result
+
+    def test_no_mismatch_flag_when_cache_matches_installed(
+        self, tmp_path, sample_lcp_file, monkeypatch
+    ):
+        cache_dir = tmp_path / "cache"
+        doc = load_lcp_document(sample_lcp_file)
+        cached_version = doc.manifest.library.version
+        _save_to_cache(cache_dir, doc)
+        monkeypatch.setattr(
+            "lcp.mcp_server._installed_version", lambda name: cached_version
+        )
+
+        server = create_universal_server(cache_dir=cache_dir)
+        result = server.tools["resolve_library"](name="tests.sample_module")
+        assert result["source"] == "cache"
+        assert "version_mismatch" not in result
+
 
 class TestLibraryDisambiguation:
     """D7 behaviour through the real tools."""

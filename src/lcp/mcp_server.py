@@ -1147,6 +1147,10 @@ def _register_tools(
         Returns:
             {"status": "loaded", name, version, symbol_count, module_count,
             source, next_step} or {"error": {code, message, hint, ...}}.
+            When the cache/registry serves a version that differs from the
+            locally installed one (or the package is not installed at all),
+            the result also carries "version_mismatch": true plus
+            "installed_version" and "resolved_version".
         """
         if allow is not None and name not in allow:
             return _error(
@@ -1213,6 +1217,14 @@ def _register_tools(
         }
         if lib.name != name:
             result["manifest_name"] = lib.name
+        if source in ("cache", "registry"):
+            installed = _installed_version(name)
+            if installed != lib.version:
+                # Honesty flag: the served docs describe a version that is
+                # not (or cannot be confirmed to be) the installed one.
+                result["version_mismatch"] = True
+                result["installed_version"] = installed
+                result["resolved_version"] = lib.version
         if version and lib.version != version:
             result["warning"] = {
                 "code": "version_mismatch",
