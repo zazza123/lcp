@@ -41,6 +41,19 @@ pip install lcp
 - Both CLI and Python API interfaces
 - MCP server for AI agent integration
 
+## When to choose LCP
+
+Choose LCP when your AI agent needs **exact, offline ground truth about the library versions installed in your environment** — including private packages that no documentation service has ever seen. Choose a service like Context7 when you want curated narrative documentation (tutorials, guides) for popular public libraries: LCP does not compete on prose, it competes on being *provably right about your environment*.
+
+|  | LCP | Context7 | llms.txt | Reading site-packages |
+|---|:---:|:---:|:---:|:---:|
+| Matches the *installed* version | yes | no | no | yes |
+| Works offline | yes | no | no | yes |
+| Private / internal packages | yes | no | no | yes |
+| Token-dense structured answers | yes | narrative text | coarse summary | raw source (expensive) |
+
+See the [full comparison](https://zazza123.github.io/lcp/introduction/#lcp-vs-alternatives) in the docs.
+
 ## Usage
 
 ### CLI
