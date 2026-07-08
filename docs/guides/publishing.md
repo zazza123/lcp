@@ -15,7 +15,9 @@ export LCP_GITHUB_TOKEN=ghp_...
 lcp publish <package-name>
 ```
 
-On success, `lcp publish` prints the URL of the newly opened pull request. If authentication fails, the command exits with a clear error message indicating the required token scope. Publishing is not fully idempotent at the GitHub level — if a branch for the same `(package, version)` tuple already exists on your fork, the command will fail with a GitHub API error rather than silently overwriting it.
+On success, `lcp publish` prints the URL of the newly opened pull request. If authentication fails, the command exits with a clear error message indicating the required token scope. Re-running the command for the same `(package, version)` tuple is idempotent: a leftover branch on your fork is reset to the current `main`, the manifest file is updated in place, and an already-open pull request for the same branch is reused instead of raising an error.
+
+One naming caveat: the registry folder is derived from the manifest's library name, which is the *import* name of the scanned package. For most packages the import name and the PyPI distribution name normalize to the same slug (`google.adk` → `google-adk`), but for packages where they differ (for example `beautifulsoup4`, imported as `bs4`) the derived folder will not match the distribution name that agents pass to `resolve_library`. This is a known limitation of `lcp publish`; registry maintainers place such packages under the distribution-name slug instead.
 
 ## CLI flags
 

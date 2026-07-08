@@ -99,7 +99,7 @@ Manifests are cached as gzip-compressed `.lcp.json.gz` files under `~/.lcp/cache
 
 | Tool | Purpose |
 |------|---------|
-| `resolve_library(name, version?)` | Load a library from cache, live scan, or remote registry; records the resolution source and flags a `version_mismatch` warning when the resolved version differs from the requested one. |
+| `resolve_library(name, version?)` | Load a library from cache, live scan, or remote registry; records the resolution source. Flags a `version_mismatch` warning when the resolved version differs from the requested one, and carries a top-level `version_mismatch` honesty flag (with `installed_version` and `resolved_version`) whenever a cache or registry hit serves a version that differs from — or cannot be confirmed against — the locally installed package. |
 | `search(query, library?, module?, kind?, limit?)` | Ranked discovery: exact name > name prefix > name substring > summary > description, stable id tie-break. An empty query browses in deterministic `(kind, name)` order. Every hit carries the exact import line. |
 | `get_symbol(ids, library?)` | Batch detail: full signatures, usage hints (required/optional parameters, async flag, return type, `returns_classes` resolution), the import line, and — for classes — every member inlined as a one-line summary. |
 | `get_overview(library?)` | Library identity (name, version, language, resolution source) plus the module tree with per-module symbol counts. |
