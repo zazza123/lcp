@@ -331,3 +331,21 @@ class TestConcurrency:
             )
         finally:
             thread.join(timeout=30)
+
+
+class TestChildCodeIsolation:
+    """The child bootstrap must not leak host packages or import pydantic (#52)."""
+
+    def test_child_code_never_imports_lcp_or_pydantic(self):
+        from lcp.subprocess_scan import _build_child_code
+
+        code = _build_child_code([])
+        assert "from lcp" not in code
+        assert "import lcp" not in code
+        assert "pydantic" not in code
+
+    def test_child_code_adds_only_extra_paths_to_syspath(self):
+        from lcp.subprocess_scan import _build_child_code
+
+        assert "sys.path[:0] = []" in _build_child_code([])
+        assert "sys.path[:0] = ['/tmp/fixtures']" in _build_child_code(["/tmp/fixtures"])
