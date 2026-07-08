@@ -99,6 +99,7 @@ def scan(
     *,
     include_private: bool = False,
     recursive: bool = True,
+    include_tests: bool = False,
     validate: bool = True,
 ) -> LCPDocument:
     """Scan a Python package and generate an LCP document.
@@ -109,6 +110,9 @@ def scan(
         package_name: The name of an installed Python package to scan.
         include_private: Include private symbols (starting with _).
         recursive: Scan submodules recursively.
+        include_tests: When ``False`` (default), skip ``*.tests`` subpackages.
+            They are not public API and pollute manifests; ``numpy.testing``-style
+            public utilities are always included.
         validate: Validate the output against the LCP schema.
 
     Returns:
@@ -127,6 +131,7 @@ def scan(
         package_name,
         include_private=include_private,
         recursive=recursive,
+        include_tests=include_tests,
     )
 
     lcp_doc = generate_lcp(scanned)

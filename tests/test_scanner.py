@@ -375,6 +375,107 @@ class TestScanPackage:
             "important_template_function",
         ) in function_symbols
 
+    def test_scan_package_skips_baseexception_submodule(self, tmp_path, monkeypatch):
+        """A submodule raising a BaseException subclass at import is skipped.
+
+        Regression for #51: test subpackages call ``pytest.importorskip`` which
+        raises ``Skipped`` (a ``BaseException``, not an ``Exception``). The scan
+        must survive it and keep the importable symbols.
+        """
+        package_name = "scan_basexc_pkg"
+        package_dir = tmp_path / package_name
+        package_dir.mkdir()
+        (package_dir / "__init__.py").write_text('"""Root package."""\n')
+        (package_dir / "good.py").write_text(
+            '"""Good module."""\n\n'
+            "def keep_me():\n"
+            '    """Kept."""\n'
+            '    return "ok"\n'
+        )
+        # Mimics pytest.importorskip: raises a BaseException subclass on import.
+        (package_dir / "hostile.py").write_text(
+            '"""Hostile module."""\n\n'
+            "class _Skipped(BaseException):\n"
+            "    pass\n\n"
+            'raise _Skipped("could not import optional dep")\n'
+        )
+
+        monkeypatch.syspath_prepend(str(tmp_path))
+        result = scan_package(package_name, recursive=True)
+
+        function_symbols = {
+            (s.module_path, s.name) for s in result.symbols if s.kind == "function"
+        }
+        assert (f"{package_name}.good", "keep_me") in function_symbols
+        module_paths = {s.module_path for s in result.symbols if s.kind == "module"}
+        assert f"{package_name}.hostile" not in module_paths
+
+    def test_scan_package_excludes_tests_subpackage_by_default(
+        self, tmp_path, monkeypatch
+    ):
+        """``*.tests`` subpackages are excluded by default; ``testing`` stays.
+
+        Regression for #51 part 2: plain ``tests`` pollutes manifests, but
+        ``numpy.testing``-style packages are public API and must be kept.
+        """
+        package_name = "scan_tests_pkg"
+        package_dir = tmp_path / package_name
+        package_dir.mkdir()
+        (package_dir / "__init__.py").write_text('"""Root package."""\n')
+
+        tests_dir = package_dir / "tests"
+        tests_dir.mkdir()
+        (tests_dir / "__init__.py").write_text(
+            '"""Test subpackage."""\n\n'
+            "def test_pollution():\n"
+            '    """Should not be scanned."""\n'
+            '    return None\n'
+        )
+
+        testing_dir = package_dir / "testing"
+        testing_dir.mkdir()
+        (testing_dir / "__init__.py").write_text(
+            '"""Public testing utilities."""\n\n'
+            "def assert_something():\n"
+            '    """Public API."""\n'
+            '    return None\n'
+        )
+
+        monkeypatch.syspath_prepend(str(tmp_path))
+        result = scan_package(package_name, recursive=True)
+
+        module_paths = {s.module_path for s in result.symbols if s.kind == "module"}
+        assert f"{package_name}.tests" not in module_paths
+        assert f"{package_name}.testing" in module_paths
+
+        function_symbols = {
+            (s.module_path, s.name) for s in result.symbols if s.kind == "function"
+        }
+        assert (f"{package_name}.tests", "test_pollution") not in function_symbols
+        assert (f"{package_name}.testing", "assert_something") in function_symbols
+
+    def test_scan_package_includes_tests_when_opted_in(self, tmp_path, monkeypatch):
+        """``include_tests=True`` restores scanning of ``*.tests`` subpackages."""
+        package_name = "scan_tests_optin_pkg"
+        package_dir = tmp_path / package_name
+        package_dir.mkdir()
+        (package_dir / "__init__.py").write_text('"""Root package."""\n')
+
+        tests_dir = package_dir / "tests"
+        tests_dir.mkdir()
+        (tests_dir / "__init__.py").write_text(
+            '"""Test subpackage."""\n\n'
+            "def test_included():\n"
+            '    """Now scanned."""\n'
+            '    return None\n'
+        )
+
+        monkeypatch.syspath_prepend(str(tmp_path))
+        result = scan_package(package_name, recursive=True, include_tests=True)
+
+        module_paths = {s.module_path for s in result.symbols if s.kind == "module"}
+        assert f"{package_name}.tests" in module_paths
+
 
 class TestInheritedMemberFiltering:
     """Tests for filtering inherited members from external packages."""

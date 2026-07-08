@@ -50,6 +50,12 @@ def main():
     help="Don't scan submodules recursively.",
 )
 @click.option(
+    "--include-tests",
+    is_flag=True,
+    default=False,
+    help="Include '*.tests' subpackages (excluded by default).",
+)
+@click.option(
     "--validate/--no-validate",
     default=True,
     help="Validate output against LCP schema (default: enabled).",
@@ -71,6 +77,7 @@ def scan(
     output: str | None,
     include_private: bool,
     no_recursive: bool,
+    include_tests: bool,
     validate: bool,
     indent: int,
     coverage: str | None,
@@ -94,6 +101,7 @@ def scan(
             package,
             include_private=include_private,
             recursive=not no_recursive,
+            include_tests=include_tests,
         )
 
         # Generate LCP
@@ -169,12 +177,19 @@ def scan(
     default=False,
     help="Don't scan submodules recursively.",
 )
+@click.option(
+    "--include-tests",
+    is_flag=True,
+    default=False,
+    help="Include '*.tests' subpackages (excluded by default).",
+)
 def coverage(
     package: str,
     output: str | None,
     format: str,
     include_private: bool,
     no_recursive: bool,
+    include_tests: bool,
 ):
     """Generate documentation coverage report for a Python package.
 
@@ -194,6 +209,7 @@ def coverage(
             package,
             include_private=include_private,
             recursive=not no_recursive,
+            include_tests=include_tests,
         )
 
         # Determine output format
