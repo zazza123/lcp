@@ -87,6 +87,24 @@ class TestScanCommand:
         output = result.output
         assert '"manifest"' in output
 
+    def test_scan_excludes_tests_by_default(self, runner):
+        """`*.tests` subpackages are excluded from the manifest by default (#51)."""
+        pytest.importorskip("jsonschema")
+        result = runner.invoke(main, ["scan", "jsonschema", "--no-validate"])
+        assert result.exit_code == 0, result.output
+        data = json.loads(result.stdout)
+        assert not any(sid.startswith("jsonschema.tests") for sid in data["symbols"])
+
+    def test_scan_include_tests_flag(self, runner):
+        """`--include-tests` restores scanning of `*.tests` subpackages (#51)."""
+        pytest.importorskip("jsonschema")
+        result = runner.invoke(
+            main, ["scan", "jsonschema", "--include-tests", "--no-validate"]
+        )
+        assert result.exit_code == 0, result.output
+        data = json.loads(result.stdout)
+        assert any(sid.startswith("jsonschema.tests") for sid in data["symbols"])
+
     def test_scan_custom_indent(self, runner):
         result = runner.invoke(main, ["scan", "json", "--indent", "4"])
         assert result.exit_code == 0

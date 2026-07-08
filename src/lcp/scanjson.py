@@ -40,8 +40,9 @@ def main(argv: list[str] | None = None) -> None:
     """Scan a package and write its LCP document to stdout.
 
     Args:
-        argv: Argument list (default: ``sys.argv[1:]``): the package name
-            plus optional ``--include-private`` / ``--no-recursive`` flags.
+        argv: Argument list (default: ``sys.argv[1:]``): the package name plus
+            optional ``--include-private`` / ``--no-recursive`` /
+            ``--include-tests`` flags.
     """
     parser = argparse.ArgumentParser(
         prog="python -m lcp.scanjson",
@@ -50,6 +51,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("package", help="Import path of the package to scan.")
     parser.add_argument("--include-private", action="store_true")
     parser.add_argument("--no-recursive", action="store_true")
+    parser.add_argument("--include-tests", action="store_true")
     args = parser.parse_args(argv)
 
     # Import-time prints from the scanned package must not corrupt the
@@ -66,6 +68,7 @@ def main(argv: list[str] | None = None) -> None:
                 args.package,
                 include_private=args.include_private,
                 recursive=not args.no_recursive,
+                exclude_tests=not args.include_tests,
             )
         except ImportError as exc:
             _fail(3, "import_failure", str(exc))

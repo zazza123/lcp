@@ -21,9 +21,12 @@ lcp scan PACKAGE [OPTIONS]
 | `-o, --output PATH` | stdout | Output file path. |
 | `--include-private` | off | Include private symbols (starting with `_`). |
 | `--no-recursive` | off | Don't scan submodules recursively. |
+| `--include-tests` | off | Include `*.tests` subpackages (excluded by default). |
 | `--validate / --no-validate` | on | Validate output against LCP schema. |
 | `--indent INTEGER` | `2` | JSON indentation level. |
 | `--coverage PATH` | — | Also generate a documentation coverage report to this path. |
+
+By default, `*.tests` subpackages (whose leaf name is exactly `tests`) are skipped: they are not public API and would otherwise pollute the manifest. Public utilities such as `numpy.testing` are unaffected. Pass `--include-tests` to scan them anyway.
 
 **Example:**
 
@@ -37,7 +40,7 @@ lcp scan numpy --include-private
 For programmatic callers — including the MCP server's own [subprocess scanning](guides/mcp-server.md#scanning-environment) — `lcp.scanjson` is a machine-mode scan entry point with a strict output contract. It writes the LCP JSON document to stdout, reports errors as a single JSON object on stderr, and distinguishes failures by exit code:
 
 ```bash
-python -m lcp.scanjson PACKAGE [--include-private] [--no-recursive]
+python -m lcp.scanjson PACKAGE [--include-private] [--no-recursive] [--include-tests]
 ```
 
 | Exit code | Meaning | Output |
@@ -131,6 +134,7 @@ lcp coverage PACKAGE [OPTIONS]
 | `--format [json\|markdown]` | `json` | Output format. |
 | `--include-private` | off | Include private symbols (starting with `_`). |
 | `--no-recursive` | off | Don't scan submodules recursively. |
+| `--include-tests` | off | Include `*.tests` subpackages (excluded by default). |
 
 **Example:**
 
