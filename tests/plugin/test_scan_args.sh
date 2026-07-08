@@ -12,7 +12,7 @@ export CLAUDE_PROJECT_DIR="$TMP"
 source "$SERVE"
 
 # 1. scan_python set → used verbatim; scan_timeout passes through
-cat > "$TMP/.lcp.json" <<'JSON'
+cat > "$TMP/.lcp-config.json" <<'JSON'
 { "python": "/venv/server/bin/python", "scan_python": "/venv/scan/bin/python", "scan_timeout": 120 }
 JSON
 args="$(lcp_build_args | tr '\n' ' ')"
@@ -20,14 +20,14 @@ case "$args" in *"--scan-python /venv/scan/bin/python "*) ;; *) echo "FAIL scan_
 case "$args" in *"--scan-timeout 120 "*) ;; *) echo "FAIL scan_timeout: $args"; exit 1;; esac
 
 # 2. no scan_python → python is the fallback scan interpreter
-cat > "$TMP/.lcp.json" <<'JSON'
+cat > "$TMP/.lcp-config.json" <<'JSON'
 { "python": "/venv/project/bin/python" }
 JSON
 args="$(lcp_build_args | tr '\n' ' ')"
 case "$args" in *"--scan-python /venv/project/bin/python "*) ;; *) echo "FAIL python fallback: $args"; exit 1;; esac
 
 # 3. neither field → no --scan-python at all; existing args still built
-cat > "$TMP/.lcp.json" <<'JSON'
+cat > "$TMP/.lcp-config.json" <<'JSON'
 { "expose": ["json"] }
 JSON
 args="$(lcp_build_args | tr '\n' ' ')"

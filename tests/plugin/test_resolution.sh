@@ -14,7 +14,7 @@ echo "serving"; sleep 1
 SH
 chmod +x "$TMP/bin/lcp"
 
-cat > "$TMP/.lcp.json" <<JSON
+cat > "$TMP/.lcp-config.json" <<JSON
 { "command": "$TMP/bin/lcp" }
 JSON
 
