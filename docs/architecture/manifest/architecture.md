@@ -25,14 +25,16 @@ Class members (methods, properties) are stored inline inside the parent `Scanned
 
 ### Entry Points
 
-- `scan_package(package_name, include_private, recursive)` — top-level function; imports the package, calls `scan_module()` on the root module, then iterates over submodules if `recursive=True`
+- `scan_package(package_name, include_private, recursive, include_tests)` — top-level function; imports the package, calls `scan_module()` on the root module, then iterates over submodules if `recursive=True`
 - `scan_module(module, include_private, _visited)` — scans one `ModuleType`; uses a `_visited` set of object IDs to avoid processing the same module twice (handles circular imports)
 
 ### Submodule Discovery
 
 `_iter_submodules()` uses `pkgutil.iter_modules()` for standard packages. It also handles namespace packages (directories without `__init__.py`) by iterating the package's `__path__` entries directly and trying to import any subdirectory that is a valid Python identifier.
 
-Modules that fail to import are silently skipped.
+Submodule discovery is fail-open: a submodule that raises at import time is skipped and the walk continues, so one hostile module can never abort the whole scan. The guard catches any `BaseException` (not only `Exception`) — `KeyboardInterrupt` and `SystemExit` remain handled explicitly, but `BaseException` subclasses raised by import-time probes are caught too. This matters because test modules commonly call `pytest.importorskip()`, which raises `Skipped` (a `BaseException`, not an `Exception`); without this, any package whose test suite probes an absent optional dependency (`pandas`, `scipy`, `pyarrow`) would fail to scan at all.
+
+Test subpackages are excluded by default. Any subpackage whose leaf name is exactly `tests` is skipped *before* it is imported — controlled by the `include_tests` flag (default off). The rationale is twofold: test packages are not public API and would otherwise dominate a manifest (roughly a third of the raw symbols for large scientific packages), and skipping them before import also sidesteps the `importorskip` failure mode above at the source. The rule matches the leaf name exactly, so public utilities such as `numpy.testing` (leaf `testing`) are always included. Pass `include_tests=True` to scan test packages anyway.
 
 ### Public Symbol Rules
 
