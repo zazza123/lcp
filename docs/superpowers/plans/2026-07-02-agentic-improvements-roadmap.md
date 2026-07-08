@@ -864,6 +864,19 @@ include optional submodules CI cannot import (google-genai: 5691 vs
 4635 symbols) — documented in populate.py; a real SDK isolation fix is
 post-launch backlog.
 
+**Post-phase follow-up (2026-07-08, same day):** the two scanner
+limitations were fixed immediately instead of post-launch (issues
+#51/#52 → PRs #53/#54, merged) and the registry regenerated wholesale
+with the new pin `638a2882` (lcp-registry PRs #26–#31): population is
+now **97/100** — pandas, scipy, pyarrow and pydantic-core recovered;
+test subpackages excluded from all manifests (numpy 3098→1944 symbols);
+still dropped for external causes: sglang (no macOS release), soupsieve
+(undeclared bs4 import), opentelemetry-semantic-conventions (no stable
+release). Registry serves 103 packages / 107 manifests; polars
+fresh-machine re-check 0.81s median. Remaining follow-up: lcp-registry
+issue #25 (unify the weekly updater with the populate machinery, single
+source of truth in packages.yaml).
+
 **Objective:** The registry verifies submissions automatically and ships
 pre-built manifests for the top PyPI libraries, so `serve-all --registry`
 has answers on day one.
