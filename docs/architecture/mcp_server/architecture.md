@@ -45,7 +45,7 @@ Two design rules keep the cross-environment path correct:
 - **Append, never prepend.** The child is bootstrapped with the server's `lcp` and `pydantic` locations *appended* to its `sys.path`, so the target environment's own packages always win and the server's site-packages can never shadow what is being scanned. The target environment therefore does not need `lcp` installed.
 - **Fallback only on spawn failure, and only for the server's own environment.** `_scan_live()` retries in-process solely when the subprocess could not be *spawned* (no package code ran) and no `scan_python` is configured. A spawn failure with a configured interpreter errors instead of silently scanning the wrong venv, and a scan *crash* is never retried in-process — that would re-import the crashing package inside the server.
 
-`resolve_library_document()` remains the single choke point: the cache write side effect and the cache → scan → registry resolution order are identical in both scan modes, and the "installed in a different environment" error now names the actual scan interpreter and its `.lcp.json` remedy (`scan_python` / `python`).
+`resolve_library_document()` remains the single choke point: the cache write side effect and the cache → scan → registry resolution order are identical in both scan modes, and the "installed in a different environment" error now names the actual scan interpreter and its `.lcp-config.json` remedy (`scan_python` / `python`).
 
 **Residual trust model:** process isolation contains crashes and hangs; it is not a sandbox. The scanned package's import-time code still executes with the user's permissions, in the child. This is documented honestly in the [server guide](../../guides/mcp-server.md) rather than papered over.
 

@@ -105,15 +105,16 @@ lcp serve-all --name my-lcp              # custom server name
 |-------|---------|
 | `lcp-universal` | Any task involving Python library usage — auto-loads via `resolve_library` |
 | `lcp-usage` | Detecting and using either the universal or a per-library LCP server |
-| `lcp-configure` | Setting up or repairing `.lcp.json` — when the MCP server won't start, libraries don't resolve, or you want to set a registry / expose / preload |
+| `lcp-configure` | Setting up or repairing `.lcp-config.json` — when the MCP server won't start, libraries don't resolve, or you want to set a registry / expose / preload |
 
-## Configuration (`.lcp.json`)
+## Configuration (`.lcp-config.json`)
 
 Most setups need no configuration — the plugin auto-detects a runnable `lcp` and
 uses the official registry. When it doesn't (e.g. `lcp` lives in a virtualenv off
 your `PATH`, you run a private registry, or you want to restrict/warm specific
-libraries), the server reads an optional `.lcp.json` (project root, falling back
-to `~/.lcp/config.json`):
+libraries), the server reads an optional `.lcp-config.json` (project root, falling back
+to `~/.lcp/config.json`); a legacy project `.lcp.json` is still read as a
+deprecated fallback):
 
 | Field | Effect |
 |-------|--------|

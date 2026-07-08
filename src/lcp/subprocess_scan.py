@@ -144,12 +144,12 @@ def scan_package_subprocess(
         raise ScanTimeoutError(
             f"scan of '{package}' timed out after {timeout:.0f}s "
             f"(interpreter: {interpreter}); heavy packages may need a "
-            f"higher scan timeout (--scan-timeout / .lcp.json 'scan_timeout')"
+            f"higher scan timeout (--scan-timeout / .lcp-config.json 'scan_timeout')"
         ) from exc
     except FileNotFoundError as exc:
         raise ScanInterpreterNotFoundError(
             f"scan interpreter not found: {interpreter} — check the "
-            f"'scan_python' / 'python' setting in .lcp.json"
+            f"'scan_python' / 'python' setting in .lcp-config.json"
         ) from exc
     except OSError as exc:
         raise ScanSpawnError(

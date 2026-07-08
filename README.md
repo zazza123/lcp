@@ -299,12 +299,12 @@ For **local development** (when working on the plugin itself), load it directly 
 claude --plugin-dir /path/to/lcp/plugin/lcp
 ```
 
-### `.lcp.json` — per-project configuration
+### `.lcp-config.json` — per-project configuration
 
-The plugin uses a `.lcp.json` file to select the correct `lcp` launcher for each project. The `SessionStart` hook auto-generates this file when absent, seeding it from `settings.json` `pluginConfigs` values; edit the file directly thereafter.
+The plugin uses a `.lcp-config.json` file to select the correct `lcp` launcher for each project. The `SessionStart` hook auto-generates this file when absent, seeding it from `settings.json` `pluginConfigs` values; edit the file directly thereafter. Earlier versions named this file `.lcp.json`; the old name still works as a deprecated fallback — rename it to `.lcp-config.json`.
 
 **Locations** (first found wins):
-- `${CLAUDE_PROJECT_DIR}/.lcp.json` — per-project (safe to check in)
+- `${CLAUDE_PROJECT_DIR}/.lcp-config.json` — per-project (safe to check in)
 - `~/.lcp/config.json` — global fallback
 
 **Schema** (all fields optional):
@@ -319,16 +319,16 @@ The plugin uses a `.lcp.json` file to select the correct `lcp` launcher for each
 }
 ```
 
-`command` and `python` are mutually exclusive; `command` wins if both are set. `expose` and `preload` are `.lcp.json`-only fields (not in `userConfig`).
+`command` and `python` are mutually exclusive; `command` wins if both are set. `expose` and `preload` are `.lcp-config.json`-only fields (not in `userConfig`).
 
-To change an option: edit `.lcp.json` directly. To reset from `settings.json`, delete the file and restart the session — the hook regenerates it from `pluginConfigs.lcp@lcp.options`.
+To change an option: edit `.lcp-config.json` directly. To reset from `settings.json`, delete the file and restart the session — the hook regenerates it from `pluginConfigs.lcp@lcp.options`.
 
 ### Launcher resolution order
 
 The wrapper probes each candidate with `--version`; the first that succeeds wins:
 
-1. `.lcp.json` → `command`
-2. `.lcp.json` → `python` → `python -m lcp`
+1. `.lcp-config.json` → `command`
+2. `.lcp-config.json` → `python` → `python -m lcp`
 3. Auto-detected project venv under `${CLAUDE_PROJECT_DIR}`: `.venv/bin/lcp`, `.venv/bin/python -m lcp`, `venv/bin/lcp`, `venv/bin/python -m lcp`
 4. Active virtualenv via `$VIRTUAL_ENV`: `$VIRTUAL_ENV/bin/lcp`, `$VIRTUAL_ENV/bin/python -m lcp`
 5. `uv run --project <dir> --with lcp lcp` if `uv` is present (ephemeral; layers `lcp` onto the project env)
