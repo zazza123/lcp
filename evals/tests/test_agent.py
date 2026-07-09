@@ -120,15 +120,15 @@ class TestBuildCommand:
     def test_mcp_tools_preallowed(self):
         # Headless `-p` runs auto-deny any tool call that needs interactive
         # permission approval unless pre-approved via --allowedTools (see
-        # Task 10 report's "Fix report: allowedTools" section). Both arms
-        # must carry the same --allowedTools "mcp__lcp" wildcard: it's a
-        # no-op in the baseline arm (no server named "lcp" exists there) but
-        # unblocks real MCP tool calls in the lcp arm.
-        for arm, mcp_config in [("baseline", None), ("lcp", "/tmp/mcp.json")]:
-            cmd = build_command("do it", arm, mcp_config)
-            assert "--allowedTools" in cmd
-            idx = cmd.index("--allowedTools")
-            assert cmd[idx + 1] == "mcp__lcp"
+        # Task 10 report's "Fix report: allowedTools" section). The lcp arm
+        # must carry --allowedTools "mcp__lcp" to unblock real MCP tool
+        # calls. The baseline arm never registers a server named "lcp", so
+        # it no longer carries a no-op --allowedTools flag (see
+        # test_agent_arms.py::TestBaselineUnchanged).
+        cmd = build_command("do it", "lcp", "/tmp/mcp.json")
+        assert "--allowedTools" in cmd
+        idx = cmd.index("--allowedTools")
+        assert cmd[idx + 1] == "mcp__lcp"
 
 
 class TestLoadSkillText:
