@@ -108,9 +108,20 @@ pytest
 
 - [ ] **Step 2: Create the venv and install**
 
+**Amendment (2026-07-09, second iteration):** the bench venv stays on
+**Python 3.12**. A 3.11 venv was tried first (awkward 1.10.5 — pinned by
+pocket-coffea's coffea-0.7 stack — ships wheels only up to cp311), but
+cyhole and hamana declare `requires-python >= 3.12`, so 3.11 can never
+hold all 11 targets. Resolution: awkward 1.10.5 is built once from sdist
+on 3.12 with `CMAKE_POLICY_VERSION_MINIMUM=3.5` (CMake >= 4 rejects its
+pybind11 `cmake_minimum_required`); the built wheel lands in pip's cache
+and subsequent installs need no env var.
+
 ```bash
 python3 -m venv evals/.venv-bench
 evals/.venv-bench/bin/pip install -e . -r evals/bench-requirements.txt
+# if awkward 1.10.5 must rebuild from a cold cache:
+#   CMAKE_POLICY_VERSION_MINIMUM=3.5 evals/.venv-bench/bin/pip wheel awkward==1.10.5
 evals/.venv-bench/bin/pip freeze --exclude-editable > evals/bench-requirements.lock.txt
 ```
 
@@ -595,7 +606,7 @@ git commit   # "ADD: per-arm MCP configs and 6-arm matrix to the eval runner"
 
 - [ ] **Step 3: Run the population flow** for the new packages per that repo's README (isolated venv per package, lcp pinned per the CI workflow). Expected: one PR per package with a CI-verified manifest.
 
-- [ ] **Step 4: Watch CI on each PR** (`gh pr checks --watch` in that repo). pocket-coffea and pixeltable are the crash-risk candidates (heavy import graphs) — if CI regeneration fails for a package: first try a documented `verify-overrides.yaml` tolerance; if genuinely unresolvable, record it in `PREREGISTRATION.md` (the `registry` arm then covers 10/11 libs and the page says so — do NOT silently shrink).
+- [ ] **Step 4: Watch CI on each PR** (`gh pr checks --watch` in that repo). pocket-coffea and pixeltable are the crash-risk candidates (heavy import graphs); pocket-coffea additionally needs awkward 1.10.5 built from sdist on Python 3.12 (no cp312 wheels — the Task 2 amendment); that build succeeds with CMake < 4 (typical of ubuntu runners) but fails under CMake >= 4 without `CMAKE_POLICY_VERSION_MINIMUM=3.5`, so its registry-CI regenerate-and-compare may fail at install time. If CI regeneration fails for a package: first try a documented `verify-overrides.yaml` tolerance; if genuinely unresolvable, record it in `PREREGISTRATION.md` (the `registry` arm then covers 10/11 libs and the page says so — do NOT silently shrink).
 
 - [ ] **Step 5: Merge the PRs** (user's repo — merge after green CI), then verify end-to-end from the bare venv:
 
