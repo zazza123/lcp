@@ -123,12 +123,13 @@ class TestBuildCommand:
         # Task 10 report's "Fix report: allowedTools" section). The lcp arm
         # must carry --allowedTools "mcp__lcp" to unblock real MCP tool
         # calls. The baseline arm never registers a server named "lcp", so
-        # it no longer carries a no-op --allowedTools flag (see
-        # test_agent_arms.py::TestBaselineUnchanged).
+        # it must not carry a no-op --allowedTools flag.
         cmd = build_command("do it", "lcp", "/tmp/mcp.json")
         assert "--allowedTools" in cmd
         idx = cmd.index("--allowedTools")
         assert cmd[idx + 1] == "mcp__lcp"
+        cmd = build_command("do it", "baseline", None)
+        assert "--allowedTools" not in cmd
 
 
 class TestLoadSkillText:
