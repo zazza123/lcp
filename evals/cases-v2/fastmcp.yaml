@@ -16,7 +16,8 @@
   prompt: >
     Create a fastmcp server with one simple tool and serve it over streamable
     HTTP on host 127.0.0.1 and port 8000, so remote clients can reach it over
-    the network rather than over stdio.
+    the network rather than over stdio. Start it by calling the server's own
+    run entry point, not by mounting it in an external ASGI server.
   checks:
     required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#run"]
     forbidden_symbols:

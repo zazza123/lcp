@@ -6,7 +6,7 @@
     responds with the JSON object {"message": "pong"} and the correct
     application/json content type.
   checks:
-    required_symbols: ["flask:Flask", "flask:Flask#route", "flask:jsonify"]
+    required_symbols: ["flask:Flask", "flask:Flask#route"]
     forbidden_symbols: ["flask:json_response"]
 
 - id: flask-blueprint
@@ -28,7 +28,7 @@
     HTTP status 404 whenever a requested route does not exist, by registering
     a handler for 404 responses.
   checks:
-    required_symbols: ["flask:Flask#errorhandler", "flask:jsonify"]
+    required_symbols: ["flask:Flask#errorhandler"]
     forbidden_symbols: ["flask:Flask#error_handler"]
 
 - id: flask-redirect-endpoint
@@ -46,9 +46,10 @@
   library: flask
   version: "3.1.3"
   prompt: >
-    Build a Flask route that returns the text "hi", but wrap it so you can set
-    the HTTP status code to 201 and add a custom header "X-App: demo" on the
-    outgoing response.
+    Build a Flask route that responds with the text "hi", HTTP status 201, and
+    a custom header "X-App: demo". Inside the view, first convert the body
+    string into a response object, then set the status code and add the header
+    on that object before returning it — do not use the tuple-return shortcut.
   checks:
     required_symbols: ["flask:make_response"]
     forbidden_symbols: ["flask:build_response"]

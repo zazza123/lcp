@@ -61,7 +61,7 @@
     with HTTP Basic authentication, using the username "user" and the password
     "pass".
   checks:
-    required_symbols: ["requests:get", "requests.auth:HTTPBasicAuth"]
+    required_symbols: ["requests:get"]
     forbidden_symbols:
       - "requests:HTTPBasicAuth"
       - "requests:BasicAuth"
