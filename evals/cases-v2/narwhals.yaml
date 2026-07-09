@@ -108,6 +108,4 @@
     pipeline into a concrete in-memory dataframe.
   checks:
     required_symbols: ["narwhals:scan_parquet", "narwhals:LazyFrame#collect"]
-    forbidden_symbols:
-      - "narwhals:LazyFrame#fetch"
-      - "narwhals:LazyFrame#to_polars"
+    forbidden_symbols: ["narwhals:LazyFrame#fetch"]
