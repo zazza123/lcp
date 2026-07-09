@@ -1,0 +1,67 @@
+- id: requests-session-auth-header
+  library: requests
+  version: "2.34.2"
+  prompt: >
+    Using requests, create a reusable session object that automatically
+    attaches the header "Authorization: Bearer TESTTOKEN" to every request it
+    makes, then use that session to fetch "https://api.example.com/me".
+  checks:
+    required_symbols: ["requests:Session", "requests:Session#get"]
+    forbidden_symbols: ["requests:Session#get_json"]
+
+- id: requests-json-post
+  library: requests
+  version: "2.34.2"
+  prompt: >
+    Using requests, send a POST to "https://api.example.com/items" with the
+    JSON payload {"name": "widget", "qty": 3} in the body, then decode the
+    JSON object from the response into a Python dict and print it.
+  checks:
+    required_symbols: ["requests:post", "requests:Response#json"]
+    forbidden_symbols: ["requests:Response#get_json"]
+
+- id: requests-raise-for-status
+  library: requests
+  version: "2.34.2"
+  prompt: >
+    Using requests, GET "https://api.example.com/data" and, before touching
+    the body, cause an exception to be raised automatically if the server
+    responded with a 4xx or 5xx HTTP error status.
+  checks:
+    required_symbols: ["requests:get", "requests:Response#raise_for_status"]
+    forbidden_symbols: ["requests:Response#raise_for_error"]
+
+- id: requests-timeout
+  library: requests
+  version: "2.34.2"
+  prompt: >
+    Using requests, GET "https://api.example.com/slow" but give up if the
+    server takes longer than 3 seconds. Catch the resulting timeout so the
+    program prints "timed out" instead of crashing.
+  checks:
+    required_symbols: ["requests:get", "requests:Timeout"]
+    forbidden_symbols: ["requests:TimeoutError"]
+
+- id: requests-stream-download
+  library: requests
+  version: "2.34.2"
+  prompt: >
+    Using requests, download "https://example.com/big.bin" without loading the
+    whole body into memory at once, writing the response to a local file
+    "big.bin" in fixed-size chunks as the data arrives.
+  checks:
+    required_symbols: ["requests:get", "requests:Response#iter_content"]
+    forbidden_symbols: ["requests:Response#iter_chunks"]
+
+- id: requests-basic-auth
+  library: requests
+  version: "2.34.2"
+  prompt: >
+    Using requests, GET "https://api.example.com/private" while authenticating
+    with HTTP Basic authentication, using the username "user" and the password
+    "pass".
+  checks:
+    required_symbols: ["requests:get", "requests.auth:HTTPBasicAuth"]
+    forbidden_symbols:
+      - "requests:HTTPBasicAuth"
+      - "requests:BasicAuth"
