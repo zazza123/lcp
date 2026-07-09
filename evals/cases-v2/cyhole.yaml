@@ -80,8 +80,8 @@
   library: cyhole
   version: "0.3.0"
   prompt: >
-    Using cyhole's Solscan interaction, fetch the historical price data of a
-    single token given its address. Read the Solscan API key from the
+    Using cyhole's Solscan V2 interaction, fetch the historical price data of
+    a single token given its address. Read the Solscan API key from the
     SOLSCAN_API_KEY environment variable and run the request synchronously.
   checks:
     required_symbols:
@@ -95,7 +95,7 @@
   library: cyhole
   version: "0.3.0"
   prompt: >
-    Using cyhole's Solscan interaction, retrieve the DeFi activities of a
+    Using cyhole's Solscan V2 interaction, retrieve the DeFi activities of a
     given account address synchronously. Read the API key from the
     SOLSCAN_API_KEY environment variable.
   checks:

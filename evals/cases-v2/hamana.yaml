@@ -2,10 +2,12 @@
   library: hamana
   version: "1.0.1"
   prompt: >
-    Using hamana's Oracle connector, build the connector configuration from a
-    user, password, host and service name (read the password from the
-    ORACLE_PASSWORD environment variable), create the connector from that
-    configuration, then execute the query "SELECT sysdate FROM dual".
+    Using hamana's Oracle connector, first build a standalone configuration
+    object from a user, password, host and service name (read the password
+    from the ORACLE_PASSWORD environment variable), then construct the
+    connector from that configuration object (do not use any one-shot
+    shortcut that skips the separate configuration step), and finally execute
+    the query "SELECT sysdate FROM dual".
   checks:
     required_symbols:
       - "hamana.connector.db:Oracle"
