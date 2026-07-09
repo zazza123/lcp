@@ -1,0 +1,145 @@
+- id: pocket-coffea-configurator
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    Write the config.py of a PocketCoffea Z->mumu analysis. Assume `params`
+    (the composed OmegaConf parameter set) and a workflow class
+    `ZmumuProcessor` are already imported. Build the framework's central
+    analysis-configuration object, wiring together: the workflow class; the
+    dataset definition file "datasets/DYJetsToLL_2018.json" with a filter
+    selecting only year "2018"; a skim step that lets every event through
+    using the framework's built-in no-op cut; an empty preselection list; a
+    single "baseline" category also using the no-op cut; common inclusive
+    weights genWeight, lumi and XS; no variations; and an empty variables
+    dictionary.
+  checks:
+    required_symbols:
+      - "pocket_coffea.utils.configurator:Configurator"
+      - "pocket_coffea.parameters.cuts:passthrough"
+    forbidden_symbols:
+      - "pocket_coffea.utils.configurator:load_config"
+      - "pocket_coffea.utils.configurator:Configurator#from_yaml"
+
+- id: pocket-coffea-custom-cut
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    For a PocketCoffea analysis, define a reusable event-level preselection
+    cut named "dimuon": at least two muons with pT above a threshold and an
+    opposite-charge leading pair. Write the mask function with the framework
+    signature (events, params, **kwargs), reading the pT threshold from
+    `params`, and declare the cut with the framework's cut-definition object
+    so it can be placed in the `preselections` list of a configuration with
+    the threshold set to 15 GeV.
+  checks:
+    required_symbols: ["pocket_coffea.lib.cut_definition:Cut"]
+    forbidden_symbols:
+      - "pocket_coffea.lib.cut_definition:CutDefinition"
+      - "pocket_coffea.lib.cut_functions:make_cut"
+
+- id: pocket-coffea-builtin-cuts
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    In a PocketCoffea configuration for a 2018 semileptonic ttbar analysis,
+    build the skim and preselection cut lists using the framework's
+    ready-made cut factories: apply the HLT trigger selection for the
+    "semileptonic" primary dataset taken from the parameters; require at
+    least 4 jets of the "JetGood" collection with pT > 30 GeV via the
+    generic object-multiplicity factory; and require at least 2 b-tagged
+    jets via the b-tag multiplicity factory.
+  checks:
+    required_symbols:
+      - "pocket_coffea.lib.cut_functions:get_HLTsel"
+      - "pocket_coffea.lib.cut_functions:get_nObj_min"
+      - "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    forbidden_symbols:
+      - "pocket_coffea.lib.cut_functions:get_nJets"
+      - "pocket_coffea.lib.cut_functions:get_trigger_sel"
+
+- id: pocket-coffea-histograms
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    In a PocketCoffea configuration, define the `variables` entry for a
+    muon-pT histogram: one histogram configuration holding a single regular
+    axis over the "pt" field of the leading object of the "MuonGood"
+    collection (position 0), with 60 bins from 0 to 300 and the label
+    "Muon pT [GeV]". Use the framework's histogram-axis and
+    histogram-configuration objects from its histogram manager module.
+  checks:
+    required_symbols:
+      - "pocket_coffea.lib.hist_manager:Axis"
+      - "pocket_coffea.lib.hist_manager:HistConf"
+    forbidden_symbols:
+      - "pocket_coffea.lib.hist_manager:Bin"
+      - "pocket_coffea.lib.hist_manager:Hist"
+
+- id: pocket-coffea-custom-workflow
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    Write a minimal custom PocketCoffea workflow for a dimuon analysis:
+    subclass the framework's abstract base processor and override only the
+    object-preselection hook, to build a "MuonGood" collection (muons with
+    pT > 15 GeV and |eta| < 2.4), and the object-counting hook, to store the
+    number of selected muons per event. Do not override the main process()
+    method - rely on the base class pipeline.
+  checks:
+    required_symbols: ["pocket_coffea.workflows.base:BaseProcessorABC"]
+    forbidden_symbols:
+      - "pocket_coffea.workflows.base:ProcessorABC"
+      - "pocket_coffea.workflows.base:BaseProcessor"
+
+- id: pocket-coffea-parameters
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    For a PocketCoffea analysis, compose the analysis parameters in two
+    explicit steps: first fetch the framework's default parameter set, then
+    in a second call overlay the two YAML files
+    "params/object_preselection.yaml" and "params/triggers.yaml" onto those
+    defaults so the file values override them, producing the final OmegaConf
+    parameters object to pass to the configuration.
+  checks:
+    required_symbols:
+      - "pocket_coffea.parameters.defaults:get_default_parameters"
+      - "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    forbidden_symbols:
+      - "pocket_coffea.parameters.defaults:load_default_parameters"
+
+- id: pocket-coffea-custom-weight
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    For a PocketCoffea analysis, declare a custom per-event MC weight named
+    "toy_reweight" with symmetric up/down variations: the nominal weight is
+    events.LHEWeight_originalXWGTUP normalized to 1, and the variations are
+    +/- 5 percent around it. Use the framework's lambda-style weight wrapper
+    class (declared through its class-attribute schema: name, has_variations
+    and the weight function) so the new weight can be listed in the
+    `weights_classes` of a configuration.
+  checks:
+    required_symbols: ["pocket_coffea.lib.weights.weights:WeightLambda"]
+    forbidden_symbols:
+      - "pocket_coffea.lib.weights.weights:Weights"
+      - "pocket_coffea.lib.weights.weights:weight_function"
+
+- id: pocket-coffea-cartesian-categories
+  library: pocket-coffea
+  version: "0.9.13"
+  prompt: >
+    In a PocketCoffea configuration, define the analysis categories as the
+    cross product of two binnings: jet multiplicity (exactly 4, exactly 5,
+    at least 6 jets of "JetGood") times b-tag multiplicity (exactly 2, at
+    least 3 b-jets). Use the framework's cartesian categorization objects -
+    the multi-bin cut wrapper for each binning plus the cartesian combination
+    container - rather than spelling out every combination as a standard
+    category by hand.
+  checks:
+    required_symbols:
+      - "pocket_coffea.lib.categorization:CartesianSelection"
+      - "pocket_coffea.lib.categorization:MultiCut"
+    forbidden_symbols:
+      - "pocket_coffea.lib.categorization:Categorizer"
+      - "pocket_coffea.lib.categorization:CategorySelection"

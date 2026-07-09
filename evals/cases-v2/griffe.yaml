@@ -1,0 +1,106 @@
+- id: griffe-load-api
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    Using griffe programmatically (not as a mkdocstrings plugin), load the
+    full API model of the installed package "requests" with the module-level
+    convenience entry point (do not instantiate a loader class), then print
+    the names of all its public top-level functions.
+  checks:
+    required_symbols: ["griffe:load"]
+    forbidden_symbols: ["griffe:load_module", "griffe:inspect_module"]
+
+- id: griffe-api-diff
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    Using griffe, detect API breakages in the package "mypkg" living in the
+    current git repository: load the package once at the tag "v1.0.0" and
+    once at "HEAD" using griffe's git-aware loading helper, then iterate over
+    the breakage objects griffe reports between the old and the new versions,
+    printing each one.
+  checks:
+    required_symbols: ["griffe:load_git", "griffe:find_breaking_changes"]
+    forbidden_symbols: ["griffe:diff", "griffe:compare"]
+
+- id: griffe-docstring-sections
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    Using griffe's docstring machinery only (no package loading involved),
+    take a raw Google-style docstring string you define inline (a summary
+    line plus an "Args:" section and a "Returns:" section), wrap it in
+    griffe's docstring object with the Google parser selected, and print the
+    kind of each structured section obtained from parsing it.
+  checks:
+    required_symbols: ["griffe:Docstring"]
+    forbidden_symbols: ["griffe:parse_docstring", "griffe:DocstringParser"]
+
+- id: griffe-loader-aliases
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    Using griffe, load the package "mypkg" from the source directory "./src"
+    instead of the installed environment: instantiate griffe's loader class
+    with that directory as a search path, load the package with it, and
+    afterwards ask the loader to resolve all the aliases (imported and
+    re-exported names) it recorded during loading.
+  checks:
+    required_symbols:
+      - "griffe:GriffeLoader"
+      - "griffe:GriffeLoader#load"
+      - "griffe:GriffeLoader#resolve_aliases"
+    forbidden_symbols: ["griffe:GriffeLoader#load_module", "griffe:Loader"]
+
+- id: griffe-load-from-pypi
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    Without installing anything into the current environment, use griffe to
+    fetch and load the API of the "click" package straight from PyPI (the
+    distribution is also named "click"; use the version specifier "==8.1.7")
+    with the dedicated helper griffe ships for this, then print the loaded
+    package's name.
+  checks:
+    required_symbols: ["griffe:load_pypi"]
+    forbidden_symbols: ["griffe:load_from_pypi", "griffe:load_remote"]
+
+- id: griffe-extension
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    Using griffe's extension system, write an extension that appends the
+    string " [checked]" to the docstring of every function griffe collects
+    while loading, aggregate it the way griffe expects extensions to be
+    passed, and load the package "mypkg" through the module-level load entry
+    point with the extension enabled.
+  checks:
+    required_symbols: ["griffe:Extension", "griffe:load"]
+    forbidden_symbols:
+      - "griffe:register_extension"
+      - "griffe:GriffeLoader#add_extension"
+
+- id: griffe-json-roundtrip
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    You have an already-loaded griffe module object `mod`. Using the
+    serialization support on the module object itself, write it out as JSON
+    to the file "api.json", and in a separate step reconstruct an equivalent
+    griffe module object from that file's text content.
+  checks:
+    required_symbols: ["griffe:Module#as_json", "griffe:Module#from_json"]
+    forbidden_symbols: ["griffe:Module#to_json", "griffe:load_json"]
+
+- id: griffe-nested-member
+  library: griffe
+  version: "2.1.0"
+  prompt: >
+    You have a loaded griffe package object `pkg` for "mypkg". Using the
+    member-lookup method of griffe's object API, retrieve the nested member
+    at the dotted path "utils.parsers.parse_date" in a single call (do not
+    chain dictionary indexing yourself), then print whether it is deprecated
+    and whether it has a docstring.
+  checks:
+    required_symbols: ["griffe:Object#get_member"]
+    forbidden_symbols: ["griffe:Object#get_object", "griffe:Object#lookup"]
