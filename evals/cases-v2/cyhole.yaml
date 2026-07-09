@@ -1,0 +1,124 @@
+- id: cyhole-dexscreener-token-pairs
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's DexScreener interaction, write synchronous code that
+    retrieves every trading pair for a single SPL token, given its mint
+    address on the Solana chain, and prints how many pairs were returned.
+    DexScreener needs no API key.
+  checks:
+    required_symbols:
+      - "cyhole.dex_screener.interaction:DexScreener"
+      - "cyhole.dex_screener.client:DexScreenerClient#get_token_pairs"
+    forbidden_symbols:
+      - "cyhole.dex_screener.client:DexScreenerClient#get_token_pools"
+      - "cyhole.dex_screener.client:DexScreenerClient#fetch_token_pairs"
+
+- id: cyhole-helius-get-asset
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's Helius interaction, fetch the full Digital Asset Standard
+    (DAS) metadata for a single asset given its id. Read the Helius API key
+    from the HELIUS_API_KEY environment variable and run the request
+    synchronously.
+  checks:
+    required_symbols:
+      - "cyhole.helius.interaction:Helius"
+      - "cyhole.helius.client:HeliusClient#post_get_asset"
+    forbidden_symbols:
+      - "cyhole.helius.client:HeliusClient#get_asset"
+      - "cyhole.helius.client:HeliusClient#post_asset"
+
+- id: cyhole-helius-assets-by-owner
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's Helius interaction, list all the Digital Asset Standard
+    assets owned by a given wallet address. Read the API key from the
+    HELIUS_API_KEY environment variable and perform the call synchronously.
+  checks:
+    required_symbols:
+      - "cyhole.helius.interaction:Helius"
+      - "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    forbidden_symbols:
+      - "cyhole.helius.client:HeliusClient#get_assets_by_owner"
+      - "cyhole.helius.client:HeliusClient#post_get_owner_assets"
+
+- id: cyhole-solanafm-account-transfers
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's SolanaFM interaction, retrieve the token transfers for a
+    given account address synchronously. Read the API key from the
+    SOLANA_FM_API_KEY environment variable.
+  checks:
+    required_symbols:
+      - "cyhole.solana_fm.interaction:SolanaFM"
+      - "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers"
+    forbidden_symbols:
+      - "cyhole.solana_fm.client:SolanaFMClient#get_transfers"
+      - "cyhole.solana_fm.client:SolanaFMClient#get_account_transfer"
+
+- id: cyhole-solanafm-transfers-csv-export
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's SolanaFM interaction, request the CSV export of an
+    account's transfers so the data can be saved to a report file. Read the
+    API key from the SOLANA_FM_API_KEY environment variable and run the
+    request synchronously.
+  checks:
+    required_symbols:
+      - "cyhole.solana_fm.interaction:SolanaFM"
+      - "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export"
+    forbidden_symbols:
+      - "cyhole.solana_fm.client:SolanaFMClient#export_account_transfers_csv"
+      - "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv"
+
+- id: cyhole-solscan-token-price
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's Solscan interaction, fetch the historical price data of a
+    single token given its address. Read the Solscan API key from the
+    SOLSCAN_API_KEY environment variable and run the request synchronously.
+  checks:
+    required_symbols:
+      - "cyhole.solscan.v2.interaction:Solscan"
+      - "cyhole.solscan.v2.client:SolscanClient#get_token_price"
+    forbidden_symbols:
+      - "cyhole.solscan.v2.client:SolscanClient#get_price"
+      - "cyhole.solscan.v2.client:SolscanClient#get_token_prices"
+
+- id: cyhole-solscan-defi-activities
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's Solscan interaction, retrieve the DeFi activities of a
+    given account address synchronously. Read the API key from the
+    SOLSCAN_API_KEY environment variable.
+  checks:
+    required_symbols:
+      - "cyhole.solscan.v2.interaction:Solscan"
+      - "cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities"
+    forbidden_symbols:
+      - "cyhole.solscan.v2.client:SolscanClient#get_defi_activities"
+      - "cyhole.solscan.v2.client:SolscanClient#get_account_activities"
+
+- id: cyhole-async-session-error
+  library: cyhole
+  version: "0.3.0"
+  prompt: >
+    Using cyhole's SolanaFM interaction, write asynchronous code that calls
+    a method on its asynchronous client WITHOUT first entering the client's
+    async context manager, and catch the cyhole exception that signals the
+    async HTTP session is not available. Read the API key from the
+    SOLANA_FM_API_KEY environment variable.
+  checks:
+    required_symbols:
+      - "cyhole.solana_fm.interaction:SolanaFM"
+      - "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    forbidden_symbols:
+      - "cyhole.core.exception:AsyncSessionNotStartedError"
+      - "cyhole.core.exception:SessionNotAvailableError"
