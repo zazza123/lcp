@@ -65,7 +65,8 @@ class TestAppendSystem:
 
 
 class TestToolResultCapture:
-    def test_parse_stream_records_mcp_tool_results(self):
+    def test_parse_stream_records_block_form_tool_results(self):
+        # Anthropic block form: content is a list of text parts.
         lines = [
             '{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "t1", "name": "mcp__lcp__search", "input": {"query": "q"}}]}}',
             '{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "content": [{"type": "text", "text": "RESULT-TEXT"}]}]}}',
@@ -75,3 +76,25 @@ class TestToolResultCapture:
         assert parsed["tool_results"] == [
             {"tool_use_id": "t1", "content": "RESULT-TEXT"}
         ]
+
+    def test_parse_stream_records_string_form_tool_results(self):
+        # Real CLI stream: content is a plain JSON string (observed shape).
+        lines = [
+            '{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "t1", "name": "mcp__lcp__resolve_library", "input": {"name": "cyhole"}}]}}',
+            '{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "content": "{\\"status\\":\\"loaded\\",\\"name\\":\\"cyhole\\"}"}]}}',
+            '{"type": "result", "result": "done", "subtype": "success", "usage": {}}',
+        ]
+        parsed = agent.parse_stream(lines)
+        assert parsed["tool_results"] == [
+            {"tool_use_id": "t1", "content": '{"status":"loaded","name":"cyhole"}'}
+        ]
+
+    def test_parse_stream_ignores_non_text_parts(self):
+        # A list holding only a tool_reference part yields empty text.
+        lines = [
+            '{"type": "assistant", "message": {"content": [{"type": "tool_use", "id": "t1", "name": "mcp__lcp__search", "input": {}}]}}',
+            '{"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "t1", "content": [{"type": "tool_reference", "tool_name": "mcp__lcp__search"}]}]}}',
+            '{"type": "result", "result": "done", "subtype": "success", "usage": {}}',
+        ]
+        parsed = agent.parse_stream(lines)
+        assert parsed["tool_results"] == [{"tool_use_id": "t1", "content": ""}]

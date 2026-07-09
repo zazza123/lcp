@@ -131,6 +131,26 @@ def _truncate_input(value: dict, limit: int = 500) -> dict:
     return {"_truncated": snippet}
 
 
+def _tool_result_text(content) -> str:
+    """Flatten a stream-json tool_result `content` into text.
+
+    Real CLI streams deliver MCP tool results as a plain JSON string; the
+    Anthropic block form is a list of parts, of which only `type == "text"`
+    parts carry payload (others, e.g. `tool_reference`, carry none). Handle
+    both so the captured content is never silently empty.
+    """
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return " ".join(
+            p.get("text", "") for p in content
+            if isinstance(p, dict) and p.get("type") == "text"
+        )
+    return str(content)
+
+
 def parse_stream(lines: Iterable[str]) -> dict:
     """Parse stream-json lines: count tool_use blocks, read the final result."""
     tool_calls = 0
@@ -166,14 +186,9 @@ def parse_stream(lines: Iterable[str]) -> dict:
                     and b.get("type") == "tool_result"
                     and b.get("tool_use_id") in mcp_ids
                 ):
-                    parts = b.get("content") or []
-                    text = " ".join(
-                        p.get("text", "") for p in parts
-                        if isinstance(p, dict) and p.get("type") == "text"
-                    )
                     tool_results.append({
                         "tool_use_id": b.get("tool_use_id"),
-                        "content": text[:2000],
+                        "content": _tool_result_text(b.get("content"))[:2000],
                     })
         elif event.get("type") == "result":
             result = event

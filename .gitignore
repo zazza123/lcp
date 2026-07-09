@@ -237,3 +237,5 @@ evals/.venv/
 evals/.venv-bench/
 evals/.venv-registry/
 evals/.lcp-cache/
+evals/.lcp-cache-bench/
+evals/.lcp-registry-cache/
