@@ -1,0 +1,77 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least two muons with pT above threshold\n    and opposite-charge leading pair.\n    \n    Args:\n        events: Coffea NanoEvents object\n        params: Dictionary containing cut parameters (pt_threshold in GeV)\n        **kwargs: Additional arguments\n    \n    Returns:\n        Boolean mask for events passing the cut\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Select muons above pT threshold\n    muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    has_two_muons = ak.num(muons) >= 2\n    \n    # Pad to ensure we can access leading and subleading\n    muons_padded = ak.pad_none(muons, 2)\n    \n    # Get leading and subleading muons\n    leading = muons_padded[:, 0]\n    subleading = muons_padded[:, 1]\n    \n    # Check opposite charge for leading pair\n    opposite_charge = (leading.charge * subleading.charge) < 0\n    \n    # Mask for events with opposite-charge leading pair (only valid where has_two_muons)\n    leading_pair_opposite_charge = ak.fill_none(opposite_charge, False)\n    \n    return has_two_muons & leading_pair_opposite_charge\n\n# Define and register the cut\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15.0}\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least two muons with pT above threshold\n    and opposite-charge leading pair.\n    \n    Args:\n        events: Coffea NanoEvents object\n        params: Dictionary containing cut parameters (pt_threshold in GeV)\n        **kwargs: Additional arguments\n    \n    Returns:\n        Boolean mask for events passing the cut\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Select muons above pT threshold\n    muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    has_two_muons = ak.num(muons) >= 2\n    \n    # Pad to ensure we can access leading and subleading\n    muons_padded = ak.pad_none(muons, 2)\n    \n    # Get leading and subleading muons\n    leading = muons_padded[:, 0]\n    subleading = muons_padded[:, 1]\n    \n    # Check opposite charge for leading pair\n    opposite_charge = (leading.charge * subleading.charge) < 0\n    \n    # Mask for events with opposite-charge leading pair (only valid where has_two_muons)\n    leading_pair_opposite_charge = ak.fill_none(opposite_charge, False)\n    \n    return has_two_muons & leading_pair_opposite_charge\n\n# Define and register the cut\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15.0}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 51,
+    "output_tokens": 2124,
+    "cache_read_tokens": 145799,
+    "cache_creation_tokens": 12418,
+    "cost_usd": 0.050086900000000004,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 37.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocketcoffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01PUYPaAMmTPBxraYLWargQS",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01657RFzXF9eMGKDwwrFCtJp",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Mh6N3UtMDax1pkchWs6esA",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

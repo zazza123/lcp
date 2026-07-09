@@ -1,0 +1,127 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "\"\"\"FastMCP transparent proxy server that forwards all requests to a backend server.\"\"\"\n\nimport asyncio\nfrom fastmcp import FastMCP\nfrom fastmcp.client import Client, FastMCPTransport\n\n\ndef create_proxy_server(backend_server: FastMCP) -> FastMCP:\n    \"\"\"\n    Create a FastMCP proxy server that transparently forwards all tool and resource\n    requests to a backend FastMCP server.\n    \n    Args:\n        backend_server: The backend FastMCP server instance to proxy requests to.\n    \n    Returns:\n        A FastMCP proxy server that forwards requests to the backend.\n    \"\"\"\n    # Create a client that connects to the backend server via in-memory transport\n    backend_client = Client(FastMCPTransport(backend_server))\n    \n    # Create a proxy server that uses the backend client\n    proxy_server = FastMCP.as_proxy(backend_client, name=\"proxy-server\")\n    \n    return proxy_server\n\n\nasync def main():\n    \"\"\"Example usage: create a backend server and a proxy in front of it.\"\"\"\n    \n    # Create a simple backend server with a test tool\n    backend = FastMCP(name=\"backend-server\")\n    \n    @backend.tool()\n    def hello(name: str) -> str:\n        \"\"\"Say hello to someone.\"\"\"\n        return f\"Hello, {name}!\"\n    \n    @backend.resource()\n    def greeting(name: str = \"World\") -> str:\n        \"\"\"Get a greeting resource.\"\"\"\n        return f\"Greetings, {name}!\"\n    \n    # Create the proxy server\n    proxy = create_proxy_server(backend)\n    \n    # Test the proxy by calling its tools\n    async with Client(FastMCPTransport(proxy)) as client:\n        # List tools available through the proxy\n        tools = await client.list_tools()\n        print(f\"Tools available through proxy: {[tool.name for tool in tools]}\")\n        \n        # Call a tool through the proxy\n        result = await client.call_tool(\"hello\", {\"name\": \"World\"})\n        print(f\"Tool result: {result}\")\n        \n        # List resources available through the proxy\n        resources = await client.list_resources()\n        print(f\"Resources available through proxy: {[r.uri for r in resources]}\")\n        \n        # Read a resource through the proxy\n        resource_content = await client.read_resource(\"greeting:///?name=Proxy\")\n        print(f\"Resource content: {resource_content}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\n\"\"\"FastMCP transparent proxy server that forwards all requests to a backend server.\"\"\"\n\nimport asyncio\nfrom fastmcp import FastMCP\nfrom fastmcp.client import Client, FastMCPTransport\n\n\ndef create_proxy_server(backend_server: FastMCP) -> FastMCP:\n    \"\"\"\n    Create a FastMCP proxy server that transparently forwards all tool and resource\n    requests to a backend FastMCP server.\n    \n    Args:\n        backend_server: The backend FastMCP server instance to proxy requests to.\n    \n    Returns:\n        A FastMCP proxy server that forwards requests to the backend.\n    \"\"\"\n    # Create a client that connects to the backend server via in-memory transport\n    backend_client = Client(FastMCPTransport(backend_server))\n    \n    # Create a proxy server that uses the backend client\n    proxy_server = FastMCP.as_proxy(backend_client, name=\"proxy-server\")\n    \n    return proxy_server\n\n\nasync def main():\n    \"\"\"Example usage: create a backend server and a proxy in front of it.\"\"\"\n    \n    # Create a simple backend server with a test tool\n    backend = FastMCP(name=\"backend-server\")\n    \n    @backend.tool()\n    def hello(name: str) -> str:\n        \"\"\"Say hello to someone.\"\"\"\n        return f\"Hello, {name}!\"\n    \n    @backend.resource()\n    def greeting(name: str = \"World\") -> str:\n        \"\"\"Get a greeting resource.\"\"\"\n        return f\"Greetings, {name}!\"\n    \n    # Create the proxy server\n    proxy = create_proxy_server(backend)\n    \n    # Test the proxy by calling its tools\n    async with Client(FastMCPTransport(proxy)) as client:\n        # List tools available through the proxy\n        tools = await client.list_tools()\n        print(f\"Tools available through proxy: {[tool.name for tool in tools]}\")\n        \n        # Call a tool through the proxy\n        result = await client.call_tool(\"hello\", {\"name\": \"World\"})\n        print(f\"Tool result: {result}\")\n        \n        # List resources available through the proxy\n        resources = await client.list_resources()\n        print(f\"Resources available through proxy: {[r.uri for r in resources]}\")\n        \n        # Read a resource through the proxy\n        resource_content = await client.read_resource(\"greeting:///?name=Proxy\")\n        print(f\"Resource content: {resource_content}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 2065,
+    "cache_read_tokens": 230879,
+    "cache_creation_tokens": 21443,
+    "cost_usd": 0.0763739,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 36.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Client tool resource",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.client:Client",
+          "fastmcp.client:FastMCPTransport"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.client:Client",
+          "fastmcp.client:FastMCPTransport",
+          "fastmcp.server:FastMCP#as_proxy"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01N51abvaBrD6uqT5xzu86TW",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01F4y7qgHDESvMRjtAn7X26T",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_0145kJHFjuGR2xgZkgEsveNT",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_011rYbnCEEQjWBBP6WRs82mv",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01996wfSxrLByPQSm5Ro646f",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01LcA1SyaNE1dx6yoL9ZuUCL",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01SqKbmaiHgXJTBjaUMFHMuE",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import FastMCP\n\n# Create the sub-server with math tools\nmath_server = FastMCP(\"Math Server\")\n\n@math_server.tool\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@math_server.tool\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\"\"\"\n    return a * b\n\n@math_server.tool\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers.\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Create the main server\nmain_server = FastMCP(\"Main Server\")\n\n@main_server.tool\ndef hello(name: str) -> str:\n    \"\"\"Greet someone.\"\"\"\n    return f\"Hello, {name}!\"\n\n# Mount the math server under the \"math\" prefix\nmain_server.mount(math_server, namespace=\"math\")\n\n# Run the main server\nif __name__ == \"__main__\":\n    main_server.run()",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP\n\n# Create the sub-server with math tools\nmath_server = FastMCP(\"Math Server\")\n\n@math_server.tool\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@math_server.tool\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\"\"\"\n    return a * b\n\n@math_server.tool\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers.\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Create the main server\nmain_server = FastMCP(\"Main Server\")\n\n@main_server.tool\ndef hello(name: str) -> str:\n    \"\"\"Greet someone.\"\"\"\n    return f\"Hello, {name}!\"\n\n# Mount the math server under the \"math\" prefix\nmain_server.mount(math_server, namespace=\"math\")\n\n# Run the main server\nif __name__ == \"__main__\":\n    main_server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 1673,
+    "cache_read_tokens": 232992,
+    "cache_creation_tokens": 11564,
+    "cost_usd": 0.0548672,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 39.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server attach prefix",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.server.providers:FastMCPProvider"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#mount"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01TJvQRaPT9HRAH4xnkYubmM",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01GnxTTptcmxH1Xvkr5DAD3d",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01SqjdLXWyrWbCYkUziQCguA",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01VGqQhjEdNHz3QtgLRnBgEW",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01KYLQFC868Bfg825Bv4YvZV",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01MDd7iB92ppHeKHu2B2dC9c",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

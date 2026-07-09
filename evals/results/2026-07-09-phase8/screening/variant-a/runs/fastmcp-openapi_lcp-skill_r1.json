@@ -1,0 +1,88 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport json\nfrom typing import Any, Callable, Optional\nfrom fastmcp import FastMCP, Context\nfrom fastmcp.types import Tool\nimport httpx\n\n\ndef create_openapi_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    server_name: str = \"openapi-server\",\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 spec with tools mirroring the operations.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dict\n        client: httpx.AsyncClient configured with the API base URL\n        server_name: Name for the MCP server\n    \n    Returns:\n        FastMCP server instance ready to use\n    \"\"\"\n    mcp = FastMCP(server_name)\n    \n    # Extract paths from the spec\n    paths = openapi_spec.get(\"paths\", {})\n    \n    for path_str, path_item in paths.items():\n        for method, operation in path_item.items():\n            if method.lower() not in [\"get\", \"post\", \"put\", \"patch\", \"delete\", \"head\", \"options\"]:\n                continue\n            \n            operation_id = operation.get(\"operationId\", f\"{method}_{path_str.replace('/', '_')}\")\n            summary = operation.get(\"summary\", f\"{method.upper()} {path_str}\")\n            description = operation.get(\"description\", \"\")\n            \n            # Extract parameters\n            parameters = operation.get(\"parameters\", [])\n            request_body = operation.get(\"requestBody\", {})\n            \n            # Build the tool schema\n            properties = {}\n            required_fields = []\n            \n            # Add path and query parameters\n            for param in parameters:\n                param_name = param.get(\"name\", \"\")\n                param_in = param.get(\"in\", \"\")\n                param_schema = param.get(\"schema\", {})\n                \n                properties[param_name] = {\n                    \"type\": param_schema.get(\"type\", \"string\"),\n                    \"description\": param.get(\"description\", f\"{param_in} parameter\"),\n                }\n                \n                if param.get(\"required\", False):\n                    required_fields.append(param_name)\n            \n            # Add request body if present\n            if request_body:\n                content = request_body.get(\"content\", {})\n                if \"application/json\" in content:\n                    body_schema = content[\"application/json\"].get(\"schema\", {})\n                    properties[\"body\"] = {\n                        \"type\": \"object\",\n                        \"description\": \"Request body\",\n                        \"properties\": body_schema.get(\"properties\", {}),\n                    }\n                    if request_body.get(\"required\", False):\n                        required_fields.append(\"body\")\n            \n            # Create tool handler function\n            async def tool_handler(\n                context: Context,\n                operation_method: str = method,\n                operation_path: str = path_str,\n                operation_params: list = parameters,\n                has_body: bool = bool(request_body),\n                **kwargs: Any,\n            ) -> dict[str, Any]:\n                \"\"\"Execute the OpenAPI operation.\"\"\"\n                url = operation_path\n                query_params = {}\n                headers = {}\n                body_data = None\n                \n                for param in operation_params:\n                    param_name = param.get(\"name\", \"\")\n                    param_in = param.get(\"in\", \"\")\n                    \n                    if param_name in kwargs:\n                        value = kwargs[param_name]\n                        \n                        if param_in == \"query\":\n                            query_params[param_name] = value\n                        elif param_in == \"header\":\n                            headers[param_name] = value\n                        elif param_in == \"path\":\n                            url = url.replace(f\"{{{param_name}}}\", str(value))\n                \n                if has_body and \"body\" in kwargs:\n                    body_data = kwargs[\"body\"]\n                \n                # Make the request\n                try:\n                    response = await client.request(\n                        operation_method.upper(),\n                        url,\n                        params=query_params,\n                        headers=headers,\n                        json=body_data if isinstance(body_data, dict) else None,\n                        content=body_data if isinstance(body_data, str) else None,\n                    )\n                    \n                    result = {\n                        \"status_code\": response.status_code,\n                        \"headers\": dict(response.headers),\n                    }\n                    \n                    try:\n                        result[\"body\"] = response.json()\n                    except Exception:\n                        result[\"body\"] = response.text\n                    \n                    return result\n                except Exception as e:\n                    return {\"error\": str(e)}\n            \n            # Register the tool with FastMCP\n            tool_schema = {\n                \"type\": \"object\",\n                \"properties\": properties,\n                \"required\": required_fields,\n            }\n            \n            mcp.tool(\n                name=operation_id,\n                description=summary + (f\"\\n{description}\" if description else \"\"),\n            )(tool_handler)\n    \n    return mcp\n\n\n# Example usage\nif __name__ == \"__main__\":\n    # Example OpenAPI spec\n    example_spec = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/users/{id}\": {\n                \"get\": {\n                    \"operationId\": \"getUser\",\n                    \"summary\": \"Get a user by ID\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"string\"},\n                        }\n                    ],\n                }\n            },\n            \"/users\": {\n                \"post\": {\n                    \"operationId\": \"createUser\",\n                    \"summary\": \"Create a new user\",\n                    \"requestBody\": {\n                        \"required\": True,\n                        \"content\": {\n                            \"application/json\": {\n                                \"schema\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"name\": {\"type\": \"string\"},\n                                        \"email\": {\"type\": \"string\"},\n                                    },\n                                }\n                            }\n                        },\n                    },\n                }\n            },\n        },\n    }\n    \n    # Create client and server\n    client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    server = create_openapi_mcp_server(example_spec, client)\n    \n    # Start the server (if using stdio transport)\n    # asyncio.run(server.run(use_sse=False))",
+  "result_text": "```python\nimport asyncio\nimport json\nfrom typing import Any, Callable, Optional\nfrom fastmcp import FastMCP, Context\nfrom fastmcp.types import Tool\nimport httpx\n\n\ndef create_openapi_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    server_name: str = \"openapi-server\",\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 spec with tools mirroring the operations.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dict\n        client: httpx.AsyncClient configured with the API base URL\n        server_name: Name for the MCP server\n    \n    Returns:\n        FastMCP server instance ready to use\n    \"\"\"\n    mcp = FastMCP(server_name)\n    \n    # Extract paths from the spec\n    paths = openapi_spec.get(\"paths\", {})\n    \n    for path_str, path_item in paths.items():\n        for method, operation in path_item.items():\n            if method.lower() not in [\"get\", \"post\", \"put\", \"patch\", \"delete\", \"head\", \"options\"]:\n                continue\n            \n            operation_id = operation.get(\"operationId\", f\"{method}_{path_str.replace('/', '_')}\")\n            summary = operation.get(\"summary\", f\"{method.upper()} {path_str}\")\n            description = operation.get(\"description\", \"\")\n            \n            # Extract parameters\n            parameters = operation.get(\"parameters\", [])\n            request_body = operation.get(\"requestBody\", {})\n            \n            # Build the tool schema\n            properties = {}\n            required_fields = []\n            \n            # Add path and query parameters\n            for param in parameters:\n                param_name = param.get(\"name\", \"\")\n                param_in = param.get(\"in\", \"\")\n                param_schema = param.get(\"schema\", {})\n                \n                properties[param_name] = {\n                    \"type\": param_schema.get(\"type\", \"string\"),\n                    \"description\": param.get(\"description\", f\"{param_in} parameter\"),\n                }\n                \n                if param.get(\"required\", False):\n                    required_fields.append(param_name)\n            \n            # Add request body if present\n            if request_body:\n                content = request_body.get(\"content\", {})\n                if \"application/json\" in content:\n                    body_schema = content[\"application/json\"].get(\"schema\", {})\n                    properties[\"body\"] = {\n                        \"type\": \"object\",\n                        \"description\": \"Request body\",\n                        \"properties\": body_schema.get(\"properties\", {}),\n                    }\n                    if request_body.get(\"required\", False):\n                        required_fields.append(\"body\")\n            \n            # Create tool handler function\n            async def tool_handler(\n                context: Context,\n                operation_method: str = method,\n                operation_path: str = path_str,\n                operation_params: list = parameters,\n                has_body: bool = bool(request_body),\n                **kwargs: Any,\n            ) -> dict[str, Any]:\n                \"\"\"Execute the OpenAPI operation.\"\"\"\n                url = operation_path\n                query_params = {}\n                headers = {}\n                body_data = None\n                \n                for param in operation_params:\n                    param_name = param.get(\"name\", \"\")\n                    param_in = param.get(\"in\", \"\")\n                    \n                    if param_name in kwargs:\n                        value = kwargs[param_name]\n                        \n                        if param_in == \"query\":\n                            query_params[param_name] = value\n                        elif param_in == \"header\":\n                            headers[param_name] = value\n                        elif param_in == \"path\":\n                            url = url.replace(f\"{{{param_name}}}\", str(value))\n                \n                if has_body and \"body\" in kwargs:\n                    body_data = kwargs[\"body\"]\n                \n                # Make the request\n                try:\n                    response = await client.request(\n                        operation_method.upper(),\n                        url,\n                        params=query_params,\n                        headers=headers,\n                        json=body_data if isinstance(body_data, dict) else None,\n                        content=body_data if isinstance(body_data, str) else None,\n                    )\n                    \n                    result = {\n                        \"status_code\": response.status_code,\n                        \"headers\": dict(response.headers),\n                    }\n                    \n                    try:\n                        result[\"body\"] = response.json()\n                    except Exception:\n                        result[\"body\"] = response.text\n                    \n                    return result\n                except Exception as e:\n                    return {\"error\": str(e)}\n            \n            # Register the tool with FastMCP\n            tool_schema = {\n                \"type\": \"object\",\n                \"properties\": properties,\n                \"required\": required_fields,\n            }\n            \n            mcp.tool(\n                name=operation_id,\n                description=summary + (f\"\\n{description}\" if description else \"\"),\n            )(tool_handler)\n    \n    return mcp\n\n\n# Example usage\nif __name__ == \"__main__\":\n    # Example OpenAPI spec\n    example_spec = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/users/{id}\": {\n                \"get\": {\n                    \"operationId\": \"getUser\",\n                    \"summary\": \"Get a user by ID\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"string\"},\n                        }\n                    ],\n                }\n            },\n            \"/users\": {\n                \"post\": {\n                    \"operationId\": \"createUser\",\n                    \"summary\": \"Create a new user\",\n                    \"requestBody\": {\n                        \"required\": True,\n                        \"content\": {\n                            \"application/json\": {\n                                \"schema\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"name\": {\"type\": \"string\"},\n                                        \"email\": {\"type\": \"string\"},\n                                    },\n                                }\n                            }\n                        },\n                    },\n                }\n            },\n        },\n    }\n    \n    # Create client and server\n    client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    server = create_openapi_mcp_server(example_spec, client)\n    \n    # Start the server (if using stdio transport)\n    # asyncio.run(server.run(use_sse=False))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 89,
+    "output_tokens": 2988,
+    "cache_read_tokens": 226612,
+    "cache_creation_tokens": 14145,
+    "cost_usd": 0.0659802,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 48.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#from_openapi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

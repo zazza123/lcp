@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonAnalyzer(BaseProcessor):\n    \"\"\"Minimal PocketCoffea processor for dimuon analysis\"\"\"\n    \n    def process_object_preselection(self, events):\n        \"\"\"Build MuonGood collection with pT > 15 GeV and |eta| < 2.4\"\"\"\n        muons = events.Muon\n        mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        events[\"MuonGood\"] = muons[mask]\n        return events\n    \n    def process_object_counting(self, events):\n        \"\"\"Store the number of selected muons per event\"\"\"\n        events[\"n_muons_good\"] = ak.num(events.MuonGood)\n        return events\n\n\nif __name__ == \"__main__\":\n    processor = DimuonAnalyzer()",
+  "result_text": "```python\nfrom pocket_coffea.processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonAnalyzer(BaseProcessor):\n    \"\"\"Minimal PocketCoffea processor for dimuon analysis\"\"\"\n    \n    def process_object_preselection(self, events):\n        \"\"\"Build MuonGood collection with pT > 15 GeV and |eta| < 2.4\"\"\"\n        muons = events.Muon\n        mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        events[\"MuonGood\"] = muons[mask]\n        return events\n    \n    def process_object_counting(self, events):\n        \"\"\"Store the number of selected muons per event\"\"\"\n        events[\"n_muons_good\"] = ak.num(events.MuonGood)\n        return events\n\n\nif __name__ == \"__main__\":\n    processor = DimuonAnalyzer()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4893,
+    "cache_read_tokens": 23019,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0267759,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 48.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.processor.BaseProcessor"
+    ],
+    "error": null
+  }
+}

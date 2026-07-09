@@ -1,0 +1,158 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.tools import tool\n\n\n@tool\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\n    \n    Args:\n        name: The person's name\n        \n    Returns:\n        A greeting message\n    \"\"\"\n    return f\"Hello, {name}!\"\n\n\nasync def main():\n    server = FastMCP(\"http-example\")\n    server.add_tool(greet)\n    await server.run_http_async(host=\"127.0.0.1\", port=8000)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.tools import tool\n\n\n@tool\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\n    \n    Args:\n        name: The person's name\n        \n    Returns:\n        A greeting message\n    \"\"\"\n    return f\"Hello, {name}!\"\n\n\nasync def main():\n    server = FastMCP(\"http-example\")\n    server.add_tool(greet)\n    await server.run_http_async(host=\"127.0.0.1\", port=8000)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 2032,
+    "cache_read_tokens": 302813,
+    "cache_creation_tokens": 12663,
+    "cost_usd": 0.06585830000000001,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 39.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server http",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "run serve",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#run_http_async",
+          "fastmcp.server:FastMCP#add_tool"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "@tool decorator",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool function",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.tools:tool"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_017NBRkeCvqWBeuby8AyLFE1",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01HYwq1pBVdSM9LtxBPoHPHF",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01JshVmrARkMLxsrpi7dvrBh",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01JNkXVxvvRwpkDuBEZHmcsC",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01AhbNMiqGL3Aq6SJhDwCdmH",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_018XTKQg4Wq4LcShbUHsDaXG",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01XMLSipyjcvNd4aV4akpZ7T",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01KF2acrzYdoVofdEVmVmcGc",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01G8phsdcXpYK6KnM4eK6UJf",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#run"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import fastmcp\nfrom fastmcp import Server, Tool\n\n# Create sub-server with math tools\nmath_server = Server(\"math-tools\")\n\n@math_server.tool()\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@math_server.tool()\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\"\"\"\n    return a * b\n\n@math_server.tool()\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers.\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Create main server and attach math sub-server\nmain_server = Server(\"main-server\")\n\n@main_server.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\"\"\"\n    return f\"Hello, {name}!\"\n\n# Attach math_server under \"math\" prefix\nmain_server.mount(\"math\", math_server)\n\nif __name__ == \"__main__\":\n    import uvicorn\n    # Run the main server which now includes math-prefixed tools\n    uvicorn.run(main_server, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nimport fastmcp\nfrom fastmcp import Server, Tool\n\n# Create sub-server with math tools\nmath_server = Server(\"math-tools\")\n\n@math_server.tool()\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@math_server.tool()\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\"\"\"\n    return a * b\n\n@math_server.tool()\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers.\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Create main server and attach math sub-server\nmain_server = Server(\"main-server\")\n\n@main_server.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\"\"\"\n    return f\"Hello, {name}!\"\n\n# Attach math_server under \"math\" prefix\nmain_server.mount(\"math\", math_server)\n\nif __name__ == \"__main__\":\n    import uvicorn\n    # Run the main server which now includes math-prefixed tools\n    uvicorn.run(main_server, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1121,
+    "cache_read_tokens": 45802,
+    "cache_creation_tokens": 504,
+    "cost_usd": 0.0112102,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 17.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

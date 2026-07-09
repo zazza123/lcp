@@ -1,0 +1,128 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport httpx\nfrom fastmcp.server import FastMCP\n\n\ndef create_openapi_mcp_server(\n    openapi_spec: dict,\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI MCP Server\",\n    **server_kwargs\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 specification.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dictionary\n        client: Configured httpx.AsyncClient with base URL already set\n        name: Name for the MCP server (default: \"OpenAPI MCP Server\")\n        **server_kwargs: Additional keyword arguments passed to FastMCP\n    \n    Returns:\n        FastMCP server instance with tools generated from the OpenAPI spec\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n        **server_kwargs\n    )\n\n\nasync def main():\n    minimal_openapi_spec = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"servers\": [{\"url\": \"https://api.example.com\"}],\n        \"paths\": {\n            \"/users/{user_id}\": {\n                \"get\": {\n                    \"operationId\": \"get_user\",\n                    \"summary\": \"Get a user by ID\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"user_id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"string\"}\n                        }\n                    ],\n                    \"responses\": {\n                        \"200\": {\n                            \"description\": \"User found\",\n                            \"content\": {\n                                \"application/json\": {\n                                    \"schema\": {\n                                        \"type\": \"object\",\n                                        \"properties\": {\n                                            \"id\": {\"type\": \"string\"},\n                                            \"name\": {\"type\": \"string\"},\n                                            \"email\": {\"type\": \"string\"}\n                                        }\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            },\n            \"/posts\": {\n                \"post\": {\n                    \"operationId\": \"create_post\",\n                    \"summary\": \"Create a new post\",\n                    \"requestBody\": {\n                        \"required\": True,\n                        \"content\": {\n                            \"application/json\": {\n                                \"schema\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"title\": {\"type\": \"string\"},\n                                        \"content\": {\"type\": \"string\"}\n                                    },\n                                    \"required\": [\"title\", \"content\"]\n                                }\n                            }\n                        }\n                    },\n                    \"responses\": {\n                        \"201\": {\n                            \"description\": \"Post created\",\n                            \"content\": {\n                                \"application/json\": {\n                                    \"schema\": {\n                                        \"type\": \"object\",\n                                        \"properties\": {\n                                            \"id\": {\"type\": \"string\"},\n                                            \"title\": {\"type\": \"string\"},\n                                            \"content\": {\"type\": \"string\"},\n                                            \"created_at\": {\"type\": \"string\"}\n                                        }\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    async with httpx.AsyncClient(base_url=\"https://api.example.com\") as client:\n        server = create_openapi_mcp_server(\n            openapi_spec=minimal_openapi_spec,\n            client=client,\n            name=\"Example API MCP Server\"\n        )\n        \n        tools = await server.list_tools()\n        print(f\"Generated {len(tools)} tools from OpenAPI spec:\")\n        for tool in tools:\n            print(f\"  - {tool.name}: {tool.description}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport httpx\nfrom fastmcp.server import FastMCP\n\n\ndef create_openapi_mcp_server(\n    openapi_spec: dict,\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI MCP Server\",\n    **server_kwargs\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 specification.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dictionary\n        client: Configured httpx.AsyncClient with base URL already set\n        name: Name for the MCP server (default: \"OpenAPI MCP Server\")\n        **server_kwargs: Additional keyword arguments passed to FastMCP\n    \n    Returns:\n        FastMCP server instance with tools generated from the OpenAPI spec\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n        **server_kwargs\n    )\n\n\nasync def main():\n    minimal_openapi_spec = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"servers\": [{\"url\": \"https://api.example.com\"}],\n        \"paths\": {\n            \"/users/{user_id}\": {\n                \"get\": {\n                    \"operationId\": \"get_user\",\n                    \"summary\": \"Get a user by ID\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"user_id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"string\"}\n                        }\n                    ],\n                    \"responses\": {\n                        \"200\": {\n                            \"description\": \"User found\",\n                            \"content\": {\n                                \"application/json\": {\n                                    \"schema\": {\n                                        \"type\": \"object\",\n                                        \"properties\": {\n                                            \"id\": {\"type\": \"string\"},\n                                            \"name\": {\"type\": \"string\"},\n                                            \"email\": {\"type\": \"string\"}\n                                        }\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            },\n            \"/posts\": {\n                \"post\": {\n                    \"operationId\": \"create_post\",\n                    \"summary\": \"Create a new post\",\n                    \"requestBody\": {\n                        \"required\": True,\n                        \"content\": {\n                            \"application/json\": {\n                                \"schema\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"title\": {\"type\": \"string\"},\n                                        \"content\": {\"type\": \"string\"}\n                                    },\n                                    \"required\": [\"title\", \"content\"]\n                                }\n                            }\n                        }\n                    },\n                    \"responses\": {\n                        \"201\": {\n                            \"description\": \"Post created\",\n                            \"content\": {\n                                \"application/json\": {\n                                    \"schema\": {\n                                        \"type\": \"object\",\n                                        \"properties\": {\n                                            \"id\": {\"type\": \"string\"},\n                                            \"title\": {\"type\": \"string\"},\n                                            \"content\": {\"type\": \"string\"},\n                                            \"created_at\": {\"type\": \"string\"}\n                                        }\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    \n    async with httpx.AsyncClient(base_url=\"https://api.example.com\") as client:\n        server = create_openapi_mcp_server(\n            openapi_spec=minimal_openapi_spec,\n            client=client,\n            name=\"Example API MCP Server\"\n        )\n        \n        tools = await server.list_tools()\n        print(f\"Generated {len(tools)} tools from OpenAPI spec:\")\n        for tool in tools:\n            print(f\"  - {tool.name}: {tool.description}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 2590,
+    "cache_read_tokens": 230475,
+    "cache_creation_tokens": 10354,
+    "cost_usd": 0.0567805,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 39.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server class",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "fastmcp",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator",
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.tools.function_tool:tool",
+          "fastmcp.tools.function_tool:ToolMeta"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#from_openapi"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01K9dGwJkNn4h9v2eb4yn3MZ",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01DSSG79QAJfpb3RvzayywJ4",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Fu3CcwiBSAVpxm3sLrKo99",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01EwT49A1QMfya94aWzwm89W",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Un3G4VenKL3YWWh1ZabuBc",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_014DXsDn7ThS7FRFeF3jBtCa",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01UYx21XmNfXzquvNJBiBA3L",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#from_openapi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

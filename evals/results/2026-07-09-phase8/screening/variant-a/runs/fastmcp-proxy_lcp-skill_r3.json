@@ -1,0 +1,145 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp.server import create_proxy\n\n# Assuming backend_server is an existing FastMCP server instance in memory\ndef create_transparent_proxy(backend_server, name=\"TransparentProxy\"):\n    \"\"\"\n    Create a transparent proxy server that forwards all requests to the backend.\n    \n    Args:\n        backend_server: An existing FastMCP server instance to proxy to.\n        name: Optional name for the proxy server.\n    \n    Returns:\n        A FastMCPProxy server instance.\n    \"\"\"\n    proxy = create_proxy(backend_server, name=name)\n    return proxy\n\n\n# Example usage:\nif __name__ == \"__main__\":\n    import sys\n    from fastmcp.server import FastMCP\n    from fastmcp.client import FastMCPTransport\n    \n    # Create a simple backend server for demonstration\n    backend = FastMCP(\"backend-server\")\n    \n    @backend.tool()\n    def example_tool(text: str) -> str:\n        \"\"\"An example tool in the backend.\"\"\"\n        return f\"Backend processed: {text}\"\n    \n    @backend.resource(\"/example\")\n    def example_resource() -> str:\n        \"\"\"An example resource in the backend.\"\"\"\n        return \"Backend resource content\"\n    \n    # Create the transparent proxy\n    proxy = create_transparent_proxy(backend, name=\"proxy-server\")\n    \n    # Run the proxy server\n    # The proxy will forward all tool calls and resource requests to the backend\n    proxy.run()",
+  "result_text": "```python\nfrom fastmcp.server import create_proxy\n\n# Assuming backend_server is an existing FastMCP server instance in memory\ndef create_transparent_proxy(backend_server, name=\"TransparentProxy\"):\n    \"\"\"\n    Create a transparent proxy server that forwards all requests to the backend.\n    \n    Args:\n        backend_server: An existing FastMCP server instance to proxy to.\n        name: Optional name for the proxy server.\n    \n    Returns:\n        A FastMCPProxy server instance.\n    \"\"\"\n    proxy = create_proxy(backend_server, name=name)\n    return proxy\n\n\n# Example usage:\nif __name__ == \"__main__\":\n    import sys\n    from fastmcp.server import FastMCP\n    from fastmcp.client import FastMCPTransport\n    \n    # Create a simple backend server for demonstration\n    backend = FastMCP(\"backend-server\")\n    \n    @backend.tool()\n    def example_tool(text: str) -> str:\n        \"\"\"An example tool in the backend.\"\"\"\n        return f\"Backend processed: {text}\"\n    \n    @backend.resource(\"/example\")\n    def example_resource() -> str:\n        \"\"\"An example resource in the backend.\"\"\"\n        return \"Backend resource content\"\n    \n    # Create the transparent proxy\n    proxy = create_transparent_proxy(backend, name=\"proxy-server\")\n    \n    # Run the proxy server\n    # The proxy will forward all tool calls and resource requests to the backend\n    proxy.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 93,
+    "output_tokens": 2456,
+    "cache_read_tokens": 302468,
+    "cache_creation_tokens": 10761,
+    "cost_usd": 0.0641418,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 48.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "class Server",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#as_proxy"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create_proxy",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:create_proxy"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01BebEdKaSqsdU6WTK8vzB4n",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_011TXX7ZEBdAfPoL7zaEn7pg",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_017GpGaDg4CHEYL69SFA5Jix",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_016DVXxqDwa3vmdfJJkpugYb",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01TCeJSowCj5M3eGi7ptbqhA",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01BnWjPDExLhvoRUBAk2wx17",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01MXpuaDAoSPRmQbhAFB1qUU",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01TtPQg9asKedXBxFZCxzzeC",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

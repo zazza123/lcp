@@ -1,0 +1,12 @@
+{
+  "experiment": "Phase 8 screening variant B — shipped skill (control); 8 false-confidence cases (4 fastmcp + 4 pocket-coffea) x 5 reps, lcp-skill arm",
+  "date": "2026-07-09",
+  "claude_version": "2.1.205 (Claude Code)",
+  "model": "claude-haiku-4-5-20251001",
+  "lcp_commit": "86a1914 (cases frozen fc0fd11)",
+  "arm": "lcp-skill (variant SKILL.md via --skill-file)",
+  "skill_file": "evals/results/2026-07-09-phase8/screening/variant-b/SKILL.md",
+  "cases": ["fastmcp-http-transport", "fastmcp-proxy", "fastmcp-mount", "fastmcp-openapi", "pocket-coffea-configurator", "pocket-coffea-custom-cut", "pocket-coffea-histograms", "pocket-coffea-custom-workflow"],
+  "reps": 5,
+  "reference": "PREREGISTRATION.md screening protocol; decision in ../analysis.md"
+}

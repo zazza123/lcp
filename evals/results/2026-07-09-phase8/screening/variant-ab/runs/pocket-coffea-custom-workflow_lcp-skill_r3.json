@@ -1,0 +1,41 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.hist_tools import Hist\nfrom pocket_coffea.workflows.base_processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonAnalysisProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor with muon preselection and counting.\"\"\"\n\n    def process_object_preselection(self, variation):\n        \"\"\"\n        Override to create MuonGood collection: pT > 15 GeV, |eta| < 2.4\n        \"\"\"\n        muons = self.events.Muon\n        \n        muon_mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        self.events[\"MuonGood\"] = muons[muon_mask]\n        \n        return self.events\n\n    def process_object_counting(self, variation):\n        \"\"\"\n        Override to store the number of selected muons per event.\n        \"\"\"\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood)\n        \n        return self.events\n\n\nif __name__ == \"__main__\":\n    processor = DimuonAnalysisProcessor(\n        name=\"dimuon_analysis\",\n        era=\"2018\",\n        sample_type=\"MC\",\n        config_path=None,\n    )\n    print(f\"Created processor: {processor.name}\")",
+  "result_text": "```python\nfrom pocket_coffea.lib.hist_tools import Hist\nfrom pocket_coffea.workflows.base_processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonAnalysisProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor with muon preselection and counting.\"\"\"\n\n    def process_object_preselection(self, variation):\n        \"\"\"\n        Override to create MuonGood collection: pT > 15 GeV, |eta| < 2.4\n        \"\"\"\n        muons = self.events.Muon\n        \n        muon_mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        self.events[\"MuonGood\"] = muons[muon_mask]\n        \n        return self.events\n\n    def process_object_counting(self, variation):\n        \"\"\"\n        Override to store the number of selected muons per event.\n        \"\"\"\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood)\n        \n        return self.events\n\n\nif __name__ == \"__main__\":\n    processor = DimuonAnalysisProcessor(\n        name=\"dimuon_analysis\",\n        era=\"2018\",\n        sample_type=\"MC\",\n        config_path=None,\n    )\n    print(f\"Created processor: {processor.name}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 939,
+    "cache_read_tokens": 46086,
+    "cache_creation_tokens": 349,
+    "cost_usd": 0.0100186,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 13.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.workflows.base_processor.BaseProcessor"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.objects import lepton_selection\nfrom pocket_coffea.parameters.cuts import cuts_object\nfrom pocket_coffea.processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonProcessor(BaseProcessor):\n    \"\"\"Minimal PocketCoffea workflow for dimuon analysis.\"\"\"\n    \n    def __init__(self, cfg):\n        super().__init__(cfg)\n        \n    def object_preselection(self, variation):\n        \"\"\"Build MuonGood collection with pT > 15 GeV and |eta| < 2.4\"\"\"\n        self.events[\"MuonGood\"] = self.events.Muon[\n            (self.events.Muon.pt > 15) & (ak.abs(self.events.Muon.eta) < 2.4)\n        ]\n        \n    def object_counting(self, variation):\n        \"\"\"Store the number of selected muons per event\"\"\"\n        self.events[\"n_muons\"] = ak.num(self.events.MuonGood)",
+  "result_text": "```python\nfrom pocket_coffea.lib.objects import lepton_selection\nfrom pocket_coffea.parameters.cuts import cuts_object\nfrom pocket_coffea.processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonProcessor(BaseProcessor):\n    \"\"\"Minimal PocketCoffea workflow for dimuon analysis.\"\"\"\n    \n    def __init__(self, cfg):\n        super().__init__(cfg)\n        \n    def object_preselection(self, variation):\n        \"\"\"Build MuonGood collection with pT > 15 GeV and |eta| < 2.4\"\"\"\n        self.events[\"MuonGood\"] = self.events.Muon[\n            (self.events.Muon.pt > 15) & (ak.abs(self.events.Muon.eta) < 2.4)\n        ]\n        \n    def object_counting(self, variation):\n        \"\"\"Store the number of selected muons per event\"\"\"\n        self.events[\"n_muons\"] = ak.num(self.events.MuonGood)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1534,
+    "cache_read_tokens": 87951,
+    "cache_creation_tokens": 9674,
+    "cost_usd": 0.035848099999999994,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 23.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01ViaypqDXnF87QfD4q4ugLh",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.processor.BaseProcessor"
+    ],
+    "error": null
+  }
+}

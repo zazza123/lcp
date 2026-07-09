@@ -1,0 +1,80 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.processor.base import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonProcessor(BaseProcessor):\n    def postprocess_objects(self, variation):\n        \"\"\"Object preselection: create MuonGood collection with pT > 15 GeV and |eta| < 2.4\"\"\"\n        objects = super().postprocess_objects(variation)\n        \n        muons = objects[\"Muon\"]\n        muon_mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        objects[\"MuonGood\"] = muons[muon_mask]\n        \n        return objects\n    \n    def count_objects(self, variation):\n        \"\"\"Object counting: store the number of selected muons per event\"\"\"\n        objects = super().count_objects(variation)\n        \n        if \"MuonGood\" in objects:\n            objects[\"n_muons\"] = ak.num(objects[\"MuonGood\"])\n        \n        return objects",
+  "result_text": "```python\nfrom pocket_coffea.processor.base import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonProcessor(BaseProcessor):\n    def postprocess_objects(self, variation):\n        \"\"\"Object preselection: create MuonGood collection with pT > 15 GeV and |eta| < 2.4\"\"\"\n        objects = super().postprocess_objects(variation)\n        \n        muons = objects[\"Muon\"]\n        muon_mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        objects[\"MuonGood\"] = muons[muon_mask]\n        \n        return objects\n    \n    def count_objects(self, variation):\n        \"\"\"Object counting: store the number of selected muons per event\"\"\"\n        objects = super().count_objects(variation)\n        \n        if \"MuonGood\" in objects:\n            objects[\"n_muons\"] = ak.num(objects[\"MuonGood\"])\n        \n        return objects\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 51,
+    "output_tokens": 1831,
+    "cache_read_tokens": 145689,
+    "cache_creation_tokens": 2916,
+    "cost_usd": 0.0296069,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 35.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01L7xGsN1mjj6oNT4HYMbPzB",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01As191TAC6dNmz4SAqrD8NG",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01HyAWsiA4kkXq4imM6u9ZTd",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.processor.base.BaseProcessor"
+    ],
+    "error": null
+  }
+}

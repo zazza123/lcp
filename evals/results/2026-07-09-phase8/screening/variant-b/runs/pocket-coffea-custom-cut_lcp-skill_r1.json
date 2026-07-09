@@ -1,0 +1,75 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import Cut\nimport awkward as ak\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least 2 muons with pT > threshold \n    and opposite-charge leading pair.\n    \"\"\"\n    muons = events.Muon\n    \n    # Filter by pT threshold from params\n    pt_threshold = params[\"dimuon_pT\"]\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    has_two_muons = ak.num(muons_selected) >= 2\n    \n    # Check opposite charge for leading pair\n    leading_charge = muons_selected[:, 0].charge\n    subleading_charge = muons_selected[:, 1].charge\n    opposite_charge = leading_charge * subleading_charge < 0\n    \n    return has_two_muons & opposite_charge\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"dimuon_pT\": 15.0}\n)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import Cut\nimport awkward as ak\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least 2 muons with pT > threshold \n    and opposite-charge leading pair.\n    \"\"\"\n    muons = events.Muon\n    \n    # Filter by pT threshold from params\n    pt_threshold = params[\"dimuon_pT\"]\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    has_two_muons = ak.num(muons_selected) >= 2\n    \n    # Check opposite charge for leading pair\n    leading_charge = muons_selected[:, 0].charge\n    subleading_charge = muons_selected[:, 1].charge\n    opposite_charge = leading_charge * subleading_charge < 0\n    \n    return has_two_muons & opposite_charge\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"dimuon_pT\": 15.0}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 43,
+    "output_tokens": 2019,
+    "cache_read_tokens": 115079,
+    "cache_creation_tokens": 9818,
+    "cost_usd": 0.041281899999999996,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 34.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "cut selection",
+        "library": "pocket-coffea",
+        "limit": 20
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_012McnMY6Wu29yTFAaF4vpZK",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01HdcevE4ePLQrSPeuJ2qnJM",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01QTyFF38BJierh1FRLLFFm6",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_definition import Cut\nimport awkward as ak\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least two muons with pT > threshold,\n    with opposite-charge leading pair.\n    \n    Args:\n        events: Events array with Muon collection\n        params: Dict with 'pT' key for pT threshold in GeV\n        **kwargs: Additional framework arguments\n    \n    Returns:\n        Boolean mask for events passing the cut\n    \"\"\"\n    muons = events.Muon\n    \n    # Read pT threshold from params\n    pT_threshold = params[\"pT\"]\n    \n    # Filter muons by pT threshold\n    muons_passing = muons[muons.pt > pT_threshold]\n    \n    # Require at least 2 muons\n    has_two_muons = ak.num(muons_passing) >= 2\n    \n    # Get leading and subleading muons\n    leading = muons_passing[:, 0]\n    subleading = muons_passing[:, 1]\n    \n    # Opposite charge: product of charges < 0\n    opposite_charge = (leading.charge * subleading.charge) < 0\n    \n    return has_two_muons & opposite_charge\n\n\n# Define the cut for use in preselections\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pT\": 15}\n)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_definition import Cut\nimport awkward as ak\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least two muons with pT > threshold,\n    with opposite-charge leading pair.\n    \n    Args:\n        events: Events array with Muon collection\n        params: Dict with 'pT' key for pT threshold in GeV\n        **kwargs: Additional framework arguments\n    \n    Returns:\n        Boolean mask for events passing the cut\n    \"\"\"\n    muons = events.Muon\n    \n    # Read pT threshold from params\n    pT_threshold = params[\"pT\"]\n    \n    # Filter muons by pT threshold\n    muons_passing = muons[muons.pt > pT_threshold]\n    \n    # Require at least 2 muons\n    has_two_muons = ak.num(muons_passing) >= 2\n    \n    # Get leading and subleading muons\n    leading = muons_passing[:, 0]\n    subleading = muons_passing[:, 1]\n    \n    # Opposite charge: product of charges < 0\n    opposite_charge = (leading.charge * subleading.charge) < 0\n    \n    return has_two_muons & opposite_charge\n\n\n# Define the cut for use in preselections\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pT\": 15}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 51,
+    "output_tokens": 2036,
+    "cache_read_tokens": 146596,
+    "cache_creation_tokens": 3103,
+    "cost_usd": 0.031096600000000002,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 31.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "cut definition preselection",
+        "library": "pocket-coffea",
+        "limit": 20
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_019s9SwrDSNuuS8oEw7HtSwB",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01AhXM1xc5PQfsE6sZM9JS2S",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Pr34FGee2FBFSd9NRek5WT",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
