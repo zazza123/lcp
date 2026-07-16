@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import griffe\n\n# Load the requests package using the module-level convenience function\napi = griffe.load(\"requests\")\n\n# Get all public top-level functions\npublic_functions = [\n    name for name, member in api.members.items()\n    if not name.startswith(\"_\") and member.kind == \"function\"\n]\n\n# Print the names of all public top-level functions\nfor func_name in sorted(public_functions):\n    print(func_name)",
+  "result_text": "```python\nimport griffe\n\n# Load the requests package using the module-level convenience function\napi = griffe.load(\"requests\")\n\n# Get all public top-level functions\npublic_functions = [\n    name for name, member in api.members.items()\n    if not name.startswith(\"_\") and member.kind == \"function\"\n]\n\n# Print the names of all public top-level functions\nfor func_name in sorted(public_functions):\n    print(func_name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1331,
+    "cache_read_tokens": 24099,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0090739,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

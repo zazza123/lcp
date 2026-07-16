@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-groupby-agg",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create sample data\ndata = {\n    \"store\": [\"A\", \"B\", \"A\", \"B\", \"A\"],\n    \"revenue\": [100, 200, 150, 250, 120],\n    \"items\": [5, 10, 7, 12, 6]\n}\ndf = nw.from_native(pd.DataFrame(data))\n\n# Compute per-store statistics\nresult = df.group_by(\"store\").agg(\n    nw.col(\"revenue\").sum().alias(\"total_revenue\"),\n    nw.col(\"items\").mean().alias(\"mean_items\")\n).sort(\"store\")\n\nprint(result.to_native())",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create sample data\ndata = {\n    \"store\": [\"A\", \"B\", \"A\", \"B\", \"A\"],\n    \"revenue\": [100, 200, 150, 250, 120],\n    \"items\": [5, 10, 7, 12, 6]\n}\ndf = nw.from_native(pd.DataFrame(data))\n\n# Compute per-store statistics\nresult = df.group_by(\"store\").agg(\n    nw.col(\"revenue\").sum().alias(\"total_revenue\"),\n    nw.col(\"items\").mean().alias(\"mean_items\")\n).sort(\"store\")\n\nprint(result.to_native())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 881,
+    "cache_read_tokens": 24103,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0068243,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "case_id": "pocket-coffea-configurator",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import passthrough\n\ncfg = {\n    \"workflow\": ZmumuProcessor,\n    \"dataset\": {\n        \"files\": \"datasets/DYJetsToLL_2018.json\",\n        \"filter\": {\"year\": [\"2018\"]},\n    },\n    \"cuts\": {\n        \"skim\": passthrough,\n        \"preselection\": [],\n    },\n    \"categories\": {\n        \"baseline\": {\n            \"cuts\": passthrough,\n        }\n    },\n    \"weights\": {\n        \"common\": [\"genWeight\", \"lumi\", \"XS\"],\n    },\n    \"variations\": {},\n    \"variables\": {},\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import passthrough\n\ncfg = {\n    \"workflow\": ZmumuProcessor,\n    \"dataset\": {\n        \"files\": \"datasets/DYJetsToLL_2018.json\",\n        \"filter\": {\"year\": [\"2018\"]},\n    },\n    \"cuts\": {\n        \"skim\": passthrough,\n        \"preselection\": [],\n    },\n    \"categories\": {\n        \"baseline\": {\n            \"cuts\": passthrough,\n        }\n    },\n    \"weights\": {\n        \"common\": [\"genWeight\", \"lumi\", \"XS\"],\n    },\n    \"variations\": {},\n    \"variables\": {},\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1662,
+    "cache_read_tokens": 46080,
+    "cache_creation_tokens": 942,
+    "cost_usd": 0.014819,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 25.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.utils.configurator:Configurator",
+      "pocket_coffea.parameters.cuts:passthrough"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.passthrough"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-agnostic-filter",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\nimport polars as pl\n\ndef top_sales(df):\n    nw_df = nw.from_native(df)\n    result = (\n        nw_df\n        .filter(nw.col(\"amount\") > 100)\n        .sort(by=\"amount\", descending=True)\n        .to_native()\n    )\n    return result\n\n# Test with pandas\npdf = pd.DataFrame({\"amount\": [50, 150, 200, 75, 120]})\nprint(\"Pandas:\")\nprint(top_sales(pdf))\nprint()\n\n# Test with polars\nplf = pl.DataFrame({\"amount\": [50, 150, 200, 75, 120]})\nprint(\"Polars:\")\nprint(top_sales(plf))",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\nimport polars as pl\n\ndef top_sales(df):\n    nw_df = nw.from_native(df)\n    result = (\n        nw_df\n        .filter(nw.col(\"amount\") > 100)\n        .sort(by=\"amount\", descending=True)\n        .to_native()\n    )\n    return result\n\n# Test with pandas\npdf = pd.DataFrame({\"amount\": [50, 150, 200, 75, 120]})\nprint(\"Pandas:\")\nprint(top_sales(pdf))\nprint()\n\n# Test with polars\nplf = pl.DataFrame({\"amount\": [50, 150, 200, 75, 120]})\nprint(\"Polars:\")\nprint(top_sales(plf))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2377,
+    "cache_read_tokens": 15092,
+    "cache_creation_tokens": 6967,
+    "cost_usd": 0.027337200000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

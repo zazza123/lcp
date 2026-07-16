@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint, jsonify\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Create a Blueprint for users routes\nusers_bp = Blueprint('users', __name__)\n\n# Define users routes in the blueprint\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    \"\"\"Get list of all users.\"\"\"\n    users = [\n        {'id': 1, 'name': 'Alice'},\n        {'id': 2, 'name': 'Bob'},\n        {'id': 3, 'name': 'Charlie'}\n    ]\n    return jsonify(users)\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    \"\"\"Get a specific user by ID.\"\"\"\n    users = {\n        1: {'id': 1, 'name': 'Alice'},\n        2: {'id': 2, 'name': 'Bob'},\n        3: {'id': 3, 'name': 'Charlie'}\n    }\n    if user_id in users:\n        return jsonify(users[user_id])\n    return jsonify({'error': 'User not found'}), 404\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    \"\"\"Create a new user.\"\"\"\n    return jsonify({'message': 'User created successfully'}), 201\n\n# Register the blueprint with the main app under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n# Main application route\n@app.route('/', methods=['GET'])\ndef home():\n    \"\"\"Home page.\"\"\"\n    return jsonify({'message': 'Welcome to the Flask application'})\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint, jsonify\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Create a Blueprint for users routes\nusers_bp = Blueprint('users', __name__)\n\n# Define users routes in the blueprint\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    \"\"\"Get list of all users.\"\"\"\n    users = [\n        {'id': 1, 'name': 'Alice'},\n        {'id': 2, 'name': 'Bob'},\n        {'id': 3, 'name': 'Charlie'}\n    ]\n    return jsonify(users)\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    \"\"\"Get a specific user by ID.\"\"\"\n    users = {\n        1: {'id': 1, 'name': 'Alice'},\n        2: {'id': 2, 'name': 'Bob'},\n        3: {'id': 3, 'name': 'Charlie'}\n    }\n    if user_id in users:\n        return jsonify(users[user_id])\n    return jsonify({'error': 'User not found'}), 404\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    \"\"\"Create a new user.\"\"\"\n    return jsonify({'message': 'User created successfully'}), 201\n\n# Register the blueprint with the main app under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n# Main application route\n@app.route('/', methods=['GET'])\ndef home():\n    \"\"\"Home page.\"\"\"\n    return jsonify({'message': 'Welcome to the Flask application'})\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1531,
+    "cache_read_tokens": 17267,
+    "cache_creation_tokens": 6806,
+    "cost_usd": 0.0230027,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

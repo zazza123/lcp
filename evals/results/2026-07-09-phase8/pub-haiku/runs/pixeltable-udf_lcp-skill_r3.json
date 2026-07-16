@@ -1,0 +1,175 @@
+{
+  "case_id": "pixeltable-udf",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom pixeltable import udf, get_table\n\n@udf\ndef word_count(text: str) -> int:\n    \"\"\"Count the number of words in text.\"\"\"\n    if text is None:\n        return 0\n    return len(text.split())\n\n# Get the table handle\ntbl = get_table('docs')\n\n# Add the computed column that uses the UDF\ntbl.add_computed_column(n_words=word_count(tbl.content))",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable import udf, get_table\n\n@udf\ndef word_count(text: str) -> int:\n    \"\"\"Count the number of words in text.\"\"\"\n    if text is None:\n        return 0\n    return len(text.split())\n\n# Get the table handle\ntbl = get_table('docs')\n\n# Add the computed column that uses the UDF\ntbl.add_computed_column(n_words=word_count(tbl.content))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 99,
+    "output_tokens": 2385,
+    "cache_read_tokens": 318997,
+    "cache_creation_tokens": 18434,
+    "cost_usd": 0.08079170000000001,
+    "num_turns": 13,
+    "tool_calls": 12,
+    "duration_s": 40.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "udf user defined function",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "udf",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:udf"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "add column computed",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Table get access docs",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Table",
+        "library": "pixeltable",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#add_computed_column"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get",
+        "library": "pixeltable",
+        "kind": "function",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:get_table"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01TDfsB9A2MVjenMCmRZFPda",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01DhPFChskQUcwZeys1aVhni",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Q1uraw1niqiz8x8dPVQjrc",
+      "content": "{\"results\":[{\"id\":\"pixeltable:udf\",\"kind\":\"function\",\"summary\":\"A decorator to create a Function from a function definition.\",\"import\":\"from pixeltable import udf\",\"resolved_via_alias\":\"pixeltable.func.udf:udf\"},{\"id\":\"pixeltable:Column#calls_custom_udf\",\"kind\":\"attribute\",\"summary\":\"Attribute calls_custom_udf\",\"import\":\"from pixeltable import Column\",\"resolved_via_alias\":\"pixeltable.catalog.column:Column#calls_custom_udf\"},{\"id\":\"pixeltable.func.mcp:mcp_tool_to_udf\",\"kind\":\"function\",\"summary\":\"Function mcp_tool_to_udf\",\"import\":\"from pixeltable.func.mcp import mcp_tool_to_udf\"},{\"id\":\"pixeltable:mcp_udfs\",\"kind\":\"function\",\"summary\":\"Function mcp_udfs\",\"import\":\"from pixeltable import mcp_udfs\",\"resolved_via_alias\":\"pixeltable.func.mcp:mcp_udfs\"},{\"id\":\"pixeltable.func.mcp:mcp_udfs_async\",\"kind\":\"function\",\"summary\":\"Function mcp_udfs_async\",\"import\":\"from pixeltable.func.mcp import mcp_udfs_async\"},{\"id\":\"pixeltable:retrieval_udf\",\"kind\":\"function\",\"summary\":\"Constructs a retrieval UDF for the given table. The retrieval UDF is a UDF whose parameters are columns of the table and whose return value is a list of rows from the table. The return value of >>> f(col1=x, col2=y, ...) will be a list of all rows from the table that match the specified arguments.\",\"import\":\"from pixeltable import retrieval_udf\",\"resolved_via_alias\":\"pixeltable.func.query_template_function:retrieval_udf\"},{\"id\":\"pixeltable:expr_udf\",\"kind\":\"function\",\"summary\":\"Function expr_udf\",\"import\":\"from pixeltable import expr_udf\",\"resolved_via_alias\":\"pixeltable.func.udf:expr_udf\"},{\"id\":\"pixeltable.env:RuntimeCtx\",\"kind\":\"class\",\"summary\":\"Container for runtime data provided by the execution system to udfs.\",\"import\":\"from pixeltable.env import RuntimeCtx\"},{\"id\":\"pixeltable.func:CallableFunction#create_batch_kwargs\",\"kind\":\"method\",\"summary\":\"Converts kwargs containing lists into constant and batched kwargs in the format expected by a batched udf.\",\"import\":\"from pixeltable.func import CallableFun"
+    },
+    {
+      "tool_use_id": "toolu_01N6z4RrX98GNZgVWySySHjY",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.func.udf\",\"aliases\":[\"pixeltable.func.tools:udf\",\"pixeltable.func:udf\",\"pixeltable.index.btree:udf\",\"pixeltable:udf\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"A decorator to create a Function from a function definition.\",\"description\":\"Examples:\\n        >>> @pxt.udf\\n        ... def my_function(x: int) -> int:\\n        ...     return x + 1\",\"examples\":[{\"code\":\">>> @pxt.udf\\n... def my_function(x: int) -> int:\\n...     return x + 1\"}]},\"id\":\"pixeltable:udf\",\"resolved_via_alias\":\"pixeltable.func.udf:udf\",\"import\":\"from pixeltable import udf\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01SL76qvbY264XGQVcHiQxCC",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_0199EBBZKroqd43mYD8e52kr",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01RCRXVBJpDTLngeVQ3iasAU",
+      "content": "{\"results\":[{\"id\":\"pixeltable:Table\",\"kind\":\"class\",\"summary\":\"A handle to a table, view, or snapshot. This class is the primary interface through which table operations (queries, insertions, updates, etc.) are performed in Pixeltable.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table\"},{\"id\":\"pixeltable.metadata.converters.util:Table\",\"kind\":\"class\",\"summary\":\"Table represents both tables and views.\",\"import\":\"from pixeltable.metadata.converters.util import Table\",\"resolved_via_alias\":\"pixeltable.metadata.schema:Table\"},{\"id\":\"pixeltable.catalog:TableVersionMd\",\"kind\":\"class\",\"summary\":\"Complete set of md records for a specific TableVersion instance.\",\"import\":\"from pixeltable.catalog import TableVersionMd\",\"resolved_via_alias\":\"pixeltable.catalog.globals:TableVersionMd\"},{\"id\":\"pixeltable:TableMetadata\",\"kind\":\"class\",\"summary\":\"Metadata for a Pixeltable table.\",\"import\":\"from pixeltable import TableMetadata\",\"resolved_via_alias\":\"pixeltable.catalog.table_metadata:TableMetadata\"},{\"id\":\"pixeltable.catalog:TableMdPath\",\"kind\":\"class\",\"summary\":\"TablePath backed by TableVersionMd. Does not provide access to catalog objects (Table/TableVersion/Column).\",\"import\":\"from pixeltable.catalog import TableMdPath\",\"resolved_via_alias\":\"pixeltable.catalog.table_path:TableMdPath\"},{\"id\":\"pixeltable.catalog:TablePath\",\"kind\":\"class\",\"summary\":\"TablePath represents an abstract interface to the complete metadata of a table or view - completeness here means all the metadata needed to execute queries and updates against a particular version of a table/view. - for a view, it also includes metadata for all of its bases - multiple snapshots can reference the same TableVersion, but with different bases, which means that the graph of TableVersions is a DAG, not a tree (which is why we cannot embed the DAG into TableVersion directly)\",\"import\":\"from pixeltable.catalog import TablePath\",\"resolved_via_alias\":\"pixeltable.catalog.table_path:TablePa"
+    },
+    {
+      "tool_use_id": "toolu_01Lq1nvyXadJFY4Gur1sjbf7",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"pixeltable.catalog.table\",\"aliases\":[\"pixeltable.catalog.local_table:Table\",\"pixeltable.catalog.table_proxy:Table\",\"pixeltable.catalog:Table\",\"pixeltable.io.external_store:Table\",\"pixeltable.io.globals:Table\",\"pixeltable:Table\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"obj_id\",\"type\":\"UUID\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}]}],\"semantics\":{\"summary\":\"A handle to a table, view, or snapshot. This class is the primary interface through which table operations (queries, insertions, updates, etc.) are performed in Pixeltable.\",\"description\":\"Thread-safe.\"},\"id\":\"pixeltable:Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table\",\"import\":\"from pixeltable import Table\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"obj_id\",\"type\":\"UUID\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"pixeltable:Table#__getitem__\",\"kind\":\"method\",\"summary\":\"Return a ColumnRef for the given name.\"},{\"id\":\"pixeltable:Table#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"pixeltable:Table#add_column\",\"kind\":\"method\",\"summary\":\"Adds an ordinary (non-computed) column to the table.\"},{\"id\":\"pixeltable:Table#add_columns\",\"kind\":\"method\",\"summary\":\"Adds multiple columns to the table. The columns must be concrete (non-computed) columns; to add computed columns, use [`add_computed_column()`][pixeltable.catalog.Table.add_computed_column] instead.\"},{\"id\":\"pixeltable:Table#add_computed_column\",\"kind\":\"method\",\"summary\":\"Adds a computed column to the table.\"},{\"id\":\"pixeltable:Table#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Add an embedding index to the table. Once the index is created, it will be automatically kept up-to-date as new rows are inserted into the table.\"},{\"id\":\"pixeltable:Table#batch_update\",\"kind\":\"method\",\"summary\":\"Update rows in this table.\"},{\"id\":\"pixeltable:Table#collect\",\"kind\":\"method\",\"summary\":\"Return rows from this table.\"},{\"id\":\"pixeltable:Table#columns\""
+    },
+    {
+      "tool_use_id": "toolu_019UERXEip7o2BQwnJuHUAf1",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"stored\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether the column is materialized and stored or computed on demand.\"},{\"name\":\"destination\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An object store reference for persisting computed files.\"},{\"name\":\"custom_metadata\",\"type\":\"Any\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional user-defined metadata to associate with the column. Must be a valid\\nJSON-serializable object.\"},{\"name\":\"comment\",\"type\":\"str\",\"required\":false,\"default\":\"\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional comment; its meaning is user-defined.\"},{\"name\":\"print_stats\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If `True`, print execution metrics during evaluation.\"},{\"name\":\"on_error\",\"type\":\"Literal['abort', 'ignore']\",\"required\":false,\"default\":\"abort\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if an error occurs while evaluating the column expression for at least one\\nrow.\\n\\n- `'abort'`: an exception will be raised and the column will not be added.\\n- `'ignore'`: execution will continue and the column will be added. Any rows\\n    with errors will have a `None` value for the column, with information about the error stored in the\\n    corresponding `tbl.col_name.errormsg` and `tbl.col_name.errortype` fields.\"},{\"name\":\"if_exists\",\"type\":\"Literal['error', 'ignore', 'replace']\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if the column already exists. Must be one of the following:\\n- `'error'`: an exception will be raised.\\n- `'ignore'`: do nothing and return.\\n- `'replace' or 'replace_force'`: drop the existing column a"
+    },
+    {
+      "tool_use_id": "toolu_01X2h8YaTKNtK3D3GgEEyANL",
+      "content": "{\"results\":[{\"id\":\"pixeltable.func.globals:get_caller_module_path\",\"kind\":\"function\",\"summary\":\"Return the module path of our caller's caller\",\"import\":\"from pixeltable.func.globals import get_caller_module_path\"},{\"id\":\"pixeltable.functions.util:get_metadata\",\"kind\":\"function\",\"summary\":\"Function get_metadata\",\"import\":\"from pixeltable.functions.util import get_metadata\"},{\"id\":\"pixeltable:get_dir_contents\",\"kind\":\"function\",\"summary\":\"Get the contents of a Pixeltable directory.\",\"import\":\"from pixeltable import get_dir_contents\",\"resolved_via_alias\":\"pixeltable.globals:get_dir_contents\"},{\"id\":\"pixeltable:get_dir_tree\",\"kind\":\"function\",\"summary\":\"Get a tree representation of the Pixeltable directory structure.\",\"import\":\"from pixeltable import get_dir_tree\",\"resolved_via_alias\":\"pixeltable.globals:get_dir_tree\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.store:get_runtime\",\"kind\":\"function\",\"summary\":\"Get the current thread's Runtime instance, creating one if needed.\",\"import\":\"from pixeltable.store import get_runtime\",\"resolved_via_alias\":\"pixeltable.runtime:get_runtime\"},{\"id\":\"pixeltable.utils.av:get_audio_duration\",\"kind\":\"function\",\"summary\":\"Return audio duration in seconds, or None if there is no audio stream or the duration cannot be determined.\",\"import\":\"from pixeltable.utils.av import get_audio_duration\"},{\"id\":\"pixeltable.utils.av:get_max_volume_db\",\"kind\":\"function\",\"summary\":\"Measure the peak amplitude of an audio clip in dBFS.\",\"import\":\"from pixeltable.utils.av import get_max_volume_db\"},{\"id\":\"pixeltable.utils.av:get_video_duration\",\"kind\":\"function\",\"summary\":\"Return video duration in seconds.\",\"import\":\"from pixeltable.utils.av import get_video_duration\"},{\"id\":\"pixeltable.utils.cloud_utils:get_bucket_credentials\",\"kind\":\"function\",\"summary\":\"Fetch temporary R2 c"
+    },
+    {
+      "tool_use_id": "toolu_018qVGrYU5tMoGHrLVTSHVQW",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.globals\",\"aliases\":[\"pixeltable:get_table\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path to the table.\"},{\"name\":\"if_not_exists\",\"type\":\"Literal[error, ignore]\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Directive regarding how to handle if the path does not exist.\\nMust be one of the following:\\n\\n- `'error'`: raise an error\\n- `'ignore'`: do nothing and return `None`\"}],\"returns\":\"UnionType[Table, None]\",\"returns_description\":\"A handle to the [`Table`][pixeltable.Table].\",\"raises\":[{\"type\":\"Error\",\"condition\":\"If the path does not exist or does not designate a table object.\"}]}],\"semantics\":{\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"description\":\"Args:\\n        path: Path to the table.\\n        if_not_exists: Directive regarding how to handle if the path does not exist.\\n            Must be one of the following:\\n\\n            - `'error'`: raise an error\\n            - `'ignore'`: do nothing and return `None`\\n\\n    Returns:\\n        A handle to the [`Table`][pixeltable.Table].\\n\\n    Raises:\\n        Error: If the path does not exist or does not designate a table object.\\n\\n    Examples:\\n        Get handle for a table in the top-level directory:\\n\\n        >>> tbl = pxt.get_table('my_table')\\n\\n        For a table in a subdirectory:\\n\\n        >>> tbl = pxt.get_table('subdir/my_table')\\n\\n        Handles to views and snapshots are retrieved in the same way:\\n\\n        >>> tbl = pxt.get_table('my_snapshot')\\n\\n        Get a handle to a specific version of a table:\\n\\n        >>> tbl = pxt.get_table('my_table:722')\",\"examples\":[{\"code\":\">>> tbl = pxt.get_table('my_table')\\n>>> tbl = pxt.get_table('subdir/my_table')\\n>>> tbl = pxt.get_table('my_snapshot')\\n>>> tbl = pxt.get_table('my_table:722')\",\"description\":\"Get handle for a table in the top-level d"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

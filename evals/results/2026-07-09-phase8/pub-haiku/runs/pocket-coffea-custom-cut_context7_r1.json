@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\ndef dimuon_cut(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection mask: at least two muons with pT above threshold\n    and opposite charge on leading pair.\n    \"\"\"\n    pt_threshold = params[\"dimuon_pT\"]\n    \n    muons = events.Muon\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # At least 2 muons above pT threshold\n    n_muons = ak.count(muons_selected.pt, axis=1)\n    has_min_muons = n_muons >= 2\n    \n    # Opposite charge on leading pair\n    leading = muons_selected[:, 0]\n    subleading = muons_selected[:, 1]\n    opposite_charge = (leading.charge * subleading.charge) < 0\n    \n    return has_min_muons & opposite_charge\n\n# Define reusable cut with framework's cut-definition object\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_cut\n)\n\n# Usage in configuration:\n# cfg.preselections = [\n#     (dimuon, {\"dimuon_pT\": 15})\n# ]",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\ndef dimuon_cut(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection mask: at least two muons with pT above threshold\n    and opposite charge on leading pair.\n    \"\"\"\n    pt_threshold = params[\"dimuon_pT\"]\n    \n    muons = events.Muon\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # At least 2 muons above pT threshold\n    n_muons = ak.count(muons_selected.pt, axis=1)\n    has_min_muons = n_muons >= 2\n    \n    # Opposite charge on leading pair\n    leading = muons_selected[:, 0]\n    subleading = muons_selected[:, 1]\n    opposite_charge = (leading.charge * subleading.charge) < 0\n    \n    return has_min_muons & opposite_charge\n\n# Define reusable cut with framework's cut-definition object\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_cut\n)\n\n# Usage in configuration:\n# cfg.preselections = [\n#     (dimuon, {\"dimuon_pT\": 15})\n# ]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3030,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6981,
+    "cost_usd": 0.0306356,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport csv\nimport json\nfrom cyhole.clients import SolanaFMClient\n\napi_key = os.getenv('SOLANA_FM_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\naccount_address = os.getenv('SOLANA_ACCOUNT_ADDRESS')\nif not account_address:\n    raise ValueError(\"SOLANA_ACCOUNT_ADDRESS environment variable not set\")\n\nclient = SolanaFMClient(api_key=api_key)\n\ntransfers = client.get_account_transfers(account_address)\n\nreport_file = 'transfers_report.csv'\nwith open(report_file, 'w', newline='', encoding='utf-8') as f:\n    if transfers:\n        if isinstance(transfers, list) and len(transfers) > 0:\n            first_record = transfers[0]\n            fieldnames = first_record.keys() if isinstance(first_record, dict) else list(first_record.__dict__.keys())\n            writer = csv.DictWriter(f, fieldnames=fieldnames)\n            writer.writeheader()\n            \n            for transfer in transfers:\n                row = transfer if isinstance(transfer, dict) else transfer.__dict__\n                writer.writerow(row)\n\nprint(f\"Export complete: {report_file}\")",
+  "result_text": "I don't have detailed API documentation for the `cyhole` library's SolanaFM integration, so I'll provide a reasonable implementation based on typical blockchain SDK patterns. You may need to adjust method names if they differ:\n\n```python\nimport os\nimport csv\nimport json\nfrom cyhole.clients import SolanaFMClient\n\napi_key = os.getenv('SOLANA_FM_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\naccount_address = os.getenv('SOLANA_ACCOUNT_ADDRESS')\nif not account_address:\n    raise ValueError(\"SOLANA_ACCOUNT_ADDRESS environment variable not set\")\n\nclient = SolanaFMClient(api_key=api_key)\n\ntransfers = client.get_account_transfers(account_address)\n\nreport_file = 'transfers_report.csv'\nwith open(report_file, 'w', newline='', encoding='utf-8') as f:\n    if transfers:\n        if isinstance(transfers, list) and len(transfers) > 0:\n            first_record = transfers[0]\n            fieldnames = first_record.keys() if isinstance(first_record, dict) else list(first_record.__dict__.keys())\n            writer = csv.DictWriter(f, fieldnames=fieldnames)\n            writer.writeheader()\n            \n            for transfer in transfers:\n                row = transfer if isinstance(transfer, dict) else transfer.__dict__\n                writer.writerow(row)\n\nprint(f\"Export complete: {report_file}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3236,
+    "cache_read_tokens": 15189,
+    "cache_creation_tokens": 6832,
+    "cost_usd": 0.0313719,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 38.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.clients.SolanaFMClient"
+    ],
+    "error": null
+  }
+}

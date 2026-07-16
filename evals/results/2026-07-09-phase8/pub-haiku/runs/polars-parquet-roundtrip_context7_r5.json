@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"city\": [\"New York\", \"London\", \"Paris\"]\n})\n\nprint(\"Original DataFrame:\")\nprint(df)\n\n# Serialize to Parquet in memory\nbytes_buffer = BytesIO()\ndf.write_parquet(bytes_buffer)\n\n# Get the bytes\nparquet_bytes = bytes_buffer.getvalue()\nprint(f\"\\nParquet binary size: {len(parquet_bytes)} bytes\")\n\n# Read back from bytes buffer\nbytes_buffer.seek(0)\ndf_restored = pl.read_parquet(bytes_buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Confirm round trip\nassert df.frame_equal(df_restored), \"DataFrames do not match!\"\nprint(\"\\n\u2713 Round trip successful - DataFrames are identical!\")",
+  "result_text": "```python\nimport polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"city\": [\"New York\", \"London\", \"Paris\"]\n})\n\nprint(\"Original DataFrame:\")\nprint(df)\n\n# Serialize to Parquet in memory\nbytes_buffer = BytesIO()\ndf.write_parquet(bytes_buffer)\n\n# Get the bytes\nparquet_bytes = bytes_buffer.getvalue()\nprint(f\"\\nParquet binary size: {len(parquet_bytes)} bytes\")\n\n# Read back from bytes buffer\nbytes_buffer.seek(0)\ndf_restored = pl.read_parquet(bytes_buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Confirm round trip\nassert df.frame_equal(df_restored), \"DataFrames do not match!\"\nprint(\"\\n\u2713 Round trip successful - DataFrames are identical!\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 696,
+    "cache_read_tokens": 22063,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0056953,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

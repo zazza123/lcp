@@ -1,0 +1,36 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import Griffe\nfrom griffe.extensions import Extension\nfrom griffe.dataclasses import Function\n\n\nclass CheckedDocstringExtension(Extension):\n    \"\"\"Appends ' [checked]' to all function docstrings.\"\"\"\n    \n    def on_module_loaded(self, module):\n        \"\"\"Called after a module is loaded and processed.\"\"\"\n        self._process_module(module)\n        return module\n    \n    def _process_module(self, obj):\n        \"\"\"Recursively process an object and its members.\"\"\"\n        if not hasattr(obj, \"members\"):\n            return\n        \n        for member in obj.members.values():\n            if isinstance(member, Function) and member.docstring:\n                member.docstring.value += \" [checked]\"\n            \n            self._process_module(member)\n\n\ngriffe_instance = Griffe()\nextension = CheckedDocstringExtension(\"checked_docstrings\")\npackage = griffe_instance.load(\"mypkg\", extensions=[extension])",
+  "result_text": "```python\nfrom griffe import Griffe\nfrom griffe.extensions import Extension\nfrom griffe.dataclasses import Function\n\n\nclass CheckedDocstringExtension(Extension):\n    \"\"\"Appends ' [checked]' to all function docstrings.\"\"\"\n    \n    def on_module_loaded(self, module):\n        \"\"\"Called after a module is loaded and processed.\"\"\"\n        self._process_module(module)\n        return module\n    \n    def _process_module(self, obj):\n        \"\"\"Recursively process an object and its members.\"\"\"\n        if not hasattr(obj, \"members\"):\n            return\n        \n        for member in obj.members.values():\n            if isinstance(member, Function) and member.docstring:\n                member.docstring.value += \" [checked]\"\n            \n            self._process_module(member)\n\n\ngriffe_instance = Griffe()\nextension = CheckedDocstringExtension(\"checked_docstrings\")\npackage = griffe_instance.load(\"mypkg\", extensions=[extension])\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3854,
+    "cache_read_tokens": 22129,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.021491899999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "griffe:Extension",
+      "griffe:load"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.Griffe",
+      "griffe.dataclasses.Function",
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

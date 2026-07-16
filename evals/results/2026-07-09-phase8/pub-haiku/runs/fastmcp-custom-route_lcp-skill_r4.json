@@ -1,0 +1,39 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\nimport uvicorn\n\nserver = FastMCP(\"health-check-server\")\n\n@server.app.get(\"/health\")\nasync def health():\n    return {\"status\": \"ok\"}\n\nif __name__ == \"__main__\":\n    uvicorn.run(server.app, host=\"0.0.0.0\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nimport uvicorn\n\nserver = FastMCP(\"health-check-server\")\n\n@server.app.get(\"/health\")\nasync def health():\n    return {\"status\": \"ok\"}\n\nif __name__ == \"__main__\":\n    uvicorn.run(server.app, host=\"0.0.0.0\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1084,
+    "cache_read_tokens": 45872,
+    "cache_creation_tokens": 279,
+    "cost_usd": 0.0105822,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 18.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#custom_route"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

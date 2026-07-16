@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-redirect-endpoint",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, redirect, url_for\n\napp = Flask(__name__)\n\n@app.route('/new')\ndef new_route():\n    return \"Welcome to the new route!\"\n\n@app.route('/old')\ndef old_route():\n    return redirect(url_for('new_route'))\n\nif __name__ == '__main__':\n    app.run(debug=True)",
+  "result_text": "```python\nfrom flask import Flask, redirect, url_for\n\napp = Flask(__name__)\n\n@app.route('/new')\ndef new_route():\n    return \"Welcome to the new route!\"\n\n@app.route('/old')\ndef old_route():\n    return redirect(url_for('new_route'))\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 567,
+    "cache_read_tokens": 22924,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005136399999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

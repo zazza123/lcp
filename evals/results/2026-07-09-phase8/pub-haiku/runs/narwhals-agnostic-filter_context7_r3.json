@@ -1,0 +1,31 @@
+{
+  "case_id": "narwhals-agnostic-filter",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\nimport polars as pl\n\ndef top_sales(df):\n    nw_df = nw.from_native(df)\n    result = (\n        nw_df\n        .filter(nw_df[\"amount\"] > 100)\n        .sort(\"amount\", descending=True)\n    )\n    return result.to_native()\n\n# Test with pandas\npdf = pd.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"],\n    \"amount\": [50, 150, 200, 75]\n})\nprint(\"Pandas output:\")\nprint(top_sales(pdf))\nprint()\n\n# Test with polars\npldf = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"],\n    \"amount\": [50, 150, 200, 75]\n})\nprint(\"Polars output:\")\nprint(top_sales(pldf))",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\nimport polars as pl\n\ndef top_sales(df):\n    nw_df = nw.from_native(df)\n    result = (\n        nw_df\n        .filter(nw_df[\"amount\"] > 100)\n        .sort(\"amount\", descending=True)\n    )\n    return result.to_native()\n\n# Test with pandas\npdf = pd.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"],\n    \"amount\": [50, 150, 200, 75]\n})\nprint(\"Pandas output:\")\nprint(top_sales(pdf))\nprint()\n\n# Test with polars\npldf = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"],\n    \"amount\": [50, 150, 200, 75]\n})\nprint(\"Polars output:\")\nprint(top_sales(pldf))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1441,
+    "cache_read_tokens": 22113,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.009425300000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "narwhals:col"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-cumsum",
+  "arm": "lcp",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create sample DataFrame\ndf = pl.DataFrame({\n    \"value\": [1, 2, 3, 4, 5]\n})\n\n# Add running_total column with cumulative sum\ndf = df.with_columns(\n    pl.col(\"value\").cum_sum().alias(\"running_total\")\n)\n\nprint(df)",
+  "result_text": "```python\nimport polars as pl\n\n# Create sample DataFrame\ndf = pl.DataFrame({\n    \"value\": [1, 2, 3, 4, 5]\n})\n\n# Add running_total column with cumulative sum\ndf = df.with_columns(\n    pl.col(\"value\").cum_sum().alias(\"running_total\")\n)\n\nprint(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 348,
+    "cache_read_tokens": 22102,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0039592,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 6.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

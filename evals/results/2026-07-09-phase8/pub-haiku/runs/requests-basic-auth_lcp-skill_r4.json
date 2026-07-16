@@ -1,0 +1,99 @@
+{
+  "case_id": "requests-basic-auth",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\nfrom requests.auth import HTTPBasicAuth\n\nresponse = requests.get(\n    \"https://api.example.com/private\",\n    auth=HTTPBasicAuth(\"user\", \"pass\")\n)\n\nprint(response.status_code)\nprint(response.text)",
+  "result_text": "```python\nimport requests\nfrom requests.auth import HTTPBasicAuth\n\nresponse = requests.get(\n    \"https://api.example.com/private\",\n    auth=HTTPBasicAuth(\"user\", \"pass\")\n)\n\nprint(response.status_code)\nprint(response.text)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 60,
+    "output_tokens": 1555,
+    "cache_read_tokens": 174493,
+    "cache_creation_tokens": 5059,
+    "cost_usd": 0.035402300000000005,
+    "num_turns": 9,
+    "tool_calls": 7,
+    "duration_s": 26.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get",
+        "library": "requests",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "HTTPBasicAuth",
+        "library": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:get",
+          "requests.auth:HTTPBasicAuth"
+        ],
+        "library": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01FBfd5dp2b5tWXrvTHbVa3V",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01X5mTsnXkoiJ88pUTf13p7w",
+      "content": "{\"results\":[{\"id\":\"requests:get\",\"kind\":\"function\",\"summary\":\"Sends a GET request.\",\"import\":\"from requests import get\",\"resolved_via_alias\":\"requests.api:get\"},{\"id\":\"requests.sessions:RequestsCookieJar#get\",\"kind\":\"method\",\"summary\":\"Dict-like get() that also supports optional domain and path args in order to resolve naming collisions from using one cookie jar over multiple domains.\",\"import\":\"from requests.sessions import RequestsCookieJar\",\"resolved_via_alias\":\"requests.cookies:RequestsCookieJar#get\"},{\"id\":\"requests:Session#get\",\"kind\":\"method\",\"summary\":\"Sends a GET request. Returns :class:`Response` object.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session#get\"},{\"id\":\"requests.status_codes:LookupDict#get\",\"kind\":\"method\",\"summary\":\"Method get\",\"import\":\"from requests.status_codes import LookupDict\",\"resolved_via_alias\":\"requests.structures:LookupDict#get\"},{\"id\":\"requests.sessions:HTTPAdapter#get_connection\",\"kind\":\"method\",\"summary\":\"DEPRECATED: Users should move to `get_connection_with_tls_context` for all subclasses of HTTPAdapter using Requests>=2.32.2.\",\"import\":\"from requests.sessions import HTTPAdapter\",\"resolved_via_alias\":\"requests.adapters:HTTPAdapter#get_connection\"}],\"total\":39,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_018bskvUuCQ1SSERC9DhQqoy",
+      "content": "{\"results\":[{\"id\":\"requests.models:HTTPBasicAuth\",\"kind\":\"class\",\"summary\":\"Attaches HTTP Basic Authentication to the given Request object.\",\"import\":\"from requests.models import HTTPBasicAuth\",\"resolved_via_alias\":\"requests.auth:HTTPBasicAuth\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Dy7gTR1L6qvfYk76YUPwzo",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"requests.api\",\"aliases\":[\"requests:get\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"url\",\"type\":\"_t.UriType\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"URL for the new :class:`Request` object.\"},{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"(optional) Dictionary, list of tuples or bytes to send\\nin the query string for the :class:`Request`.\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\",\"returns_description\":\":class:`Response <Response>` object\"}],\"semantics\":{\"summary\":\"Sends a GET request.\",\"description\":\":param url: URL for the new :class:`Request` object.\\n    :param params: (optional) Dictionary, list of tuples or bytes to send\\n        in the query string for the :class:`Request`.\\n    :param \\\\*\\\\*kwargs: Optional arguments that ``request`` takes.\\n    :return: :class:`Response <Response>` object\\n    :rtype: requests.Response\"},\"id\":\"requests:get\",\"resolved_via_alias\":\"requests.api:get\",\"import\":\"from requests import get\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"url\",\"type\":\"_t.UriType\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\"}],\"optional_parameters\":[{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"default\":null}],\"is_async\":false,\"return_type\":\"Response\",\"returns_classes\":[\"requests:Response\"],\"next\":\"returns Response \u2192 get_symbol(ids=['requests:Response']) to see its members\"}},{\"kind\":\"class\",\"module\":\"requests.auth\",\"aliases\":[\"requests.models:HTTPBasicAuth\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"username\",\"type\":\"UnionType[bytes, str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"password\",\"type\":\"UnionType[bytes, str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Attaches HTTP Basic Authentication to the given Request object.\"},\"id\":\"requests.auth:HTTPBasicAuth\",\""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

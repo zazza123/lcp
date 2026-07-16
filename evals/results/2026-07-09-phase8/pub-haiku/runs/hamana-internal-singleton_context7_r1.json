@@ -1,0 +1,64 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I couldn't find the `hamana` library in Context7's documentation index. Since you've indicated it's already installed at version 1.0.1, I need to work from that directly. Could you provide any of the following to help me generate the correct code:\n\n1. The exact name of the singleton connector class (e.g., `DatabaseConnector`, `DBConnector`, etc.)\n2. The method to access the singleton instance (e.g., `get_instance()`, `instance()`, `.instance` property)\n3. The attribute or method on that instance that returns the raw connection (e.g., `.connection`, `.get_connection()`, `.db_connection`)\n\nAlternatively, if you can share a quick import example or inspect the library briefly (e.g., `python -c \"import hamana; help(hamana)\"`), that would help me generate the exact working code.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 1546,
+    "cache_read_tokens": 85787,
+    "cache_creation_tokens": 9884,
+    "cost_usd": 0.0361137,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 41.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "database connector singleton instance raw connection"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana python library"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QD6YLqyZRDfXFrvRoqoZRS",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_012JSfwFvJoaYMejSSRtRabT",
+      "content": "Available Libraries:\n\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

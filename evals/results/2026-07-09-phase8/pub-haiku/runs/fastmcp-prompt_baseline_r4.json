@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nimport uvicorn\n\nserver = Server(\"message-template-server\")\n\n@server.prompt()\ndef summarize(text: str):\n    \"\"\"Summarize the provided text.\"\"\"\n    return {\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": f\"Please summarize the following text:\\n\\n{text}\"\n                    }\n                ]\n            }\n        ]\n    }\n\nif __name__ == \"__main__\":\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import Server\nimport uvicorn\n\nserver = Server(\"message-template-server\")\n\n@server.prompt()\ndef summarize(text: str):\n    \"\"\"Summarize the provided text.\"\"\"\n    return {\n        \"messages\": [\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": f\"Please summarize the following text:\\n\\n{text}\"\n                    }\n                ]\n            }\n        ]\n    }\n\nif __name__ == \"__main__\":\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2571,
+    "cache_read_tokens": 22018,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0150658,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

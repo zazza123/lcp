@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import logging\nfrom typing import Callable\n\nfrom fastmcp import Server\nfrom starlette.middleware.base import BaseHTTPMiddleware\nfrom starlette.requests import Request\nfrom starlette.responses import Response\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\n\nclass RequestLoggingMiddleware(BaseHTTPMiddleware):\n    \"\"\"Middleware that logs every incoming request before handling.\"\"\"\n\n    async def dispatch(self, request: Request, call_next: Callable) -> Response:\n        logger.info(\n            f\"Request: {request.method} {request.url.path} \"\n            f\"(client: {request.client.host if request.client else 'unknown'})\"\n        )\n        response = await call_next(request)\n        logger.info(f\"Response: {response.status_code}\")\n        return response\n\n\n# Create server and attach middleware\nserver = Server(\"example-server\")\nserver.app.add_middleware(RequestLoggingMiddleware)\n\n\n@server.list_resources()\nasync def list_resources() -> list[str]:\n    return [\"resource://example\"]\n\n\n@server.read_resource()\nasync def read_resource(uri: str) -> str:\n    return f\"Content of {uri}\"\n\n\nif __name__ == \"__main__\":\n    import uvicorn\n\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nimport logging\nfrom typing import Callable\n\nfrom fastmcp import Server\nfrom starlette.middleware.base import BaseHTTPMiddleware\nfrom starlette.requests import Request\nfrom starlette.responses import Response\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\n\nclass RequestLoggingMiddleware(BaseHTTPMiddleware):\n    \"\"\"Middleware that logs every incoming request before handling.\"\"\"\n\n    async def dispatch(self, request: Request, call_next: Callable) -> Response:\n        logger.info(\n            f\"Request: {request.method} {request.url.path} \"\n            f\"(client: {request.client.host if request.client else 'unknown'})\"\n        )\n        response = await call_next(request)\n        logger.info(f\"Response: {response.status_code}\")\n        return response\n\n\n# Create server and attach middleware\nserver = Server(\"example-server\")\nserver.app.add_middleware(RequestLoggingMiddleware)\n\n\n@server.list_resources()\nasync def list_resources() -> list[str]:\n    return [\"resource://example\"]\n\n\n@server.read_resource()\nasync def read_resource(uri: str) -> str:\n    return f\"Content of {uri}\"\n\n\nif __name__ == \"__main__\":\n    import uvicorn\n\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1262,
+    "cache_read_tokens": 24084,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.008727400000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp.server.middleware:Middleware"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

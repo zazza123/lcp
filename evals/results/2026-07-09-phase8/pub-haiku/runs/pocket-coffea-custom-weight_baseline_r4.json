@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.weights import Weight\n\nclass ToyReweight(Weight):\n    name = \"toy_reweight\"\n    has_variations = True\n    weight = lambda self, events: events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n    weight_up = lambda self, events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 1.05\n    weight_down = lambda self, events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 0.95\n\n\n# Example usage in configuration:\n# config = {\n#     ...\n#     \"weights_classes\": [ToyReweight()],\n#     ...\n# }",
+  "result_text": "```python\nfrom pocket_coffea.weights import Weight\n\nclass ToyReweight(Weight):\n    name = \"toy_reweight\"\n    has_variations = True\n    weight = lambda self, events: events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n    weight_up = lambda self, events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 1.05\n    weight_down = lambda self, events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 0.95\n\n\n# Example usage in configuration:\n# config = {\n#     ...\n#     \"weights_classes\": [ToyReweight()],\n#     ...\n# }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3325,
+    "cache_read_tokens": 22098,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0188438,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.weights.Weight"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-missing-values",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create a sample DataFrame with missing values\nnative_df = pd.DataFrame({\n    \"quantity\": [1, None, 3, None, 5],\n    \"region\": [\"US\", None, \"EU\", \"US\", None]\n})\n\n# Convert to narwhals\ndf = nw.from_native(native_df)\n\n# Clean the DataFrame\ncleaned_df = df.with_columns([\n    nw.col(\"quantity\").fill_null(0),\n    nw.col(\"region\").fill_null(\"unknown\")\n])\n\n# Convert back to native format if needed\nresult = nw.to_native(cleaned_df)\nprint(result)",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create a sample DataFrame with missing values\nnative_df = pd.DataFrame({\n    \"quantity\": [1, None, 3, None, 5],\n    \"region\": [\"US\", None, \"EU\", \"US\", None]\n})\n\n# Convert to narwhals\ndf = nw.from_native(native_df)\n\n# Clean the DataFrame\ncleaned_df = df.with_columns([\n    nw.col(\"quantity\").fill_null(0),\n    nw.col(\"region\").fill_null(\"unknown\")\n])\n\n# Convert back to native format if needed\nresult = nw.to_native(cleaned_df)\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1504,
+    "cache_read_tokens": 22014,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0097304,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

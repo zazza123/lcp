@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, jsonify, Blueprint\n\n# Create the users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return jsonify([\n        {'id': 1, 'name': 'Alice'},\n        {'id': 2, 'name': 'Bob'},\n    ])\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({'id': user_id, 'name': f'User {user_id}'})\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return jsonify({'id': 3, 'name': 'Charlie'}), 201\n\n# Create the main application\napp = Flask(__name__)\n\n# Register the users blueprint under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef home():\n    return jsonify({'message': 'Welcome to Flask App'})\n\nif __name__ == '__main__':\n    app.run(debug=True)",
+  "result_text": "```python\nfrom flask import Flask, jsonify, Blueprint\n\n# Create the users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return jsonify([\n        {'id': 1, 'name': 'Alice'},\n        {'id': 2, 'name': 'Bob'},\n    ])\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({'id': user_id, 'name': f'User {user_id}'})\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return jsonify({'id': 3, 'name': 'Charlie'}), 201\n\n# Create the main application\napp = Flask(__name__)\n\n# Register the users blueprint under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef home():\n    return jsonify({'message': 'Welcome to Flask App'})\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 888,
+    "cache_read_tokens": 22048,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.006653800000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 28.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

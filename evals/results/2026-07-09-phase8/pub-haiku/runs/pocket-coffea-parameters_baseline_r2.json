@@ -1,0 +1,32 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from omegaconf import OmegaConf\nfrom pathlib import Path\n\n# Step 1: Fetch the framework's default parameter set\ntry:\n    import importlib.resources\n    defaults_file = importlib.resources.files('pocket_coffea').joinpath('config/defaults.yaml')\n    params_default = OmegaConf.load(str(defaults_file))\nexcept Exception:\n    params_default = OmegaConf.create({})\n\n# Step 2: Load and overlay the two YAML files onto defaults\nparams_preselection = OmegaConf.load(Path(\"params/object_preselection.yaml\"))\nparams_triggers = OmegaConf.load(Path(\"params/triggers.yaml\"))\n\n# Merge in order: defaults < preselection < triggers (later values override)\nfinal_params = OmegaConf.merge(params_default, params_preselection, params_triggers)\n\nprint(OmegaConf.to_yaml(final_params))",
+  "result_text": "```python\nfrom omegaconf import OmegaConf\nfrom pathlib import Path\n\n# Step 1: Fetch the framework's default parameter set\ntry:\n    import importlib.resources\n    defaults_file = importlib.resources.files('pocket_coffea').joinpath('config/defaults.yaml')\n    params_default = OmegaConf.load(str(defaults_file))\nexcept Exception:\n    params_default = OmegaConf.create({})\n\n# Step 2: Load and overlay the two YAML files onto defaults\nparams_preselection = OmegaConf.load(Path(\"params/object_preselection.yaml\"))\nparams_triggers = OmegaConf.load(Path(\"params/triggers.yaml\"))\n\n# Merge in order: defaults < preselection < triggers (later values override)\nfinal_params = OmegaConf.merge(params_default, params_preselection, params_triggers)\n\nprint(OmegaConf.to_yaml(final_params))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4223,
+    "cache_read_tokens": 22067,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0233307,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 43.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.parameters.defaults:get_default_parameters",
+      "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

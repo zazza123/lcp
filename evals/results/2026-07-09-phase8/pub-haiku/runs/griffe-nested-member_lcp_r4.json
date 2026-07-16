@@ -1,0 +1,31 @@
+{
+  "case_id": "griffe-nested-member",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\n\npkg = load(\"mypkg\")\nmember = pkg[\"utils.parsers.parse_date\"]\nprint(f\"Deprecated: {member.deprecated}\")\nprint(f\"Has docstring: {member.docstring is not None}\")",
+  "result_text": "```python\nfrom griffe import load\n\npkg = load(\"mypkg\")\nmember = pkg[\"utils.parsers.parse_date\"]\nprint(f\"Deprecated: {member.deprecated}\")\nprint(f\"Has docstring: {member.docstring is not None}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4826,
+    "cache_read_tokens": 22137,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0263527,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 55.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "griffe:Object#get_member"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.loader import GriffeLoader\nfrom griffe.extensions import Extension\nfrom griffe.dataclasses import Function, Docstring\n\n\nclass DocstringCheckerExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to function docstrings during loading.\"\"\"\n    \n    def on_docstring(self, docstring, obj):\n        \"\"\"Called when processing a docstring.\"\"\"\n        if isinstance(obj, Function) and docstring is not None:\n            return Docstring(\n                docstring.value + \" [checked]\",\n                lineno=docstring.lineno,\n                endlineno=docstring.endlineno,\n            )\n        return docstring\n\n\n# Aggregate extension as griffe expects\nextensions = [DocstringCheckerExtension()]\n\n# Load package with extension enabled\nloader = GriffeLoader(extensions=extensions)\nmodule = loader.load(\"mypkg\")\n\n# Verify results by displaying function docstrings\ndef print_functions(obj, indent=0):\n    \"\"\"Recursively print all functions and their modified docstrings.\"\"\"\n    for member in getattr(obj, \"members\", {}).values():\n        if isinstance(member, Function):\n            doc_text = member.docstring.value if member.docstring else \"(no docstring)\"\n            print(\"  \" * indent + f\"{member.name}: {doc_text}\")\n        else:\n            print_functions(member, indent + 1)\n\n\nprint_functions(module)",
+  "result_text": "```python\nfrom griffe.loader import GriffeLoader\nfrom griffe.extensions import Extension\nfrom griffe.dataclasses import Function, Docstring\n\n\nclass DocstringCheckerExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to function docstrings during loading.\"\"\"\n    \n    def on_docstring(self, docstring, obj):\n        \"\"\"Called when processing a docstring.\"\"\"\n        if isinstance(obj, Function) and docstring is not None:\n            return Docstring(\n                docstring.value + \" [checked]\",\n                lineno=docstring.lineno,\n                endlineno=docstring.endlineno,\n            )\n        return docstring\n\n\n# Aggregate extension as griffe expects\nextensions = [DocstringCheckerExtension()]\n\n# Load package with extension enabled\nloader = GriffeLoader(extensions=extensions)\nmodule = loader.load(\"mypkg\")\n\n# Verify results by displaying function docstrings\ndef print_functions(obj, indent=0):\n    \"\"\"Recursively print all functions and their modified docstrings.\"\"\"\n    for member in getattr(obj, \"members\", {}).values():\n        if isinstance(member, Function):\n            doc_text = member.docstring.value if member.docstring else \"(no docstring)\"\n            print(\"  \" * indent + f\"{member.name}: {doc_text}\")\n        else:\n            print_functions(member, indent + 1)\n\n\nprint_functions(module)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5815,
+    "cache_read_tokens": 22034,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0312874,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 54.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "griffe:Extension",
+      "griffe:load"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.dataclasses.Docstring",
+      "griffe.dataclasses.Function",
+      "griffe.extensions.Extension",
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

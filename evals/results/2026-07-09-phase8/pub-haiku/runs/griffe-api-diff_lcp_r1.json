@@ -1,0 +1,150 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load_git, find_breaking_changes\n\nold_api = load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\nnew_api = load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\nfor breakage in find_breaking_changes(old_api, new_api):\n    print(breakage)",
+  "result_text": "```python\nfrom griffe import load_git, find_breaking_changes\n\nold_api = load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\nnew_api = load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\nfor breakage in find_breaking_changes(old_api, new_api):\n    print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 141,
+    "output_tokens": 2371,
+    "cache_read_tokens": 406443,
+    "cache_creation_tokens": 20968,
+    "cost_usd": 0.09457629999999999,
+    "num_turns": 15,
+    "tool_calls": 14,
+    "duration_s": 48.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "griffe load git breakage",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe",
+        "version": "2.1.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load git",
+        "library": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load",
+        "library": "griffe",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:load_git",
+          "griffe:find_breaking_changes"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_013w5xLLoYcfKsm87itvXSYV",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_013Ehcgp9noAP7VKmWKSUE37",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01TD8AFLtYo3WTMGfVrMScLd",
+      "content": "{\"results\":[{\"id\":\"griffe:GriffeLoader#load\",\"kind\":\"method\",\"summary\":\"Load an object as a Griffe object, given its Python or file path.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader#load\"},{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:LoadingError\",\"kind\":\"class\",\"summary\":\"The base exception for all Griffe errors.\",\"import\":\"from griffe import LoadingError\",\"resolved_via_alias\":\"griffe._internal.exceptions:LoadingError\"},{\"id\":\"griffe:load_extensions\",\"kind\":\"function\",\"summary\":\"Load configured extensions.\",\"import\":\"from griffe import load_extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:load_extensions\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\"from griffe import load_git\",\"resolved_via_alias\":\"griffe._internal.loader:load_git\"},{\"id\":\"griffe:load_pypi\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific package version downloaded using pip.\",\"import\":\"from griffe import load_pypi\",\"resolved_via_alias\":\"griffe._internal.loader:load_pypi\"},{\"id\":\"griffe:ExtensionNotLoadedError\",\"kind\":\"class\",\"summary\":\"Exception raised when an extension could not be loaded.\",\"import\":\"from griffe import ExtensionNotLoadedError\",\"resolved_via_alias\":\"griffe._internal.exceptions:ExtensionNotLoadedError\"},{\"id\":\"griffe:GriffeLoader\",\"kind\":\"class\",\"summary\":\"The Griffe loader, allowing to load data from modules.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader\"},{\"id\":\"griffe:Alias#overloads\",\"kind\":\"attribute\",\"summary\":\"The overloaded signatures declared in this class/module or for this function.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#overloads\"},{\"id\":\"griffe:Extension#"
+    },
+    {
+      "tool_use_id": "toolu_019vVkAPFd3NFsFHBsnKL16n",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"griffe._internal.loader\",\"aliases\":[\"griffe:load_git\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"objspec\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"The Python path of an object, or file path to a module.\"},{\"name\":\"ref\",\"type\":\"str\",\"required\":false,\"default\":\"HEAD\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A Git reference such as a commit, tag or branch.\"},{\"name\":\"repo\",\"type\":\"str | Path\",\"required\":false,\"default\":\".\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Path to the repository (i.e. the directory *containing* the `.git` directory)\"},{\"name\":\"submodules\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to recurse on the submodules.\\nThis parameter only makes sense when loading a package (top-level module).\"},{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The extensions to use.\"},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The paths to search into (relative to the repository root).\"},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The docstring parser to use. By default, no parsing is done.\"},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Docstring parsing options.\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of source code lines.\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of modules.\"},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"required\":false"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "case_id": "pixeltable-import-csv",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Create table from CSV with automatic schema inference\ntable = pxt.create_table('demo.trades', source='trades.csv')",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Create table from CSV with automatic schema inference\ntable = pxt.create_table('demo.trades', source='trades.csv')\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 79,
+    "output_tokens": 5364,
+    "cache_read_tokens": 239933,
+    "cache_creation_tokens": 8657,
+    "cost_usd": 0.0682063,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 88.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pixeltable io import csv",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:context7",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__query-docs",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "Pixeltable",
+        "query": "import CSV into table with schema inference"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/pixeltable/pixeltable/0.6.6",
+        "query": "import CSV file into table with schema inference using io namespace"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/pixeltable/pixeltable",
+        "query": "io.import_csv function to load CSV file into table"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/pixeltable/pixeltable",
+        "query": "px.io tabular import csv namespace"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011W73CNWvpGjJnoexado8WB",
+      "content": "Available Libraries:\n\n- Title: Pixeltable\n- Context7-compatible library ID: /pixeltable/pixeltable\n- Description: Pixeltable is a declarative data infrastructure for multimodal AI applications, unifying storage, retrieval, and orchestration for diverse data types.\n- Code Snippets: 3585\n- Source Reputation: High\n- Benchmark Score: 100\n----------\n- Title: Pixeltable\n- Context7-compatible library ID: /websites/pixeltable\n- Description: Pixeltable is a multimodal data platform that enables building and managing AI applications with support for tables, computed columns, UDFs, embeddings, and version control.\n- Code Snippets: 30\n- Source Reputation: Medium\n----------\n- Title: Pixeltable\n- Context7-compatible library ID: /llmstxt/pixeltable_llms-full_txt\n- Description: Pixeltable is a data management system and framework for AI and LLM applications, providing features like data versioning, time travel, and robust integrations with various large language models.\n- Code Snippets: 979\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_014GcojVhocF5ETES1RNRzvt",
+      "content": "Version \"0.6.6\" not found for library \"/pixeltable/pixeltable\". This library has no versions."
+    },
+    {
+      "tool_use_id": "toolu_01HPqJafU4bk7nkN1xF81WH5",
+      "content": "### Import CSV Data\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/use-cases/ml-data-wrangling.mdx\n\nLoad data from a CSV file into Pixeltable. Ensure the file path is correct.\n\n```python\nfrom pixeltable import pxt\n\ndf = pxt.import_csv('path/to/your/data.csv')\n```\n\n--------------------------------\n\n### Create Table from CSV Source\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/tutorials/tables-and-data-operations.ipynb\n\nLoad data into a Pixeltable table from a CSV file using `create_table()`. Specify the table name, source URL, primary key, and schema overrides for specific columns like timestamps.\n\n```python\neq_t = pxt.create_table(\n    'fundamentals/earthquakes',  # Name for the new table\n    source='https://raw.githubusercontent.com/pixeltable/pixeltable/release/docs/resources/earthquakes.csv',\n    primary_key='id',  # Column 'id' is the primary key\n    schema_overrides={\n        'timestamp': pxt.Timestamp\n    },  # Interpret column 3 as a timestamp\n)\n```\n\n### Import data from CSV files > Solution\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/data/data-import-csv.ipynb\n\nYou can create a table from a CSV file by using `pxt.create_table()` with the `source` parameter set to the CSV file path or URL. Alternatively, you can create a Pandas DataFrame first and then insert its rows into an existing or newly created table using the `insert()` method.\n\n--------------------------------\n\n### Import data from CSV files\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/data/data-import-csv.ipynb\n\nPixeltable allows you to import data from CSV and Excel files into tables for further processing. You can import data directly from a CSV file path, a CSV URL, an Excel file, or from a Pandas DataFrame. Pixeltable automatically infers column types from CSV data, but you can override these types using `schema_overrides`. For very large CSV files, it is "
+    },
+    {
+      "tool_use_id": "toolu_01H13zfS4bkhwpidtP3KPmmw",
+      "content": "### Import CSV from URL\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/data/data-import-csv.ipynb\n\nCreates a Pixeltable table named 'population' by importing data directly from a CSV file hosted at a given URL. This method is suitable for loading data from remote sources.\n\n```python\n# Import CSV from URL\ncsv_url = 'https://raw.githubusercontent.com/pixeltable/pixeltable/main/docs/resources/world-population-data.csv'\n\npopulation = pxt.create_table('import_demo/population', source=csv_url)\n```\n\n--------------------------------\n\n### Import CSV Data\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/use-cases/ml-data-wrangling.mdx\n\nLoad data from a CSV file into Pixeltable. Ensure the file path is correct.\n\n```python\nfrom pixeltable import pxt\n\ndf = pxt.import_csv('path/to/your/data.csv')\n```\n\n### Import data from CSV files\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/data/data-import-csv.ipynb\n\nPixeltable allows you to import data from CSV and Excel files into tables for further processing. You can import data directly from a CSV file path, a CSV URL, an Excel file, or from a Pandas DataFrame. Pixeltable automatically infers column types from CSV data, but you can override these types using `schema_overrides`. For very large CSV files, it is recommended to use `create_table(source=...)` which streams data, or to import data in batches if memory is limited.\n\n--------------------------------\n\n### Import data from CSV files > Solution\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/data/data-import-csv.ipynb\n\nYou can create a table from a CSV file by using `pxt.create_table()` with the `source` parameter set to the CSV file path or URL. Alternatively, you can create a Pandas DataFrame first and then insert its rows into an existing or newly created table using the `insert()` method.\n\n--------------------------------\n\n### Data"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable.io:import_csv"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

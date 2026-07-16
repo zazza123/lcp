@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create sample DataFrame\ndata = {\"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\"], \"spend\": [500, 1200, 999, 1500]}\ndf_pd = pd.DataFrame(data)\n\n# Wrap with narwhals\ndf = nw.from_native(df_pd)\n\n# Add tier column using backend-evaluated conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\"))\n)\n\n# Display result\nprint(df.to_native())",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create sample DataFrame\ndata = {\"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\"], \"spend\": [500, 1200, 999, 1500]}\ndf_pd = pd.DataFrame(data)\n\n# Wrap with narwhals\ndf = nw.from_native(df_pd)\n\n# Add tier column using backend-evaluated conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\"))\n)\n\n# Display result\nprint(df.to_native())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1093,
+    "cache_read_tokens": 22059,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0076799,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

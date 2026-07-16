@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\n\nserver = FastMCP(\"simple-server\")\n\n@server.tool()\ndef uppercase(text: str) -> str:\n    \"\"\"Convert text to uppercase.\"\"\"\n    return text.upper()\n\nif __name__ == \"__main__\":\n    server.run(host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"simple-server\")\n\n@server.tool()\ndef uppercase(text: str) -> str:\n    \"\"\"Convert text to uppercase.\"\"\"\n    return text.upper()\n\nif __name__ == \"__main__\":\n    server.run(host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2033,
+    "cache_read_tokens": 24113,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0125853,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

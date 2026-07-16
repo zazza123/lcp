@@ -1,0 +1,111 @@
+{
+  "case_id": "flask-custom-response",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, make_response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = make_response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == '__main__':\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, make_response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = make_response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == '__main__':\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1443,
+    "cache_read_tokens": 194619,
+    "cache_creation_tokens": 11316,
+    "cost_usd": 0.0493759,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 28.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "make_response",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:make_response",
+          "flask:Response"
+        ],
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "status_code",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "flask",
+        "module": "flask.wrappers",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:Response#status_code",
+          "flask:Response#headers"
+        ],
+        "library": "flask"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01PdgeaFgKKsRchMWVTF37CZ",
+      "content": "{\"status\":\"loaded\",\"name\":\"flask\",\"version\":\"3.1.3\",\"language\":\"python\",\"symbol_count\":513,\"module_count\":24,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='flask') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01JWb2bhxdsBzjtSaiX9yn2w",
+      "content": "{\"results\":[{\"id\":\"flask:Flask#make_response\",\"kind\":\"method\",\"summary\":\"Convert the return value from a view function to an instance of :attr:`response_class`.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#make_response\"},{\"id\":\"flask:make_response\",\"kind\":\"function\",\"summary\":\"Sometimes it is necessary to set additional headers in a view.  Because views do not have to return response objects but can return a value that is converted into a response object by Flask itself, it becomes tricky to add headers to it.  This function can be called instead of using a return and you will get a response object which you can use to attach headers.\",\"import\":\"from flask import make_response\",\"resolved_via_alias\":\"flask.helpers:make_response\"},{\"id\":\"flask:Flask#dispatch_request\",\"kind\":\"method\",\"summary\":\"Does the request dispatching.  Matches the URL and returns the return value of the view or error handler.  This does not have to be a response object.  In order to convert the return value to a proper response object, call :func:`make_response`.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#dispatch_request\"},{\"id\":\"flask:Response\",\"kind\":\"class\",\"summary\":\"The response object that is used by default in Flask.  Works like the response object from Werkzeug but is set to have an HTML mimetype by default.  Quite often you don't have to create this object yourself because :meth:`~flask.Flask.make_response` will take care of that for you.\",\"import\":\"from flask import Response\",\"resolved_via_alias\":\"flask.wrappers:Response\"}],\"total\":4,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01CTuLHjEjkkJ4u6GVwgk6yJ",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"flask.helpers\",\"aliases\":[\"flask:make_response\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"t.Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\"}],\"semantics\":{\"summary\":\"Sometimes it is necessary to set additional headers in a view.  Because views do not have to return response objects but can return a value that is converted into a response object by Flask itself, it becomes tricky to add headers to it.  This function can be called instead of using a return and you will get a response object which you can use to attach headers.\",\"description\":\"If view looked like this and you want to add a new header::\\n\\n        def index():\\n            return render_template('index.html', foo=42)\\n\\n    You can now do something like this::\\n\\n        def index():\\n            response = make_response(render_template('index.html', foo=42))\\n            response.headers['X-Parachutes'] = 'parachutes are cool'\\n            return response\\n\\n    This function accepts the very same arguments you can return from a\\n    view function.  This for example creates a response with a 404 error\\n    code::\\n\\n        response = make_response(render_template('not_found.html'), 404)\\n\\n    The other use case of this function is to force the return value of a\\n    view function into a response which is helpful with view\\n    decorators::\\n\\n        response = make_response(view_function())\\n        response.headers['X-Parachutes'] = 'parachutes are cool'\\n\\n    Internally this function does the following things:\\n\\n    -   if no arguments are passed, it creates a new response argument\\n    -   if one argument is passed, :meth:`flask.Flask.make_response`\\n        is invoked with it.\\n    -   if more than one argument is passed, the arguments are passed\\n        to the :meth:`flask.Flask.make_response` function as tuple.\\n\\n    .. versionadded:: 0.6\"},\"id\":\"flask:make_response\",\"resolved_via_alias\":\"flask.helpers"
+    },
+    {
+      "tool_use_id": "toolu_01RrPtx5zKkgqSGa74SK31Lq",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018enPYx4G9zbubXpfTkhJjy",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01TmE2bf8dKcpyPPVM3JSHga",
+      "content": "{\"symbols\":[],\"not_found\":[\"flask:Response#status_code\",\"flask:Response#headers\"],\"hint\":\"Some ids were not found \u2014 take ids from search() results; the format is 'module:name' or 'module:Class#member'.\"}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

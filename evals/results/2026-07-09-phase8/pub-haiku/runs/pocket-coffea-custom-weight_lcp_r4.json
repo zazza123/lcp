@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import numpy as np\nfrom pocket_coffea.lib.weights import WeightWrapper\n\nclass ToyReweight(WeightWrapper):\n    \"\"\"Custom MC weight with \u00b15% symmetric variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def __call__(self, events):\n        \"\"\"Return nominal weight normalized to 1.\"\"\"\n        original = events.LHEWeight_originalXWGTUP\n        return original / np.mean(original)\n    \n    def get_variation(self, events, variation_name):\n        \"\"\"Return weight variation (up/down).\"\"\"\n        nominal = self(events)\n        if variation_name == \"up\":\n            return nominal * 1.05\n        elif variation_name == \"down\":\n            return nominal * 0.95\n        return nominal\n\n# Usage in PocketCoffea configuration:\n# cfg = {\n#     \"weights_classes\": [ToyReweight()],\n# }",
+  "result_text": "```python\nimport numpy as np\nfrom pocket_coffea.lib.weights import WeightWrapper\n\nclass ToyReweight(WeightWrapper):\n    \"\"\"Custom MC weight with \u00b15% symmetric variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def __call__(self, events):\n        \"\"\"Return nominal weight normalized to 1.\"\"\"\n        original = events.LHEWeight_originalXWGTUP\n        return original / np.mean(original)\n    \n    def get_variation(self, events, variation_name):\n        \"\"\"Return weight variation (up/down).\"\"\"\n        nominal = self(events)\n        if variation_name == \"up\":\n            return nominal * 1.05\n        elif variation_name == \"down\":\n            return nominal * 0.95\n        return nominal\n\n# Usage in PocketCoffea configuration:\n# cfg = {\n#     \"weights_classes\": [ToyReweight()],\n# }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1986,
+    "cache_read_tokens": 10990,
+    "cache_creation_tokens": 11188,
+    "cost_usd": 0.033414,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

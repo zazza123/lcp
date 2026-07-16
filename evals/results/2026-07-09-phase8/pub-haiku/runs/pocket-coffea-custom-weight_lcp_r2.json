@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "class ToyReweight:\n    \"\"\"\n    Custom per-event MC weight with symmetric \u00b15% variations.\n    \n    Nominal weight is LHEWeight_originalXWGTUP normalized to 1.\n    Variations are \u00b15% around the nominal.\n    \"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def nominal(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to mean.\"\"\"\n        mean_weight = events.LHEWeight_originalXWGTUP.mean()\n        return events.LHEWeight_originalXWGTUP / mean_weight\n    \n    @staticmethod\n    def up(events):\n        \"\"\"Up variation: nominal weight \u00d7 1.05.\"\"\"\n        mean_weight = events.LHEWeight_originalXWGTUP.mean()\n        nominal = events.LHEWeight_originalXWGTUP / mean_weight\n        return nominal * 1.05\n    \n    @staticmethod\n    def down(events):\n        \"\"\"Down variation: nominal weight \u00d7 0.95.\"\"\"\n        mean_weight = events.LHEWeight_originalXWGTUP.mean()\n        nominal = events.LHEWeight_originalXWGTUP / mean_weight\n        return nominal * 0.95",
+  "result_text": "```python\nclass ToyReweight:\n    \"\"\"\n    Custom per-event MC weight with symmetric \u00b15% variations.\n    \n    Nominal weight is LHEWeight_originalXWGTUP normalized to 1.\n    Variations are \u00b15% around the nominal.\n    \"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def nominal(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to mean.\"\"\"\n        mean_weight = events.LHEWeight_originalXWGTUP.mean()\n        return events.LHEWeight_originalXWGTUP / mean_weight\n    \n    @staticmethod\n    def up(events):\n        \"\"\"Up variation: nominal weight \u00d7 1.05.\"\"\"\n        mean_weight = events.LHEWeight_originalXWGTUP.mean()\n        nominal = events.LHEWeight_originalXWGTUP / mean_weight\n        return nominal * 1.05\n    \n    @staticmethod\n    def down(events):\n        \"\"\"Down variation: nominal weight \u00d7 0.95.\"\"\"\n        mean_weight = events.LHEWeight_originalXWGTUP.mean()\n        nominal = events.LHEWeight_originalXWGTUP / mean_weight\n        return nominal * 0.95\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3132,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6986,
+    "cost_usd": 0.0311602,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 65.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

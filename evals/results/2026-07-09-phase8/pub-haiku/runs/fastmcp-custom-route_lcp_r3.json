@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\nfrom starlette.responses import JSONResponse\n\n# Create MCP server instance\nmcp = FastMCP(name=\"service\")\n\n# Add plain HTTP health check endpoint\n@mcp.app.get(\"/health\")\nasync def health_check():\n    return JSONResponse({\"status\": \"ok\"})\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(mcp, host=\"0.0.0.0\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nfrom starlette.responses import JSONResponse\n\n# Create MCP server instance\nmcp = FastMCP(name=\"service\")\n\n# Add plain HTTP health check endpoint\n@mcp.app.get(\"/health\")\nasync def health_check():\n    return JSONResponse({\"status\": \"ok\"})\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(mcp, host=\"0.0.0.0\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2316,
+    "cache_read_tokens": 22114,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0138004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#custom_route"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

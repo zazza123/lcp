@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\n\nclass ToyReweight:\n    \"\"\"Custom MC weight with symmetric up/down variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / ak.mean(nominal)\n    \n    @staticmethod\n    def weight_up(events):\n        \"\"\"Up variation: +5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 1.05\n    \n    @staticmethod\n    def weight_down(events):\n        \"\"\"Down variation: -5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 0.95\n\n\n# Example configuration usage\nif __name__ == \"__main__\":\n    from pocket_coffea.executors import DaskExecutor\n    from pocket_coffea.processor import ProcessorConfig\n    \n    config = ProcessorConfig(\n        weights_classes=[ToyReweight()],\n        # ... other configuration parameters\n    )",
+  "result_text": "```python\nimport awkward as ak\n\nclass ToyReweight:\n    \"\"\"Custom MC weight with symmetric up/down variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / ak.mean(nominal)\n    \n    @staticmethod\n    def weight_up(events):\n        \"\"\"Up variation: +5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 1.05\n    \n    @staticmethod\n    def weight_down(events):\n        \"\"\"Down variation: -5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 0.95\n\n\n# Example configuration usage\nif __name__ == \"__main__\":\n    from pocket_coffea.executors import DaskExecutor\n    from pocket_coffea.processor import ProcessorConfig\n    \n    config = ProcessorConfig(\n        weights_classes=[ToyReweight()],\n        # ... other configuration parameters\n    )\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1944,
+    "cache_read_tokens": 22132,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0119422,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.processor.ProcessorConfig"
+    ],
+    "error": null
+  }
+}

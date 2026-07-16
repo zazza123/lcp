@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP, Resource\n\nserver = FastMCP(\"message-template-server\")\n\n@server.resource(uri_template=\"message-template://summarize/{text}\")\nasync def get_summarize_template(text: str) -> Resource:\n    \"\"\"Get a message template for summarizing text.\"\"\"\n    message = f\"Please summarize the following text:\\n\\n{text}\"\n    \n    return Resource(\n        uri=f\"message-template://summarize/{text}\",\n        name=\"summarize\",\n        description=\"Reusable message template for text summarization\",\n        mimeType=\"text/plain\",\n        text=message\n    )\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP, Resource\n\nserver = FastMCP(\"message-template-server\")\n\n@server.resource(uri_template=\"message-template://summarize/{text}\")\nasync def get_summarize_template(text: str) -> Resource:\n    \"\"\"Get a message template for summarizing text.\"\"\"\n    message = f\"Please summarize the following text:\\n\\n{text}\"\n    \n    return Resource(\n        uri=f\"message-template://summarize/{text}\",\n        name=\"summarize\",\n        description=\"Reusable message template for text summarization\",\n        mimeType=\"text/plain\",\n        text=message\n    )\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3122,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6921,
+    "cost_usd": 0.030975600000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP#prompt"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Resource"
+    ],
+    "error": null
+  }
+}

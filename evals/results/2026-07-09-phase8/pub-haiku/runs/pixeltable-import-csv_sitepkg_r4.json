@@ -1,0 +1,59 @@
+{
+  "case_id": "pixeltable-import-csv",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom pixeltable.io import csv\n\n# Create or get the database and schema\ndb = pxt.create_client()\n\n# Import the CSV file\npxt.io.import_csv(\n    \"trades.csv\",\n    \"demo.trades\",\n    infer_schema=True\n)",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.io import csv\n\n# Create or get the database and schema\ndb = pxt.create_client()\n\n# Import the CSV file\npxt.io.import_csv(\n    \"trades.csv\",\n    \"demo.trades\",\n    infer_schema=True\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 41,
+    "output_tokens": 774,
+    "cache_read_tokens": 121944,
+    "cache_creation_tokens": 786,
+    "cost_usd": 0.017677400000000003,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 15.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pixeltable*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "site-packages/pixeltable*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": ".venv-bench/lib/python3.12/site-packages/pixeltable",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pixeltable.create_client"
+    ],
+    "error": null
+  }
+}

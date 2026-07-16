@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-stream-download",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\ndef download_file_streaming(url, output_filename, chunk_size=8192):\n    \"\"\"Download a file using streaming to avoid loading entire body into memory.\"\"\"\n    response = requests.get(url, stream=True)\n    response.raise_for_status()\n    \n    with open(output_filename, 'wb') as f:\n        for chunk in response.iter_content(chunk_size=chunk_size):\n            if chunk:\n                f.write(chunk)\n\nif __name__ == \"__main__\":\n    download_file_streaming(\"https://example.com/big.bin\", \"big.bin\")",
+  "result_text": "```python\nimport requests\n\ndef download_file_streaming(url, output_filename, chunk_size=8192):\n    \"\"\"Download a file using streaming to avoid loading entire body into memory.\"\"\"\n    response = requests.get(url, stream=True)\n    response.raise_for_status()\n    \n    with open(output_filename, 'wb') as f:\n        for chunk in response.iter_content(chunk_size=chunk_size):\n            if chunk:\n                f.write(chunk)\n\nif __name__ == \"__main__\":\n    download_file_streaming(\"https://example.com/big.bin\", \"big.bin\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 906,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6823,
+    "cost_usd": 0.0197054,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

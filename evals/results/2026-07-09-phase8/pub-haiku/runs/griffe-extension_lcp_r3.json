@@ -1,0 +1,34 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.extensions import Extension\nfrom griffe.docstrings import Docstring\nimport griffe\n\nclass CheckedExtension(Extension):\n    def on_members_collected(self, node):\n        \"\"\"Append [checked] to function docstrings\"\"\"\n        for member in node.members.values():\n            if member.is_function:\n                if member.docstring:\n                    text = member.docstring.value + \" [checked]\"\n                else:\n                    text = \"[checked]\"\n                member.docstring = Docstring(text, lineno=0, endlineno=0)\n\nextension = CheckedExtension()\nmodule = griffe.load(\"mypkg\", extensions=[extension])\n\nfor name, member in module.members.items():\n    if member.is_function:\n        print(f\"{name}: {member.docstring.value if member.docstring else 'No docstring'}\")",
+  "result_text": "```python\nfrom griffe.extensions import Extension\nfrom griffe.docstrings import Docstring\nimport griffe\n\nclass CheckedExtension(Extension):\n    def on_members_collected(self, node):\n        \"\"\"Append [checked] to function docstrings\"\"\"\n        for member in node.members.values():\n            if member.is_function:\n                if member.docstring:\n                    text = member.docstring.value + \" [checked]\"\n                else:\n                    text = \"[checked]\"\n                member.docstring = Docstring(text, lineno=0, endlineno=0)\n\nextension = CheckedExtension()\nmodule = griffe.load(\"mypkg\", extensions=[extension])\n\nfor name, member in module.members.items():\n    if member.is_function:\n        print(f\"{name}: {member.docstring.value if member.docstring else 'No docstring'}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4820,
+    "cache_read_tokens": 22129,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.026321899999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 54.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.Docstring",
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

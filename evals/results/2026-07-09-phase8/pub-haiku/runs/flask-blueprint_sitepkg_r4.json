@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint\n\n# Create the users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return {'users': ['Alice', 'Bob', 'Charlie']}, 200\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return {'id': user_id, 'name': f'User {user_id}'}, 200\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return {'message': 'User created'}, 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    return {'message': f'User {user_id} updated'}, 200\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return {'message': f'User {user_id} deleted'}, 204\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Register the users blueprint under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/', methods=['GET'])\ndef home():\n    return {'message': 'Welcome to the Flask API'}, 200\n\nif __name__ == '__main__':\n    app.run(debug=True)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint\n\n# Create the users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return {'users': ['Alice', 'Bob', 'Charlie']}, 200\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return {'id': user_id, 'name': f'User {user_id}'}, 200\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return {'message': 'User created'}, 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    return {'message': f'User {user_id} updated'}, 200\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return {'message': f'User {user_id} deleted'}, 204\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Register the users blueprint under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/', methods=['GET'])\ndef home():\n    return {'message': 'Welcome to the Flask API'}, 200\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1130,
+    "cache_read_tokens": 24073,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0080663,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

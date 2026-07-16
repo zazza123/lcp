@@ -1,0 +1,35 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.workflows.base import BaseProcessor\n\n\nclass DimuonAnalysisProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor for PocketCoffea.\"\"\"\n    \n    def object_preselection(self, df, cut_flow):\n        \"\"\"Build MuonGood collection: pT > 15 GeV and |eta| < 2.4\"\"\"\n        muon_mask = (df.Muon.pt > 15) & (abs(df.Muon.eta) < 2.4)\n        df[\"MuonGood\"] = df.Muon[muon_mask]\n        return df, cut_flow\n    \n    def object_counting(self, df, cut_flow):\n        \"\"\"Store the number of selected muons per event\"\"\"\n        df[\"n_muons_good\"] = ak.num(df.MuonGood)\n        return df, cut_flow",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.workflows.base import BaseProcessor\n\n\nclass DimuonAnalysisProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor for PocketCoffea.\"\"\"\n    \n    def object_preselection(self, df, cut_flow):\n        \"\"\"Build MuonGood collection: pT > 15 GeV and |eta| < 2.4\"\"\"\n        muon_mask = (df.Muon.pt > 15) & (abs(df.Muon.eta) < 2.4)\n        df[\"MuonGood\"] = df.Muon[muon_mask]\n        return df, cut_flow\n    \n    def object_counting(self, df, cut_flow):\n        \"\"\"Store the number of selected muons per event\"\"\"\n        df[\"n_muons_good\"] = ak.num(df.MuonGood)\n        return df, cut_flow\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6134,
+    "cache_read_tokens": 22120,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.032891,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 37.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [
+      "pocket_coffea.workflows.base:BaseProcessor"
+    ],
+    "unresolved_usages": [
+      "pocket_coffea.workflows.base.BaseProcessor"
+    ],
+    "error": null
+  }
+}

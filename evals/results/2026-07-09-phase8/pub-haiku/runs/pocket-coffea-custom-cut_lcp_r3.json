@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.cuts.masking import BaseMask\nimport awkward as ak\n\nclass DimuonMask(BaseMask):\n    def __call__(self, events, params, **kwargs):\n        muons = events.Muon\n        pt_threshold = params[\"pt_threshold\"]\n        \n        # Select muons above pT threshold\n        muons_high_pt = muons[muons.pt > pt_threshold]\n        \n        # Require at least 2 muons\n        n_muons = ak.count(muons_high_pt.pt, axis=1)\n        mask_n_muons = n_muons >= 2\n        \n        # Check opposite charge for leading pair\n        mu_lead = muons_high_pt[:, 0]\n        mu_subl = muons_high_pt[:, 1]\n        mask_opposite_charge = (mu_lead.charge * mu_subl.charge) < 0\n        \n        return mask_n_muons & mask_opposite_charge\n\n# Define cut for preselections configuration\ndimuon = (\"dimuon\", DimuonMask(), {\"pt_threshold\": 15})",
+  "result_text": "```python\nfrom pocket_coffea.cuts.masking import BaseMask\nimport awkward as ak\n\nclass DimuonMask(BaseMask):\n    def __call__(self, events, params, **kwargs):\n        muons = events.Muon\n        pt_threshold = params[\"pt_threshold\"]\n        \n        # Select muons above pT threshold\n        muons_high_pt = muons[muons.pt > pt_threshold]\n        \n        # Require at least 2 muons\n        n_muons = ak.count(muons_high_pt.pt, axis=1)\n        mask_n_muons = n_muons >= 2\n        \n        # Check opposite charge for leading pair\n        mu_lead = muons_high_pt[:, 0]\n        mu_subl = muons_high_pt[:, 1]\n        mask_opposite_charge = (mu_lead.charge * mu_subl.charge) < 0\n        \n        return mask_n_muons & mask_opposite_charge\n\n# Define cut for preselections configuration\ndimuon = (\"dimuon\", DimuonMask(), {\"pt_threshold\": 15})\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3061,
+    "cache_read_tokens": 22173,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0175313,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 36.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.cuts.masking.BaseMask"
+    ],
+    "error": null
+  }
+}

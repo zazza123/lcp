@@ -1,0 +1,32 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import connect\n\n# Connect to the SQLite database\nconnection = connect(\"warehouse.db\")\ncursor = connection.cursor()\n\n# Execute the query\ncursor.execute(\"SELECT * FROM events\")\n\n# Stream results in fixed-size batches of 5000 rows\nbatch_size = 5000\nbatch_number = 0\n\nwhile True:\n    batch = cursor.fetchmany(batch_size)\n    if not batch:\n        break\n    \n    batch_number += 1\n    print(f\"Processing batch {batch_number} with {len(batch)} rows\")\n    \n    # Iterate over each row in the batch\n    for row in batch:\n        # Process the row here\n        pass\n\nconnection.close()",
+  "result_text": "```python\nfrom hamana import connect\n\n# Connect to the SQLite database\nconnection = connect(\"warehouse.db\")\ncursor = connection.cursor()\n\n# Execute the query\ncursor.execute(\"SELECT * FROM events\")\n\n# Stream results in fixed-size batches of 5000 rows\nbatch_size = 5000\nbatch_number = 0\n\nwhile True:\n    batch = cursor.fetchmany(batch_size)\n    if not batch:\n        break\n    \n    batch_number += 1\n    print(f\"Processing batch {batch_number} with {len(batch)} rows\")\n    \n    # Iterate over each row in the batch\n    for row in batch:\n        # Process the row here\n        pass\n\nconnection.close()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2312,
+    "cache_read_tokens": 22014,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.013770399999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

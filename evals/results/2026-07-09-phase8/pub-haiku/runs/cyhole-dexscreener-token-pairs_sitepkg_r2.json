@@ -1,0 +1,55 @@
+{
+  "case_id": "cyhole-dexscreener-token-pairs",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.dex_screener import DexScreener\n\ndex = DexScreener()\n\nmint_address = \"So11111111111111111111111111111111111111112\"\n\nresponse = dex.client.get_token_pairs(\"solana\", mint_address)\n\nprint(f\"Number of pairs: {len(response.pairs)}\")",
+  "result_text": "```python\nfrom cyhole.dex_screener import DexScreener\n\ndex = DexScreener()\n\nmint_address = \"So11111111111111111111111111111111111111112\"\n\nresponse = dex.client.get_token_pairs(\"solana\", mint_address)\n\nprint(f\"Number of pairs: {len(response.pairs)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 33,
+    "output_tokens": 1843,
+    "cache_read_tokens": 99367,
+    "cache_creation_tokens": 10243,
+    "cost_usd": 0.0396707,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 29.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole*"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "cyhole",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/interaction.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

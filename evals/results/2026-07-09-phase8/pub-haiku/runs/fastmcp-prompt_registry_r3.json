@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\nfrom fastmcp import Server\n\nserver = Server(\"summarize-server\")\n\n@server.template(\"summarize\")\ndef summarize_template(text: str) -> dict:\n    \"\"\"Generate a user message asking to summarize text.\"\"\"\n    return {\n        \"role\": \"user\",\n        \"content\": f\"Please summarize the following text:\\n\\n{text}\"\n    }\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\n#!/usr/bin/env python3\nfrom fastmcp import Server\n\nserver = Server(\"summarize-server\")\n\n@server.template(\"summarize\")\ndef summarize_template(text: str) -> dict:\n    \"\"\"Generate a user message asking to summarize text.\"\"\"\n    return {\n        \"role\": \"user\",\n        \"content\": f\"Please summarize the following text:\\n\\n{text}\"\n    }\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3207,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6921,
+    "cost_usd": 0.0314052,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 41.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#prompt"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import cyclopts\n\napp = cyclopts.App(\n    config=cyclopts.Config(\n        default=\"pyproject.toml\",\n        search_dirs=[\".\"],\n        hint_var=\"tool.mycli\",\n    )\n)\n\n@app.default\ndef main(\n    name: str = \"\",\n    verbose: bool = False,\n    output: str = \"output.txt\",\n):\n    \"\"\"Process data with options from [tool.mycli] in pyproject.toml.\n    \n    Config file values serve as defaults.\n    Explicit CLI arguments override config file values.\n    \"\"\"\n    print(f\"Name: {name}\")\n    print(f\"Verbose: {verbose}\")\n    print(f\"Output: {output}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nimport cyclopts\n\napp = cyclopts.App(\n    config=cyclopts.Config(\n        default=\"pyproject.toml\",\n        search_dirs=[\".\"],\n        hint_var=\"tool.mycli\",\n    )\n)\n\n@app.default\ndef main(\n    name: str = \"\",\n    verbose: bool = False,\n    output: str = \"output.txt\",\n):\n    \"\"\"Process data with options from [tool.mycli] in pyproject.toml.\n    \n    Config file values serve as defaults.\n    Explicit CLI arguments override config file values.\n    \"\"\"\n    print(f\"Name: {name}\")\n    print(f\"Verbose: {verbose}\")\n    print(f\"Output: {output}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2109,
+    "cache_read_tokens": 24119,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0129659,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.Config"
+    ],
+    "error": null
+  }
+}

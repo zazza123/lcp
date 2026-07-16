@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport sys\nfrom fastmcp import Server\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import StdioClientTransport\nfrom typing import Any\n\nasync def main():\n    proxy = Server(\"mcp-proxy\")\n    \n    # Connect to backend server via stdio transport\n    transport = StdioClientTransport(\n        command=sys.executable,\n        args=[\"-m\", \"lcp.mcp_server\"]\n    )\n    \n    async with ClientSession(transport) as backend_session:\n        await backend_session.initialize()\n        \n        # Discover and proxy all backend tools\n        tools_result = await backend_session.list_tools()\n        \n        for tool_info in tools_result.tools:\n            tool_name = tool_info.name\n            tool_desc = tool_info.description or \"\"\n            \n            async def proxy_tool_handler(tool_name=tool_name, **kwargs) -> Any:\n                result = await backend_session.call_tool(tool_name, kwargs)\n                if result.content:\n                    for content in result.content:\n                        if hasattr(content, 'text'):\n                            return content.text\n                return None\n            \n            proxy.tool(name=tool_name, description=tool_desc)(proxy_tool_handler)\n        \n        # Discover and proxy all backend resources\n        resources_result = await backend_session.list_resources()\n        \n        for resource_info in resources_result.resources:\n            resource_uri = resource_info.uri\n            resource_desc = resource_info.description or \"\"\n            \n            async def proxy_resource_handler(resource_uri=resource_uri) -> str:\n                result = await backend_session.read_resource(resource_uri)\n                if result.contents:\n                    for content in result.contents:\n                        if hasattr(content, 'text'):\n                            return content.text\n                return \"\"\n            \n            proxy.resource(uri=resource_uri, description=resource_desc)(proxy_resource_handler)\n        \n        # Start the proxy server\n        async with proxy:\n            await asyncio.sleep(float('inf'))\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport sys\nfrom fastmcp import Server\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import StdioClientTransport\nfrom typing import Any\n\nasync def main():\n    proxy = Server(\"mcp-proxy\")\n    \n    # Connect to backend server via stdio transport\n    transport = StdioClientTransport(\n        command=sys.executable,\n        args=[\"-m\", \"lcp.mcp_server\"]\n    )\n    \n    async with ClientSession(transport) as backend_session:\n        await backend_session.initialize()\n        \n        # Discover and proxy all backend tools\n        tools_result = await backend_session.list_tools()\n        \n        for tool_info in tools_result.tools:\n            tool_name = tool_info.name\n            tool_desc = tool_info.description or \"\"\n            \n            async def proxy_tool_handler(tool_name=tool_name, **kwargs) -> Any:\n                result = await backend_session.call_tool(tool_name, kwargs)\n                if result.content:\n                    for content in result.content:\n                        if hasattr(content, 'text'):\n                            return content.text\n                return None\n            \n            proxy.tool(name=tool_name, description=tool_desc)(proxy_tool_handler)\n        \n        # Discover and proxy all backend resources\n        resources_result = await backend_session.list_resources()\n        \n        for resource_info in resources_result.resources:\n            resource_uri = resource_info.uri\n            resource_desc = resource_info.description or \"\"\n            \n            async def proxy_resource_handler(resource_uri=resource_uri) -> str:\n                result = await backend_session.read_resource(resource_uri)\n                if result.contents:\n                    for content in result.contents:\n                        if hasattr(content, 'text'):\n                            return content.text\n                return \"\"\n            \n            proxy.resource(uri=resource_uri, description=resource_desc)(proxy_resource_handler)\n        \n        # Start the proxy server\n        async with proxy:\n            await asyncio.sleep(float('inf'))\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4602,
+    "cache_read_tokens": 22012,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0252202,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 44.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

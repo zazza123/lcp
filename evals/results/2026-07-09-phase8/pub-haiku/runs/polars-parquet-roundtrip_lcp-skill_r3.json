@@ -1,0 +1,37 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\nfrom io import BytesIO\n\n# Create an in-memory DataFrame\ndf_original = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"salary\": [50000.0, 60000.0, 75000.0]\n})\n\nprint(\"Original DataFrame:\")\nprint(df_original)\n\n# Serialize to Parquet in memory using BytesIO\nbuffer = BytesIO()\ndf_original.write_parquet(buffer)\n\n# Reset buffer position to the start for reading\nbuffer.seek(0)\n\n# Deserialize from the buffer back into a DataFrame\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Verify round trip\nassert df_original.frame_equal(df_restored), \"Round trip failed: DataFrames are not equal\"\nprint(\"\\n\u2713 Round trip successful: Original and restored DataFrames are identical\")",
+  "result_text": "```python\nimport polars as pl\nfrom io import BytesIO\n\n# Create an in-memory DataFrame\ndf_original = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"salary\": [50000.0, 60000.0, 75000.0]\n})\n\nprint(\"Original DataFrame:\")\nprint(df_original)\n\n# Serialize to Parquet in memory using BytesIO\nbuffer = BytesIO()\ndf_original.write_parquet(buffer)\n\n# Reset buffer position to the start for reading\nbuffer.seek(0)\n\n# Deserialize from the buffer back into a DataFrame\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Verify round trip\nassert df_original.frame_equal(df_restored), \"Round trip failed: DataFrames are not equal\"\nprint(\"\\n\u2713 Round trip successful: Original and restored DataFrames are identical\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 678,
+    "cache_read_tokens": 38937,
+    "cache_creation_tokens": 7243,
+    "cost_usd": 0.0217867,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 11.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

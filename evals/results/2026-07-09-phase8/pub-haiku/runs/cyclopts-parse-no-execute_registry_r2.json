@@ -1,0 +1,81 @@
+{
+  "case_id": "cyclopts-parse-no-execute",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import inspect\nfrom cyclopts import App\n\napp = App()\n\n@app.command\ndef add(x: int, y: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return x + y\n\n# Parse tokens without executing the command\nfunc, bound_args, ignored = app.parse_args(tokens=[\"add\", \"2\", \"3\"], exit_on_error=False)\n\nprint(f\"Command function name: {func.__name__}\")\nprint(f\"Bound arguments: {bound_args}\")\nprint(f\"Arguments dict: {bound_args.arguments}\")",
+  "result_text": "```python\nimport inspect\nfrom cyclopts import App\n\napp = App()\n\n@app.command\ndef add(x: int, y: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return x + y\n\n# Parse tokens without executing the command\nfunc, bound_args, ignored = app.parse_args(tokens=[\"add\", \"2\", \"3\"], exit_on_error=False)\n\nprint(f\"Command function name: {func.__name__}\")\nprint(f\"Bound arguments: {bound_args}\")\nprint(f\"Arguments dict: {bound_args.arguments}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 53,
+    "output_tokens": 1045,
+    "cache_read_tokens": 134872,
+    "cache_creation_tokens": 11945,
+    "cost_usd": 0.0426552,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 22.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__get_symbol,mcp__lcp__search",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts",
+        "version": "4.20.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "parse",
+        "library": "cyclopts",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:App#parse_args"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01SHh3yYXSEc1JYVbUodUZWx",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_013PVcoQMA992e1Xb1U4GSKt",
+      "content": "{\"results\":[{\"id\":\"cyclopts:Argument#parse\",\"kind\":\"attribute\",\"summary\":\"Whether this argument should be parsed from CLI tokens.\",\"import\":\"from cyclopts import Argument\",\"resolved_via_alias\":\"cyclopts.argument._argument:Argument#parse\"},{\"id\":\"cyclopts:App#parse_args\",\"kind\":\"method\",\"summary\":\"Interpret arguments into a function and :class:`~inspect.BoundArguments`.\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#parse_args\"},{\"id\":\"cyclopts:App#parse_commands\",\"kind\":\"method\",\"summary\":\"Extract out the command tokens from a command.\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#parse_commands\"},{\"id\":\"cyclopts:App#parse_known_args\",\"kind\":\"method\",\"summary\":\"Interpret arguments into a registered function, :class:`~inspect.BoundArguments`, and any remaining unknown tokens.\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#parse_known_args\"},{\"id\":\"cyclopts.argument._argument:parse_version\",\"kind\":\"function\",\"summary\":\"Parse a PEP 440 version string into a tuple of ints, stripping pre-release suffixes.\",\"import\":\"from cyclopts.argument._argument import parse_version\",\"resolved_via_alias\":\"cyclopts.utils:parse_version\"},{\"id\":\"cyclopts:Argument#has_tokens\",\"kind\":\"attribute\",\"summary\":\"This argument, or a child argument, has at least 1 parsed token.\",\"import\":\"from cyclopts import Argument\",\"resolved_via_alias\":\"cyclopts.argument._argument:Argument#has_tokens\"},{\"id\":\"cyclopts.core:create_bound_arguments\",\"kind\":\"function\",\"summary\":\"Parse and coerce CLI tokens to match a function's signature.\",\"import\":\"from cyclopts.core import create_bound_arguments\",\"resolved_via_alias\":\"cyclopts.bind:create_bound_arguments\"},{\"id\":\"cyclopts._env_var:token_count\",\"kind\":\"function\",\"summary\":\"The number of tokens after a keyword the parameter should consume.\",\"import\":\"from cyclopts._env_var import token_count\",\"resolved_via_alias\":\"cyclopts._convert:token_count\"},{\"id\":\"cyclopts:Argument#show"
+    },
+    {
+      "tool_use_id": "toolu_01QAPR7NqUPtYETA9NjMFor2",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyclopts.core\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"tokens\",\"type\":\"UnionType[None, str, Iterable[str]]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Either a string, or a list of strings to launch a command.\\nDefaults to ``sys.argv[1:]``.\"},{\"name\":\"console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Console to print help and runtime Cyclopts errors.\\nIf not provided, follows the resolution order defined in :attr:`App.console`.\"},{\"name\":\"error_console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Console to print error messages.\\nIf not provided, follows the resolution order defined in :attr:`App.error_console`.\"},{\"name\":\"print_error\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Print a rich-formatted error on error.\\nIf :obj:`None`, inherits from :attr:`App.print_error`, eventually defaulting to :obj:`True`.\"},{\"name\":\"exit_on_error\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If there is an error parsing the CLI tokens invoke ``sys.exit(1)``.\\nOtherwise, continue to raise the exception.\\nIf :obj:`None`, inherits from :attr:`App.exit_on_error`, eventually defaulting to :obj:`True`.\"},{\"name\":\"help_on_error\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Prints the help-page before printing an error.\\nIf :obj:`None`, inherits from :attr:`App.help_on_error`, eventually defaulting to :obj:`False`.\"},{\"name\":\"verbose\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Populate exception strings with more information intended for developers.\\nIf :obj:`None`, inherits from :attr:`App.verbose`, eventually defaulting to :obj:`False`.\"},{\"name\":\"e"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

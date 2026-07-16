@@ -1,0 +1,48 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings.parsers import Parser, google\nfrom griffe.docstrings import Docstring\n\ndocstring_text = \"\"\"\nTransform the data according to the specification.\n\nArgs:\n    input_data: The raw input dictionary to process\n    validate: Whether to validate the input before processing\n    timeout: Maximum time in seconds to wait for processing\n\nReturns:\n    A transformed dictionary with normalized keys and values\n\"\"\"\n\ndocstring = Docstring(docstring_text, parser=Parser.google)\n\nprint(\"Parsed docstring sections:\")\nfor section in docstring.parsed:\n    print(f\"  Kind: {section.kind}\")",
+  "result_text": "```python\nfrom griffe.docstrings.parsers import Parser, google\nfrom griffe.docstrings import Docstring\n\ndocstring_text = \"\"\"\nTransform the data according to the specification.\n\nArgs:\n    input_data: The raw input dictionary to process\n    validate: Whether to validate the input before processing\n    timeout: Maximum time in seconds to wait for processing\n\nReturns:\n    A transformed dictionary with normalized keys and values\n\"\"\"\n\ndocstring = Docstring(docstring_text, parser=Parser.google)\n\nprint(\"Parsed docstring sections:\")\nfor section in docstring.parsed:\n    print(f\"  Kind: {section.kind}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 811,
+    "cache_read_tokens": 72916,
+    "cache_creation_tokens": 905,
+    "cost_usd": 0.013181600000000002,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 12.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/__init__.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.Docstring",
+      "griffe.docstrings.parsers.Parser",
+      "griffe.docstrings.parsers.Parser.google"
+    ],
+    "error": null
+  }
+}

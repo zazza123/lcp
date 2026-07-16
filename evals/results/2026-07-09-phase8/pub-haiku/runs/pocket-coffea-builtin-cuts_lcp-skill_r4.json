@@ -1,0 +1,65 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_HLT_factory,\n    get_njet,\n    get_nbtag,\n)\nfrom pocket_coffea.parameters.cuts import cuts as default_cuts\nfrom pocket_coffea.lib.cut_functions import PackedSelection\n\n# Initialize cuts for 2018 semileptonic ttbar analysis\ncuts_2018 = {\n    \"skim\": [\n        # HLT trigger selection for semileptonic dataset\n        get_HLT_factory(\n            \"semileptonic\",\n            dataset_name=\"semileptonic\"\n        ),\n    ],\n    \"preselection\": [\n        # At least 4 jets with pT > 30 GeV from JetGood collection\n        get_njet(\n            4,\n            pt_min=30,\n            collection=\"JetGood\",\n            custom_cut=None,\n        ),\n        # At least 2 b-tagged jets\n        get_nbtag(\n            2,\n            wps=\"medium\",\n            collection=\"JetGood\",\n        ),\n    ],\n}\n\n# Merge with default cuts if needed\ncuts_2018.update(default_cuts)\n\n# Export configuration\n__all__ = [\"cuts_2018\"]",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_HLT_factory,\n    get_njet,\n    get_nbtag,\n)\nfrom pocket_coffea.parameters.cuts import cuts as default_cuts\nfrom pocket_coffea.lib.cut_functions import PackedSelection\n\n# Initialize cuts for 2018 semileptonic ttbar analysis\ncuts_2018 = {\n    \"skim\": [\n        # HLT trigger selection for semileptonic dataset\n        get_HLT_factory(\n            \"semileptonic\",\n            dataset_name=\"semileptonic\"\n        ),\n    ],\n    \"preselection\": [\n        # At least 4 jets with pT > 30 GeV from JetGood collection\n        get_njet(\n            4,\n            pt_min=30,\n            collection=\"JetGood\",\n            custom_cut=None,\n        ),\n        # At least 2 b-tagged jets\n        get_nbtag(\n            2,\n            wps=\"medium\",\n            collection=\"JetGood\",\n        ),\n    ],\n}\n\n# Merge with default cuts if needed\ncuts_2018.update(default_cuts)\n\n# Export configuration\n__all__ = [\"cuts_2018\"]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1403,
+    "cache_read_tokens": 96850,
+    "cache_creation_tokens": 4876,
+    "cost_usd": 0.026487000000000004,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 20.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pocket-coffea library resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_0175JE8JrQ3AKkErhSxVvZRx",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.get_HLT_factory",
+      "pocket_coffea.lib.cut_functions.get_nbtag",
+      "pocket_coffea.lib.cut_functions.get_njet",
+      "pocket_coffea.parameters.cuts.cuts"
+    ],
+    "error": null
+  }
+}

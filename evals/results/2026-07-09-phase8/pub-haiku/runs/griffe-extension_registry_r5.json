@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.extensions import Extension\nimport griffe\n\nclass CheckedExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to all function docstrings.\"\"\"\n    \n    def on_collect_function(self, func):\n        \"\"\"Append ' [checked]' to the function's docstring.\"\"\"\n        if func.docstring is not None:\n            func.docstring.value += \" [checked]\"\n\n# Load the package with the extension enabled\npackage = griffe.load(\"mypkg\", extensions=[CheckedExtension()])\n\n# Print sample results to verify the extension worked\nfor member in package.members.values():\n    if hasattr(member, 'docstring') and member.docstring:\n        print(f\"{member.name}: {member.docstring.value}\")",
+  "result_text": "```python\nfrom griffe.extensions import Extension\nimport griffe\n\nclass CheckedExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to all function docstrings.\"\"\"\n    \n    def on_collect_function(self, func):\n        \"\"\"Append ' [checked]' to the function's docstring.\"\"\"\n        if func.docstring is not None:\n            func.docstring.value += \" [checked]\"\n\n# Load the package with the extension enabled\npackage = griffe.load(\"mypkg\", extensions=[CheckedExtension()])\n\n# Print sample results to verify the extension worked\nfor member in package.members.values():\n    if hasattr(member, 'docstring') and member.docstring:\n        print(f\"{member.name}: {member.docstring.value}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4581,
+    "cache_read_tokens": 22029,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0251169,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

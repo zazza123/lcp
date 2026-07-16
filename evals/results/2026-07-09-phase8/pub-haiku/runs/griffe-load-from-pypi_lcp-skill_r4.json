@@ -1,0 +1,31 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import griffe\nimport tempfile\nimport subprocess\nimport sys\nfrom pathlib import Path\nimport zipfile\nimport tarfile\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    tmpdir = Path(tmpdir)\n    \n    # Download click==8.1.7 from PyPI to temporary directory\n    subprocess.run(\n        [sys.executable, \"-m\", \"pip\", \"download\", \"click==8.1.7\", \"--no-deps\", \"-d\", str(tmpdir)],\n        check=True,\n        capture_output=True\n    )\n    \n    # Find and extract the distribution\n    dist_file = next(tmpdir.glob(\"click*\"))\n    extract_dir = tmpdir / \"src\"\n    extract_dir.mkdir()\n    \n    if dist_file.suffix == \".whl\":\n        with zipfile.ZipFile(dist_file) as zf:\n            zf.extractall(extract_dir)\n    else:  # .tar.gz\n        with tarfile.open(dist_file) as tf:\n            tf.extractall(extract_dir)\n    \n    # Use griffe's GriffeLoader to load the package\n    loader = griffe.GriffeLoader(search_paths=[str(extract_dir)])\n    package = loader.load(\"click\")\n    print(package.name)",
+  "result_text": "```python\nimport griffe\nimport tempfile\nimport subprocess\nimport sys\nfrom pathlib import Path\nimport zipfile\nimport tarfile\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    tmpdir = Path(tmpdir)\n    \n    # Download click==8.1.7 from PyPI to temporary directory\n    subprocess.run(\n        [sys.executable, \"-m\", \"pip\", \"download\", \"click==8.1.7\", \"--no-deps\", \"-d\", str(tmpdir)],\n        check=True,\n        capture_output=True\n    )\n    \n    # Find and extract the distribution\n    dist_file = next(tmpdir.glob(\"click*\"))\n    extract_dir = tmpdir / \"src\"\n    extract_dir.mkdir()\n    \n    if dist_file.suffix == \".whl\":\n        with zipfile.ZipFile(dist_file) as zf:\n            zf.extractall(extract_dir)\n    else:  # .tar.gz\n        with tarfile.open(dist_file) as tf:\n            tf.extractall(extract_dir)\n    \n    # Use griffe's GriffeLoader to load the package\n    loader = griffe.GriffeLoader(search_paths=[str(extract_dir)])\n    package = loader.load(\"click\")\n    print(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6211,
+    "cache_read_tokens": 22950,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.033359,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 61.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "griffe:load_pypi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

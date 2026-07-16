@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-reshape-long",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create sample data\ndata = {\n    \"id\": [1, 2, 3],\n    \"jan\": [100, 200, 300],\n    \"feb\": [150, 250, 350],\n    \"mar\": [200, 300, 400]\n}\ndf = nw.from_native(pd.DataFrame(data))\n\n# Reshape from wide to long\ndf_long = df.unpivot(\n    index=\"id\",\n    on=[\"jan\", \"feb\", \"mar\"],\n    variable_name=\"month\",\n    value_name=\"sales\"\n)\n\nprint(df_long)",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create sample data\ndata = {\n    \"id\": [1, 2, 3],\n    \"jan\": [100, 200, 300],\n    \"feb\": [150, 250, 350],\n    \"mar\": [200, 300, 400]\n}\ndf = nw.from_native(pd.DataFrame(data))\n\n# Reshape from wide to long\ndf_long = df.unpivot(\n    index=\"id\",\n    on=[\"jan\", \"feb\", \"mar\"],\n    variable_name=\"month\",\n    value_name=\"sales\"\n)\n\nprint(df_long)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1383,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6940,
+    "cost_usd": 0.0223186,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

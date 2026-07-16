@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import Cut\nimport numpy as np\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    \n    Requires:\n    - At least two muons with pT above threshold\n    - Leading pair with opposite charges\n    \"\"\"\n    pt_threshold = params.get(\"pT_threshold\", 15)\n    \n    # Get muons with pT above threshold\n    good_muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Count events with at least 2 such muons\n    n_muons = ak.count(good_muons.pt, axis=1)\n    has_two_muons = n_muons >= 2\n    \n    # For events with at least 2 muons, check if leading pair has opposite charge\n    # Get leading two muons by pT (already sorted by PocketCoffea)\n    leading = good_muons[:, :2]\n    \n    # Check opposite charge: product of charges should be negative\n    # Use pad_none to handle events with fewer than 2 muons\n    charges_product = leading[:, 0].charge * leading[:, 1].charge\n    opposite_charge = charges_product < 0\n    \n    # Combine conditions: need 2+ muons AND leading pair opposite charge\n    # For events with < 2 muons, opposite_charge will be None, so we AND with has_two_muons\n    mask = has_two_muons & ak.fill_none(opposite_charge, False)\n    \n    return mask\n\n\n# Define the cut to be used in preselections\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pT_threshold\": 15},\n)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import Cut\nimport numpy as np\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    \n    Requires:\n    - At least two muons with pT above threshold\n    - Leading pair with opposite charges\n    \"\"\"\n    pt_threshold = params.get(\"pT_threshold\", 15)\n    \n    # Get muons with pT above threshold\n    good_muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Count events with at least 2 such muons\n    n_muons = ak.count(good_muons.pt, axis=1)\n    has_two_muons = n_muons >= 2\n    \n    # For events with at least 2 muons, check if leading pair has opposite charge\n    # Get leading two muons by pT (already sorted by PocketCoffea)\n    leading = good_muons[:, :2]\n    \n    # Check opposite charge: product of charges should be negative\n    # Use pad_none to handle events with fewer than 2 muons\n    charges_product = leading[:, 0].charge * leading[:, 1].charge\n    opposite_charge = charges_product < 0\n    \n    # Combine conditions: need 2+ muons AND leading pair opposite charge\n    # For events with < 2 muons, opposite_charge will be None, so we AND with has_two_muons\n    mask = has_two_muons & ak.fill_none(opposite_charge, False)\n    \n    return mask\n\n\n# Define the cut to be used in preselections\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pT_threshold\": 15},\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1426,
+    "cache_read_tokens": 45982,
+    "cache_creation_tokens": 735,
+    "cost_usd": 0.0132152,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 21.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

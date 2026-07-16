@@ -1,0 +1,36 @@
+{
+  "case_id": "pocket-coffea-cartesian-categories",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_tools import Cut, MultiCut, CartesianCut\n\n# Define individual jet multiplicity cuts\njet_multiplicity_cuts = [\n    Cut(name=\"4jets\", function=lambda x: x.JetGood.counts == 4),\n    Cut(name=\"5jets\", function=lambda x: x.JetGood.counts == 5),\n    Cut(name=\"6jets\", function=lambda x: x.JetGood.counts >= 6),\n]\n\n# Define individual b-tag multiplicity cuts\nbtag_multiplicity_cuts = [\n    Cut(name=\"2btags\", function=lambda x: x.BTagGood.counts == 2),\n    Cut(name=\"3btags\", function=lambda x: x.BTagGood.counts >= 3),\n]\n\n# Wrap each binning as a multi-bin cut\njet_bins = MultiCut(\n    name=\"jet_multiplicity\",\n    cuts=jet_multiplicity_cuts\n)\n\nbtag_bins = MultiCut(\n    name=\"btag_multiplicity\",\n    cuts=btag_multiplicity_cuts\n)\n\n# Create cartesian product of the two binnings\nanalysis_categories = CartesianCut(\n    name=\"analysis_categories\",\n    cuts=[jet_bins, btag_bins]\n)\n\n# Use in configuration\ncfg = {\n    \"categories\": analysis_categories\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_tools import Cut, MultiCut, CartesianCut\n\n# Define individual jet multiplicity cuts\njet_multiplicity_cuts = [\n    Cut(name=\"4jets\", function=lambda x: x.JetGood.counts == 4),\n    Cut(name=\"5jets\", function=lambda x: x.JetGood.counts == 5),\n    Cut(name=\"6jets\", function=lambda x: x.JetGood.counts >= 6),\n]\n\n# Define individual b-tag multiplicity cuts\nbtag_multiplicity_cuts = [\n    Cut(name=\"2btags\", function=lambda x: x.BTagGood.counts == 2),\n    Cut(name=\"3btags\", function=lambda x: x.BTagGood.counts >= 3),\n]\n\n# Wrap each binning as a multi-bin cut\njet_bins = MultiCut(\n    name=\"jet_multiplicity\",\n    cuts=jet_multiplicity_cuts\n)\n\nbtag_bins = MultiCut(\n    name=\"btag_multiplicity\",\n    cuts=btag_multiplicity_cuts\n)\n\n# Create cartesian product of the two binnings\nanalysis_categories = CartesianCut(\n    name=\"analysis_categories\",\n    cuts=[jet_bins, btag_bins]\n)\n\n# Use in configuration\ncfg = {\n    \"categories\": analysis_categories\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1747,
+    "cache_read_tokens": 22070,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.010951,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.categorization:CartesianSelection",
+      "pocket_coffea.lib.categorization:MultiCut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_tools.CartesianCut",
+      "pocket_coffea.lib.cut_tools.Cut",
+      "pocket_coffea.lib.cut_tools.MultiCut"
+    ],
+    "error": null
+  }
+}

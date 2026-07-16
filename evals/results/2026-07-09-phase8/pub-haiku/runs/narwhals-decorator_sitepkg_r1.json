@@ -1,0 +1,33 @@
+{
+  "case_id": "narwhals-decorator",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\nimport polars as pl\n\n@nw.narwhals_wrapper()\ndef add_total(df: nw.DataFrame) -> nw.DataFrame:\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\nif __name__ == \"__main__\":\n    # Test with pandas\n    pandas_df = pd.DataFrame({\n        \"price\": [10.0, 20.0, 30.0],\n        \"quantity\": [2, 3, 4]\n    })\n    print(\"Pandas result:\")\n    print(add_total(pandas_df))\n    \n    # Test with polars\n    polars_df = pl.DataFrame({\n        \"price\": [10.0, 20.0, 30.0],\n        \"quantity\": [2, 3, 4]\n    })\n    print(\"\\nPolars result:\")\n    print(add_total(polars_df))",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\nimport polars as pl\n\n@nw.narwhals_wrapper()\ndef add_total(df: nw.DataFrame) -> nw.DataFrame:\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\nif __name__ == \"__main__\":\n    # Test with pandas\n    pandas_df = pd.DataFrame({\n        \"price\": [10.0, 20.0, 30.0],\n        \"quantity\": [2, 3, 4]\n    })\n    print(\"Pandas result:\")\n    print(add_total(pandas_df))\n    \n    # Test with polars\n    polars_df = pl.DataFrame({\n        \"price\": [10.0, 20.0, 30.0],\n        \"quantity\": [2, 3, 4]\n    })\n    print(\"\\nPolars result:\")\n    print(add_total(polars_df))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1332,
+    "cache_read_tokens": 24141,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0090831,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 82.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "narwhals:narwhalify"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "narwhals.narwhals_wrapper"
+    ],
+    "error": null
+  }
+}

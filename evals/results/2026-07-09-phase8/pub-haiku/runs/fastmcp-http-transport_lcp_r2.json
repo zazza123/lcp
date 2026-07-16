@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\nimport uvicorn\n\nserver = FastMCP(\"simple-tool-server\")\n\n@server.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet a person by name.\"\"\"\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    uvicorn.run(server, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nimport uvicorn\n\nserver = FastMCP(\"simple-tool-server\")\n\n@server.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet a person by name.\"\"\"\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    uvicorn.run(server, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2697,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6942,
+    "cost_usd": 0.0288972,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#run"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

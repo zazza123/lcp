@@ -1,0 +1,275 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query, connect\nfrom hamana.connector.db import Hamana\nfrom hamana.connector.db.base import SQLiteDataImportMode, TableAlreadyExists\n\n# Connect to internal SQLite database (in-memory)\nconnect()\n\n# Create a query object with sample SQL\nquery = Query(\"SELECT 1 as id, 'Alice' as name UNION SELECT 2, 'Bob'\")\n\n# First call: insert into \"sales\" table (will succeed)\nquery.to_sqlite(\"sales\")\nprint(\"\u2713 Initial insert into 'sales' table succeeded\")\n\n# Second call: attempt to insert again using FAIL mode\n# This will raise TableAlreadyExists exception\ntry:\n    query.to_sqlite(\"sales\", mode=SQLiteDataImportMode.FAIL)\n    print(\"\u2717 Should have raised TableAlreadyExists\")\nexcept TableAlreadyExists as e:\n    print(f\"\u2713 Caught expected exception: {type(e).__name__}\")\n    print(f\"  Exception details: {e}\")",
+  "result_text": "```python\nfrom hamana import Query, connect\nfrom hamana.connector.db import Hamana\nfrom hamana.connector.db.base import SQLiteDataImportMode, TableAlreadyExists\n\n# Connect to internal SQLite database (in-memory)\nconnect()\n\n# Create a query object with sample SQL\nquery = Query(\"SELECT 1 as id, 'Alice' as name UNION SELECT 2, 'Bob'\")\n\n# First call: insert into \"sales\" table (will succeed)\nquery.to_sqlite(\"sales\")\nprint(\"\u2713 Initial insert into 'sales' table succeeded\")\n\n# Second call: attempt to insert again using FAIL mode\n# This will raise TableAlreadyExists exception\ntry:\n    query.to_sqlite(\"sales\", mode=SQLiteDataImportMode.FAIL)\n    print(\"\u2717 Should have raised TableAlreadyExists\")\nexcept TableAlreadyExists as e:\n    print(f\"\u2713 Caught expected exception: {type(e).__name__}\")\n    print(f\"  Exception details: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 177,
+    "output_tokens": 3765,
+    "cache_read_tokens": 617757,
+    "cache_creation_tokens": 12797,
+    "cost_usd": 0.10637170000000001,
+    "num_turns": 22,
+    "tool_calls": 21,
+    "duration_s": 67.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-universal",
+        "args": "resolve_library(\"hamana\")"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "import mode enum",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "import",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db.base:SQLiteDataImportMode",
+          "hamana:Query#to_sqlite",
+          "hamana:Query"
+        ],
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SQLiteDataImportMode fail replace append",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "exception error",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana.connector.db.schema",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db.schema:SQLiteDataImportMode"
+        ],
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana.connector.db.exceptions",
+        "kind": "class",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Hamana HamanaConnector initialize",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Hamana",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana:connect",
+          "hamana:Query#to_sqlite",
+          "hamana.connector.db.base:TableAlreadyExists",
+          "hamana.connector.db.hamana:HamanaConnector"
+        ],
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "fail",
+        "library": "hamana",
+        "kind": "variable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FAIL REPLACE APPEND",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana.connector.db.schema"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana.connector.db.base",
+        "kind": "constant"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana.connector.db.base",
+        "limit": 30
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01ASnUEghV6XmfeUPYzpZw9Z",
+      "content": "{\"status\":\"loaded\",\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"symbol_count\":245,\"module_count\":21,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='hamana') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01XdeDA9AARqyjgn3fhmJ8RT",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01JadZF5MKZwoEgwrrNScSH6",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode\",\"kind\":\"class\",\"summary\":\"Enum to represent the mode of importing data to an SQLite database via `to_sqlite` method.\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"resolved_via_alias\":\"hamana.connector.db.schema:SQLiteDataImportMode\"},{\"id\":\"hamana.connector.db:Hamana\",\"kind\":\"class\",\"summary\":\"This class is responsible for handling the database connection of the library. For each execution, only one instance of this class is allowed to manage a single database connection.\",\"import\":\"from hamana.connector.db import Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector\"},{\"id\":\"hamana.connector.db.base:DatabaseConnectorABC#to_sqlite\",\"kind\":\"method\",\"summary\":\"This function is used to extract data from the database and insert it into the `hamana` internal database (`HamanaConnector`).\",\"import\":\"from hamana.connector.db.base import DatabaseConnectorABC\",\"resolved_via_alias\":\"hamana.connector.db.interface:DatabaseConnectorABC#to_sqlite\"},{\"id\":\"hamana:Query#to_sqlite\",\"kind\":\"method\",\"summary\":\"This function is used to insert the query result into a table hosted on the `hamana` internal database (`HamanaConnector`).\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query#to_sqlite\"},{\"id\":\"hamana.connector.file:CSV\",\"kind\":\"class\",\"summary\":\"Class representing the connector to a CSV file.\",\"import\":\"from hamana.connector.file import CSV\",\"resolved_via_alias\":\"hamana.connector.file.csv:CSVConnector\"},{\"id\":\"hamana.connector.file:CSV#to_sqlite\",\"kind\":\"method\",\"summary\":\"This function is used to extract data from the CSV file and insert it into the `hamana` internal database (`HamanaConnector`).\",\"import\":\"from hamana.connector.file import CSV\",\"resolved_via_alias\":\"hamana.connector.file.csv:CSVConnector#to_sqlite\"}],\"total\":6,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01KKgEicV54gVDFH683qBBFc",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"hamana.connector.db.schema\",\"aliases\":[\"hamana.connector.db.base:SQLiteDataImportMode\",\"hamana.connector.db.interface:SQLiteDataImportMode\",\"hamana.connector.db.query:SQLiteDataImportMode\",\"hamana.connector.file.csv:SQLiteDataImportMode\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwds\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"Enum to represent the mode of importing data to an SQLite database via `to_sqlite` method.\"},\"id\":\"hamana.connector.db.base:SQLiteDataImportMode\",\"resolved_via_alias\":\"hamana.connector.db.schema:SQLiteDataImportMode\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwds\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\"}]},{\"kind\":\"method\",\"module\":\"hamana.connector.db.query\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"table_name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"name of the table to create into the database.\\nBy assumption, the table's name is converted to uppercase.\"},{\"name\":\"mode\",\"type\":\"SQLiteDataImportMode\",\"required\":false,\"default\":\"replace\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"mode of importing the data into the database.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"This function is used to insert the query result into a table hosted on the `hamana` internal database (`HamanaConnector`).\",\"description\":\"The `hamana` db is a SQLite database, for this reason \\n            `bool`, `datetime` and `timestamp` data types are **not** supported.\\n            If some of th"
+    },
+    {
+      "tool_use_id": "toolu_01YT9SHfYMKjeoVorTWBXaMW",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01QdJ5tTrdeJQGhSbYdmKGBW",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01MmuV2szySZf3R98JUKVLzp",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.oracle:DatabaseConnectorConfig\",\"kind\":\"class\",\"summary\":\"Class to represent the **base** configuration of a database.\",\"import\":\"from hamana.connector.db.oracle import DatabaseConnectorConfig\",\"resolved_via_alias\":\"hamana.connector.db.schema:DatabaseConnectorConfig\"},{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode\",\"kind\":\"class\",\"summary\":\"Enum to represent the mode of importing data to an SQLite database via `to_sqlite` method.\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"resolved_via_alias\":\"hamana.connector.db.schema:SQLiteDataImportMode\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01HktX7pBXyvWKqzXrKqBTX5",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"hamana.connector.db.schema\",\"aliases\":[\"hamana.connector.db.base:SQLiteDataImportMode\",\"hamana.connector.db.interface:SQLiteDataImportMode\",\"hamana.connector.db.query:SQLiteDataImportMode\",\"hamana.connector.file.csv:SQLiteDataImportMode\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwds\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"Enum to represent the mode of importing data to an SQLite database via `to_sqlite` method.\"},\"id\":\"hamana.connector.db.schema:SQLiteDataImportMode\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwds\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"hamana.connector.db.schema:SQLiteDataImportMode#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"hamana.connector.db.schema:SQLiteDataImportMode#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\"}]}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_015VK4sQLnYrX4soFiBdb3BB",
+      "content": "{\"results\":[{\"id\":\"hamana:\",\"kind\":\"module\",\"summary\":\"Module hamana\",\"import\":\"import hamana\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018aXnU8RHSX2oaKaDESvcDv",
+      "content": "{\"library\":{\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"hamana\",\"symbols\":1},{\"module\":\"hamana.connector\",\"symbols\":1},{\"module\":\"hamana.connector.db\",\"symbols\":1},{\"module\":\"hamana.connector.db.base\",\"symbols\":10},{\"module\":\"hamana.connector.db.exceptions\",\"symbols\":25},{\"module\":\"hamana.connector.db.hamana\",\"symbols\":21},{\"module\":\"hamana.connector.db.interface\",\"symbols\":24},{\"module\":\"hamana.connector.db.oracle\",\"symbols\":19},{\"module\":\"hamana.connector.db.query\",\"symbols\":15},{\"module\":\"hamana.connector.db.schema\",\"symbols\":8},{\"module\":\"hamana.connector.db.sqlite\",\"symbols\":11},{\"module\":\"hamana.connector.db.teradata\",\"symbols\":11},{\"module\":\"hamana.connector.file\",\"symbols\":1},{\"module\":\"hamana.connector.file.csv\",\"symbols\":6},{\"module\":\"hamana.connector.file.exceptions\",\"symbols\":7},{\"module\":\"hamana.connector.file.warnings\",\"symbols\":4},{\"module\":\"hamana.core\",\"symbols\":1},{\"module\":\"hamana.core.column\",\"symbols\":45},{\"module\":\"hamana.core.exceptions\",\"symbols\":19},{\"module\":\"hamana.core.identifier\",\"symbols\":11},{\"module\":\"hamana.core.warnings\",\"symbols\":4}],\"total_symbols\":245}"
+    },
+    {
+      "tool_use_id": "toolu_017HqzUaBPgySPJXvfHGAnkk",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.base:ColumnDataTypeConversionError\",\"kind\":\"class\",\"summary\":\"Class ColumnDataTypeConversionError\",\"import\":\"from hamana.connector.db.base import ColumnDataTypeConversionError\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:ColumnDataTypeConversionError\"},{\"id\":\"hamana.connector.db.oracle:DatabaseConnetionError\",\"kind\":\"class\",\"summary\":\"Class DatabaseConnetionError\",\"import\":\"from hamana.connector.db.oracle import DatabaseConnetionError\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:DatabaseConnetionError\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorAlreadyInitialised\",\"kind\":\"class\",\"summary\":\"Exception to raise when HamanaConnector is already initialised\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorAlreadyInitialised\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:HamanaConnectorAlreadyInitialised\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorNotInitialised\",\"kind\":\"class\",\"summary\":\"Exception to raise when HamanaConnector is not initialised.\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorNotInitialised\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:HamanaConnectorNotInitialised\"},{\"id\":\"hamana.connector.db.query:QueryColumnsNotAvailable\",\"kind\":\"class\",\"summary\":\"Class QueryColumnsNotAvailable\",\"import\":\"from hamana.connector.db.query import QueryColumnsNotAvailable\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryColumnsNotAvailable\"},{\"id\":\"hamana.connector.db.query:QueryInitializationError\",\"kind\":\"class\",\"summary\":\"Class QueryInitializationError\",\"import\":\"from hamana.connector.db.query import QueryInitializationError\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryInitializationError\"},{\"id\":\"hamana.connector.db.query:QueryResultNotAvailable\",\"kind\":\"class\",\"summary\":\"Class QueryResultNotAvailable\",\"import\":\"from hamana.connector.db.query import QueryResultNotAvailable\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:Qu"
+    },
+    {
+      "tool_use_id": "toolu_01FuNFkrKFCHV2wxQfXBR4xY",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01DQgX37uswFXbVrbW7svDRe",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db:Hamana\",\"kind\":\"class\",\"summary\":\"This class is responsible for handling the database connection of the library. For each execution, only one instance of this class is allowed to manage a single database connection.\",\"import\":\"from hamana.connector.db import Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorAlreadyInitialised\",\"kind\":\"class\",\"summary\":\"Exception to raise when HamanaConnector is already initialised\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorAlreadyInitialised\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:HamanaConnectorAlreadyInitialised\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorNotInitialised\",\"kind\":\"class\",\"summary\":\"Exception to raise when HamanaConnector is not initialised.\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorNotInitialised\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:HamanaConnectorNotInitialised\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorMeta\",\"kind\":\"class\",\"summary\":\"Class HamanaConnectorMeta\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorMeta\"},{\"id\":\"hamana.connector.db.hamana:HamanaSingleton\",\"kind\":\"class\",\"summary\":\"Singleton metaclass for `HamanaConnector` to ensure only one instance during the code execution.\",\"import\":\"from hamana.connector.db.hamana import HamanaSingleton\"},{\"id\":\"hamana.connector.db.exceptions:HamanaException\",\"kind\":\"class\",\"summary\":\"General exception of Hamana library\",\"import\":\"from hamana.connector.db.exceptions import HamanaException\",\"resolved_via_alias\":\"hamana.core.exceptions:HamanaException\"},{\"id\":\"hamana.connector.file.warnings:HamanaWarning\",\"kind\":\"class\",\"summary\":\"General warning of Hamana library\",\"import\":\"from hamana.connector.file.warnings import HamanaWarning\",\"resolved_via_alias\":\"hamana.core.warnings:HamanaWarning\"},{\"id\":\"hamana.connector.db.base:\",\"kind\":\"module\",\"summary\":\"Modu"
+    },
+    {
+      "tool_use_id": "toolu_01UWbBTiqUAnT84C1JLMFGta",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"hamana.connector.db.hamana\",\"aliases\":[\"hamana:connect\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"UnionType[str, Path]\",\"required\":false,\"default\":\":memory:\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"path like string that define the SQLite database to load/create.  \\nBy default the database is created in memory.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Connect to the database using the path provided. This function is a helper function to connect to the database without creating an instance of the `HamanaConnector` class.\",\"description\":\"Parameters:\\n            path: path like string that define the SQLite database to load/create.  \\n                By default the database is created in memory.\"},\"id\":\"hamana:connect\",\"resolved_via_alias\":\"hamana.connector.db.hamana:connect\",\"import\":\"from hamana import connect\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"path\",\"type\":\"UnionType[str, Path]\",\"default\":\":memory:\"}],\"is_async\":false,\"return_type\":\"None\"}},{\"kind\":\"method\",\"module\":\"hamana.connector.db.query\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"table_name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"name of the table to create into the database.\\nBy assumption, the table's name is converted to uppercase.\"},{\"name\":\"mode\",\"type\":\"SQLiteDataImportMode\",\"required\":false,\"default\":\"replace\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"mode of importing the data into the database.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"This function is used to insert the query result into a table hosted on the `hamana` internal database (`HamanaConnector`).\",\"description\":\"The `hamana` db is a SQLite database, for this reason \\n            `bool`, `datetime` and `timestamp` data types are **not** supported.\\n            If some of the columns are defined with these data types, \\n            then the method performs an automa"
+    },
+    {
+      "tool_use_id": "toolu_01Fc1ncmoYappr8HD3U4UfE3",
+      "content": "{\"error\":{\"code\":\"invalid_kind\",\"message\":\"Invalid kind 'variable'.\",\"hint\":\"Valid kinds: function, class, method, attribute, module, constant.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01JGtADyrkE9Dbf1GRr5eGaG",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01KZtsMFjxmpw9ycK3UkxEPN",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.oracle:DatabaseConnectorConfig\",\"kind\":\"class\",\"summary\":\"Class to represent the **base** configuration of a database.\",\"import\":\"from hamana.connector.db.oracle import DatabaseConnectorConfig\",\"resolved_via_alias\":\"hamana.connector.db.schema:DatabaseConnectorConfig\"},{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode\",\"kind\":\"class\",\"summary\":\"Enum to represent the mode of importing data to an SQLite database via `to_sqlite` method.\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"resolved_via_alias\":\"hamana.connector.db.schema:SQLiteDataImportMode\"},{\"id\":\"hamana.connector.db.oracle:DatabaseConnectorConfig#__eq__\",\"kind\":\"method\",\"summary\":\"Method __eq__\",\"import\":\"from hamana.connector.db.oracle import DatabaseConnectorConfig\",\"resolved_via_alias\":\"hamana.connector.db.schema:DatabaseConnectorConfig#__eq__\"},{\"id\":\"hamana.connector.db.oracle:DatabaseConnectorConfig#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\",\"import\":\"from hamana.connector.db.oracle import DatabaseConnectorConfig\",\"resolved_via_alias\":\"hamana.connector.db.schema:DatabaseConnectorConfig#__init__\"},{\"id\":\"hamana.connector.db.oracle:DatabaseConnectorConfig#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\",\"import\":\"from hamana.connector.db.oracle import DatabaseConnectorConfig\",\"resolved_via_alias\":\"hamana.connector.db.schema:DatabaseConnectorConfig#__repr__\"},{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"resolved_via_alias\":\"hamana.connector.db.schema:SQLiteDataImportMode#__repr__\"},{\"id\":\"hamana.connector.db.base:SQLiteDataImportMode#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\",\"import\":\"from hamana.connector.db.base import SQLiteDataImportMode\",\"resolved_via_alias\":\"hamana.connector.db.schema:SQLiteDataImportMode#__str__\"},{\"id\":\"hamana.connector.db.schema:\",\"kind\":\"module\",\"summary\":\"M"
+    },
+    {
+      "tool_use_id": "toolu_015UbHWruKg2tzzBTCWgoFDM",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01AnwpPfVFaooGBqp77zBQwM",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.oracle:BaseConnector\",\"kind\":\"class\",\"summary\":\"Class representing a generic database connector that can be used to define new database connectors satisfying the Python Database API Specification v2.0.\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector\"},{\"id\":\"hamana.connector.db.oracle:BaseConnector#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#__enter__\"},{\"id\":\"hamana.connector.db.oracle:BaseConnector#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#__exit__\"},{\"id\":\"hamana.connector.db.oracle:BaseConnector#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#batch_execute\"},{\"id\":\"hamana.connector.db.oracle:BaseConnector#execute\",\"kind\":\"method\",\"summary\":\"Method execute\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#execute\"},{\"id\":\"hamana.connector.db.oracle:BaseConnector#get_column_from_dtype\",\"kind\":\"method\",\"summary\":\"This function is designed to create a mapping between the datatypes provided by the different database connectors and standard `hamana` datatypes.\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#get_column_from_dtype\"},{\"id\":\"hamana.connector.db.oracle:BaseConnector#parse_cursor_description\",\"kind\":\"method\",\"summary\":\"Method parse_cursor_description\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#parse_curs"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

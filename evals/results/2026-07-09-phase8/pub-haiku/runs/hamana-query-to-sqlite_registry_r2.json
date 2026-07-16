@@ -1,0 +1,31 @@
+{
+  "case_id": "hamana-query-to-sqlite",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query\n\nquery = Query(\"SELECT id, amount FROM orders\")\nresult = query.execute()\nquery.persist(result, \"orders\")",
+  "result_text": "```python\nfrom hamana import Query\n\nquery = Query(\"SELECT id, amount FROM orders\")\nresult = query.execute()\nquery.persist(result, \"orders\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2916,
+    "cache_read_tokens": 22014,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0167904,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 35.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.query:Query#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

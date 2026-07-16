@@ -1,0 +1,137 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP, Message, PromptResult, prompt\n\n@prompt(\"summarize\")\ndef summarize_prompt(text: str) -> PromptResult:\n    \"\"\"Prompt template for summarizing text.\"\"\"\n    return PromptResult(\n        messages=[\n            Message(f\"Please summarize the following text:\\n\\n{text}\")\n        ]\n    )\n\nif __name__ == \"__main__\":\n    server = FastMCP(\"Summarize Server\")\n    server.add_prompt(summarize_prompt)\n    server.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP, Message, PromptResult, prompt\n\n@prompt(\"summarize\")\ndef summarize_prompt(text: str) -> PromptResult:\n    \"\"\"Prompt template for summarizing text.\"\"\"\n    return PromptResult(\n        messages=[\n            Message(f\"Please summarize the following text:\\n\\n{text}\")\n        ]\n    )\n\nif __name__ == \"__main__\":\n    server = FastMCP(\"Summarize Server\")\n    server.add_prompt(summarize_prompt)\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 2267,
+    "cache_read_tokens": 282329,
+    "cache_creation_tokens": 15084,
+    "cost_usd": 0.0698269,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 43.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "claude-api"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "args": "fastmcp"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "message template",
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "template",
+        "library": "fastmcp",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "message",
+        "library": "fastmcp",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "prompt",
+        "library": "fastmcp",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.prompts:Prompt",
+          "fastmcp.prompts:Message",
+          "fastmcp.prompts:prompt"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01P5v8v3VjDTmvkmcYicBaqE",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01Kykwn3fZBnmgQuAsrKEMz7",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01THYAB6TFgFGoT2hL6arRjm",
+      "content": "{\"results\":[{\"id\":\"fastmcp.utilities.inspect:TemplateInfo\",\"kind\":\"class\",\"summary\":\"Information about a resource template.\",\"import\":\"from fastmcp.utilities.inspect import TemplateInfo\"},{\"id\":\"fastmcp.server.app:FastMCPApp#get_resource_template\",\"kind\":\"method\",\"summary\":\"Get resource template by transformed URI with all transforms applied.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp#get_resource_template\"},{\"id\":\"fastmcp.server.app:FastMCPApp#list_resource_templates\",\"kind\":\"method\",\"summary\":\"List resource templates with all transforms applied.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp#list_resource_templates\"},{\"id\":\"fastmcp.client:Client#list_resource_templates\",\"kind\":\"method\",\"summary\":\"Retrieve all resource templates available on the server.\",\"import\":\"from fastmcp.client import Client\",\"resolved_via_alias\":\"fastmcp.client.client:Client#list_resource_templates\"},{\"id\":\"fastmcp.client:Client#list_resource_templates_mcp\",\"kind\":\"method\",\"summary\":\"Send a resources/listResourceTemplates request and return the complete MCP protocol result.\",\"import\":\"from fastmcp.client import Client\",\"resolved_via_alias\":\"fastmcp.client.client:Client#list_resource_templates_mcp\"},{\"id\":\"fastmcp.client.mixins:ClientResourcesMixin#list_resource_templates\",\"kind\":\"method\",\"summary\":\"Retrieve all resource templates available on the server.\",\"import\":\"from fastmcp.client.mixins import ClientResourcesMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.resources:ClientResourcesMixin#list_resource_templates\"},{\"id\":\"fastmcp.client.mixins:ClientResourcesMixin#list_resource_templates_mcp\",\"kind\":\"method\",\"summary\":\"Send a resources/listResourceTemplates request and return the complete MCP protocol result.\",\"import\":\"from fastmcp.client.mixins import ClientResourcesMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.resources:ClientResourcesMixin#list_resource_templates"
+    },
+    {
+      "tool_use_id": "toolu_01RAAwZoyhEuDUJui6B8jBQq",
+      "content": "{\"results\":[{\"id\":\"fastmcp.prompts:Message\",\"kind\":\"class\",\"summary\":\"Wrapper for prompt message with auto-serialization.\",\"import\":\"from fastmcp.prompts import Message\",\"resolved_via_alias\":\"fastmcp.prompts.base:Message\"},{\"id\":\"fastmcp.dependencies:Progress#message\",\"kind\":\"attribute\",\"summary\":\"Current progress message.\",\"import\":\"from fastmcp.dependencies import Progress\",\"resolved_via_alias\":\"fastmcp.server.dependencies:Progress#message\"},{\"id\":\"fastmcp.client.tasks:MessageHandler\",\"kind\":\"class\",\"summary\":\"This class is used to handle MCP messages sent to the client. It is used to handle all messages, requests, notifications, and exceptions. Users can override any of the hooks\",\"import\":\"from fastmcp.client.tasks import MessageHandler\",\"resolved_via_alias\":\"fastmcp.client.messages:MessageHandler\"},{\"id\":\"fastmcp.client.tasks:MessageHandler#on_create_message\",\"kind\":\"method\",\"summary\":\"Method on_create_message\",\"import\":\"from fastmcp.client.tasks import MessageHandler\",\"resolved_via_alias\":\"fastmcp.client.messages:MessageHandler#on_create_message\"},{\"id\":\"fastmcp.client.tasks:MessageHandler#on_logging_message\",\"kind\":\"method\",\"summary\":\"Method on_logging_message\",\"import\":\"from fastmcp.client.tasks import MessageHandler\",\"resolved_via_alias\":\"fastmcp.client.messages:MessageHandler#on_logging_message\"},{\"id\":\"fastmcp.client.tasks:MessageHandler#on_message\",\"kind\":\"method\",\"summary\":\"Method on_message\",\"import\":\"from fastmcp.client.tasks import MessageHandler\",\"resolved_via_alias\":\"fastmcp.client.messages:MessageHandler#on_message\"},{\"id\":\"fastmcp.client.oauth_callback:STATUS_MESSAGE_STYLES\",\"kind\":\"constant\",\"summary\":\"Constant STATUS_MESSAGE_STYLES\",\"import\":\"from fastmcp.client.oauth_callback import STATUS_MESSAGE_STYLES\"},{\"id\":\"fastmcp.client.tasks:TaskNotificationHandler#on_create_message\",\"kind\":\"method\",\"summary\":\"Method on_create_message\",\"import\":\"from fastmcp.client.tasks import TaskNotificationHandler\"},{\"id\":\"fastmcp.client.tasks:TaskNotificationHand"
+    },
+    {
+      "tool_use_id": "toolu_01U2qeYHS9Q2ndCATTGVC7wx",
+      "content": "{\"results\":[{\"id\":\"fastmcp.prompts:Prompt\",\"kind\":\"class\",\"summary\":\"A prompt template that can be rendered with parameters.\",\"import\":\"from fastmcp.prompts import Prompt\",\"resolved_via_alias\":\"fastmcp.prompts.base:Prompt\"},{\"id\":\"fastmcp.prompts:prompt\",\"kind\":\"function\",\"summary\":\"Standalone decorator to mark a function as an MCP prompt.\",\"import\":\"from fastmcp.prompts import prompt\",\"resolved_via_alias\":\"fastmcp.prompts.function_prompt:prompt\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#prompt\"},{\"id\":\"fastmcp.server.providers:FileSystemProvider#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server.providers import FileSystemProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.filesystem:FileSystemProvider#prompt\"},{\"id\":\"fastmcp.server.providers.local_provider.decorators:PromptDecoratorMixin#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server.providers.local_provider.decorators import PromptDecoratorMixin\",\"resolved_via_alias\":\"fastmcp.server.providers.local_provider.decorators.prompts:PromptDecoratorMixin#prompt\"},{\"id\":\"fastmcp.server.server:LocalProvider#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server.server import LocalProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.local_provider.local_provider:LocalProvider#prompt\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#prompt\"},{\"id\":\"fastmcp.server:FastMCP#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alia"
+    },
+    {
+      "tool_use_id": "toolu_0141YNC3jVmJjXGN1qdrb1CA",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.example:FastMCP\",\"fastmcp.contrib.component_manager.component_manager:FastMCP\",\"fastmcp.contrib.component_manager.example:FastMCP\",\"fastmcp.contrib.mcp_mixin.example:FastMCP\",\"fastmcp.server.context:FastMCP\",\"fastmcp.server.providers.proxy:FastMCP\",\"fastmcp.server:FastMCP\",\"fastmcp.utilities.inspect:FastMCP\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"instructions\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"version\",\"type\":\"str | int | float | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"website_url\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"list[mcp.types.Icon] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"AuthProvider | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"middleware\",\"type\":\"Sequence[Middleware] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"providers\",\"type\":\"Sequence[Provider] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"transforms\",\"type\":\"Sequence[Transform] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lifespan\",\"type\":\"LifespanCallable | Lifespan | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tools\",\"type\":\"Sequence[Tool | Callable[..., Any]] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"on_duplicate\",\"type\":\"DuplicateBehavior | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"mask_error_details\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dereference_schemas\",\"type\":\"bool\""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "fastmcp:FastMCP#prompt"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Message",
+      "fastmcp.PromptResult",
+      "fastmcp.prompt"
+    ],
+    "error": null
+  }
+}

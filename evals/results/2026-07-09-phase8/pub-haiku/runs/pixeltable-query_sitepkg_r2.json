@@ -1,0 +1,94 @@
+{
+  "case_id": "pixeltable-query",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Get the films table\nfilms = pxt.get_table('films')\n\n# Filter for year > 1990, select title and revenue, and materialize\nresult = films.where(films.year > 1990).select(films.title, films.revenue).collect()\n\n# Access the results\nfor row in result:\n    print(row)",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Get the films table\nfilms = pxt.get_table('films')\n\n# Filter for year > 1990, select title and revenue, and materialize\nresult = films.where(films.year > 1990).select(films.title, films.revenue).collect()\n\n# Access the results\nfor row in result:\n    print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 81,
+    "output_tokens": 2200,
+    "cache_read_tokens": 288965,
+    "cache_creation_tokens": 15785,
+    "cost_usd": 0.07154749999999999,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 39.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/__init__.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def (where|select|collect)",
+        "type": "py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/_query.py",
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/_query.py",
+        "limit": 500,
+        "offset": 100
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def (where|select|collect)\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/_query.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/_query.py",
+        "limit": 100,
+        "offset": 1083
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/table.py",
+        "limit": 200
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

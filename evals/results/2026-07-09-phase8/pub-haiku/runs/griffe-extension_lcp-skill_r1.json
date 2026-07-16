@@ -1,0 +1,245 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import Extension, Extensions, load\n\n\nclass CheckedExtension(Extension):\n    def on_function(self, *, func, loader, **kwargs):\n        if func.docstring:\n            func.docstring.value += \" [checked]\"\n\n\nextensions = Extensions(CheckedExtension())\nmodule = load(\"mypkg\", extensions=extensions)",
+  "result_text": "```python\nfrom griffe import Extension, Extensions, load\n\n\nclass CheckedExtension(Extension):\n    def on_function(self, *, func, loader, **kwargs):\n        if func.docstring:\n            func.docstring.value += \" [checked]\"\n\n\nextensions = Extensions(CheckedExtension())\nmodule = load(\"mypkg\", extensions=extensions)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 185,
+    "output_tokens": 3386,
+    "cache_read_tokens": 643372,
+    "cache_creation_tokens": 26796,
+    "cost_usd": 0.13504419999999998,
+    "num_turns": 22,
+    "tool_calls": 21,
+    "duration_s": 81.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "griffe load extension",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe",
+        "version": "2.1.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "extension",
+        "library": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load",
+        "library": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Extension",
+          "griffe:load",
+          "griffe:Extensions",
+          "griffe:load_extensions"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Extension#on_members",
+          "griffe:Extension#on_function"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Function docstring",
+        "library": "griffe",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Function class",
+        "library": "griffe",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Function",
+        "library": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Function"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Object docstring attribute",
+        "library": "griffe",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Docstring",
+        "library": "griffe",
+        "limit": 15
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Docstring"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011mnQCJTRis5UkusexwKeS5",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01VzsZL2ffdnAe6tpuMivFFC",
+      "content": "{\"results\":[{\"id\":\"griffe:Extension\",\"kind\":\"class\",\"summary\":\"Base class for Griffe extensions.\",\"import\":\"from griffe import Extension\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extension\"},{\"id\":\"griffe:ExtensionError\",\"kind\":\"class\",\"summary\":\"Base class for errors raised by extensions.\",\"import\":\"from griffe import ExtensionError\",\"resolved_via_alias\":\"griffe._internal.exceptions:ExtensionError\"},{\"id\":\"griffe:ExtensionNotLoadedError\",\"kind\":\"class\",\"summary\":\"Exception raised when an extension could not be loaded.\",\"import\":\"from griffe import ExtensionNotLoadedError\",\"resolved_via_alias\":\"griffe._internal.exceptions:ExtensionNotLoadedError\"},{\"id\":\"griffe:Extensions\",\"kind\":\"class\",\"summary\":\"This class helps iterating on extensions that should run at different times.\",\"import\":\"from griffe import Extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extensions\"},{\"id\":\"griffe:load_extensions\",\"kind\":\"function\",\"summary\":\"Load configured extensions.\",\"import\":\"from griffe import load_extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:load_extensions\"},{\"id\":\"griffe:DataclassesExtension\",\"kind\":\"class\",\"summary\":\"Built-in extension adding support for dataclasses.\",\"import\":\"from griffe import DataclassesExtension\",\"resolved_via_alias\":\"griffe._internal.extensions.dataclasses:DataclassesExtension\"},{\"id\":\"griffe:UnpackTypedDictExtension\",\"kind\":\"class\",\"summary\":\"An extension to handle `Unpack[TypeDict]`.\",\"import\":\"from griffe import UnpackTypedDictExtension\",\"resolved_via_alias\":\"griffe._internal.extensions.unpack_typeddict:UnpackTypedDictExtension\"},{\"id\":\"griffe:Inspector#generic_inspect\",\"kind\":\"method\",\"summary\":\"Extend the base generic inspection with extensions.\",\"import\":\"from griffe import Inspector\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:Inspector#generic_inspect\"},{\"id\":\"griffe:Inspector#inspect\",\"kind\":\"method\",\"summary\":\"Extend the base inspection with extensions.\",\"import\":\"from griffe im"
+    },
+    {
+      "tool_use_id": "toolu_01K4uBwbFcNqnEKFEKQnU5rW",
+      "content": "{\"results\":[{\"id\":\"griffe:GriffeLoader#load\",\"kind\":\"method\",\"summary\":\"Load an object as a Griffe object, given its Python or file path.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader#load\"},{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:LoadingError\",\"kind\":\"class\",\"summary\":\"The base exception for all Griffe errors.\",\"import\":\"from griffe import LoadingError\",\"resolved_via_alias\":\"griffe._internal.exceptions:LoadingError\"},{\"id\":\"griffe:load_extensions\",\"kind\":\"function\",\"summary\":\"Load configured extensions.\",\"import\":\"from griffe import load_extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:load_extensions\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\"from griffe import load_git\",\"resolved_via_alias\":\"griffe._internal.loader:load_git\"},{\"id\":\"griffe:load_pypi\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific package version downloaded using pip.\",\"import\":\"from griffe import load_pypi\",\"resolved_via_alias\":\"griffe._internal.loader:load_pypi\"},{\"id\":\"griffe:ExtensionNotLoadedError\",\"kind\":\"class\",\"summary\":\"Exception raised when an extension could not be loaded.\",\"import\":\"from griffe import ExtensionNotLoadedError\",\"resolved_via_alias\":\"griffe._internal.exceptions:ExtensionNotLoadedError\"},{\"id\":\"griffe:GriffeLoader\",\"kind\":\"class\",\"summary\":\"The Griffe loader, allowing to load data from modules.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader\"},{\"id\":\"griffe:Alias#overloads\",\"kind\":\"attribute\",\"summary\":\"The overloaded signatures declared in this class/module or for this function.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#overloads\"},{\"id\":\"griffe:Extension#"
+    },
+    {
+      "tool_use_id": "toolu_011bmqFDWuBhFcgdPia7k8WG",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.extensions.base\",\"aliases\":[\"griffe._internal.extensions.dataclasses:Extension\",\"griffe._internal.extensions.unpack_typeddict:Extension\",\"griffe:Extension\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"Base class for Griffe extensions.\"},\"id\":\"griffe:Extension\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extension\",\"import\":\"from griffe import Extension\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"griffe:Extension#generic_inspect\",\"kind\":\"method\",\"summary\":\"Extend the base generic inspection with extensions.\"},{\"id\":\"griffe:Extension#generic_visit\",\"kind\":\"method\",\"summary\":\"Visit children nodes.\"},{\"id\":\"griffe:Extension#inspect\",\"kind\":\"method\",\"summary\":\"Inspect a node.\"},{\"id\":\"griffe:Extension#on_alias\",\"kind\":\"method\",\"summary\":\"Run on aliases once the object tree has been fully constructed.\"},{\"id\":\"griffe:Extension#on_alias_instance\",\"kind\":\"method\",\"summary\":\"Run when an Alias has been created.\"},{\"id\":\"griffe:Extension#on_attribute\",\"kind\":\"method\",\"summary\":\"Run on attributes once the object tree has been fully constructed.\"},{\"id\":\"griffe:Extension#on_attribute_instance\",\"kind\":\"method\",\"summary\":\"Run when an Attribute has been created.\"},{\"id\":\"griffe:Extension#on_attribute_node\",\"kind\":\"method\",\"summary\":\"Run when visiting a new attribute node during static/dynamic analysis.\"},{\"id\":\"griffe:Extension#on_class\",\"kind\":\"method\",\"summary\":\"Run on classes once the object tree has been fully constructed.\"},{\"id\":\"griffe:Extension#on_class_instance\",\"kind\":\"method\",\"summary\":\"Run when a Class has been created.\"},{\"id\":\"griffe:Extension#on_class_members\",\"kind\":\"method\",\"summary\":\"Run when m"
+    },
+    {
+      "tool_use_id": "toolu_01Y828gUnLPHf3E93PUb3P4b",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"griffe._internal.extensions.base\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"node\",\"type\":\"ast.AST | ObjectNode\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The currently visited node.\"},{\"name\":\"obj\",\"type\":\"Object\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The object instance.\"},{\"name\":\"agent\",\"type\":\"Visitor | Inspector\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The analysis agent currently running.\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"For forward-compatibility.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Run when members of an Object have been loaded.\",\"description\":\"Warning:\\n            This method runs while the object tree is still being constructed:\\n            data might be incomplete (class inheritance, alias resolution, etc.).\\n            Only hook onto this event if you know what you're doing.\\n\\n        Parameters:\\n            node: The currently visited node.\\n            obj: The object instance.\\n            agent: The analysis agent currently running.\\n            **kwargs: For forward-compatibility.\"},\"id\":\"griffe:Extension#on_members\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extension#on_members\",\"import\":\"from griffe import Extension\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"node\",\"type\":\"ast.AST | ObjectNode\"},{\"name\":\"obj\",\"type\":\"Object\"},{\"name\":\"agent\",\"type\":\"Visitor | Inspector\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"}},{\"kind\":\"method\",\"module\":\"griffe._internal.extensions.base\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"func\",\"type\":\"Function\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The function instance.\"},{\"name\":\"loader\",\"type\":\"GriffeLoader\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The loader currently in use"
+    },
+    {
+      "tool_use_id": "toolu_012TQcTwJ7GraLarCYUr7L6m",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01LcHx2Bg7HxTYsK1UKYjWEP",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01F1KTKEaSXiqhtEXdS9Q7QR",
+      "content": "{\"results\":[{\"id\":\"griffe:Function\",\"kind\":\"class\",\"summary\":\"The class representing a Python function.\",\"import\":\"from griffe import Function\",\"resolved_via_alias\":\"griffe._internal.models:Function\"},{\"id\":\"griffe:ObjectAliasMixin#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import ObjectAliasMixin\",\"resolved_via_alias\":\"griffe._internal.mixins:ObjectAliasMixin#functions\"},{\"id\":\"griffe:Alias#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#functions\"},{\"id\":\"griffe:Attribute#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import Attribute\",\"resolved_via_alias\":\"griffe._internal.models:Attribute#functions\"},{\"id\":\"griffe:Class#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import Class\",\"resolved_via_alias\":\"griffe._internal.models:Class#functions\"},{\"id\":\"griffe:Function#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import Function\",\"resolved_via_alias\":\"griffe._internal.models:Function#functions\"},{\"id\":\"griffe:Module#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import Module\",\"resolved_via_alias\":\"griffe._internal.models:Module#functions\"},{\"id\":\"griffe:Object#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import Object\",\"resolved_via_alias\":\"griffe._internal.models:Object#functions\"},{\"id\":\"griffe:TypeAlias#functions\",\"kind\":\"attribute\",\"summary\":\"The function members.\",\"import\":\"from griffe import TypeAlias\",\"resolved_via_alias\":\"griffe._internal.models:TypeAlias#functions\"},{\"id\":\"griffe:Inspector#handle_function\",\"kind\":\"method\",\"summary\":\"Handle a function.\",\"import\":\"from griffe import Inspector\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:Inspector#handle_function\"},{\"id\":\"griffe:Inspector#inspect_builtin_fun"
+    },
+    {
+      "tool_use_id": "toolu_01KfHpjsXc7L3BaLR3fPggqP",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.models\",\"aliases\":[\"griffe._internal.agents.inspector:Function\",\"griffe._internal.agents.visitor:Function\",\"griffe._internal.encoders:Function\",\"griffe._internal.extensions.dataclasses:Function\",\"griffe._internal.extensions.unpack_typeddict:Function\",\"griffe:Function\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"parameters\",\"type\":\"Parameters | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"returns\",\"type\":\"str | Expr | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"decorators\",\"type\":\"list[Decorator] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"The class representing a Python function.\"},\"id\":\"griffe:Function\",\"resolved_via_alias\":\"griffe._internal.models:Function\",\"import\":\"from griffe import Function\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"parameters\",\"type\":\"Parameters | None\",\"default\":null},{\"name\":\"returns\",\"type\":\"str | Expr | None\",\"default\":null},{\"name\":\"decorators\",\"type\":\"list[Decorator] | None\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"griffe:Function#__bool__\",\"kind\":\"method\",\"summary\":\"An object is always true-ish.\"},{\"id\":\"griffe:Function#__delitem__\",\"kind\":\"method\",\"summary\":\"Delete a member with its name or path.\"},{\"id\":\"griffe:Function#__getitem__\",\"kind\":\"method\",\"summary\":\"Get a member with its name or path.\"},{\"id\":\"griffe:Function#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the function.\"},{\"id\":\"griffe:Function#__len__\",\"kind\":\"method\",\"summary\":\"The number of members in this object, recursively.\"},{\"id\":\"griffe:Function#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"griffe:Funct"
+    },
+    {
+      "tool_use_id": "toolu_01WkjNxdksdpsCpkJFkJGuB4",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01B9aEcy4TTtHhdeTkzMuyRK",
+      "content": "{\"results\":[{\"id\":\"griffe:Alias#docstring\",\"kind\":\"attribute\",\"summary\":\"The target docstring.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#docstring\"},{\"id\":\"griffe:Docstring\",\"kind\":\"class\",\"summary\":\"This class represents docstrings.\",\"import\":\"from griffe import Docstring\",\"resolved_via_alias\":\"griffe._internal.models:Docstring\"},{\"id\":\"griffe:DocstringAdmonition\",\"kind\":\"class\",\"summary\":\"This class represents an admonition.\",\"import\":\"from griffe import DocstringAdmonition\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringAdmonition\"},{\"id\":\"griffe:DocstringAttribute\",\"kind\":\"class\",\"summary\":\"This class represents a documented module/class attribute.\",\"import\":\"from griffe import DocstringAttribute\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringAttribute\"},{\"id\":\"griffe:DocstringClass\",\"kind\":\"class\",\"summary\":\"This class represents a documented class.\",\"import\":\"from griffe import DocstringClass\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringClass\"},{\"id\":\"griffe:DocstringDeprecated\",\"kind\":\"class\",\"summary\":\"This class represents a documented deprecated item.\",\"import\":\"from griffe import DocstringDeprecated\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringDeprecated\"},{\"id\":\"griffe:DocstringElement\",\"kind\":\"class\",\"summary\":\"This base class represents annotated, nameless elements.\",\"import\":\"from griffe import DocstringElement\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringElement\"},{\"id\":\"griffe:DocstringFunction\",\"kind\":\"class\",\"summary\":\"This class represents a documented function.\",\"import\":\"from griffe import DocstringFunction\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringFunction\"},{\"id\":\"griffe:DocstringModule\",\"kind\":\"class\",\"summary\":\"This class represents a documented module.\",\"import\":\"from griffe import DocstringModule\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringMo"
+    },
+    {
+      "tool_use_id": "toolu_01SXeWW1WVByy6tgLb57yLkJ",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.models\",\"aliases\":[\"griffe._internal.agents.inspector:Docstring\",\"griffe._internal.agents.visitor:Docstring\",\"griffe._internal.encoders:Docstring\",\"griffe._internal.extensions.unpack_typeddict:Docstring\",\"griffe:Docstring\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"value\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"lineno\",\"type\":\"UnionType[int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"endlineno\",\"type\":\"UnionType[int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"parent\",\"type\":\"UnionType[Object, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"parser\",\"type\":\"Union[Literal[google, numpy, sphinx, auto], Parser, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"parser_options\",\"type\":\"UnionType[GoogleOptions, NumpyOptions, SphinxOptions, AutoOptions, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"This class represents docstrings.\"},\"id\":\"griffe:Docstring\",\"resolved_via_alias\":\"griffe._internal.models:Docstring\",\"import\":\"from griffe import Docstring\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"value\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"lineno\",\"type\":\"UnionType[int, None]\",\"default\":null},{\"name\":\"endlineno\",\"type\":\"UnionType[int, None]\",\"default\":null},{\"name\":\"parent\",\"type\":\"UnionType[Object, None]\",\"default\":null},{\"name\":\"parser\",\"type\":\"Union[Literal[google, numpy, sphinx, auto], Parser, None]\",\"default\":null},{\"name\":\"parser_options\",\"type\":\"UnionType[GoogleOptions, NumpyOptions, SphinxOptions, AutoOptions, None]\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"griffe:Docstring#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the docstring.\"},{\"id\":\"griffe:Docstring#as_dict\",\"kind\":\"method\",\"summary\":\"Return this docstring's data as a dictionary.\"},{\"id\":\"griffe:Do"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

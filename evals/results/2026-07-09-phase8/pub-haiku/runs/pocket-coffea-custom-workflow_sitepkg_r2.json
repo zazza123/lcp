@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.workflows.base_processor import BaseProcessor\nimport awkward as ak\n\nclass DimuonProcessor(BaseProcessor):\n    def object_preselection(self, events):\n        muons = events.Muon\n        events[\"MuonGood\"] = muons[(muons.pt > 15) & (abs(muons.eta) < 2.4)]\n        return events\n    \n    def object_counting(self, events):\n        events[\"nMuonGood\"] = ak.num(events.MuonGood)\n        return events",
+  "result_text": "```python\nfrom pocket_coffea.workflows.base_processor import BaseProcessor\nimport awkward as ak\n\nclass DimuonProcessor(BaseProcessor):\n    def object_preselection(self, events):\n        muons = events.Muon\n        events[\"MuonGood\"] = muons[(muons.pt > 15) & (abs(muons.eta) < 2.4)]\n        return events\n    \n    def object_counting(self, events):\n        events[\"nMuonGood\"] = ak.num(events.MuonGood)\n        return events\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4279,
+    "cache_read_tokens": 24145,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.023818499999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.workflows.base_processor.BaseProcessor"
+    ],
+    "error": null
+  }
+}

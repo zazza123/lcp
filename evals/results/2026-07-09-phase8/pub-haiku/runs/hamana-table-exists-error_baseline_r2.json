@@ -1,0 +1,38 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nfrom hamana import ImportMode\n\n# Create a SQLite database connection\ndb = hamana.SQLiteDatabase(\":memory:\")\n\n# Execute a Query\nquery = hamana.Query(\"SELECT 1 as id, 'Product A' as name, 100 as price\")\nresult = query.execute()\n\n# Import to SQLite with FAIL mode (raise exception if table already exists)\ntry:\n    hamana.load(\n        result,\n        db,\n        table=\"sales\",\n        mode=ImportMode.FAIL\n    )\n    print(\"Data imported successfully\")\nexcept hamana.TableAlreadyExistsError as e:\n    print(f\"Import failed - table already exists: {e}\")",
+  "result_text": "```python\nimport hamana\nfrom hamana import ImportMode\n\n# Create a SQLite database connection\ndb = hamana.SQLiteDatabase(\":memory:\")\n\n# Execute a Query\nquery = hamana.Query(\"SELECT 1 as id, 'Product A' as name, 100 as price\")\nresult = query.execute()\n\n# Import to SQLite with FAIL mode (raise exception if table already exists)\ntry:\n    hamana.load(\n        result,\n        db,\n        table=\"sales\",\n        mode=ImportMode.FAIL\n    )\n    print(\"Data imported successfully\")\nexcept hamana.TableAlreadyExistsError as e:\n    print(f\"Import failed - table already exists: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4503,
+    "cache_read_tokens": 22032,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.024727199999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 50.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 5,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL",
+      "hamana.SQLiteDatabase",
+      "hamana.TableAlreadyExistsError",
+      "hamana.load"
+    ],
+    "error": null
+  }
+}

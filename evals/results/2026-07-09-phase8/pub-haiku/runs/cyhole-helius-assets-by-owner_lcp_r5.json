@@ -1,0 +1,36 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "lcp",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole import Helius\n\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n\nwallet_address = input(\"Enter wallet address: \")\n\nhelius = Helius(api_key=api_key)\nassets = helius.get_assets_by_owner(owner=wallet_address)\n\nprint(\"DAS Assets owned by\", wallet_address)\nfor asset in assets:\n    print(f\"  {asset}\")",
+  "result_text": "```python\nimport os\nfrom cyhole import Helius\n\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n\nwallet_address = input(\"Enter wallet address: \")\n\nhelius = Helius(api_key=api_key)\nassets = helius.get_assets_by_owner(owner=wallet_address)\n\nprint(\"DAS Assets owned by\", wallet_address)\nfor asset in assets:\n    print(f\"  {asset}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2225,
+    "cache_read_tokens": 22106,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0133446,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.helius.interaction:Helius",
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_assets_by_owner"
+    ],
+    "unresolved_usages": [
+      "cyhole.Helius"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana.connector.db.hamana import HamanaConnector\n\n# Initialize the database if not already done\ntry:\n    # Try to get the existing singleton instance\n    connector = HamanaConnector.get_instance()\nexcept Exception:\n    # If not initialized, initialize it\n    connector = HamanaConnector()\n\n# Get the underlying raw database connection object\nraw_connection = connector.get_connection()\n\nprint(f\"Singleton connector instance: {connector}\")\nprint(f\"Raw database connection: {raw_connection}\")\nprint(f\"Connection type: {type(raw_connection)}\")",
+  "result_text": "```python\nfrom hamana.connector.db.hamana import HamanaConnector\n\n# Initialize the database if not already done\ntry:\n    # Try to get the existing singleton instance\n    connector = HamanaConnector.get_instance()\nexcept Exception:\n    # If not initialized, initialize it\n    connector = HamanaConnector()\n\n# Get the underlying raw database connection object\nraw_connection = connector.get_connection()\n\nprint(f\"Singleton connector instance: {connector}\")\nprint(f\"Raw database connection: {raw_connection}\")\nprint(f\"Connection type: {type(raw_connection)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 49,
+    "output_tokens": 1208,
+    "cache_read_tokens": 148685,
+    "cache_creation_tokens": 4196,
+    "cost_usd": 0.0293495,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 24.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana*"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/hamana.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

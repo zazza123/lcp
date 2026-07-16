@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-pivot",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create sample long-format DataFrame\ndf_long = pl.DataFrame({\n    \"date\": [\"2024-01-01\", \"2024-01-01\", \"2024-01-02\", \"2024-01-02\"],\n    \"city\": [\"New York\", \"Los Angeles\", \"New York\", \"Los Angeles\"],\n    \"temperature\": [32, 65, 35, 70]\n})\n\n# Reshape from long to wide format\ndf_wide = df_long.pivot(index=\"date\", columns=\"city\", values=\"temperature\")\n\nprint(df_wide)",
+  "result_text": "```python\nimport polars as pl\n\n# Create sample long-format DataFrame\ndf_long = pl.DataFrame({\n    \"date\": [\"2024-01-01\", \"2024-01-01\", \"2024-01-02\", \"2024-01-02\"],\n    \"city\": [\"New York\", \"Los Angeles\", \"New York\", \"Los Angeles\"],\n    \"temperature\": [32, 65, 35, 70]\n})\n\n# Reshape from long to wide format\ndf_wide = df_long.pivot(index=\"date\", columns=\"city\", values=\"temperature\")\n\nprint(df_wide)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 573,
+    "cache_read_tokens": 22058,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005079800000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "case_id": "pocket-coffea-histograms",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.hist.hist_manager import Hist\n\nvariables = {\n    \"muon_pt\": Hist([\n        Hist.axis.Regular(\n            bins=60,\n            start=0,\n            end=300,\n            label=\"Muon pT [GeV]\",\n            name=\"pt\"\n        )\n    ])\n}",
+  "result_text": "```python\nfrom pocket_coffea.hist.hist_manager import Hist\n\nvariables = {\n    \"muon_pt\": Hist([\n        Hist.axis.Regular(\n            bins=60,\n            start=0,\n            end=300,\n            label=\"Muon pT [GeV]\",\n            name=\"pt\"\n        )\n    ])\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2641,
+    "cache_read_tokens": 22085,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.015422500000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 42.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.hist_manager:Axis",
+      "pocket_coffea.lib.hist_manager:HistConf"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.hist.hist_manager.Hist",
+      "pocket_coffea.hist.hist_manager.Hist.axis",
+      "pocket_coffea.hist.hist_manager.Hist.axis.Regular"
+    ],
+    "error": null
+  }
+}

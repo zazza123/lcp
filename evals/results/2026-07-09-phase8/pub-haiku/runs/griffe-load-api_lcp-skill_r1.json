@@ -1,0 +1,74 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\n\n# Load the full API model of requests\nrequests_module = load(\"requests\")\n\n# Get all public top-level functions\npublic_functions = [\n    name for name, member in requests_module.members.items()\n    if not name.startswith(\"_\") and member.is_function\n]\n\n# Print the names\nfor func_name in sorted(public_functions):\n    print(func_name)",
+  "result_text": "```python\nfrom griffe import load\n\n# Load the full API model of requests\nrequests_module = load(\"requests\")\n\n# Get all public top-level functions\npublic_functions = [\n    name for name, member in requests_module.members.items()\n    if not name.startswith(\"_\") and member.is_function\n]\n\n# Print the names\nfor func_name in sorted(public_functions):\n    print(func_name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 43,
+    "output_tokens": 1083,
+    "cache_read_tokens": 114286,
+    "cache_creation_tokens": 11913,
+    "cost_usd": 0.0407126,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 27.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load",
+        "library": "griffe",
+        "kind": "function",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:load"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01SHvA4daSyo835APGz4G5im",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"scan\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01K9Bqc2ppwNwgm8nyvC6CnZ",
+      "content": "{\"results\":[{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:load_extensions\",\"kind\":\"function\",\"summary\":\"Load configured extensions.\",\"import\":\"from griffe import load_extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:load_extensions\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\"from griffe import load_git\",\"resolved_via_alias\":\"griffe._internal.loader:load_git\"},{\"id\":\"griffe:load_pypi\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific package version downloaded using pip.\",\"import\":\"from griffe import load_pypi\",\"resolved_via_alias\":\"griffe._internal.loader:load_pypi\"},{\"id\":\"griffe:inspect\",\"kind\":\"function\",\"summary\":\"Inspect a module.\",\"import\":\"from griffe import inspect\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:inspect\"},{\"id\":\"griffe:visit\",\"kind\":\"function\",\"summary\":\"Parse and visit a module file.\",\"import\":\"from griffe import visit\",\"resolved_via_alias\":\"griffe._internal.agents.visitor:visit\"},{\"id\":\"griffe:find_breaking_changes\",\"kind\":\"function\",\"summary\":\"Find breaking changes between two versions of the same API.\",\"import\":\"from griffe import find_breaking_changes\",\"resolved_via_alias\":\"griffe._internal.diff:find_breaking_changes\"},{\"id\":\"griffe:json_decoder\",\"kind\":\"function\",\"summary\":\"Decode dictionaries as data classes.\",\"import\":\"from griffe import json_decoder\",\"resolved_via_alias\":\"griffe._internal.encoders:json_decoder\"},{\"id\":\"griffe:temporary_inspected_package\",\"kind\":\"function\",\"summary\":\"Create and inspect a temporary package.\",\"import\":\"from griffe import temporary_inspected_package\",\"resolved_via_alias\":\"griffe._internal.helpers:temporary_inspected_package\"},{\"id\":\"griffe:temporary_visited_package\",\"kind\":\"function\",\"summary\":\"Create and visit a temporary package.\",\"import\":\"f"
+    },
+    {
+      "tool_use_id": "toolu_01W6pk5vfxWaMiRudg3JvNwF",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"griffe._internal.loader\",\"aliases\":[\"griffe._internal.helpers:load\",\"griffe:load\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"objspec\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"The Python path of an object, or file path to a module.\"},{\"name\":\"submodules\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to recurse on the submodules.\\nThis parameter only makes sense when loading a package (top-level module).\"},{\"name\":\"try_relative_path\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to try finding the module as a relative path.\"},{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The extensions to use.\"},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The paths to search into.\"},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The docstring parser to use. By default, no parsing is done.\"},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Docstring parsing options.\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of source code lines.\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of modules.\"},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to allow inspecting modules when visiting them is not possible.\"},{\"name\":\"force_inspection\",\"type\":\"bool\",\"re"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

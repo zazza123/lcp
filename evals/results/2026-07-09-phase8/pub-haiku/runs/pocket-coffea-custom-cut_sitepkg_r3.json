@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    Requires at least 2 muons with pT > threshold and opposite charge on leading pair.\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    \n    muons = events.Muon\n    good_muons = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    n_muons = ak.num(good_muons, axis=1)\n    has_two = n_muons >= 2\n    \n    # Check opposite charge on leading pair\n    # Fill None with 0 for events with fewer than 2 muons\n    charge1 = ak.fill_none(good_muons[:, 0].charge, 0)\n    charge2 = ak.fill_none(good_muons[:, 1].charge, 0)\n    opp_charge = (charge1 * charge2) < 0\n    \n    # Combine: at least 2 muons AND opposite charge\n    return has_two & opp_charge\n\n# Declare the cut with the framework's cut-definition object\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)\n\n# Usage in configuration:\n# config = {\n#     \"preselections\": [dimuon],\n# }",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    Requires at least 2 muons with pT > threshold and opposite charge on leading pair.\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    \n    muons = events.Muon\n    good_muons = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    n_muons = ak.num(good_muons, axis=1)\n    has_two = n_muons >= 2\n    \n    # Check opposite charge on leading pair\n    # Fill None with 0 for events with fewer than 2 muons\n    charge1 = ak.fill_none(good_muons[:, 0].charge, 0)\n    charge2 = ak.fill_none(good_muons[:, 1].charge, 0)\n    opp_charge = (charge1 * charge2) < 0\n    \n    # Combine: at least 2 muons AND opposite charge\n    return has_two & opp_charge\n\n# Declare the cut with the framework's cut-definition object\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)\n\n# Usage in configuration:\n# config = {\n#     \"preselections\": [dimuon],\n# }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4983,
+    "cache_read_tokens": 24152,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.027339199999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

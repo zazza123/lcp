@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import (\n    get_HLT_triggers,\n    get_nobj_min_pt,\n    get_nbjets,\n)\n\n# Configuration for 2018 semileptonic ttbar analysis\nconfig = {\n    \"year\": 2018,\n    \"dataset\": \"TTtoSemiLeptonic\",\n    \n    # Skim cuts\n    \"skim\": [\n        {\n            \"name\": \"HLT_semileptonic\",\n            \"function\": get_HLT_triggers,\n            \"kwargs\": {\n                \"triggers\": [\n                    \"IsoMu24\",\n                    \"IsoTkMu24\", \n                    \"Ele32_WPTight_Gsf\",\n                    \"Ele35_WPTight_Gsf\",\n                ]\n            }\n        }\n    ],\n    \n    # Preselection cuts\n    \"preselection\": [\n        {\n            \"name\": \"nJets_ge4_pt30\",\n            \"function\": get_nobj_min_pt,\n            \"kwargs\": {\n                \"obj\": \"JetGood\",\n                \"n_obj\": 4,\n                \"pt_min\": 30.0,\n            }\n        },\n        {\n            \"name\": \"nBtags_ge2\",\n            \"function\": get_nbjets,\n            \"kwargs\": {\n                \"n_btags\": 2,\n                \"btag_wp\": \"M\",\n            }\n        }\n    ]\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import (\n    get_HLT_triggers,\n    get_nobj_min_pt,\n    get_nbjets,\n)\n\n# Configuration for 2018 semileptonic ttbar analysis\nconfig = {\n    \"year\": 2018,\n    \"dataset\": \"TTtoSemiLeptonic\",\n    \n    # Skim cuts\n    \"skim\": [\n        {\n            \"name\": \"HLT_semileptonic\",\n            \"function\": get_HLT_triggers,\n            \"kwargs\": {\n                \"triggers\": [\n                    \"IsoMu24\",\n                    \"IsoTkMu24\", \n                    \"Ele32_WPTight_Gsf\",\n                    \"Ele35_WPTight_Gsf\",\n                ]\n            }\n        }\n    ],\n    \n    # Preselection cuts\n    \"preselection\": [\n        {\n            \"name\": \"nJets_ge4_pt30\",\n            \"function\": get_nobj_min_pt,\n            \"kwargs\": {\n                \"obj\": \"JetGood\",\n                \"n_obj\": 4,\n                \"pt_min\": 30.0,\n            }\n        },\n        {\n            \"name\": \"nBtags_ge2\",\n            \"function\": get_nbjets,\n            \"kwargs\": {\n                \"n_btags\": 2,\n                \"btag_wp\": \"M\",\n            }\n        }\n    ]\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3039,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6897,
+    "cost_usd": 0.0305184,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.get_HLT_triggers",
+      "pocket_coffea.lib.cuts.get_nbjets",
+      "pocket_coffea.lib.cuts.get_nobj_min_pt"
+    ],
+    "error": null
+  }
+}

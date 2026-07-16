@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nimport inspect\n\n\ndef create_transparent_proxy(backend_server: Server, proxy_name: str = \"proxy\") -> Server:\n    \"\"\"Create a proxy server that transparently forwards all tools and resources to backend.\"\"\"\n    \n    proxy_server = Server(proxy_name)\n    \n    # Forward all tools from backend\n    backend_tools = getattr(backend_server, '_tools', {})\n    for tool_name, tool_spec in backend_tools.items():\n        def make_tool_wrapper(spec):\n            async def wrapped_tool(**kwargs):\n                result = spec.fn(**kwargs)\n                if inspect.iscoroutine(result):\n                    return await result\n                return result\n            wrapped_tool.__name__ = spec.fn.__name__\n            wrapped_tool.__doc__ = getattr(spec, 'description', None)\n            return wrapped_tool\n        \n        tool_wrapper = make_tool_wrapper(tool_spec)\n        proxy_server.add_tool(tool_wrapper, name=tool_name)\n    \n    # Forward all resources from backend\n    backend_resources = getattr(backend_server, '_resources', {})\n    for resource_name, resource_spec in backend_resources.items():\n        def make_resource_wrapper(spec):\n            async def wrapped_resource():\n                result = spec.fn()\n                if inspect.iscoroutine(result):\n                    return await result\n                return result\n            wrapped_resource.__name__ = getattr(spec.fn, '__name__', resource_name)\n            wrapped_resource.__doc__ = getattr(spec, 'description', None)\n            return wrapped_resource\n        \n        resource_wrapper = make_resource_wrapper(resource_spec)\n        resource_uri = getattr(resource_spec, 'uri', f'resource://{resource_name}')\n        proxy_server.add_resource(resource_wrapper, name=resource_name, uri=resource_uri)\n    \n    return proxy_server\n\n\nif __name__ == \"__main__\":\n    # Example: Create backend server\n    backend = Server(\"backend\")\n    \n    @backend.tool()\n    def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n    \n    @backend.tool()\n    def multiply(a: int, b: int) -> int:\n        \"\"\"Multiply two numbers.\"\"\"\n        return a * b\n    \n    @backend.resource()\n    def config():\n        \"\"\"Return configuration.\"\"\"\n        return {\"version\": \"1.0\", \"status\": \"active\"}\n    \n    # Create transparent proxy\n    proxy = create_transparent_proxy(backend, \"proxy\")\n    \n    # Verify proxy has forwarded all tools and resources\n    assert set(proxy._tools.keys()) == set(backend._tools.keys())\n    assert set(proxy._resources.keys()) == set(backend._resources.keys())\n    \n    print(\"Transparent proxy created successfully\")\n    print(f\"Forwarded tools: {list(proxy._tools.keys())}\")\n    print(f\"Forwarded resources: {list(proxy._resources.keys())}\")",
+  "result_text": "```python\nfrom fastmcp import Server\nimport inspect\n\n\ndef create_transparent_proxy(backend_server: Server, proxy_name: str = \"proxy\") -> Server:\n    \"\"\"Create a proxy server that transparently forwards all tools and resources to backend.\"\"\"\n    \n    proxy_server = Server(proxy_name)\n    \n    # Forward all tools from backend\n    backend_tools = getattr(backend_server, '_tools', {})\n    for tool_name, tool_spec in backend_tools.items():\n        def make_tool_wrapper(spec):\n            async def wrapped_tool(**kwargs):\n                result = spec.fn(**kwargs)\n                if inspect.iscoroutine(result):\n                    return await result\n                return result\n            wrapped_tool.__name__ = spec.fn.__name__\n            wrapped_tool.__doc__ = getattr(spec, 'description', None)\n            return wrapped_tool\n        \n        tool_wrapper = make_tool_wrapper(tool_spec)\n        proxy_server.add_tool(tool_wrapper, name=tool_name)\n    \n    # Forward all resources from backend\n    backend_resources = getattr(backend_server, '_resources', {})\n    for resource_name, resource_spec in backend_resources.items():\n        def make_resource_wrapper(spec):\n            async def wrapped_resource():\n                result = spec.fn()\n                if inspect.iscoroutine(result):\n                    return await result\n                return result\n            wrapped_resource.__name__ = getattr(spec.fn, '__name__', resource_name)\n            wrapped_resource.__doc__ = getattr(spec, 'description', None)\n            return wrapped_resource\n        \n        resource_wrapper = make_resource_wrapper(resource_spec)\n        resource_uri = getattr(resource_spec, 'uri', f'resource://{resource_name}')\n        proxy_server.add_resource(resource_wrapper, name=resource_name, uri=resource_uri)\n    \n    return proxy_server\n\n\nif __name__ == \"__main__\":\n    # Example: Create backend server\n    backend = Server(\"backend\")\n    \n    @backend.tool()\n    def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n    \n    @backend.tool()\n    def multiply(a: int, b: int) -> int:\n        \"\"\"Multiply two numbers.\"\"\"\n        return a * b\n    \n    @backend.resource()\n    def config():\n        \"\"\"Return configuration.\"\"\"\n        return {\"version\": \"1.0\", \"status\": \"active\"}\n    \n    # Create transparent proxy\n    proxy = create_transparent_proxy(backend, \"proxy\")\n    \n    # Verify proxy has forwarded all tools and resources\n    assert set(proxy._tools.keys()) == set(backend._tools.keys())\n    assert set(proxy._resources.keys()) == set(backend._resources.keys())\n    \n    print(\"Transparent proxy created successfully\")\n    print(f\"Forwarded tools: {list(proxy._tools.keys())}\")\n    print(f\"Forwarded resources: {list(proxy._resources.keys())}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5039,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6915,
+    "cost_usd": 0.040553200000000005,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 52.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

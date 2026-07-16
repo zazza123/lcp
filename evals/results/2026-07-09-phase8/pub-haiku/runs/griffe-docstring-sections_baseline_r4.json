@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings.parsers import Parser\nfrom griffe.docstrings.dataclasses import Docstring\n\n# Define a raw Google-style docstring\nraw_docstring = \"\"\"Summary line describing the function.\n\nArgs:\n    param1: Description of param1.\n    param2: Description of param2.\n\nReturns:\n    Description of the return value.\n\"\"\"\n\n# Create a Docstring object with Google parser\ndocstring = Docstring(raw_docstring, lineno=1, endlineno=None, parser=Parser.google)\n\n# Print the kind of each structured section\nfor section in docstring.parsed:\n    print(f\"Section kind: {section.kind}\")",
+  "result_text": "```python\nfrom griffe.docstrings.parsers import Parser\nfrom griffe.docstrings.dataclasses import Docstring\n\n# Define a raw Google-style docstring\nraw_docstring = \"\"\"Summary line describing the function.\n\nArgs:\n    param1: Description of param1.\n    param2: Description of param2.\n\nReturns:\n    Description of the return value.\n\"\"\"\n\n# Create a Docstring object with Google parser\ndocstring = Docstring(raw_docstring, lineno=1, endlineno=None, parser=Parser.google)\n\n# Print the kind of each structured section\nfor section in docstring.parsed:\n    print(f\"Section kind: {section.kind}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1145,
+    "cache_read_tokens": 22037,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0079377,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.dataclasses.Docstring",
+      "griffe.docstrings.parsers.Parser",
+      "griffe.docstrings.parsers.Parser.google"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have knowledge of the `hamana` library's API in my training data. To provide correct, runnable code, I need to explore the installed package's structure and documentation.\n\nCould you provide the `hamana` documentation, or may I inspect the installed package with Python to understand the correct API for defining queries and column schemas?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1607,
+    "cache_read_tokens": 15092,
+    "cache_creation_tokens": 6929,
+    "cost_usd": 0.0234112,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.core.column:IntegerColumn",
+      "hamana.core.column:StringColumn"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

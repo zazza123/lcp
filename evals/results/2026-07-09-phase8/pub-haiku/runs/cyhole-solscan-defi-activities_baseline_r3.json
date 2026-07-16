@@ -1,0 +1,36 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solscan import Solscan\n\napi_key = os.getenv(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\nsolscan = Solscan(api_key=api_key)\n\naccount_address = input(\"Enter Solana account address: \")\n\ndefi_activities = solscan.get_defi_activities(account_address)\n\nprint(f\"DeFi Activities for {account_address}:\")\nprint(defi_activities)",
+  "result_text": "```python\nimport os\nfrom cyhole.solscan import Solscan\n\napi_key = os.getenv(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\nsolscan = Solscan(api_key=api_key)\n\naccount_address = input(\"Enter Solana account address: \")\n\ndefi_activities = solscan.get_defi_activities(account_address)\n\nprint(f\"DeFi Activities for {account_address}:\")\nprint(defi_activities)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1345,
+    "cache_read_tokens": 22010,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.008935,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan",
+      "cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities"
+    ],
+    "forbidden_used": [
+      "cyhole.solscan.v2.client:SolscanClient#get_defi_activities"
+    ],
+    "unresolved_usages": [
+      "cyhole.solscan.Solscan"
+    ],
+    "error": null
+  }
+}

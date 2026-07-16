@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings import Docstring, DocstringStyle\n\ndocstring_text = \"\"\"Summary of the function.\n\nArgs:\n    param1: Description of param1.\n    param2: Description of param2.\n\nReturns:\n    The return value description.\n\"\"\"\n\ndocstring = Docstring(docstring_text, lineno=0, endlineno=None, style=DocstringStyle.Google)\nfor section in docstring.parsed:\n    print(section.kind)",
+  "result_text": "```python\nfrom griffe.docstrings import Docstring, DocstringStyle\n\ndocstring_text = \"\"\"Summary of the function.\n\nArgs:\n    param1: Description of param1.\n    param2: Description of param2.\n\nReturns:\n    The return value description.\n\"\"\"\n\ndocstring = Docstring(docstring_text, lineno=0, endlineno=None, style=DocstringStyle.Google)\nfor section in docstring.parsed:\n    print(section.kind)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 740,
+    "cache_read_tokens": 22032,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0059122,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.Docstring",
+      "griffe.docstrings.DocstringStyle",
+      "griffe.docstrings.DocstringStyle.Google"
+    ],
+    "error": null
+  }
+}

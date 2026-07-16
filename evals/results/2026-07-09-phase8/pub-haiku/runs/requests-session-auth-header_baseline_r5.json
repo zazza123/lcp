@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-session-auth-header",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\n# Create a reusable session object\nsession = requests.Session()\n\n# Automatically attach the Authorization header to every request\nsession.headers.update({'Authorization': 'Bearer TESTTOKEN'})\n\n# Use the session to fetch from the API\nresponse = session.get('https://api.example.com/me')\n\n# Print the result\nprint(f\"Status Code: {response.status_code}\")\nprint(f\"Response Text: {response.text}\")",
+  "result_text": "```python\nimport requests\n\n# Create a reusable session object\nsession = requests.Session()\n\n# Automatically attach the Authorization header to every request\nsession.headers.update({'Authorization': 'Bearer TESTTOKEN'})\n\n# Use the session to fetch from the API\nresponse = session.get('https://api.example.com/me')\n\n# Print the result\nprint(f\"Status Code: {response.status_code}\")\nprint(f\"Response Text: {response.text}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 436,
+    "cache_read_tokens": 22027,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0043917,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

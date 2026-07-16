@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole import AsyncClient\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    \n    client = AsyncClient(api_key=api_key)\n    \n    try:\n        # Call a method without entering the async context manager\n        result = await client.get_latest_blockhash()\n        print(f\"Result: {result}\")\n    except (RuntimeError, AttributeError) as e:\n        print(f\"Caught exception: {type(e).__name__}\")\n        print(f\"Details: {e}\")\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole import AsyncClient\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    \n    client = AsyncClient(api_key=api_key)\n    \n    try:\n        # Call a method without entering the async context manager\n        result = await client.get_latest_blockhash()\n        print(f\"Result: {result}\")\n    except (RuntimeError, AttributeError) as e:\n        print(f\"Caught exception: {type(e).__name__}\")\n        print(f\"Details: {e}\")\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2153,
+    "cache_read_tokens": 22036,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0129776,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.AsyncClient"
+    ],
+    "error": null
+  }
+}

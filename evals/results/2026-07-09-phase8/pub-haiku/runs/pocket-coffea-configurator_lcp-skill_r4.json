@@ -1,0 +1,57 @@
+{
+  "case_id": "pocket-coffea-configurator",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.parameters.cuts import passthrough\nfrom pocket_coffea.lib.cut_functions import cut_and\nfrom pocket_coffea.parameters.preselection import preselection_cuts\nfrom pocket_coffea.workflows import BaseProcessor\n\ncfg = {\n    \"dataset\": {\n        \"jsons\": [\"datasets/DYJetsToLL_2018.json\"],\n        \"filter\": {\n            \"year\": [\"2018\"],\n        },\n    },\n    \"workflow\": ZmumuProcessor,\n    \"skim\": [passthrough],\n    \"preselection\": [],\n    \"categories\": {\n        \"baseline\": {\n            \"cuts\": [passthrough],\n            \"label\": \"Baseline\",\n        }\n    },\n    \"weights\": {\n        \"common\": [\n            \"genWeight\",\n            \"lumi\",\n            \"XS\",\n        ],\n        \"variations\": [],\n    },\n    \"variables\": {},\n}",
+  "result_text": "```python\nfrom pocket_coffea.parameters.cuts import passthrough\nfrom pocket_coffea.lib.cut_functions import cut_and\nfrom pocket_coffea.parameters.preselection import preselection_cuts\nfrom pocket_coffea.workflows import BaseProcessor\n\ncfg = {\n    \"dataset\": {\n        \"jsons\": [\"datasets/DYJetsToLL_2018.json\"],\n        \"filter\": {\n            \"year\": [\"2018\"],\n        },\n    },\n    \"workflow\": ZmumuProcessor,\n    \"skim\": [passthrough],\n    \"preselection\": [],\n    \"categories\": {\n        \"baseline\": {\n            \"cuts\": [passthrough],\n            \"label\": \"Baseline\",\n        }\n    },\n    \"weights\": {\n        \"common\": [\n            \"genWeight\",\n            \"lumi\",\n            \"XS\",\n        ],\n        \"variations\": [],\n    },\n    \"variables\": {},\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1079,
+    "cache_read_tokens": 94655,
+    "cache_creation_tokens": 2436,
+    "cost_usd": 0.0197675,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 20.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:resolve_library,search,get_symbol"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library search get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011kUHjM4fNHjMunw7kXgRK4",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.utils.configurator:Configurator"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pandas as pd\nimport narwhals as nw\n\ndf_native = pd.DataFrame({\n    \"id\": [1, 2, 3, 4, 5],\n    \"spend\": [500, 1500, 999, 1000, 2000]\n})\n\ndf = nw.from_native(df_native)\n\ndf_with_tier = df.with_columns(\n    nw.when(nw.col(\"spend\") >= 1000)\n    .then(nw.lit(\"gold\"))\n    .otherwise(nw.lit(\"standard\"))\n    .alias(\"tier\")\n)\n\nprint(df_with_tier.to_native())",
+  "result_text": "```python\nimport pandas as pd\nimport narwhals as nw\n\ndf_native = pd.DataFrame({\n    \"id\": [1, 2, 3, 4, 5],\n    \"spend\": [500, 1500, 999, 1000, 2000]\n})\n\ndf = nw.from_native(df_native)\n\ndf_with_tier = df.with_columns(\n    nw.when(nw.col(\"spend\") >= 1000)\n    .then(nw.lit(\"gold\"))\n    .otherwise(nw.lit(\"standard\"))\n    .alias(\"tier\")\n)\n\nprint(df_with_tier.to_native())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 122,
+    "output_tokens": 2801,
+    "cache_read_tokens": 421180,
+    "cache_creation_tokens": 26312,
+    "cost_usd": 0.108869,
+    "num_turns": 16,
+    "tool_calls": 14,
+    "duration_s": 52.0
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "when conditional expression",
+        "library": "narwhals",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Expr if else select",
+        "library": "narwhals",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Expr",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:Expr"
+        ]
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "when then otherwise",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "col cast select",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "lit lit literal",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "module": "narwhals.functions",
+        "library": "narwhals",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:when",
+          "narwhals.functions:When",
+          "narwhals.functions:Then"
+        ]
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:col",
+          "narwhals:lit"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Lig4RGNZm4Q4DMhYyAVLLr",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01RvcCeVd826SYbmtZfZd4v6",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01LxTmvY9KoAig7qVyemdcad",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_016hNCv4UVugJKqnHDyaAXYu",
+      "content": "{\"results\":[{\"id\":\"narwhals:Expr\",\"kind\":\"class\",\"summary\":\"Class Expr\",\"import\":\"from narwhals import Expr\",\"resolved_via_alias\":\"narwhals.expr:Expr\"},{\"id\":\"narwhals.stable.v1:Expr\",\"kind\":\"class\",\"summary\":\"Class Expr\",\"import\":\"from narwhals.stable.v1 import Expr\"},{\"id\":\"narwhals.stable.v2:Expr\",\"kind\":\"class\",\"summary\":\"Class Expr\",\"import\":\"from narwhals.stable.v2 import Expr\"},{\"id\":\"narwhals.series:ExprKind\",\"kind\":\"class\",\"summary\":\"Describe which kind of expression we are dealing with.\",\"import\":\"from narwhals.series import ExprKind\",\"resolved_via_alias\":\"narwhals._expression_parsing:ExprKind\"},{\"id\":\"narwhals._expression_parsing:ExprMetadata\",\"kind\":\"class\",\"summary\":\"Expression metadata.\",\"import\":\"from narwhals._expression_parsing import ExprMetadata\"},{\"id\":\"narwhals.series:ExprNode\",\"kind\":\"class\",\"summary\":\"An operation to create or modify an expression.\",\"import\":\"from narwhals.series import ExprNode\",\"resolved_via_alias\":\"narwhals._expression_parsing:ExprNode\"},{\"id\":\"narwhals.expr_cat:ExprCatNamespace\",\"kind\":\"class\",\"summary\":\"Class ExprCatNamespace\",\"import\":\"from narwhals.expr_cat import ExprCatNamespace\"},{\"id\":\"narwhals.expr_dt:ExprDateTimeNamespace\",\"kind\":\"class\",\"summary\":\"Class ExprDateTimeNamespace\",\"import\":\"from narwhals.expr_dt import ExprDateTimeNamespace\"},{\"id\":\"narwhals.expr_list:ExprListNamespace\",\"kind\":\"class\",\"summary\":\"Class ExprListNamespace\",\"import\":\"from narwhals.expr_list import ExprListNamespace\"},{\"id\":\"narwhals.expr_name:ExprNameNamespace\",\"kind\":\"class\",\"summary\":\"Class ExprNameNamespace\",\"import\":\"from narwhals.expr_name import ExprNameNamespace\"},{\"id\":\"narwhals.expr_str:ExprStringNamespace\",\"kind\":\"class\",\"summary\":\"Class ExprStringNamespace\",\"import\":\"from narwhals.expr_str import ExprStringNamespace\"},{\"id\":\"narwhals.expr_struct:ExprStructNamespace\",\"kind\":\"class\",\"summary\":\"Class ExprStructNamespace\",\"import\":\"from narwhals.expr_struct import ExprStructNamespace\"},{\"id\":\"narwhals._arrow.namespace:ArrowExpr\",\"k"
+    },
+    {
+      "tool_use_id": "toolu_01ExZyqKMFW8UazyCJVoMk8t",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"narwhals.expr\",\"aliases\":[\"narwhals.functions:Expr\",\"narwhals.series:Expr\",\"narwhals:Expr\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"nodes\",\"type\":\"ExprNode\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class Expr\"},\"id\":\"narwhals:Expr\",\"resolved_via_alias\":\"narwhals.expr:Expr\",\"import\":\"from narwhals import Expr\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"nodes\",\"type\":\"ExprNode\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"narwhals:Expr#__add__\",\"kind\":\"method\",\"summary\":\"Method __add__\"},{\"id\":\"narwhals:Expr#__and__\",\"kind\":\"method\",\"summary\":\"Method __and__\"},{\"id\":\"narwhals:Expr#__bool__\",\"kind\":\"method\",\"summary\":\"Method __bool__\"},{\"id\":\"narwhals:Expr#__eq__\",\"kind\":\"method\",\"summary\":\"Method __eq__\"},{\"id\":\"narwhals:Expr#__floordiv__\",\"kind\":\"method\",\"summary\":\"Method __floordiv__\"},{\"id\":\"narwhals:Expr#__ge__\",\"kind\":\"method\",\"summary\":\"Method __ge__\"},{\"id\":\"narwhals:Expr#__gt__\",\"kind\":\"method\",\"summary\":\"Method __gt__\"},{\"id\":\"narwhals:Expr#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"narwhals:Expr#__le__\",\"kind\":\"method\",\"summary\":\"Method __le__\"},{\"id\":\"narwhals:Expr#__lt__\",\"kind\":\"method\",\"summary\":\"Method __lt__\"},{\"id\":\"narwhals:Expr#__mod__\",\"kind\":\"method\",\"summary\":\"Method __mod__\"},{\"id\":\"narwhals:Expr#__mul__\",\"kind\":\"method\",\"summary\":\"Method __mul__\"},{\"id\":\"narwhals:Expr#__ne__\",\"kind\":\"method\",\"summary\":\"Method __ne__\"},{\"id\":\"narwhals:Expr#__or__\",\"kind\":\"method\",\"summary\":\"Method __or__\"},{\"id\":\"narwhals:Expr#__pow__\",\"kind\":\"method\",\"summary\":\"Method __pow__\"},{\"id\":\"narwhals:Expr#__repr__\",\"kind\":\"method\",\"summary\":\"Pretty-print the expression by combining all nodes in the metadata.\"},{\"id\":\"narwhals:Expr#__sub__\",\"kind\":\"method\",\"summary\":\"Method __sub__\"},{\"id\":\"narwhals:Expr#__truediv__\",\"kind\":\"method\",\"summary\":\"Method __truediv__\"},{\"id\":\"narwhals:Expr#abs\",\"kind\":\"method\",\"summar"
+    },
+    {
+      "tool_use_id": "toolu_01ERVMRqwf6azfE1J7mtEVh5",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Sc2txNjVdnMunaCMe4n6aZ",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01J1fwJ8gGeLNSkutcpg6sZC",
+      "content": "{\"library\":{\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"narwhals\",\"symbols\":1},{\"module\":\"narwhals._arrow\",\"symbols\":1},{\"module\":\"narwhals._arrow.dataframe\",\"symbols\":56},{\"module\":\"narwhals._arrow.expr\",\"symbols\":100},{\"module\":\"narwhals._arrow.group_by\",\"symbols\":8},{\"module\":\"narwhals._arrow.namespace\",\"symbols\":28},{\"module\":\"narwhals._arrow.selectors\",\"symbols\":114},{\"module\":\"narwhals._arrow.series\",\"symbols\":120},{\"module\":\"narwhals._arrow.series_cat\",\"symbols\":11},{\"module\":\"narwhals._arrow.series_dt\",\"symbols\":45},{\"module\":\"narwhals._arrow.series_list\",\"symbols\":18},{\"module\":\"narwhals._arrow.series_str\",\"symbols\":28},{\"module\":\"narwhals._arrow.series_struct\",\"symbols\":11},{\"module\":\"narwhals._arrow.typing\",\"symbols\":2},{\"module\":\"narwhals._arrow.utils\",\"symbols\":45},{\"module\":\"narwhals._compliant\",\"symbols\":1},{\"module\":\"narwhals._compliant.any_namespace\",\"symbols\":81},{\"module\":\"narwhals._compliant.column\",\"symbols\":65},{\"module\":\"narwhals._compliant.dataframe\",\"symbols\":155},{\"module\":\"narwhals._compliant.expr\",\"symbols\":376},{\"module\":\"narwhals._compliant.group_by\",\"symbols\":14},{\"module\":\"narwhals._compliant.namespace\",\"symbols\":95},{\"module\":\"narwhals._compliant.selectors\",\"symbols\":129},{\"module\":\"narwhals._compliant.series\",\"symbols\":348},{\"module\":\"narwhals._compliant.typing\",\"symbols\":1},{\"module\":\"narwhals._compliant.window\",\"symbols\":3},{\"module\":\"narwhals._constants\",\"symbols\":12},{\"module\":\"narwhals._dask\",\"symbols\":1},{\"module\":\"narwhals._dask.expr_dt\",\"symbols\":31},{\"module\":\"narwhals._duckdb\",\"symbols\":1},{\"module\":\"narwhals._duckdb.typing\",\"symbols\":3},{\"module\":\"narwhals._duration\",\"symbols\":1},{\"module\":\"narwhals._enum\",\"symbols\":2},{\"module\":\"narwhals._exceptions\",\"symbols\":4},{\"module\":\"narwhals._expression_parsing\",\"symbols\":49},{\"module\":\"narwhals._ibis\",\"symbols\":1},{\"module\":\"narwhals._ibis.expr_struct\",\"symbols\":6},{\"module\":\"narwhals._ibis.group_by\",\"sy"
+    },
+    {
+      "tool_use_id": "toolu_01RfpVkp8o6BXCxcEoY1qAAg",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019drWbYULFFzdvKaFKus6KB",
+      "content": "{\"results\":[{\"id\":\"narwhals.functions:Then#cat\",\"kind\":\"attribute\",\"summary\":\"Attribute cat\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:Then#dt\",\"kind\":\"attribute\",\"summary\":\"Attribute dt\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:Then#list\",\"kind\":\"attribute\",\"summary\":\"Attribute list\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:Then#name\",\"kind\":\"attribute\",\"summary\":\"Attribute name\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:Then#str\",\"kind\":\"attribute\",\"summary\":\"Attribute str\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:Then#struct\",\"kind\":\"attribute\",\"summary\":\"Attribute struct\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:Then\",\"kind\":\"class\",\"summary\":\"Class Then\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:When\",\"kind\":\"class\",\"summary\":\"Class When\",\"import\":\"from narwhals.functions import When\"},{\"id\":\"narwhals.functions:TYPE_CHECKING\",\"kind\":\"constant\",\"summary\":\"Constant TYPE_CHECKING\",\"import\":\"from narwhals.functions import TYPE_CHECKING\"},{\"id\":\"narwhals:all\",\"kind\":\"function\",\"summary\":\"Instantiate an expression representing all columns.\",\"import\":\"from narwhals import all\",\"resolved_via_alias\":\"narwhals.functions:all_\"},{\"id\":\"narwhals:all_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the bitwise AND horizontally across columns.\",\"import\":\"from narwhals import all_horizontal\",\"resolved_via_alias\":\"narwhals.functions:all_horizontal\"},{\"id\":\"narwhals:any_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the bitwise OR horizontally across columns.\",\"import\":\"from narwhals import any_horizontal\",\"resolved_via_alias\":\"narwhals.functions:any_horizontal\"},{\"id\":\"narwhals:coalesce\",\"kind\":\"function\",\"summary\":\"Folds the columns from left to right, keeping the first non-null value.\",\"import\":\"from narwhals import coalesce\",\"resolved_via_alias\":\"na"
+    },
+    {
+      "tool_use_id": "toolu_01Qdit1kfci5vp2suigeVHuE",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.functions\",\"aliases\":[\"narwhals:when\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"predicates\",\"type\":\"IntoExpr | Iterable[IntoExpr]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Condition(s) that must be met in order to apply the subsequent\\nstatement. Accepts one or more boolean expressions, which are implicitly\\ncombined with `&`. String input is parsed as a column name.\"}],\"returns\":\"When\",\"returns_description\":\"A \\\"When\\\" object, which `.then` can be called on.\"}],\"semantics\":{\"summary\":\"Start a `when-then-otherwise` expression.\",\"description\":\"Expression similar to an `if-else` statement in Python. Always initiated by a\\n    `nw.when(<condition>).then(<value if condition>)`, and optionally followed by\\n    chained `.when(<condition>).then(<value>)` calls.\\n    An `.otherwise(<value if condition is false>)` can be appended at the end.\\n    If not appended, and the condition is not `True`, `None` will be returned.\\n\\n    Arguments:\\n        predicates: Condition(s) that must be met in order to apply the subsequent\\n            statement. Accepts one or more boolean expressions, which are implicitly\\n            combined with `&`. String input is parsed as a column name.\\n\\n    Returns:\\n        A \\\"When\\\" object, which `.then` can be called on.\\n\\n    Examples:\\n        >>> import pandas as pd\\n        >>> import narwhals as nw\\n        >>>\\n        >>> data = {\\\"a\\\": [1, 2, 3], \\\"b\\\": [5, 10, 15]}\\n        >>> df_native = pd.DataFrame(data)\\n        >>> nw.from_native(df_native).with_columns(\\n        ...     nw.when(nw.col(\\\"a\\\") < 2)\\n        ...     .then(5)\\n        ...     .when(nw.col(\\\"a\\\") < 3)\\n        ...     .then(6)\\n        ...     .otherwise(6)\\n        ...     .alias(\\\"a_when\\\")\\n        ... )\\n        \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n        |Narwhals DataFrame|\\n        |------------------|\\n        |    a   b  a_when |\\n        | 0  1   5       5 |\\n        | 1  2  10       6 |\\n     "
+    },
+    {
+      "tool_use_id": "toolu_01RX1FAQn9AnUuhxeaC79K63",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.functions\",\"aliases\":[\"narwhals._arrow.expr:nw_col\",\"narwhals._pandas_like.dataframe:nw_col\",\"narwhals.series:col\",\"narwhals:col\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"names\",\"type\":\"UnionType[str, Iterable[str]]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Name(s) of the columns to use.\"}],\"returns\":\"Expr\"}],\"semantics\":{\"summary\":\"Creates an expression that references one or more columns by their name(s).\",\"description\":\"Arguments:\\n        names: Name(s) of the columns to use.\\n\\n    Examples:\\n        >>> import polars as pl\\n        >>> import narwhals as nw\\n        >>>\\n        >>> df_native = pl.DataFrame({\\\"a\\\": [1, 2], \\\"b\\\": [3, 4], \\\"c\\\": [\\\"x\\\", \\\"z\\\"]})\\n        >>> nw.from_native(df_native).select(nw.col(\\\"a\\\", \\\"b\\\") * nw.col(\\\"b\\\"))\\n        \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n        |Narwhals DataFrame|\\n        |------------------|\\n        |  shape: (2, 2)   |\\n        |  \u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2510   |\\n        |  \u2502 a   \u2506 b   \u2502   |\\n        |  \u2502 --- \u2506 --- \u2502   |\\n        |  \u2502 i64 \u2506 i64 \u2502   |\\n        |  \u255e\u2550\u2550\u2550\u2550\u2550\u256a\u2550\u2550\u2550\u2550\u2550\u2561   |\\n        |  \u2502 3   \u2506 9   \u2502   |\\n        |  \u2502 8   \u2506 16  \u2502   |\\n        |  \u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2518   |\\n        \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\",\"examples\":[{\"code\":\">>> import polars as pl\\n>>> import narwhals as nw\\n>>> df_native = pl.DataFrame({\\\"a\\\": [1, 2], \\\"b\\\": [3, 4], \\\"c\\\": [\\\"x\\\", \\\"z\\\"]})\\n>>> nw.from_native(df_native).select(nw.col(\\\"a\\\", \\\"b\\\") * nw.col(\\\"b\\\"))\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n|Narwhals DataFrame|\\n|------------------|\\n|  shape: (2, 2)   |\\n|  \u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2510   |\\n|  \u2502 a   \u2506 b   \u2502   |\\n|  \u2502 --- \u2506 --- \u2502   |\\n|  \u2502 i64 \u2506 i64 \u2502   |\\n|  \u255e\u2550\u2550\u2550\u2550\u2550\u256a\u2550\u2550\u2550\u2550\u2550\u2561   |\\n|  \u2502 3   \u2506 9   \u2502   |\\n|  \u2502 8   \u2506 16  \u2502   |\\n|  \u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2518   |\\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\"}]},\"id\":\"narwhals:col\",\"resolved_via_alias\":\"narwhals.functions:col\",\"import\":\"from narwhals import col\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"names\",\"type\":\"UnionType[str, Iterable[str]]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

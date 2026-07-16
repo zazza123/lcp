@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-json-post",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nresponse = requests.post(\n    \"https://api.example.com/items\",\n    json={\"name\": \"widget\", \"qty\": 3}\n)\n\ndata = response.json()\nprint(data)",
+  "result_text": "```python\nimport requests\n\nresponse = requests.post(\n    \"https://api.example.com/items\",\n    json={\"name\": \"widget\", \"qty\": 3}\n)\n\ndata = response.json()\nprint(data)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 466,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6830,
+    "cost_usd": 0.0175194,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

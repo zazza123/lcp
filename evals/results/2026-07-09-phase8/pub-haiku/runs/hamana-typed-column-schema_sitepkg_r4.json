@@ -1,0 +1,60 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query\nfrom hamana.core.column import IntegerColumn, StringColumn, DateColumn\n\nquery = Query(\n    \"SELECT id, name, created_at FROM users\",\n    columns=[\n        IntegerColumn(name=\"id\"),\n        StringColumn(name=\"name\"),\n        DateColumn(name=\"created_at\")\n    ]\n)",
+  "result_text": "```python\nfrom hamana import Query\nfrom hamana.core.column import IntegerColumn, StringColumn, DateColumn\n\nquery = Query(\n    \"SELECT id, name, created_at FROM users\",\n    columns=[\n        IntegerColumn(name=\"id\"),\n        StringColumn(name=\"name\"),\n        DateColumn(name=\"created_at\")\n    ]\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 33,
+    "output_tokens": 1021,
+    "cache_read_tokens": 97890,
+    "cache_creation_tokens": 12807,
+    "cost_usd": 0.040541,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 16.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/core/column.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/query.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

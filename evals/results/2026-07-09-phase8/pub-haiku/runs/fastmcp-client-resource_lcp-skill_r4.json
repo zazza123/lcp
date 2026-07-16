@@ -1,0 +1,239 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.client import Client\n\n\nasync def main():\n    # Create a FastMCP server instance\n    server = FastMCP(name=\"test-server\")\n    \n    # Register a resource at \"data://config\"\n    @server.resource(\"data://config\")\n    def get_config() -> str:\n        return '{\"database\": \"postgres\", \"port\": 5432}'\n    \n    # Create a client directly connected to the server (in-memory, no subprocess)\n    client = Client(transport=server)\n    \n    async with client:\n        # Fetch the resource contents\n        contents = await client.read_resource(\"data://config\")\n        \n        # Print the result\n        for content in contents:\n            print(f\"Resource content: {content.text}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.client import Client\n\n\nasync def main():\n    # Create a FastMCP server instance\n    server = FastMCP(name=\"test-server\")\n    \n    # Register a resource at \"data://config\"\n    @server.resource(\"data://config\")\n    def get_config() -> str:\n        return '{\"database\": \"postgres\", \"port\": 5432}'\n    \n    # Create a client directly connected to the server (in-memory, no subprocess)\n    client = Client(transport=server)\n    \n    async with client:\n        # Fetch the resource contents\n        contents = await client.read_resource(\"data://config\")\n        \n        # Print the result\n        for content in contents:\n            print(f\"Resource content: {content.text}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 155,
+    "output_tokens": 2966,
+    "cache_read_tokens": 591098,
+    "cache_creation_tokens": 22963,
+    "cost_usd": 0.1200208,
+    "num_turns": 19,
+    "tool_calls": 18,
+    "duration_s": 62.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "keyword:resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "in-memory client",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "read resource",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resource",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "transport",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.client:Client",
+          "fastmcp.client:FastMCPTransport"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP class",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp.server",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server",
+        "kind": "class",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.client:Client#read_resource"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#add_resource",
+          "fastmcp.server:FastMCP#resource"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_013Bk5h9TKRx8gYk4KAJAaNH",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_013FbDkkwee6XXs7z6ovajEZ",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01JPxdSaTA3WKAPTgfdW4PGS",
+      "content": "{\"results\":[{\"id\":\"fastmcp.client:Client\",\"kind\":\"class\",\"summary\":\"MCP client that delegates connection management to a Transport instance.\",\"import\":\"from fastmcp.client import Client\",\"resolved_via_alias\":\"fastmcp.client.client:Client\"},{\"id\":\"fastmcp._install_hints:CLIENT_SUPPORT\",\"kind\":\"constant\",\"summary\":\"Constant CLIENT_SUPPORT\",\"import\":\"from fastmcp._install_hints import CLIENT_SUPPORT\"},{\"id\":\"fastmcp.client.mixins:ClientPromptsMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing prompt-related methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientPromptsMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.prompts:ClientPromptsMixin\"},{\"id\":\"fastmcp.client.mixins:ClientResourcesMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing resource-related methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientResourcesMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.resources:ClientResourcesMixin\"},{\"id\":\"fastmcp.client.mixins:ClientTaskManagementMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing task management methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientTaskManagementMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.task_management:ClientTaskManagementMixin\"},{\"id\":\"fastmcp.client.mixins:ClientToolsMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing tool-related methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientToolsMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.tools:ClientToolsMixin\"},{\"id\":\"fastmcp.client.mixins.tools:client_span\",\"kind\":\"function\",\"summary\":\"Create a CLIENT span with standard MCP attributes.\",\"import\":\"from fastmcp.client.mixins.tools import client_span\",\"resolved_via_alias\":\"fastmcp.client.telemetry:client_span\"},{\"id\":\"fastmcp.client:ClientTransport\",\"kind\":\"class\",\"summary\":\"Abstract base class for different MCP client transport mechanisms.\",\"import\":\"from fastmcp.client import ClientTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.base:ClientTransport\"},{"
+    },
+    {
+      "tool_use_id": "toolu_015pa64LbeoCA2EZU3tPbVmB",
+      "content": "{\"results\":[{\"id\":\"fastmcp._install_hints:SERVER_SUPPORT\",\"kind\":\"constant\",\"summary\":\"Constant SERVER_SUPPORT\",\"import\":\"from fastmcp._install_hints import SERVER_SUPPORT\"},{\"id\":\"fastmcp.server.server:server_span\",\"kind\":\"function\",\"summary\":\"Create a SERVER span with standard MCP attributes and auth context.\",\"import\":\"from fastmcp.server.server import server_span\",\"resolved_via_alias\":\"fastmcp.server.telemetry:server_span\"},{\"id\":\"fastmcp.cli.generate:resolve_server_spec\",\"kind\":\"function\",\"summary\":\"Turn CLI inputs into something ``Client()`` accepts.\",\"import\":\"from fastmcp.cli.generate import resolve_server_spec\",\"resolved_via_alias\":\"fastmcp.cli.client:resolve_server_spec\"},{\"id\":\"fastmcp.cli.client:DiscoveredServer\",\"kind\":\"class\",\"summary\":\"A single MCP server found in an editor or project config.\",\"import\":\"from fastmcp.cli.client import DiscoveredServer\",\"resolved_via_alias\":\"fastmcp.cli.discovery:DiscoveredServer\"},{\"id\":\"fastmcp.cli.client:discover_servers\",\"kind\":\"function\",\"summary\":\"Run all scanners and return the combined results.\",\"import\":\"from fastmcp.cli.client import discover_servers\",\"resolved_via_alias\":\"fastmcp.cli.discovery:discover_servers\"},{\"id\":\"fastmcp.cli.install.gemini_cli:validate_server_name\",\"kind\":\"function\",\"summary\":\"Validate that a server name is safe for use as a subprocess argument.\",\"import\":\"from fastmcp.cli.install.gemini_cli import validate_server_name\",\"resolved_via_alias\":\"fastmcp.cli.install.shared:validate_server_name\"},{\"id\":\"fastmcp.cli.run:create_client_server\",\"kind\":\"function\",\"summary\":\"Create a FastMCP server from a client URL.\",\"import\":\"from fastmcp.cli.run import create_client_server\"},{\"id\":\"fastmcp.cli.run:create_mcp_config_server\",\"kind\":\"function\",\"summary\":\"Create a FastMCP server from a MCPConfig.\",\"import\":\"from fastmcp.cli.run import create_mcp_config_server\"},{\"id\":\"fastmcp.cli.run:load_mcp_server_config\",\"kind\":\"function\",\"summary\":\"Load a FastMCP configuration from a fastmcp.json file.\",\"import\""
+    },
+    {
+      "tool_use_id": "toolu_01N7tnV5Mm8wDwG1KJ5hXybt",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.middleware.caching:ResponseCachingMiddleware#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the response caching middleware.\",\"import\":\"from fastmcp.server.middleware.caching import ResponseCachingMiddleware\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FXC8AEBXodzPEHr6oLxRR2",
+      "content": "{\"results\":[{\"id\":\"fastmcp.resources:Resource\",\"kind\":\"class\",\"summary\":\"Base class for all resources.\",\"import\":\"from fastmcp.resources import Resource\",\"resolved_via_alias\":\"fastmcp.resources.base:Resource\"},{\"id\":\"fastmcp.resources:resource\",\"kind\":\"function\",\"summary\":\"Standalone decorator to mark a function as an MCP resource.\",\"import\":\"from fastmcp.resources import resource\",\"resolved_via_alias\":\"fastmcp.resources.function_resource:resource\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#resource\",\"kind\":\"method\",\"summary\":\"Decorator to register a function as a resource.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#resource\"},{\"id\":\"fastmcp.server.providers:FileSystemProvider#resource\",\"kind\":\"method\",\"summary\":\"Decorator to register a function as a resource.\",\"import\":\"from fastmcp.server.providers import FileSystemProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.filesystem:FileSystemProvider#resource\"},{\"id\":\"fastmcp.server.providers.local_provider.decorators:ResourceDecoratorMixin#resource\",\"kind\":\"method\",\"summary\":\"Decorator to register a function as a resource.\",\"import\":\"from fastmcp.server.providers.local_provider.decorators import ResourceDecoratorMixin\",\"resolved_via_alias\":\"fastmcp.server.providers.local_provider.decorators.resources:ResourceDecoratorMixin#resource\"},{\"id\":\"fastmcp.server.server:LocalProvider#resource\",\"kind\":\"method\",\"summary\":\"Decorator to register a function as a resource.\",\"import\":\"from fastmcp.server.server import LocalProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.local_provider.local_provider:LocalProvider#resource\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#resource\",\"kind\":\"method\",\"summary\":\"Decorator to register a function as a resource.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#resource\"},{\"id\":\"fastmcp.server:FastMCP#resource\",\"kind\":\"meth"
+    },
+    {
+      "tool_use_id": "toolu_019ksUh4LSrHqmDoiSmJoPZX",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:Context#transport\",\"kind\":\"attribute\",\"summary\":\"Get the current transport type.\",\"import\":\"from fastmcp.server import Context\",\"resolved_via_alias\":\"fastmcp.server.context:Context#transport\"},{\"id\":\"fastmcp.cli.client:DiscoveredServer#transport_summary\",\"kind\":\"attribute\",\"summary\":\"Human-readable one-liner describing the transport.\",\"import\":\"from fastmcp.cli.client import DiscoveredServer\",\"resolved_via_alias\":\"fastmcp.cli.discovery:DiscoveredServer#transport_summary\"},{\"id\":\"fastmcp.server.mixins:TransportMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing transport-related methods for FastMCP.\",\"import\":\"from fastmcp.server.mixins import TransportMixin\",\"resolved_via_alias\":\"fastmcp.server.mixins.transport:TransportMixin\"},{\"id\":\"fastmcp.cli.generate:serialize_transport\",\"kind\":\"function\",\"summary\":\"Serialize a resolved transport to a Python expression string.\",\"import\":\"from fastmcp.cli.generate import serialize_transport\"},{\"id\":\"fastmcp.client:ClientTransport\",\"kind\":\"class\",\"summary\":\"Abstract base class for different MCP client transport mechanisms.\",\"import\":\"from fastmcp.client import ClientTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.base:ClientTransport\"},{\"id\":\"fastmcp.client.transports.inference:MCPConfigTransport\",\"kind\":\"class\",\"summary\":\"Transport for connecting to one or more MCP servers defined in an MCPConfig.\",\"import\":\"from fastmcp.client.transports.inference import MCPConfigTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.config:MCPConfigTransport\"},{\"id\":\"fastmcp.client:StreamableHttpTransport\",\"kind\":\"class\",\"summary\":\"Transport implementation that connects to an MCP server via Streamable HTTP Requests.\",\"import\":\"from fastmcp.client import StreamableHttpTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.http:StreamableHttpTransport\"},{\"id\":\"fastmcp.client.transports:infer_transport\",\"kind\":\"function\",\"summary\":\"Infer the appropriate transport type from the given transport argu"
+    },
+    {
+      "tool_use_id": "toolu_016ucw1in6gaXpFemkY8HVr1",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.client.client\",\"aliases\":[\"fastmcp.cli.client:Client\",\"fastmcp.client:Client\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:Client\",\"fastmcp.server.providers.proxy:Client\",\"fastmcp.utilities.inspect:Client\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"transport\",\"type\":\"Union[ClientTransportT, Any, FastMCP, AnyUrl, Path, MCPConfig, dict[str, Any], str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Connection source specification, which can be:\\n\\n- ClientTransport: Direct transport instance\\n- FastMCP: In-process FastMCP server\\n- AnyUrl or str: URL to connect to\\n- Path: File path for local socket\\n- MCPConfig: MCP server configuration\\n- dict: Transport configuration\"},{\"name\":\"name\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"roots\",\"type\":\"UnionType[list[str], list[Root], list[UnionType[str, Root]], Callable[[mcp.shared.context.RequestContext[mcp.client.session.ClientSession, ~LifespanContextT, typing.Any]], UnionType[list[str], list[Root], list[UnionType[str, Root]]]], Callable[[mcp.shared.context.RequestContext[mcp.client.session.ClientSession, ~LifespanContextT, typing.Any]], Awaitable[UnionType[list[str], list[Root], list[UnionType[str, Root]]]]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional RootsList or RootsHandler for filesystem access\"},{\"name\":\"sampling_handler\",\"type\":\"UnionType[Callable[[list[mcp.types.SamplingMessage], <class 'mcp.types.CreateMessageRequestParams'>, mcp.shared.context.RequestContext[~SessionT, ~LifespanContextT, typing.Any]], UnionType[str, CreateMessageResult, CreateMessageResultWithTools, Awaitable[UnionType[str, CreateMessageResult, CreateMessageResultWithTools]]]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional handler for sampling requests\"},{\"name\":\"sampling_capabilities\",\"type\":\"UnionType[SamplingCapability, None]\",\"require"
+    },
+    {
+      "tool_use_id": "toolu_013WHqhPf6BGHEd5Fr8tnxMy",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.app:FastMCPApp#run\",\"kind\":\"method\",\"summary\":\"Create a temporary FastMCP server and run this app standalone.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp#run\"},{\"id\":\"fastmcp.cli.install.claude_code:install_claude_code\",\"kind\":\"function\",\"summary\":\"Install FastMCP server in Claude Code.\",\"import\":\"from fastmcp.cli.install.claude_code import install_claude_code\"},{\"id\":\"fastmcp.cli.install.claude_desktop:install_claude_desktop\",\"kind\":\"function\",\"summary\":\"Install FastMCP server in Claude Desktop.\",\"import\":\"from fastmcp.cli.install.claude_desktop import install_claude_desktop\"},{\"id\":\"fastmcp.cli.install.cursor:install_cursor\",\"kind\":\"function\",\"summary\":\"Install FastMCP server in Cursor.\",\"import\":\"from fastmcp.cli.install.cursor import install_cursor\"},{\"id\":\"fastmcp.cli.install.cursor:install_cursor_workspace\",\"kind\":\"function\",\"summary\":\"Install FastMCP server to workspace-specific Cursor configuration.\",\"import\":\"from fastmcp.cli.install.cursor import install_cursor_workspace\"},{\"id\":\"fastmcp.cli.install.gemini_cli:install_gemini_cli\",\"kind\":\"function\",\"summary\":\"Install FastMCP server in Gemini CLI.\",\"import\":\"from fastmcp.cli.install.gemini_cli import install_gemini_cli\"},{\"id\":\"fastmcp.cli.install.goose:install_goose\",\"kind\":\"function\",\"summary\":\"Install FastMCP server in Goose via deeplink.\",\"import\":\"from fastmcp.cli.install.goose import install_goose\"},{\"id\":\"fastmcp.cli.install.stdio:install_stdio\",\"kind\":\"function\",\"summary\":\"Generate the stdio command for running a FastMCP server.\",\"import\":\"from fastmcp.cli.install.stdio import install_stdio\"},{\"id\":\"fastmcp.cli.install:stdio_command\",\"kind\":\"function\",\"summary\":\"Generate the stdio command for running a FastMCP server.\",\"import\":\"from fastmcp.cli.install import stdio_command\",\"resolved_via_alias\":\"fastmcp.cli.install.stdio:stdio_command\"},{\"id\":\"fastmcp.cli.run:create_client_server\",\"kind\":\"function\",\"summary"
+    },
+    {
+      "tool_use_id": "toolu_016rsFWqaLVJ4pANCL5ECNVj",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Th29KWarNQWPT9knph4nfF",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:\",\"kind\":\"module\",\"summary\":\"Module fastmcp.server\",\"import\":\"import fastmcp.server\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01UB7x4YDyNiXTXNh2H5b9WY",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP\",\"kind\":\"class\",\"summary\":\"Class FastMCP\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP\"},{\"id\":\"fastmcp.server.context:StateValue\",\"kind\":\"class\",\"summary\":\"Wrapper for stored context state values.\",\"import\":\"from fastmcp.server.context import StateValue\",\"resolved_via_alias\":\"fastmcp.server.server:StateValue\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01VBYbCKnPk6y3u9Cc9EJgXq",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.example:FastMCP\",\"fastmcp.contrib.component_manager.component_manager:FastMCP\",\"fastmcp.contrib.component_manager.example:FastMCP\",\"fastmcp.contrib.mcp_mixin.example:FastMCP\",\"fastmcp.server.context:FastMCP\",\"fastmcp.server.providers.proxy:FastMCP\",\"fastmcp.server:FastMCP\",\"fastmcp.utilities.inspect:FastMCP\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"instructions\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"version\",\"type\":\"str | int | float | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"website_url\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"list[mcp.types.Icon] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"AuthProvider | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"middleware\",\"type\":\"Sequence[Middleware] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"providers\",\"type\":\"Sequence[Provider] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"transforms\",\"type\":\"Sequence[Transform] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lifespan\",\"type\":\"LifespanCallable | Lifespan | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tools\",\"type\":\"Sequence[Tool | Callable[..., Any]] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"on_duplicate\",\"type\":\"DuplicateBehavior | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"mask_error_details\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dereference_schemas\",\"type\":\"bool\""
+    },
+    {
+      "tool_use_id": "toolu_01LuEgzzxDPyxBfJSGKCDAtb",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.client.client\",\"signatures\":[{\"async_\":true,\"params\":[{\"name\":\"uri\",\"type\":\"AnyUrl | str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The URI of the resource to read. Can be a string or an AnyUrl object.\"},{\"name\":\"version\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Specific version to read. If None, reads highest version.\"},{\"name\":\"meta\",\"type\":\"dict[str, Any] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional request-level metadata.\"},{\"name\":\"task\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If True, execute as background task (SEP-1686). Defaults to False.\"},{\"name\":\"task_id\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional client-provided task ID (auto-generated if not provided).\"},{\"name\":\"ttl\",\"type\":\"int\",\"required\":false,\"default\":60000,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Time to keep results available in milliseconds (default 60s).\"}],\"returns\":\"list[mcp.types.TextResourceContents | mcp.types.BlobResourceContents] | ResourceTask\",\"returns_description\":\"list[mcp.types.TextResourceContents | mcp.types.BlobResourceContents] | ResourceTask:\\nA list of content objects if task=False, or a ResourceTask object if task=True.\",\"raises\":[{\"type\":\"RuntimeError\",\"condition\":\"If called while the client is not connected.\"},{\"type\":\"McpError\",\"condition\":\"If the request results in a TimeoutError | JSONRPCError\"}]}],\"semantics\":{\"summary\":\"Read the contents of a resource or resolved template.\",\"description\":\"Args:\\n            uri (AnyUrl | str): The URI of the resource to read. Can be a string or an AnyUrl object.\\n            version (str | None): Specific version to read. If None, reads highest version.\\n            meta (dict[str, Any] | None): Optional request-level metadata.\\n            t"
+    },
+    {
+      "tool_use_id": "toolu_017MuZYxY5EXtpUzz6zLzgwc",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"resource\",\"type\":\"UnionType[Resource, Callable[Ellipsis, Any]]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"A Resource instance or @resource-decorated function to add\"}],\"returns\":\"UnionType[Resource, ResourceTemplate]\",\"returns_description\":\"The resource instance that was added to the server.\"}],\"semantics\":{\"summary\":\"Add a resource to the server.\",\"description\":\"Args:\\n            resource: A Resource instance or @resource-decorated function to add\\n\\n        Returns:\\n            The resource instance that was added to the server.\"},\"id\":\"fastmcp.server:FastMCP#add_resource\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_resource\",\"import\":\"from fastmcp.server import FastMCP\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"resource\",\"type\":\"UnionType[Resource, Callable[Ellipsis, Any]]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"UnionType[Resource, ResourceTemplate]\",\"returns_classes\":[\"fastmcp.resources:Resource\",\"fastmcp.resources:ResourceTemplate\"],\"next\":\"returns UnionType[Resource, ResourceTemplate] \u2192 get_symbol(ids=['fastmcp.resources:Resource']) to see its members\"}},{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"uri\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"URI for the resource (e.g. \\\"resource://my-resource\\\" or \\\"resource://{param}\\\")\"},{\"name\":\"name\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional name for the resource\"},{\"name\":\"version\",\"type\":\"UnionType[str, int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"title\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"description\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"descript"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-cast-dtypes",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport polars as pl\n\n# Create sample DataFrame\ndata = {\n    \"user_id\": [\"123\", \"456\", \"789\"],\n    \"score\": [0.5, 0.75, 0.95]\n}\ndf = nw.from_native(pl.DataFrame(data))\n\n# Convert columns to specified dtypes\nresult_df = df.select([\n    nw.col(\"user_id\").cast(nw.Int32),\n    nw.col(\"score\").cast(nw.Float32)\n])\n\nprint(result_df)",
+  "result_text": "```python\nimport narwhals as nw\nimport polars as pl\n\n# Create sample DataFrame\ndata = {\n    \"user_id\": [\"123\", \"456\", \"789\"],\n    \"score\": [0.5, 0.75, 0.95]\n}\ndf = nw.from_native(pl.DataFrame(data))\n\n# Convert columns to specified dtypes\nresult_df = df.select([\n    nw.col(\"user_id\").cast(nw.Int32),\n    nw.col(\"score\").cast(nw.Float32)\n])\n\nprint(result_df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 814,
+    "cache_read_tokens": 11086,
+    "cache_creation_tokens": 10955,
+    "cost_usd": 0.0270976,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

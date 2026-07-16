@@ -1,0 +1,251 @@
+{
+  "case_id": "polars-lazy-collect",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndata = {\n    \"user\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\", \"Eve\"],\n    \"amount\": [50, 150, 200, 75, 300]\n}\n\ndf = pl.DataFrame(data)\n\nresult = (\n    df.lazy()\n    .filter(pl.col(\"amount\") > 100)\n    .select(\"user\")\n    .collect()\n)\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndata = {\n    \"user\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\", \"Eve\"],\n    \"amount\": [50, 150, 200, 75, 300]\n}\n\ndf = pl.DataFrame(data)\n\nresult = (\n    df.lazy()\n    .filter(pl.col(\"amount\") > 100)\n    .select(\"user\")\n    .collect()\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 132,
+    "output_tokens": 2823,
+    "cache_read_tokens": 566307,
+    "cache_creation_tokens": 30090,
+    "cost_usd": 0.13105770000000003,
+    "num_turns": 21,
+    "tool_calls": 19,
+    "duration_s": 49.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "DataFrame",
+        "library": "polars",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "filter select lazy eager",
+        "library": "polars",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "filter",
+        "library": "polars",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "select",
+        "library": "polars",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "lazy",
+        "library": "polars",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "collect",
+        "library": "polars",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "DataFrame constructor",
+        "library": "polars",
+        "limit": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame",
+          "polars:DataFrame#lazy",
+          "polars:LazyFrame#filter",
+          "polars:LazyFrame#select",
+          "polars:LazyFrame#collect"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#lazy",
+          "polars:LazyFrame#filter",
+          "polars:LazyFrame#select",
+          "polars:LazyFrame#collect"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:LazyFrame#collect"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "col",
+        "library": "polars",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "col function expression",
+        "library": "polars",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "polars",
+        "module": "polars.functions.col",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "col",
+        "library": "polars",
+        "module": "polars",
+        "limit": 5
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01HzJN14h29gdTnQo4X97Xt5",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012VK5GySa8DimCbVnCFBCUJ",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame\",\"kind\":\"class\",\"summary\":\"Two-dimensional data structure representing data as a table with rows and columns.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame\"},{\"id\":\"polars.interchange.dataframe:InterchangeDataFrame\",\"kind\":\"class\",\"summary\":\"Interchange dataframe object.\",\"import\":\"from polars.interchange.dataframe import InterchangeDataFrame\",\"resolved_via_alias\":\"polars.interchange.protocol:DataFrame\"},{\"id\":\"polars.dataframe.frame:dataframe_to_pydf\",\"kind\":\"function\",\"summary\":\"Construct a PyDataFrame from an existing Polars DataFrame.\",\"import\":\"from polars.dataframe.frame import dataframe_to_pydf\",\"resolved_via_alias\":\"polars._utils.construction.dataframe:dataframe_to_pydf\"},{\"id\":\"polars.series.series:dataframe_to_pyseries\",\"kind\":\"function\",\"summary\":\"Construct a new PySeries from a Polars DataFrame.\",\"import\":\"from polars.series.series import dataframe_to_pyseries\",\"resolved_via_alias\":\"polars._utils.construction.series:dataframe_to_pyseries\"},{\"id\":\"polars.dataframe.frame:DataFramePlot\",\"kind\":\"class\",\"summary\":\"DataFrame.plot namespace.\",\"import\":\"from polars.dataframe.frame import DataFramePlot\",\"resolved_via_alias\":\"polars.dataframe.plotting:DataFramePlot\"},{\"id\":\"polars.api:register_dataframe_namespace\",\"kind\":\"function\",\"summary\":\"Decorator for registering custom functionality with a Polars DataFrame.\",\"import\":\"from polars.api import register_dataframe_namespace\"},{\"id\":\"polars:Config#set_tbl_dataframe_shape_below\",\"kind\":\"method\",\"summary\":\"Print the DataFrame shape information below the data when displaying tables.\",\"import\":\"from polars import Config\",\"resolved_via_alias\":\"polars.config:Config#set_tbl_dataframe_shape_below\"},{\"id\":\"polars:Config#set_tbl_hide_dataframe_shape\",\"kind\":\"method\",\"summary\":\"Hide the DataFrame shape information when displaying tables.\",\"import\":\"from polars import Config\",\"resolved_via_alias\":\"polars.config:Config#set_tbl_hide_dataframe_"
+    },
+    {
+      "tool_use_id": "toolu_01LJG4wNdHhZWRjpsfRnhabu",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_015ysWb9iuakyZ9Z3cGJmGn3",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#filter\",\"kind\":\"method\",\"summary\":\"Filter rows, retaining those that match the given predicate expression(s).\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#filter\"},{\"id\":\"polars:Expr#filter\",\"kind\":\"method\",\"summary\":\"Filter the expression based on one or more predicate expressions.\",\"import\":\"from polars import Expr\",\"resolved_via_alias\":\"polars.expr.expr:Expr#filter\"},{\"id\":\"polars.expr.expr:ExprListNameSpace#filter\",\"kind\":\"method\",\"summary\":\"Filter elements in each list by a boolean expression.\",\"import\":\"from polars.expr.expr import ExprListNameSpace\",\"resolved_via_alias\":\"polars.expr.list:ExprListNameSpace#filter\"},{\"id\":\"polars.expr.whenthen:ChainedThen#filter\",\"kind\":\"method\",\"summary\":\"Filter the expression based on one or more predicate expressions.\",\"import\":\"from polars.expr.whenthen import ChainedThen\"},{\"id\":\"polars.expr.whenthen:Then#filter\",\"kind\":\"method\",\"summary\":\"Filter the expression based on one or more predicate expressions.\",\"import\":\"from polars.expr.whenthen import Then\"},{\"id\":\"polars:LazyFrame#filter\",\"kind\":\"method\",\"summary\":\"Filter rows in the LazyFrame based on a predicate expression.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#filter\"},{\"id\":\"polars._reexport:Selector#filter\",\"kind\":\"method\",\"summary\":\"Filter the expression based on one or more predicate expressions.\",\"import\":\"from polars._reexport import Selector\",\"resolved_via_alias\":\"polars.selectors:Selector#filter\"},{\"id\":\"polars.series.series:ListNameSpace#filter\",\"kind\":\"method\",\"summary\":\"Filter elements in each list by a boolean expression, returning a new Series of lists.\",\"import\":\"from polars.series.series import ListNameSpace\",\"resolved_via_alias\":\"polars.series.list:ListNameSpace#filter\"},{\"id\":\"polars:Series#filter\",\"kind\":\"method\",\"summary\":\"Filter elements by a boolean mask.\",\"import\":\"from polars import Series\",\"resolved_via_ali"
+    },
+    {
+      "tool_use_id": "toolu_01SKEfVrgLbEvMshm4ceaWg5",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#select\",\"kind\":\"method\",\"summary\":\"Select columns from this DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#select\"},{\"id\":\"polars:select\",\"kind\":\"function\",\"summary\":\"Run polars expressions without a context.\",\"import\":\"from polars import select\",\"resolved_via_alias\":\"polars.functions.lazy:select\"},{\"id\":\"polars:LazyFrame#select\",\"kind\":\"method\",\"summary\":\"Select columns from this LazyFrame.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#select\"},{\"id\":\"polars:DataFrame#select_seq\",\"kind\":\"method\",\"summary\":\"Select columns from this DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#select_seq\"},{\"id\":\"polars.interchange.from_dataframe:PolarsDataFrame#select_columns\",\"kind\":\"method\",\"summary\":\"Create a new dataframe by selecting a subset of columns by index.\",\"import\":\"from polars.interchange.from_dataframe import PolarsDataFrame\",\"resolved_via_alias\":\"polars.interchange.dataframe:PolarsDataFrame#select_columns\"},{\"id\":\"polars.interchange.from_dataframe:PolarsDataFrame#select_columns_by_name\",\"kind\":\"method\",\"summary\":\"Create a new dataframe by selecting a subset of columns by name.\",\"import\":\"from polars.interchange.from_dataframe import PolarsDataFrame\",\"resolved_via_alias\":\"polars.interchange.dataframe:PolarsDataFrame#select_columns_by_name\"},{\"id\":\"polars.interchange.dataframe:InterchangeDataFrame#select_columns\",\"kind\":\"method\",\"summary\":\"Create a new dataframe by selecting a subset of columns by index.\",\"import\":\"from polars.interchange.dataframe import InterchangeDataFrame\",\"resolved_via_alias\":\"polars.interchange.protocol:DataFrame#select_columns\"},{\"id\":\"polars.interchange.dataframe:InterchangeDataFrame#select_columns_by_name\",\"kind\":\"method\",\"summary\":\"Create a new dataframe by selecting a subset of columns by name.\",\"import\":\"from polars.interchange.datafram"
+    },
+    {
+      "tool_use_id": "toolu_01VfEMpFaHDWoQz3P6eqXCp7",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#lazy\",\"kind\":\"method\",\"summary\":\"Start a lazy query from this point. This returns a `LazyFrame` object.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#lazy\"},{\"id\":\"polars:LazyFrame#lazy\",\"kind\":\"method\",\"summary\":\"Return lazy representation, i.e. itself.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#lazy\"},{\"id\":\"polars.lazyframe:QueryResult#lazy\",\"kind\":\"method\",\"summary\":\"Convert the `QueryResult` into a `LazyFrame`.\",\"import\":\"from polars.lazyframe import QueryResult\",\"resolved_via_alias\":\"polars.lazyframe.query_result:QueryResult#lazy\"},{\"id\":\"polars.lazyframe:SingleNodeQueryResult#lazy\",\"kind\":\"method\",\"summary\":\"Convert the `QueryResult` into a `LazyFrame`.\",\"import\":\"from polars.lazyframe import SingleNodeQueryResult\",\"resolved_via_alias\":\"polars.lazyframe.query_result:SingleNodeQueryResult#lazy\"},{\"id\":\"polars.lazyframe.frame:LazyPolarsSlice\",\"kind\":\"class\",\"summary\":\"Apply python slice object to Polars LazyFrame.\",\"import\":\"from polars.lazyframe.frame import LazyPolarsSlice\",\"resolved_via_alias\":\"polars._utils.slice:LazyPolarsSlice\"}],\"total\":196,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_013SSp2kV8xUg9o6CRAYdRGc",
+      "content": "{\"results\":[{\"id\":\"polars:LazyFrame#collect\",\"kind\":\"method\",\"summary\":\"Materialize this `LazyFrame` into a `DataFrame`.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#collect\"},{\"id\":\"polars:DataFrame#collect_schema\",\"kind\":\"method\",\"summary\":\"Get an ordered mapping of column names to their data type.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#collect_schema\"},{\"id\":\"polars:DataTypeExpr#collect_dtype\",\"kind\":\"method\",\"summary\":\"Materialize the :class:`DataTypeExpr` in a specific context.\",\"import\":\"from polars import DataTypeExpr\",\"resolved_via_alias\":\"polars.datatype_expr.datatype_expr:DataTypeExpr#collect_dtype\"},{\"id\":\"polars:collect_all\",\"kind\":\"function\",\"summary\":\"Collect multiple LazyFrames at the same time.\",\"import\":\"from polars import collect_all\",\"resolved_via_alias\":\"polars.functions.lazy:collect_all\"},{\"id\":\"polars:collect_all_async\",\"kind\":\"function\",\"summary\":\"Collect multiple LazyFrames at the same time asynchronously in thread pool.\",\"import\":\"from polars import collect_all_async\",\"resolved_via_alias\":\"polars.functions.lazy:collect_all_async\"}],\"total\":177,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01Eg9ezHpWULhim6Xs6hNeCd",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019ajNYW7SUfsnHdn7MYB3K1",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"polars.dataframe.frame\",\"aliases\":[\"polars._reexport:DataFrame\",\"polars.convert.normalize:DataFrame\",\"polars.dataframe:DataFrame\",\"polars.ml.utilities:DataFrame\",\"polars.testing.asserts.frame:DataFrame\",\"polars:DataFrame\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"FrameInitTypes | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Two-dimensional data in various forms; dict input must contain Sequences,\\nGenerators, or a `range`. Sequence may contain Series or other Sequences.\"},{\"name\":\"schema\",\"type\":\"SchemaDefinition | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The schema of the resulting DataFrame. The schema may be declared in several\\nways:\\n\\n* As a dict of {name:type} pairs; if type is None, it will be auto-inferred.\\n* As a list of column names; in this case types are automatically inferred.\\n* As a list of (name,type) pairs; this is equivalent to the dictionary form.\\n\\nThe order of the schema determines the column order of the frame.\\nWhen passing a dict, its insertion order is respected. To override specific\\ncolumn data types by name without changing column order, use\\n``schema_overrides`` instead.\\n\\nIf you supply a list of column names that does not match the names in the\\nunderlying data, the names given here will overwrite them. The number\\nof names given in the schema should match the underlying data dimensions.\\n\\nIf set to `None` (default), the schema is inferred from the data.\"},{\"name\":\"schema_overrides\",\"type\":\"SchemaDict | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Support type specification or override of one or more columns; note that\\nany dtypes inferred from the schema param will be overridden.\\n\\nThe number of entries in the schema should match the underlying data\\ndimensions, unless a sequence of dictionaries is being passed, in which case\\na *partial* schema can be declared to prevent spec"
+    },
+    {
+      "tool_use_id": "toolu_01U8Vr1biPAA3hwbCfeqG3AQ",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"returns\":\"LazyFrame\"}],\"semantics\":{\"summary\":\"Start a lazy query from this point. This returns a `LazyFrame` object.\",\"description\":\"Operations on a `LazyFrame` are not executed until this is triggered\\n        by calling one of:\\n\\n        * :meth:`.collect() <polars.LazyFrame.collect>`\\n            (run on all data)\\n        * :meth:`.explain() <polars.LazyFrame.explain>`\\n            (print the query plan)\\n        * :meth:`.show_graph() <polars.LazyFrame.show_graph>`\\n            (show the query plan as graphviz graph)\\n        * :meth:`.collect_schema() <polars.LazyFrame.collect_schema>`\\n            (return the final frame schema)\\n\\n        Lazy operations are recommended because they allow for query optimization and\\n        additional parallelism.\\n\\n        Returns\\n        -------\\n        LazyFrame\\n\\n        Examples\\n        --------\\n        >>> df = pl.DataFrame(\\n        ...     {\\n        ...         \\\"a\\\": [None, 2, 3, 4],\\n        ...         \\\"b\\\": [0.5, None, 2.5, 13],\\n        ...         \\\"c\\\": [True, True, False, None],\\n        ...     }\\n        ... )\\n        >>> df.lazy()\\n        <LazyFrame at ...>\",\"examples\":[{\"code\":\">>> df = pl.DataFrame(\\n...     {\\n...         \\\"a\\\": [None, 2, 3, 4],\\n...         \\\"b\\\": [0.5, None, 2.5, 13],\\n...         \\\"c\\\": [True, True, False, None],\\n...     }\\n... )\"},{\"code\":\">>> df.lazy()\\n<LazyFrame at ...>\"}]},\"id\":\"polars:DataFrame#lazy\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#lazy\",\"import\":\"from polars import DataFrame\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"LazyFrame\",\"returns_classes\":[\"polars:LazyFrame\"],\"next\":\"returns LazyFrame \u2192 get_symbol(ids=['polars:LazyFrame']) to see its members\"}},{\"kind\":\"method\",\"module\":\"polars.lazyframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"predicates\",\"type\":\"IntoExprColumn | Iterable["
+    },
+    {
+      "tool_use_id": "toolu_01E1abMhN1VMV8xEGmRUgV7e",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.lazyframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"type_coercion\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Do type coercion optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"predicate_pushdown\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Do predicate pushdown optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"projection_pushdown\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Do projection pushdown optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"simplify_expression\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Run simplify expressions optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"slice_pushdown\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Slice pushdown optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"comm_subplan_elim\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Will try to cache branching subplans that occur on self-joins or unions.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"comm_subexpr_elim\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Common subexpressions will be cached and reused.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"cluster_with_columns\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Combine sequential independent calls to with_columns\\n\\n.. deprecated:: 1.30.0\\n    Use the `op"
+    },
+    {
+      "tool_use_id": "toolu_01FJfyxYf9eLaftv8Tp3YkSq",
+      "content": "{\"results\":[{\"id\":\"polars.catalog.unity:ColumnInfo\",\"kind\":\"class\",\"summary\":\"Information for a column within a catalog table.\",\"import\":\"from polars.catalog.unity import ColumnInfo\",\"resolved_via_alias\":\"polars.catalog.unity.models:ColumnInfo\"},{\"id\":\"polars:DataFrame#collect_schema\",\"kind\":\"method\",\"summary\":\"Get an ordered mapping of column names to their data type.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#collect_schema\"},{\"id\":\"polars:DataFrame#columns\",\"kind\":\"attribute\",\"summary\":\"Get or set column names.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#columns\"},{\"id\":\"polars:DataTypeExpr#collect_dtype\",\"kind\":\"method\",\"summary\":\"Materialize the :class:`DataTypeExpr` in a specific context.\",\"import\":\"from polars import DataTypeExpr\",\"resolved_via_alias\":\"polars.datatype_expr.datatype_expr:DataTypeExpr#collect_dtype\"},{\"id\":\"_polars_runtime_32._polars_runtime:ColumnNotFoundError\",\"kind\":\"class\",\"summary\":\"Class ColumnNotFoundError\",\"import\":\"from _polars_runtime_32._polars_runtime import ColumnNotFoundError\",\"resolved_via_alias\":\"polars.exceptions:ColumnNotFoundError\"}],\"total\":1621,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01YEJmrDYW1rz4nphhS6QNjM",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019w4hoMZxeVbeGh9S3rT4fd",
+      "content": "{\"library\":{\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"_polars_runtime_32._polars_runtime\",\"symbols\":2},{\"module\":\"polars\",\"symbols\":1},{\"module\":\"polars._cpu_check\",\"symbols\":7},{\"module\":\"polars._dependencies\",\"symbols\":1},{\"module\":\"polars._reexport\",\"symbols\":1},{\"module\":\"polars._typing\",\"symbols\":11},{\"module\":\"polars._utils\",\"symbols\":1},{\"module\":\"polars._utils.async_\",\"symbols\":2},{\"module\":\"polars._utils.cache\",\"symbols\":21},{\"module\":\"polars._utils.cloud\",\"symbols\":3},{\"module\":\"polars._utils.constants\",\"symbols\":21},{\"module\":\"polars._utils.construction\",\"symbols\":1},{\"module\":\"polars._utils.construction.dataframe\",\"symbols\":11},{\"module\":\"polars._utils.construction.other\",\"symbols\":4},{\"module\":\"polars._utils.construction.series\",\"symbols\":9},{\"module\":\"polars._utils.construction.utils\",\"symbols\":9},{\"module\":\"polars._utils.convert\",\"symbols\":17},{\"module\":\"polars._utils.deprecation\",\"symbols\":6},{\"module\":\"polars._utils.getitem\",\"symbols\":3},{\"module\":\"polars._utils.logging\",\"symbols\":4},{\"module\":\"polars._utils.nest_asyncio\",\"symbols\":3},{\"module\":\"polars._utils.parquet\",\"symbols\":2},{\"module\":\"polars._utils.parse\",\"symbols\":1},{\"module\":\"polars._utils.parse.expr\",\"symbols\":8},{\"module\":\"polars._utils.polars_version\",\"symbols\":2},{\"module\":\"polars._utils.pycapsule\",\"symbols\":4},{\"module\":\"polars._utils.reduce_balanced\",\"symbols\":2},{\"module\":\"polars._utils.serde\",\"symbols\":3},{\"module\":\"polars._utils.slice\",\"symbols\":8},{\"module\":\"polars._utils.udfs\",\"symbols\":13},{\"module\":\"polars._utils.unstable\",\"symbols\":4},{\"module\":\"polars._utils.various\",\"symbols\":28},{\"module\":\"polars._utils.wrap\",\"symbols\":6},{\"module\":\"polars._warnings\",\"symbols\":3},{\"module\":\"polars.api\",\"symbols\":5},{\"module\":\"polars.catalog\",\"symbols\":1},{\"module\":\"polars.catalog.unity\",\"symbols\":1},{\"module\":\"polars.catalog.unity.client\",\"symbols\":19},{\"module\":\"polars.catalog.unity.models\",\"symbols\":20},{\"module\""
+    },
+    {
+      "tool_use_id": "toolu_01NGg2YyXcs6jYPd8x6zSEEQ",
+      "content": "{\"results\":[{\"id\":\"polars.functions.col:\",\"kind\":\"module\",\"summary\":\"Module polars.functions.col\",\"import\":\"import polars.functions.col\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012VE9caCTnjzXL1yXtorscu",
+      "content": "{\"results\":[{\"id\":\"polars:\",\"kind\":\"module\",\"summary\":\"Polars: Blazingly fast DataFrames =================================\",\"import\":\"import polars\"}],\"total\":1,\"truncated\":false}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

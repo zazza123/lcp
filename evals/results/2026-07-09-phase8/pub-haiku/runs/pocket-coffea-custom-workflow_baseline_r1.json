@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.processor.base import BaseProcessor\nimport awkward as ak\nimport numpy as np\n\n\nclass DimuonAnalysisProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor for PocketCoffea v0.9.13.\"\"\"\n    \n    def process_objects(self, events):\n        \"\"\"Create MuonGood collection with pT > 15 GeV and |eta| < 2.4.\"\"\"\n        muon_selection = (events.Muon.pt > 15) & (np.abs(events.Muon.eta) < 2.4)\n        events[\"MuonGood\"] = events.Muon[muon_selection]\n        return events\n    \n    def count_objects(self, events):\n        \"\"\"Store the number of selected muons per event.\"\"\"\n        events[\"n_muons\"] = ak.num(events.MuonGood)\n        return events",
+  "result_text": "```python\nfrom pocket_coffea.processor.base import BaseProcessor\nimport awkward as ak\nimport numpy as np\n\n\nclass DimuonAnalysisProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor for PocketCoffea v0.9.13.\"\"\"\n    \n    def process_objects(self, events):\n        \"\"\"Create MuonGood collection with pT > 15 GeV and |eta| < 2.4.\"\"\"\n        muon_selection = (events.Muon.pt > 15) & (np.abs(events.Muon.eta) < 2.4)\n        events[\"MuonGood\"] = events.Muon[muon_selection]\n        return events\n    \n    def count_objects(self, events):\n        \"\"\"Store the number of selected muons per event.\"\"\"\n        events[\"n_muons\"] = ak.num(events.MuonGood)\n        return events\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3966,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6882,
+    "cost_usd": 0.0351234,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 40.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.processor.base.BaseProcessor"
+    ],
+    "error": null
+  }
+}

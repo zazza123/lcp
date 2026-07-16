@@ -1,0 +1,104 @@
+{
+  "case_id": "flask-error-handler",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, jsonify\n\napp = Flask(__name__)\n\n@app.errorhandler(404)\ndef handle_not_found(error):\n    return jsonify(error=\"not found\"), 404\n\nif __name__ == \"__main__\":\n    app.run(debug=True)",
+  "result_text": "```python\nfrom flask import Flask, jsonify\n\napp = Flask(__name__)\n\n@app.errorhandler(404)\ndef handle_not_found(error):\n    return jsonify(error=\"not found\"), 404\n\nif __name__ == \"__main__\":\n    app.run(debug=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 69,
+    "output_tokens": 1513,
+    "cache_read_tokens": 190228,
+    "cache_creation_tokens": 12898,
+    "cost_usd": 0.052452799999999994,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 32.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "flask",
+        "version": "3.1.3"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "errorhandler",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:Flask#errorhandler"
+        ],
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "jsonify",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:jsonify"
+        ],
+        "library": "flask"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01EYXvQofi5ULXDBztYMenLu",
+      "content": "{\"status\":\"loaded\",\"name\":\"flask\",\"version\":\"3.1.3\",\"language\":\"python\",\"symbol_count\":513,\"module_count\":24,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='flask') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_0162j2UiU3Bx9NKtEZqZL4zE",
+      "content": "{\"results\":[{\"id\":\"flask:Flask#errorhandler\",\"kind\":\"method\",\"summary\":\"Register a function to handle errors by code or exception class.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#errorhandler\"},{\"id\":\"flask:Blueprint#errorhandler\",\"kind\":\"method\",\"summary\":\"Register a function to handle errors by code or exception class.\",\"import\":\"from flask import Blueprint\",\"resolved_via_alias\":\"flask.blueprints:Blueprint#errorhandler\"},{\"id\":\"flask.app:App#errorhandler\",\"kind\":\"method\",\"summary\":\"Register a function to handle errors by code or exception class.\",\"import\":\"from flask.app import App\",\"resolved_via_alias\":\"flask.sansio.app:App#errorhandler\"},{\"id\":\"flask.blueprints:SansioBlueprint#errorhandler\",\"kind\":\"method\",\"summary\":\"Register a function to handle errors by code or exception class.\",\"import\":\"from flask.blueprints import SansioBlueprint\",\"resolved_via_alias\":\"flask.sansio.blueprints:Blueprint#errorhandler\"},{\"id\":\"flask.sansio.app:Scaffold#errorhandler\",\"kind\":\"method\",\"summary\":\"Register a function to handle errors by code or exception class.\",\"import\":\"from flask.sansio.app import Scaffold\",\"resolved_via_alias\":\"flask.sansio.scaffold:Scaffold#errorhandler\"},{\"id\":\"flask:Blueprint#app_errorhandler\",\"kind\":\"method\",\"summary\":\"Like :meth:`errorhandler`, but for every request, not only those handled by the blueprint. Equivalent to :meth:`.Flask.errorhandler`.\",\"import\":\"from flask import Blueprint\",\"resolved_via_alias\":\"flask.blueprints:Blueprint#app_errorhandler\"},{\"id\":\"flask.blueprints:SansioBlueprint#app_errorhandler\",\"kind\":\"method\",\"summary\":\"Like :meth:`errorhandler`, but for every request, not only those handled by the blueprint. Equivalent to :meth:`.Flask.errorhandler`.\",\"import\":\"from flask.blueprints import SansioBlueprint\",\"resolved_via_alias\":\"flask.sansio.blueprints:Blueprint#app_errorhandler\"},{\"id\":\"flask:Flask#register_error_handler\",\"kind\":\"method\",\"summary\":\"Alternative error attach function to the :meth:`errorhan"
+    },
+    {
+      "tool_use_id": "toolu_01Nyhf9KBi5akehzLVNbjkyr",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"flask.app\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"code_or_exception\",\"type\":\"UnionType[type[Exception], int]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"the code as integer for the handler, or\\nan arbitrary exception\"}],\"returns\":\"Callable[[~T_error_handler], T_error_handler]\"}],\"semantics\":{\"summary\":\"Register a function to handle errors by code or exception class.\",\"description\":\"A decorator that is used to register a function given an\\n        error code.  Example::\\n\\n            @app.errorhandler(404)\\n            def page_not_found(error):\\n                return 'This page does not exist', 404\\n\\n        You can also register handlers for arbitrary exceptions::\\n\\n            @app.errorhandler(DatabaseError)\\n            def special_exception_handler(error):\\n                return 'Database connection failed', 500\\n\\n        This is available on both app and blueprint objects. When used on an app, this\\n        can handle errors from every request. When used on a blueprint, this can handle\\n        errors from requests that the blueprint handles. To register with a blueprint\\n        and affect every request, use :meth:`.Blueprint.app_errorhandler`.\\n\\n        .. versionadded:: 0.7\\n            Use :meth:`register_error_handler` instead of modifying\\n            :attr:`error_handler_spec` directly, for application wide error\\n            handlers.\\n\\n        .. versionadded:: 0.7\\n           One can now additionally also register custom exception types\\n           that do not necessarily have to be a subclass of the\\n           :class:`~werkzeug.exceptions.HTTPException` class.\\n\\n        :param code_or_exception: the code as integer for the handler, or\\n                                  an arbitrary exception\"},\"id\":\"flask:Flask#errorhandler\",\"resolved_via_alias\":\"flask.app:Flask#errorhandler\",\"import\":\"from flask import Flask\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"code_or_ex"
+    },
+    {
+      "tool_use_id": "toolu_0125jMnxzNFxNq1BfHuX97d4",
+      "content": "{\"results\":[{\"id\":\"flask:jsonify\",\"kind\":\"function\",\"summary\":\"Serialize the given arguments as JSON, and return a :class:`~flask.Response` object with the ``application/json`` mimetype. A dict or list returned from a view will be converted to a JSON response automatically without needing to call this.\",\"import\":\"from flask import jsonify\",\"resolved_via_alias\":\"flask.json:jsonify\"},{\"id\":\"flask:Flask#make_response\",\"kind\":\"method\",\"summary\":\"Convert the return value from a view function to an instance of :attr:`response_class`.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#make_response\"},{\"id\":\"flask.sansio.app:JSONProvider#response\",\"kind\":\"method\",\"summary\":\"Serialize the given arguments as JSON, and return a :class:`~flask.Response` object with the ``application/json`` mimetype.\",\"import\":\"from flask.sansio.app import JSONProvider\",\"resolved_via_alias\":\"flask.json.provider:JSONProvider#response\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01587jwxfaqPL7qanu9J3A9r",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"flask.json\",\"aliases\":[\"flask:jsonify\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"t.Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"A single value to serialize, or multiple values to\\ntreat as a list to serialize.\"},{\"name\":\"kwargs\",\"type\":\"t.Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Treat as a dict to serialize.\\n.. versionchanged:: 2.2\\n    Calls ``current_app.json.response``, allowing an app to override\\n    the behavior.\\n\\n.. versionchanged:: 2.0.2\\n    :class:`decimal.Decimal` is supported by converting to a string.\\n\\n.. versionchanged:: 0.11\\n    Added support for serializing top-level arrays. This was a\\n    security risk in ancient browsers. See :ref:`security-json`.\\n\\n.. versionadded:: 0.2\"}],\"returns\":\"Response\"}],\"semantics\":{\"summary\":\"Serialize the given arguments as JSON, and return a :class:`~flask.Response` object with the ``application/json`` mimetype. A dict or list returned from a view will be converted to a JSON response automatically without needing to call this.\",\"description\":\"This requires an active request or application context, and calls\\n    :meth:`app.json.response() <flask.json.provider.JSONProvider.response>`.\\n\\n    In debug mode, the output is formatted with indentation to make it\\n    easier to read. This may also be controlled by the provider.\\n\\n    Either positional or keyword arguments can be given, not both.\\n    If no arguments are given, ``None`` is serialized.\\n\\n    :param args: A single value to serialize, or multiple values to\\n        treat as a list to serialize.\\n    :param kwargs: Treat as a dict to serialize.\\n\\n    .. versionchanged:: 2.2\\n        Calls ``current_app.json.response``, allowing an app to override\\n        the behavior.\\n\\n    .. versionchanged:: 2.0.2\\n        :class:`decimal.Decimal` is supported by converting to a string.\\n\\n    .. versionchanged:: 0.11\\n        Added support for serializing to"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

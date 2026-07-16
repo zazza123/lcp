@@ -1,0 +1,36 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\nfrom cyclopts.validators import Range\nfrom typing import Annotated\n\napp = App()\n\n@app.default\ndef serve(port: Annotated[int, Range(1024, 65535)]) -> None:\n    \"\"\"Serve on the specified port.\n    \n    Args:\n        port: Port number to serve on (must be between 1024 and 65535)\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\nfrom cyclopts.validators import Range\nfrom typing import Annotated\n\napp = App()\n\n@app.default\ndef serve(port: Annotated[int, Range(1024, 65535)]) -> None:\n    \"\"\"Serve on the specified port.\n    \n    Args:\n        port: Port number to serve on (must be between 1024 and 65535)\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2508,
+    "cache_read_tokens": 22040,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014752999999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyclopts:Parameter",
+      "cyclopts.validators:Number"
+    ],
+    "forbidden_used": [
+      "cyclopts.validators:Range"
+    ],
+    "unresolved_usages": [
+      "cyclopts.validators.Range"
+    ],
+    "error": null
+  }
+}

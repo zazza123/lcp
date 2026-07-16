@@ -1,0 +1,34 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings.parsers import GoogleDocstringStyle\nfrom griffe.docstrings.dataclasses import Docstring\n\nraw_docstring = \"\"\"\nThis is a summary line that describes what the function does.\n\nArgs:\n    param1 (str): Description of param1.\n    param2 (int): Description of param2.\n\nReturns:\n    bool: Description of the return value.\n\"\"\"\n\ndocstring = Docstring(raw_docstring, lineno=0, endlineno=None, parser=GoogleDocstringStyle)\n\nfor section in docstring.parsed:\n    print(f\"Section kind: {section.kind}\")",
+  "result_text": "```python\nfrom griffe.docstrings.parsers import GoogleDocstringStyle\nfrom griffe.docstrings.dataclasses import Docstring\n\nraw_docstring = \"\"\"\nThis is a summary line that describes what the function does.\n\nArgs:\n    param1 (str): Description of param1.\n    param2 (int): Description of param2.\n\nReturns:\n    bool: Description of the return value.\n\"\"\"\n\ndocstring = Docstring(raw_docstring, lineno=0, endlineno=None, parser=GoogleDocstringStyle)\n\nfor section in docstring.parsed:\n    print(f\"Section kind: {section.kind}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 557,
+    "cache_read_tokens": 22037,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.004997700000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 7.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.dataclasses.Docstring",
+      "griffe.docstrings.parsers.GoogleDocstringStyle"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_nobj_cut,\n    get_btag_cut,\n)\nfrom pocket_coffea.parameters.cuts import cuts_2018\n\n# Define skim cuts (minimal filtering before processing)\nskim_cuts = [\n    # HLT trigger selection from parameters for semileptonic dataset\n    \"semileptonic_trigger\",\n]\n\n# Define preselection cuts (after skim, before analysis)\npreselection_cuts = [\n    # At least 4 jets with pT > 30 GeV from JetGood collection\n    get_nobj_cut(\"JetGood\", 4, 30),\n    # At least 2 b-tagged jets\n    get_btag_cut(2),\n]\n\n# Configuration structure\ncuts_config = {\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_nobj_cut,\n    get_btag_cut,\n)\nfrom pocket_coffea.parameters.cuts import cuts_2018\n\n# Define skim cuts (minimal filtering before processing)\nskim_cuts = [\n    # HLT trigger selection from parameters for semileptonic dataset\n    \"semileptonic_trigger\",\n]\n\n# Define preselection cuts (after skim, before analysis)\npreselection_cuts = [\n    # At least 4 jets with pT > 30 GeV from JetGood collection\n    get_nobj_cut(\"JetGood\", 4, 30),\n    # At least 2 b-tagged jets\n    get_btag_cut(2),\n]\n\n# Configuration structure\ncuts_config = {\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 1462,
+    "cache_read_tokens": 92889,
+    "cache_creation_tokens": 4068,
+    "cost_usd": 0.0247719,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 31.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 pocket-coffea",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "pocket-coffea",
+        "query": "build skim preselection cut lists HLT trigger jet multiplicity b-tag"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/scikit-hep/coffea",
+        "query": "cut factories HLT trigger selection object multiplicity b-tag configuration"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01UwYpMmHQMCztKJ5qxgwFPS",
+      "content": "Available Libraries:\n\n- Title: Coffea\n- Context7-compatible library ID: /scikit-hep/coffea\n- Description: Coffea is a Python toolkit for columnar high-energy physics analysis that enables efficient data manipulation and horizontally scaled processing from laptops to supercomputers.\n- Code Snippets: 1022\n- Source Reputation: High\n- Benchmark Score: 82"
+    },
+    {
+      "tool_use_id": "toolu_01LQDj7DEAT2n3cxoc8mBbei",
+      "content": "### PackedSelection: Memory-Efficient Boolean Selections\n\nSource: https://context7.com/scikit-hep/coffea/llms.txt\n\nPackedSelection efficiently stores multiple per-event boolean flags in a single integer array using bitwise operations. It supports eager and delayed modes and provides methods for combining selections like all(), any(), require(), cutflow(), and nminusone().\n\n```python\nimport numpy as np\nimport awkward as ak\nfrom coffea.analysis_tools import PackedSelection\n\nevents_n = 100_000\nrng = np.random.default_rng(42)\npt  = rng.exponential(30, events_n)\neta = rng.uniform(-3, 3, events_n)\niso = rng.uniform(0, 1, events_n) < 0.85\n\nsel = PackedSelection(dtype=\"uint32\")\nsel.add(\"pt_cut\",  pt  > 25)\nsel.add(\"eta_cut\", np.abs(eta) < 2.4)\nsel.add(\"iso_cut\", iso)\n\n# Require all three cuts\nall_cuts = sel.all(\"pt_cut\", \"eta_cut\", \"iso_cut\")\nprint(f\"Pass all: {all_cuts.sum()}\")\n\n# Require pt and eta but NOT iso (to study iso efficiency)\nanti_iso = sel.require(pt_cut=True, eta_cut=True, iso_cut=False)\n\n# Sequential cutflow\ncf = sel.cutflow(\"pt_cut\", \"eta_cut\", \"iso_cut\")\ncf.print()\n# Cutflow selection stats:\n#   Cut pt_cut :  pass = 68214   cumulative pass = 68214   ...\n#   Cut eta_cut:  pass = 52190   cumulative pass = 46321   ...\n#   Cut iso_cut:  pass = 85012   cumulative pass = 39381   ...\n\n# N-1 analysis\nnm1 = sel.nminusone(\"pt_cut\", \"eta_cut\", \"iso_cut\")\nnm1.print()\n# N-1 selection stats:\n#   Ignoring pt_cut   pass = 42150  all = 100000  -- eff = 42.2 %\n#   ...\n\n```\n\n--------------------------------\n\n### Initialize and Add Selections to PackedSelection\n\nSource: https://github.com/scikit-hep/coffea/blob/master/binder/analysis_tools.ipynb\n\nDemonstrates how to initialize a PackedSelection object and add multiple boolean conditions for event filtering. These conditions can represent various event properties like particle counts or charge sums.\n\n```python\nfrom coffea.analysis_tools import PackedSelection\n\nselection = PackedSelection()\n\nselection.add(\"twoElectron\", ak.num(e"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.get_btag_cut",
+      "pocket_coffea.lib.cut_functions.get_nobj_cut"
+    ],
+    "error": null
+  }
+}

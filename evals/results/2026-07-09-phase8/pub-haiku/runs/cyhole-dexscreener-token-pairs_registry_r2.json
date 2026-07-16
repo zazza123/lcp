@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-dexscreener-token-pairs",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole import DexScreener\n\n# SPL token mint address (example: USDC on Solana)\nmint_address = \"EPjFWaLb3odcccccccccccccccccccccccccccccccc\"\n\n# Initialize DexScreener and retrieve all pairs for the token\nscreener = DexScreener()\npairs = screener.get_token_pairs(mint_address, chain=\"solana\")\n\nprint(f\"Total pairs returned: {len(pairs)}\")",
+  "result_text": "```python\nfrom cyhole import DexScreener\n\n# SPL token mint address (example: USDC on Solana)\nmint_address = \"EPjFWaLb3odcccccccccccccccccccccccccccccccc\"\n\n# Initialize DexScreener and retrieve all pairs for the token\nscreener = DexScreener()\npairs = screener.get_token_pairs(mint_address, chain=\"solana\")\n\nprint(f\"Total pairs returned: {len(pairs)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1517,
+    "cache_read_tokens": 22116,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.009805600000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.dex_screener.interaction:DexScreener"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.DexScreener"
+    ],
+    "error": null
+  }
+}

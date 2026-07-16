@@ -1,0 +1,45 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    hlt_trigger_selection,\n    object_multiplicity_factory,\n    btagging_multiplicity_factory,\n)\n\ndef build_cuts(parameters):\n    \"\"\"\n    Build skim and preselection cuts for 2018 semileptonic ttbar analysis.\n    \n    Args:\n        parameters: Configuration parameters dict with HLT trigger paths for \"semileptonic\" dataset\n    \n    Returns:\n        dict: Skim and preselection cut lists\n    \"\"\"\n    \n    # Skim cuts: apply HLT trigger selection\n    skim_cuts = [\n        hlt_trigger_selection(\n            primary_dataset=\"semileptonic\",\n            triggers=parameters[\"HLT\"][\"semileptonic\"]\n        )\n    ]\n    \n    # Preselection cuts\n    preselection_cuts = [\n        # At least 4 jets with pT > 30 GeV from JetGood collection\n        object_multiplicity_factory(\n            collection=\"JetGood\",\n            min_number=4,\n            pt_cut=30.0\n        ),\n        # At least 2 b-tagged jets\n        btagging_multiplicity_factory(\n            collection=\"JetGood\",\n            min_number=2,\n            wp=\"M\"  # Working point (L/M/T for Loose/Medium/Tight)\n        )\n    ]\n    \n    return {\n        \"skim\": skim_cuts,\n        \"preselection\": preselection_cuts\n    }\n\n\nif __name__ == \"__main__\":\n    # Example parameters structure\n    parameters = {\n        \"HLT\": {\n            \"semileptonic\": [\n                \"IsoMu24\",\n                \"Ele32_WPTight_Gsf\",\n                \"Mu50\",\n                \"Ele50_CaloIdVT_GsfTrkId_PFJet165\",\n            ]\n        }\n    }\n    \n    cuts = build_cuts(parameters)\n    print(\"Skim cuts:\", cuts[\"skim\"])\n    print(\"Preselection cuts:\", cuts[\"preselection\"])",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    hlt_trigger_selection,\n    object_multiplicity_factory,\n    btagging_multiplicity_factory,\n)\n\ndef build_cuts(parameters):\n    \"\"\"\n    Build skim and preselection cuts for 2018 semileptonic ttbar analysis.\n    \n    Args:\n        parameters: Configuration parameters dict with HLT trigger paths for \"semileptonic\" dataset\n    \n    Returns:\n        dict: Skim and preselection cut lists\n    \"\"\"\n    \n    # Skim cuts: apply HLT trigger selection\n    skim_cuts = [\n        hlt_trigger_selection(\n            primary_dataset=\"semileptonic\",\n            triggers=parameters[\"HLT\"][\"semileptonic\"]\n        )\n    ]\n    \n    # Preselection cuts\n    preselection_cuts = [\n        # At least 4 jets with pT > 30 GeV from JetGood collection\n        object_multiplicity_factory(\n            collection=\"JetGood\",\n            min_number=4,\n            pt_cut=30.0\n        ),\n        # At least 2 b-tagged jets\n        btagging_multiplicity_factory(\n            collection=\"JetGood\",\n            min_number=2,\n            wp=\"M\"  # Working point (L/M/T for Loose/Medium/Tight)\n        )\n    ]\n    \n    return {\n        \"skim\": skim_cuts,\n        \"preselection\": preselection_cuts\n    }\n\n\nif __name__ == \"__main__\":\n    # Example parameters structure\n    parameters = {\n        \"HLT\": {\n            \"semileptonic\": [\n                \"IsoMu24\",\n                \"Ele32_WPTight_Gsf\",\n                \"Mu50\",\n                \"Ele50_CaloIdVT_GsfTrkId_PFJet165\",\n            ]\n        }\n    }\n    \n    cuts = build_cuts(parameters)\n    print(\"Skim cuts:\", cuts[\"skim\"])\n    print(\"Preselection cuts:\", cuts[\"preselection\"])\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1311,
+    "cache_read_tokens": 45998,
+    "cache_creation_tokens": 630,
+    "cost_usd": 0.0124318,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 16.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.btagging_multiplicity_factory",
+      "pocket_coffea.lib.cut_functions.hlt_trigger_selection",
+      "pocket_coffea.lib.cut_functions.object_multiplicity_factory"
+    ],
+    "error": null
+  }
+}

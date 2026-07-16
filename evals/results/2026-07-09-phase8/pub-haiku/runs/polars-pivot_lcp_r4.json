@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-pivot",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create example long-format data\ndf = pl.DataFrame({\n    'date': ['2024-01-01', '2024-01-01', '2024-01-02', '2024-01-02'],\n    'city': ['NYC', 'LA', 'NYC', 'LA'],\n    'temperature': [35, 72, 36, 73]\n})\n\n# Reshape to wide format\nresult = df.pivot(on='city', index='date', values='temperature')\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\n# Create example long-format data\ndf = pl.DataFrame({\n    'date': ['2024-01-01', '2024-01-01', '2024-01-02', '2024-01-02'],\n    'city': ['NYC', 'LA', 'NYC', 'LA'],\n    'temperature': [35, 72, 36, 73]\n})\n\n# Reshape to wide format\nresult = df.pivot(on='city', index='date', values='temperature')\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1410,
+    "cache_read_tokens": 22104,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0092694,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

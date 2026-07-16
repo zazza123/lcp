@@ -1,0 +1,42 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Assume videos table exists with 'video' column\nvideos = pxt.get_table('videos')\n\n# Create a view with frame extraction at 1 fps\n# FrameIterator expands each video row into one row per frame\nframes_view = videos.add_iterator(\n    name='video_frames_1fps',\n    iterator=pxt.FrameIterator(\n        video_column='video',\n        fps=1\n    )\n)\n\n# Retrieve and work with the frame-level view\nframes = pxt.get_table('video_frames_1fps')\nprint(frames.head())",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Assume videos table exists with 'video' column\nvideos = pxt.get_table('videos')\n\n# Create a view with frame extraction at 1 fps\n# FrameIterator expands each video row into one row per frame\nframes_view = videos.add_iterator(\n    name='video_frames_1fps',\n    iterator=pxt.FrameIterator(\n        video_column='video',\n        fps=1\n    )\n)\n\n# Retrieve and work with the frame-level view\nframes = pxt.get_table('video_frames_1fps')\nprint(frames.head())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1686,
+    "cache_read_tokens": 45884,
+    "cache_creation_tokens": 270,
+    "cost_usd": 0.013575400000000001,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 19.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pixeltable:create_view",
+      "pixeltable.iterators:FrameIterator"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pixeltable.FrameIterator"
+    ],
+    "error": null
+  }
+}

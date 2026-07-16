@@ -1,0 +1,39 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Initialize pixeltable client\npxt.create_client()\n\n# Get the existing docs table\ntable = pxt.get_table('docs')\n\n# Add embeddings column using sentence-transformers UDF with all-MiniLM-L6-v2 model\ntable.add_column(\n    'embeddings',\n    pxt.functions.embedding(table.content, model='all-MiniLM-L6-v2')\n)\n\n# Create index on embeddings for nearest-neighbor search\ntable.create_index('embeddings')\n\n# Prepare query embedding\nquery_text = \"climate change policy\"\nquery_embedding = pxt.functions.embedding(query_text, model='all-MiniLM-L6-v2')\n\n# Execute semantic search: select content and compute distance\nresults = (\n    table\n    .select(\n        table.content,\n        pxt.functions.cosine_distance(table.embeddings, query_embedding).alias('distance')\n    )\n    .order_by('distance')\n    .limit(5)\n)\n\n# Display 5 most similar rows ranked closest to farthest\nfor row in results.collect():\n    print(f\"Distance: {row['distance']:.4f} - Content: {row['content']}\")",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Initialize pixeltable client\npxt.create_client()\n\n# Get the existing docs table\ntable = pxt.get_table('docs')\n\n# Add embeddings column using sentence-transformers UDF with all-MiniLM-L6-v2 model\ntable.add_column(\n    'embeddings',\n    pxt.functions.embedding(table.content, model='all-MiniLM-L6-v2')\n)\n\n# Create index on embeddings for nearest-neighbor search\ntable.create_index('embeddings')\n\n# Prepare query embedding\nquery_text = \"climate change policy\"\nquery_embedding = pxt.functions.embedding(query_text, model='all-MiniLM-L6-v2')\n\n# Execute semantic search: select content and compute distance\nresults = (\n    table\n    .select(\n        table.content,\n        pxt.functions.cosine_distance(table.embeddings, query_embedding).alias('distance')\n    )\n    .order_by('distance')\n    .limit(5)\n)\n\n# Display 5 most similar rows ranked closest to farthest\nfor row in results.collect():\n    print(f\"Distance: {row['distance']:.4f} - Content: {row['content']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5276,
+    "cache_read_tokens": 22086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0285976,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 80.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.create_client",
+      "pixeltable.functions.cosine_distance",
+      "pixeltable.functions.embedding"
+    ],
+    "error": null
+  }
+}

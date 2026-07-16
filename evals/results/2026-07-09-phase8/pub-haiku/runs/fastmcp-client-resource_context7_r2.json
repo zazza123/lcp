@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import FastMCP\nfrom fastmcp.client import AsyncClient\n\nasync def main():\n    # Create a FastMCP server instance\n    server = FastMCP(\"example-server\")\n    \n    # Define a resource at URI \"data://config\"\n    @server.resource(\"data://config\")\n    async def read_config() -> str:\n        return \"hostname: localhost\\nport: 8000\\ndebug: true\"\n    \n    # Create an in-memory client connected directly to the server object\n    client = AsyncClient(server)\n    \n    # Fetch the resource contents\n    resource_content = await client.read_resource(\"data://config\")\n    print(\"Resource contents:\")\n    print(resource_content)\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP\nfrom fastmcp.client import AsyncClient\n\nasync def main():\n    # Create a FastMCP server instance\n    server = FastMCP(\"example-server\")\n    \n    # Define a resource at URI \"data://config\"\n    @server.resource(\"data://config\")\n    async def read_config() -> str:\n        return \"hostname: localhost\\nport: 8000\\ndebug: true\"\n    \n    # Create an in-memory client connected directly to the server object\n    client = AsyncClient(server)\n    \n    # Fetch the resource contents\n    resource_content = await client.read_resource(\"data://config\")\n    print(\"Resource contents:\")\n    print(resource_content)\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5449,
+    "cache_read_tokens": 22064,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.029460399999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 55.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.client.AsyncClient"
+    ],
+    "error": null
+  }
+}

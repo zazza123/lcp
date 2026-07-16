@@ -1,0 +1,31 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint, request, jsonify\n\n# Create the users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return jsonify({\n        'users': [\n            {'id': 1, 'name': 'Alice'},\n            {'id': 2, 'name': 'Bob'},\n            {'id': 3, 'name': 'Charlie'}\n        ]\n    })\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({\n        'id': user_id,\n        'name': f'User {user_id}',\n        'email': f'user{user_id}@example.com'\n    })\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    data = request.get_json()\n    return jsonify({\n        'id': 4,\n        'name': data.get('name', 'New User'),\n        'message': 'User created successfully'\n    }), 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    data = request.get_json()\n    return jsonify({\n        'id': user_id,\n        'name': data.get('name', f'User {user_id}'),\n        'message': 'User updated successfully'\n    })\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({\n        'message': f'User {user_id} deleted successfully'\n    }), 204\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Register the users blueprint with URL prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef index():\n    return jsonify({\n        'message': 'Welcome to the Flask API',\n        'endpoints': {\n            'users': '/users',\n            'user_by_id': '/users/<id>'\n        }\n    })\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint, request, jsonify\n\n# Create the users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return jsonify({\n        'users': [\n            {'id': 1, 'name': 'Alice'},\n            {'id': 2, 'name': 'Bob'},\n            {'id': 3, 'name': 'Charlie'}\n        ]\n    })\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({\n        'id': user_id,\n        'name': f'User {user_id}',\n        'email': f'user{user_id}@example.com'\n    })\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    data = request.get_json()\n    return jsonify({\n        'id': 4,\n        'name': data.get('name', 'New User'),\n        'message': 'User created successfully'\n    }), 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    data = request.get_json()\n    return jsonify({\n        'id': user_id,\n        'name': data.get('name', f'User {user_id}'),\n        'message': 'User updated successfully'\n    })\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({\n        'message': f'User {user_id} deleted successfully'\n    }), 204\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Register the users blueprint with URL prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef index():\n    return jsonify({\n        'message': 'Welcome to the Flask API',\n        'endpoints': {\n            'users': '/users',\n            'user_by_id': '/users/<id>'\n        }\n    })\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1212,
+    "cache_read_tokens": 21999,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0082689,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "flask.request.get_json"
+    ],
+    "error": null
+  }
+}

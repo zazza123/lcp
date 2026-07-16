@@ -1,0 +1,43 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole import SolanaFMClient, CyholeException\n\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFMClient(api_key=api_key)\n    \n    try:\n        # Attempt to call a method without entering the async context manager\n        result = await client.get_transaction(\"11111111111111111111111111111111\")\n    except CyholeException as e:\n        print(f\"Caught CyholeException: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole import SolanaFMClient, CyholeException\n\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFMClient(api_key=api_key)\n    \n    try:\n        # Attempt to call a method without entering the async context manager\n        result = await client.get_transaction(\"11111111111111111111111111111111\")\n    except CyholeException as e:\n        print(f\"Caught CyholeException: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 2541,
+    "cache_read_tokens": 45906,
+    "cache_creation_tokens": 293,
+    "cost_usd": 0.0178986,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 30.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.CyholeException",
+      "cyhole.SolanaFMClient"
+    ],
+    "error": null
+  }
+}

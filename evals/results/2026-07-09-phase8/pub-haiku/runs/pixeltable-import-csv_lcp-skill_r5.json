@@ -1,0 +1,41 @@
+{
+  "case_id": "pixeltable-import-csv",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Create the table from CSV file with inferred schema\npxt.io.insert_from_csv(\n    table_path=\"demo.trades\",\n    csv_path=\"trades.csv\",\n    mode=\"create\"\n)",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Create the table from CSV file with inferred schema\npxt.io.insert_from_csv(\n    table_path=\"demo.trades\",\n    csv_path=\"trades.csv\",\n    mode=\"create\"\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 657,
+    "cache_read_tokens": 45888,
+    "cache_creation_tokens": 307,
+    "cost_usd": 0.0085048,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 12.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pixeltable.io:import_csv"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pixeltable.io.insert_from_csv"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-raise-for-status",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nresponse = requests.get(\"https://api.example.com/data\")\nresponse.raise_for_status()\nbody = response.json()\nprint(body)",
+  "result_text": "```python\nimport requests\n\nresponse = requests.get(\"https://api.example.com/data\")\nresponse.raise_for_status()\nbody = response.json()\nprint(body)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 372,
+    "cache_read_tokens": 22026,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0040716,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 7.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

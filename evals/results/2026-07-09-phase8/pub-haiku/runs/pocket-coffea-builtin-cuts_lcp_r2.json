@@ -1,0 +1,36 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import get_nObj_min, get_nBtag\n\n# Configuration parameters\nparams = {\n    \"dataset\": \"semileptonic\",\n    \"year\": 2018,\n    \"hlt_triggers\": {\n        \"semileptonic\": [\"HLT_IsoMu27\", \"HLT_Ele35_WPTight_Gsf\"]\n    }\n}\n\n# Skim cuts: HLT trigger selection for semileptonic primary dataset\nskim_cuts = [\n    (\"HLT_semileptonic\", params[\"hlt_triggers\"][\"semileptonic\"]),\n]\n\n# Preselection cuts: object multiplicity and b-tag requirements\npreselection_cuts = [\n    get_nObj_min(\"JetGood\", 4, pt_min=30),  # At least 4 jets with pT > 30 GeV\n    get_nBtag(\"JetGood\", 2, wp=\"M\"),       # At least 2 b-tagged jets\n]\n\n# Complete cut configuration for 2018 semileptonic ttbar analysis\ncuts_config = {\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}\n\nif __name__ == \"__main__\":\n    print(\"Skim cuts:\")\n    for cut in cuts_config[\"skim\"]:\n        print(f\"  - {cut[0]}: {cut[1]}\")\n    \n    print(\"\\nPreselection cuts:\")\n    for cut in cuts_config[\"preselection\"]:\n        print(f\"  - {cut}\")",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import get_nObj_min, get_nBtag\n\n# Configuration parameters\nparams = {\n    \"dataset\": \"semileptonic\",\n    \"year\": 2018,\n    \"hlt_triggers\": {\n        \"semileptonic\": [\"HLT_IsoMu27\", \"HLT_Ele35_WPTight_Gsf\"]\n    }\n}\n\n# Skim cuts: HLT trigger selection for semileptonic primary dataset\nskim_cuts = [\n    (\"HLT_semileptonic\", params[\"hlt_triggers\"][\"semileptonic\"]),\n]\n\n# Preselection cuts: object multiplicity and b-tag requirements\npreselection_cuts = [\n    get_nObj_min(\"JetGood\", 4, pt_min=30),  # At least 4 jets with pT > 30 GeV\n    get_nBtag(\"JetGood\", 2, wp=\"M\"),       # At least 2 b-tagged jets\n]\n\n# Complete cut configuration for 2018 semileptonic ttbar analysis\ncuts_config = {\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}\n\nif __name__ == \"__main__\":\n    print(\"Skim cuts:\")\n    for cut in cuts_config[\"skim\"]:\n        print(f\"  - {cut[0]}: {cut[1]}\")\n    \n    print(\"\\nPreselection cuts:\")\n    for cut in cuts_config[\"preselection\"]:\n        print(f\"  - {cut}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4566,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6989,
+    "cost_usd": 0.0383362,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 53.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.get_nBtag",
+      "pocket_coffea.lib.cuts.get_nObj_min"
+    ],
+    "error": null
+  }
+}

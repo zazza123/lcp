@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "class ToyReweight:\n    \"\"\"Custom MC weight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to mean=1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / nominal.mean()\n    \n    @staticmethod\n    def weight_up(events):\n        \"\"\"Up variation: +5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 1.05\n    \n    @staticmethod\n    def weight_down(events):\n        \"\"\"Down variation: -5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 0.95\n\n\n# Usage in configuration:\n# weights_classes = [ToyReweight]",
+  "result_text": "```python\nclass ToyReweight:\n    \"\"\"Custom MC weight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to mean=1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / nominal.mean()\n    \n    @staticmethod\n    def weight_up(events):\n        \"\"\"Up variation: +5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 1.05\n    \n    @staticmethod\n    def weight_down(events):\n        \"\"\"Down variation: -5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 0.95\n\n\n# Usage in configuration:\n# weights_classes = [ToyReweight]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1850,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6986,
+    "cost_usd": 0.0247456,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

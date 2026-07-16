@@ -1,0 +1,71 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(name=\"SummarizeServer\")\n\n@mcp.prompt\ndef summarize(text: str) -> str:\n    \"\"\"Generate a prompt asking the model to summarize the provided text.\"\"\"\n    return f\"Please summarize the following text:\\n\\n{text}\"\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(name=\"SummarizeServer\")\n\n@mcp.prompt\ndef summarize(text: str) -> str:\n    \"\"\"Generate a prompt asking the model to summarize the provided text.\"\"\"\n    return f\"Please summarize the following text:\\n\\n{text}\"\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 45,
+    "output_tokens": 1271,
+    "cache_read_tokens": 126460,
+    "cache_creation_tokens": 7512,
+    "cost_usd": 0.034069999999999996,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 25.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 fastmcp message template",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "fastmcp",
+        "query": "message template reusable template client fetch"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "message template reusable template client can fetch by name"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "define create server prompt decorator how to add message template"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Wqr8w6P97ia8xL9wzKxn4o",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 88.38\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /punkpeye/fastmcp\n- Description: FastMCP is a TypeScript framework for building MCP servers, simplifying the process of handling client sessions, tools, and resources with built-in features like authentication, streaming, and logging.\n- Code Snippets: 732\n- Source Reputation: High\n- Benchmark Score: 80.86\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 76.46\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP TS\n- Context7-compatible library ID: /prefecthq/fastmcp-ts\n- Description: FastMCP TS is the official TypeScript library for building Model Context Protocol servers, clients, and apps, providing a fast and efficient framework for developing MCP-enabled applications.\n- Code Snippets: 899\n- Source Reputation: High\n- Benchmark Score: 78"
+    },
+    {
+      "tool_use_id": "toolu_01BvDSb3RHj6AtJ7nNgNAUx3",
+      "content": "### Retrieve a Server Prompt (Python)\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/clients/client.mdx\n\nRetrieve rendered message templates with arguments using `get_prompt()`. Use `list_prompts()` to discover available prompts.\n\n```python\nasync with client:\n    prompts = await client.list_prompts()\n    messages = await client.get_prompt(\"analyze_data\", {\"data\": [1, 2, 3]})\n    print(messages.messages)\n```\n\n--------------------------------\n\n### Retrieve a simple prompt without arguments (Python)\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/clients/prompts.mdx\n\nUse `get_prompt()` to retrieve a server-defined message template. This example shows how to access the role and content of the generated messages.\n\n```python\nasync with client:\n    # Simple prompt without arguments\n    result = await client.get_prompt(\"welcome_message\")\n    # result -> fastmcp.types.GetPromptResult\n\n    # Access the generated messages\n    for message in result.messages:\n        print(f\"Role: {message.role}\")\n        print(f\"Content: {message.content}\")\n```\n\n--------------------------------\n\n### Retrieve a prompt with arguments (Python)\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/clients/prompts.mdx\n\nPass a dictionary of arguments to `get_prompt()` to customize the message template. The arguments are used to generate personalized message content.\n\n```python\nasync with client:\n    result = await client.get_prompt(\"user_greeting\", {\n        \"name\": \"Alice\",\n        \"role\": \"administrator\"\n    })\n\n    for message in result.messages:\n        print(f\"Generated message: {message.content}\")\n```\n\n--------------------------------\n\n### Retrieve a multi-turn conversation prompt (Python)\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/clients/prompts.mdx\n\nConversation templates generate multiple messages for a multi-turn flow. Iterate through the messages to display the role and content of each.\n\n```python\nasync with client:\n    result = await cl"
+    },
+    {
+      "tool_use_id": "toolu_017TzUNcvVFpqgrf3Uw5WYid",
+      "content": "### The `@prompt` Decorator\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nExample of defining prompts using the `@mcp.prompt` decorator, showing both single string and multiple message returns.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.prompts import Message\n\nmcp = FastMCP(name=\"PromptServer\")\n\n# Basic prompt returning a string (converted to user message automatically)\n@mcp.prompt\ndef ask_about_topic(topic: str) -> str:\n    \"\"\"Generates a user message asking for an explanation of a topic.\"\"\"\n    return f\"Can you please explain the concept of '{topic}'?\"\n\n# Prompt returning multiple messages\n@mcp.prompt\ndef generate_code_request(language: str, task_description: str) -> list[Message]:\n    \"\"\"Generates a conversation for code generation.\"\"\"\n    return [\n        Message(f\"Write a {language} function that performs the following task: {task_description}\"),\n        Message(\"I'll help you write that function.\", role=\"assistant\")\n    ]\n```\n\n--------------------------------\n\n### Customizing Prompt with Decorator Arguments\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nThis example demonstrates how to use the `@mcp.prompt` decorator with custom `name`, `description`, `tags`, and `meta` arguments to override inferred values and add additional metadata.\n\n```python\n@mcp.prompt(\n    name=\"analyze_data_request\",          # Custom prompt name\n    description=\"Creates a request to analyze data with specific parameters\",  # Custom description\n    tags={\"analysis\", \"data\"},            # Optional categorization tags\n    meta={\"version\": \"1.1\", \"author\": \"data-team\"}  # Custom metadata\n)\ndef data_analysis_prompt(\n    data_uri: str = Field(description=\"The URI of the resource containing the data.\"),\n    analysis_type: str = Field(default=\"summary\", description=\"Type of analysis.\")\n) -> str:\n    \"\"\"This docstring is ignored when description is provided.\"\"\"\n    return f\"Please perform a '{analysis_type}' analys"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

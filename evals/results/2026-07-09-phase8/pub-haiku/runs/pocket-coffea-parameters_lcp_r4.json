@@ -1,0 +1,34 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from omegaconf import OmegaConf\nfrom pocket_coffea.lib.defaultConfig import default_parameters\n\n# Step 1: Fetch the framework's default parameter set\nparams = OmegaConf.create(default_parameters)\n\n# Step 2: Overlay YAML files (file values override defaults)\nparams = OmegaConf.merge(params, OmegaConf.load(\"params/object_preselection.yaml\"))\nparams = OmegaConf.merge(params, OmegaConf.load(\"params/triggers.yaml\"))\n\nprint(OmegaConf.to_yaml(params))",
+  "result_text": "```python\nfrom omegaconf import OmegaConf\nfrom pocket_coffea.lib.defaultConfig import default_parameters\n\n# Step 1: Fetch the framework's default parameter set\nparams = OmegaConf.create(default_parameters)\n\n# Step 2: Overlay YAML files (file values override defaults)\nparams = OmegaConf.merge(params, OmegaConf.load(\"params/object_preselection.yaml\"))\nparams = OmegaConf.merge(params, OmegaConf.load(\"params/triggers.yaml\"))\n\nprint(OmegaConf.to_yaml(params))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1985,
+    "cache_read_tokens": 22147,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0121487,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.parameters.defaults:get_default_parameters",
+      "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.defaultConfig.default_parameters"
+    ],
+    "error": null
+  }
+}

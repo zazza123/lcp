@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole import SolanaFM\n\nasync def main():\n    api_key = os.getenv('SOLANA_FM_API_KEY')\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFM(api_key=api_key)\n    \n    try:\n        # Call method without entering async context manager\n        await client.get_latest_block()\n    except Exception as e:\n        print(f\"Caught {type(e).__name__}: {e}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole import SolanaFM\n\nasync def main():\n    api_key = os.getenv('SOLANA_FM_API_KEY')\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFM(api_key=api_key)\n    \n    try:\n        # Call method without entering async context manager\n        await client.get_latest_block()\n    except Exception as e:\n        print(f\"Caught {type(e).__name__}: {e}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2234,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6939,
+    "cost_usd": 0.0265762,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.SolanaFM"
+    ],
+    "error": null
+  }
+}

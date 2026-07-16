@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create a sample DataFrame\ndf_original = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"salary\": [50000.0, 60000.0, 70000.0]\n})\n\n# Serialize to Parquet bytes (entirely in memory)\nparquet_bytes = df_original.write_parquet()\n\n# Deserialize back to DataFrame from bytes\ndf_restored = pl.read_parquet(parquet_bytes)\n\n# Verify round trip\nassert df_original.equals(df_restored)\nprint(\"Round trip successful!\")\nprint(df_restored)",
+  "result_text": "```python\nimport polars as pl\n\n# Create a sample DataFrame\ndf_original = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"salary\": [50000.0, 60000.0, 70000.0]\n})\n\n# Serialize to Parquet bytes (entirely in memory)\nparquet_bytes = df_original.write_parquet()\n\n# Deserialize back to DataFrame from bytes\ndf_restored = pl.read_parquet(parquet_bytes)\n\n# Verify round trip\nassert df_original.equals(df_restored)\nprint(\"Round trip successful!\")\nprint(df_restored)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1356,
+    "cache_read_tokens": 17267,
+    "cache_creation_tokens": 6821,
+    "cost_usd": 0.022157700000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

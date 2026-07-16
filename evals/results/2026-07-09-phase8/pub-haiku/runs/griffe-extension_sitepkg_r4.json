@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\nfrom griffe.extensions import Extension\n\nclass AppendCheckedExtension(Extension):\n    def on_load(self, data):\n        \"\"\"Append ' [checked]' to function docstrings.\"\"\"\n        self._append_to_functions(data)\n    \n    def _append_to_functions(self, obj):\n        \"\"\"Recursively append ' [checked]' to all function docstrings.\"\"\"\n        if hasattr(obj, 'members'):\n            for member in obj.members.values():\n                if getattr(member, 'is_function', False):\n                    if member.docstring:\n                        member.docstring.value += \" [checked]\"\n                self._append_to_functions(member)\n\nextensions = [AppendCheckedExtension()]\ndoc = load(\"mypkg\", extensions=extensions)\nprint(doc)",
+  "result_text": "```python\nfrom griffe import load\nfrom griffe.extensions import Extension\n\nclass AppendCheckedExtension(Extension):\n    def on_load(self, data):\n        \"\"\"Append ' [checked]' to function docstrings.\"\"\"\n        self._append_to_functions(data)\n    \n    def _append_to_functions(self, obj):\n        \"\"\"Recursively append ' [checked]' to all function docstrings.\"\"\"\n        if hasattr(obj, 'members'):\n            for member in obj.members.values():\n                if getattr(member, 'is_function', False):\n                    if member.docstring:\n                        member.docstring.value += \" [checked]\"\n                self._append_to_functions(member)\n\nextensions = [AppendCheckedExtension()]\ndoc = load(\"mypkg\", extensions=extensions)\nprint(doc)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5406,
+    "cache_read_tokens": 24108,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0294498,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 52.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

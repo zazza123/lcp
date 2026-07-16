@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import subprocess\nfrom fastmcp import FastMCP\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import StdioClientTransport\n\n\n# Start backend server process\nbackend_process = subprocess.Popen(\n    [\"python\", \"-m\", \"backend\"],\n    stdin=subprocess.PIPE,\n    stdout=subprocess.PIPE,\n    stderr=subprocess.PIPE,\n)\n\n# Create MCP client connection to backend\ntransport = StdioClientTransport(\n    backend_process.stdin,\n    backend_process.stdout,\n)\nbackend_session = ClientSession(transport)\n\n# Create proxy server\nproxy = FastMCP(\"proxy\")\n\n\n@proxy.tool()\nasync def forward_tool(tool_name: str, **arguments) -> dict:\n    \"\"\"Forward tool calls to backend server\"\"\"\n    async with backend_session:\n        result = await backend_session.call_tool(tool_name, arguments)\n        return result\n\n\n@proxy.resource()\nasync def forward_resource(resource_uri: str) -> list[dict]:\n    \"\"\"Forward resource reads to backend server\"\"\"\n    async with backend_session:\n        result = await backend_session.read_resource(resource_uri)\n        return result.contents if hasattr(result, 'contents') else [result]\n\n\nif __name__ == \"__main__\":\n    proxy.run()",
+  "result_text": "```python\nimport subprocess\nfrom fastmcp import FastMCP\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import StdioClientTransport\n\n\n# Start backend server process\nbackend_process = subprocess.Popen(\n    [\"python\", \"-m\", \"backend\"],\n    stdin=subprocess.PIPE,\n    stdout=subprocess.PIPE,\n    stderr=subprocess.PIPE,\n)\n\n# Create MCP client connection to backend\ntransport = StdioClientTransport(\n    backend_process.stdin,\n    backend_process.stdout,\n)\nbackend_session = ClientSession(transport)\n\n# Create proxy server\nproxy = FastMCP(\"proxy\")\n\n\n@proxy.tool()\nasync def forward_tool(tool_name: str, **arguments) -> dict:\n    \"\"\"Forward tool calls to backend server\"\"\"\n    async with backend_session:\n        result = await backend_session.call_tool(tool_name, arguments)\n        return result\n\n\n@proxy.resource()\nasync def forward_resource(resource_uri: str) -> list[dict]:\n    \"\"\"Forward resource reads to backend server\"\"\"\n    async with backend_session:\n        result = await backend_session.read_resource(resource_uri)\n        return result.contents if hasattr(result, 'contents') else [result]\n\n\nif __name__ == \"__main__\":\n    proxy.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 8262,
+    "cache_read_tokens": 22061,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.043525100000000004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 75.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

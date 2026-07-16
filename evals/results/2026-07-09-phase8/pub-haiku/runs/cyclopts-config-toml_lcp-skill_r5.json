@@ -1,0 +1,90 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "\"\"\"\nExample CLI using cyclopts with pyproject.toml configuration.\n\"\"\"\n\nimport sys\nfrom pathlib import Path\n\nfrom cyclopts import App\nfrom cyclopts.config import Toml\n\n\ndef main():\n    # Create pyproject.toml in the current directory if it doesn't exist\n    pyproject_path = Path.cwd() / \"pyproject.toml\"\n    if not pyproject_path.exists():\n        pyproject_path.write_text(\"\"\"\n[tool.mycli]\nname = \"World\"\ncount = 1\nverbose = false\n\"\"\")\n        print(f\"Created {pyproject_path} with default configuration\")\n\n    # Create the App with TOML configuration from [tool.mycli]\n    app = App(\n        config=Toml(\n            path=pyproject_path,\n            root_keys=[\"tool\", \"mycli\"],\n            allow_unknown=True,\n        )\n    )\n\n    @app.default\n    def greet(\n        name: str = \"World\",\n        count: int = 1,\n        verbose: bool = False,\n    ):\n        \"\"\"\n        Greet someone.\n\n        Args:\n            name: The name to greet.\n            count: Number of times to greet.\n            verbose: Enable verbose output.\n        \"\"\"\n        for i in range(count):\n            message = f\"Hello, {name}!\"\n            if verbose:\n                message += f\" (greeting {i + 1})\"\n            print(message)\n\n    # Parse and execute\n    app(sys.argv[1:])\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\n\"\"\"\nExample CLI using cyclopts with pyproject.toml configuration.\n\"\"\"\n\nimport sys\nfrom pathlib import Path\n\nfrom cyclopts import App\nfrom cyclopts.config import Toml\n\n\ndef main():\n    # Create pyproject.toml in the current directory if it doesn't exist\n    pyproject_path = Path.cwd() / \"pyproject.toml\"\n    if not pyproject_path.exists():\n        pyproject_path.write_text(\"\"\"\n[tool.mycli]\nname = \"World\"\ncount = 1\nverbose = false\n\"\"\")\n        print(f\"Created {pyproject_path} with default configuration\")\n\n    # Create the App with TOML configuration from [tool.mycli]\n    app = App(\n        config=Toml(\n            path=pyproject_path,\n            root_keys=[\"tool\", \"mycli\"],\n            allow_unknown=True,\n        )\n    )\n\n    @app.default\n    def greet(\n        name: str = \"World\",\n        count: int = 1,\n        verbose: bool = False,\n    ):\n        \"\"\"\n        Greet someone.\n\n        Args:\n            name: The name to greet.\n            count: Number of times to greet.\n            verbose: Enable verbose output.\n        \"\"\"\n        for i in range(count):\n            message = f\"Hello, {name}!\"\n            if verbose:\n                message += f\" (greeting {i + 1})\"\n            print(message)\n\n    # Parse and execute\n    app(sys.argv[1:])\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 58,
+    "output_tokens": 2120,
+    "cache_read_tokens": 182368,
+    "cache_creation_tokens": 10037,
+    "cost_usd": 0.0489688,
+    "num_turns": 8,
+    "tool_calls": 6,
+    "duration_s": 30.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "TOML configuration config file",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "config",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:App",
+          "cyclopts.config:Toml"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_0169vCxXeLaqFvktZVq2hsUg",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01XugZ9to5idVhwdpC7DYAWq",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01ETNWgq9rqH7tu4Jgfyf146",
+      "content": "{\"results\":[{\"id\":\"cyclopts.config._common:ConfigBase#config\",\"kind\":\"attribute\",\"summary\":\"Return the configuration dictionary.\",\"import\":\"from cyclopts.config._common import ConfigBase\"},{\"id\":\"cyclopts.config:ConfigFromFile#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import ConfigFromFile\",\"resolved_via_alias\":\"cyclopts.config._common:ConfigFromFile#config\"},{\"id\":\"cyclopts.config:Dict#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Dict\",\"resolved_via_alias\":\"cyclopts.config._common:Dict#config\"},{\"id\":\"cyclopts.config:Json#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Json\",\"resolved_via_alias\":\"cyclopts.config._json:Json#config\"},{\"id\":\"cyclopts.config:Toml#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Toml\",\"resolved_via_alias\":\"cyclopts.config._toml:Toml#config\"},{\"id\":\"cyclopts.config:Yaml#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Yaml\",\"resolved_via_alias\":\"cyclopts.config._yaml:Yaml#config\"},{\"id\":\"cyclopts:App#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#config\"},{\"id\":\"cyclopts.config._common:ConfigBase\",\"kind\":\"class\",\"summary\":\"Base class for configuration sources.\",\"import\":\"from cyclopts.config._common import ConfigBase\"},{\"id\":\"cyclopts.config:ConfigFromFile\",\"kind\":\"class\",\"summary\":\"Configuration source that loads from a file.\",\"import\":\"from cyclopts.config import ConfigFromFile\",\"resolved_via_alias\":\"cyclopts.config._common:ConfigFromFile\"},{\"id\":\"cyclopts.parameter:CycloptsConfig\",\"kind\":\"class\",\"summary\":\"Intended for storing additional data to a ``__cyclopts__`` attribute via decoration.\",\"import\":\"from cyclopts.parameter import CycloptsConfig\"},{\"id\":\"cyclopts.argument:update_argument_collection\",\"kind\":\"function\",\"summary"
+    },
+    {
+      "tool_use_id": "toolu_01N3jvTq63m3DY7VBjxHG7rJ",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.core\",\"aliases\":[\"cyclopts:App\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"help\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"usage\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"alias\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"synonym\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"default_command\",\"type\":\"UnionType[Callable[Ellipsis, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"default_parameter\",\"type\":\"UnionType[Parameter, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"config\",\"type\":\"_ConfigCallable | Iterable[_ConfigCallable] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version\",\"type\":\"UnionType[None, str, Callable[Ellipsis, str], Callable[Ellipsis, Coroutine[Any, Any, str]]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version_flags\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"error_console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help_flags\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help_format\",\"type\":\"Optional[Literal[markdown, md, plaintext, restructuredtext, rst, rich]]\",\"required\":false,\"variadic\":false,\"kind"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

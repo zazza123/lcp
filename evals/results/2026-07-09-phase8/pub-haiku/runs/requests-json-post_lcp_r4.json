@@ -1,0 +1,87 @@
+{
+  "case_id": "requests-json-post",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nresponse = requests.post(\n    \"https://api.example.com/items\",\n    json={\"name\": \"widget\", \"qty\": 3}\n)\n\ndata = response.json()\nprint(data)",
+  "result_text": "```python\nimport requests\n\nresponse = requests.post(\n    \"https://api.example.com/items\",\n    json={\"name\": \"widget\", \"qty\": 3}\n)\n\ndata = response.json()\nprint(data)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 43,
+    "output_tokens": 1183,
+    "cache_read_tokens": 118455,
+    "cache_creation_tokens": 3684,
+    "cost_usd": 0.025171500000000003,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 22.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "post",
+        "library": "requests",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:post"
+        ],
+        "library": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:Response"
+        ],
+        "library": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01AAC6ZR6h95RePDgprdmVsB",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_017WXBKYoTrcy9yL4XfBdSSs",
+      "content": "{\"results\":[{\"id\":\"requests:post\",\"kind\":\"function\",\"summary\":\"Sends a POST request.\",\"import\":\"from requests import post\",\"resolved_via_alias\":\"requests.api:post\"},{\"id\":\"requests:Session#post\",\"kind\":\"method\",\"summary\":\"Sends a POST request. Returns :class:`Response` object.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session#post\"},{\"id\":\"requests:request\",\"kind\":\"function\",\"summary\":\"Constructs and sends a :class:`Request <Request>`.\",\"import\":\"from requests import request\",\"resolved_via_alias\":\"requests.api:request\"},{\"id\":\"requests:\",\"kind\":\"module\",\"summary\":\"Requests HTTP Library ~~~~~~~~~~~~~~~~~~~~~\",\"import\":\"import requests\"}],\"total\":4,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01KgBtKgw2mKwDbNvaKXPAZ4",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"requests.api\",\"aliases\":[\"requests:post\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"url\",\"type\":\"_t.UriType\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"URL for the new :class:`Request` object.\"},{\"name\":\"data\",\"type\":\"_t.DataType\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"(optional) Dictionary, list of tuples, bytes, or file-like\\nobject to send in the body of the :class:`Request`.\"},{\"name\":\"json\",\"type\":\"_t.JsonType\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"(optional) A JSON serializable Python object to send in the body of the :class:`Request`.\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.PostKwargs]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\",\"returns_description\":\":class:`Response <Response>` object\"}],\"semantics\":{\"summary\":\"Sends a POST request.\",\"description\":\":param url: URL for the new :class:`Request` object.\\n    :param data: (optional) Dictionary, list of tuples, bytes, or file-like\\n        object to send in the body of the :class:`Request`.\\n    :param json: (optional) A JSON serializable Python object to send in the body of the :class:`Request`.\\n    :param \\\\*\\\\*kwargs: Optional arguments that ``request`` takes.\\n    :return: :class:`Response <Response>` object\\n    :rtype: requests.Response\"},\"id\":\"requests:post\",\"resolved_via_alias\":\"requests.api:post\",\"import\":\"from requests import post\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"url\",\"type\":\"_t.UriType\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.PostKwargs]\"}],\"optional_parameters\":[{\"name\":\"data\",\"type\":\"_t.DataType\",\"default\":null},{\"name\":\"json\",\"type\":\"_t.JsonType\",\"default\":null}],\"is_async\":false,\"return_type\":\"Response\",\"returns_classes\":[\"requests:Response\"],\"next\":\"returns Response \u2192 get_symbol(ids=['requests:Response']) to see its members\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_013MuYecN42eduMyZTYPQqMn",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"requests.models\",\"aliases\":[\"requests.adapters:Response\",\"requests.api:Response\",\"requests.sessions:Response\",\"requests:Response\"],\"signatures\":[{\"async_\":false,\"returns\":\"None\"}],\"semantics\":{\"summary\":\"The :class:`Response <Response>` object, which contains a server's response to an HTTP request.\"},\"id\":\"requests:Response\",\"resolved_via_alias\":\"requests.models:Response\",\"import\":\"from requests import Response\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"requests:Response#__bool__\",\"kind\":\"method\",\"summary\":\"Returns True if :attr:`status_code` is less than 400.\"},{\"id\":\"requests:Response#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\"},{\"id\":\"requests:Response#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\"},{\"id\":\"requests:Response#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"requests:Response#__iter__\",\"kind\":\"method\",\"summary\":\"Allows you to use a response as an iterator.\"},{\"id\":\"requests:Response#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"requests:Response#apparent_encoding\",\"kind\":\"attribute\",\"summary\":\"The apparent encoding, provided by the charset_normalizer or chardet libraries.\"},{\"id\":\"requests:Response#close\",\"kind\":\"method\",\"summary\":\"Releases the connection back to the pool. Once this method has been called the underlying ``raw`` object must not be accessed again.\"},{\"id\":\"requests:Response#content\",\"kind\":\"attribute\",\"summary\":\"Content of the response, in bytes.\"},{\"id\":\"requests:Response#is_permanent_redirect\",\"kind\":\"attribute\",\"summary\":\"True if this Response one of the permanent versions of redirect.\"},{\"id\":\"requests:Response#is_redirect\",\"kind\":\"attribute\",\"summary\":\"True if this Response is a well-formed HTTP redirect that could have been processed automatically (by :meth:`Session.resolve_redirects`).\"},{\"id\":\"requests:Response#iter_content\",\"kind\":\"method\",\"summary\":\"Iterates ove"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

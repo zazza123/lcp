@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "lcp",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\nimport cyclopts\nfrom pathlib import Path\n\napp = cyclopts.App(\n    config=cyclopts.Config(\n        search_dirs=[Path.cwd()],\n        config_name=\"pyproject.toml\",\n    )\n)\n\n@app.default\ndef main(\n    name: str = None,\n    greeting: str = \"Hello\",\n    count: int = 1,\n    verbose: bool = False,\n) -> None:\n    \"\"\"A CLI with configuration from [tool.mycli] in pyproject.toml.\n    \n    Command-line arguments override config file values.\n    \"\"\"\n    if name is None:\n        name = \"World\"\n    \n    for _ in range(count):\n        print(f\"{greeting}, {name}!\")\n    \n    if verbose:\n        print(f\"Config: greeting={greeting}, name={name}, count={count}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\nimport cyclopts\nfrom pathlib import Path\n\napp = cyclopts.App(\n    config=cyclopts.Config(\n        search_dirs=[Path.cwd()],\n        config_name=\"pyproject.toml\",\n    )\n)\n\n@app.default\ndef main(\n    name: str = None,\n    greeting: str = \"Hello\",\n    count: int = 1,\n    verbose: bool = False,\n) -> None:\n    \"\"\"A CLI with configuration from [tool.mycli] in pyproject.toml.\n    \n    Command-line arguments override config file values.\n    \"\"\"\n    if name is None:\n        name = \"World\"\n    \n    for _ in range(count):\n        print(f\"{greeting}, {name}!\")\n    \n    if verbose:\n        print(f\"Config: greeting={greeting}, name={name}, count={count}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4063,
+    "cache_read_tokens": 22152,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0225392,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 39.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.Config"
+    ],
+    "error": null
+  }
+}

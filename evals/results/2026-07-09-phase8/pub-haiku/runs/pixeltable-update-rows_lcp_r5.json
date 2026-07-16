@@ -1,0 +1,29 @@
+{
+  "case_id": "pixeltable-update-rows",
+  "arm": "lcp",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\ntable = pxt.get_table(\"films\")\ntable.update({\"distributor\": \"Warner Bros.\"}, where=table.studio == \"WB\")",
+  "result_text": "```python\nimport pixeltable as pxt\n\ntable = pxt.get_table(\"films\")\ntable.update({\"distributor\": \"Warner Bros.\"}, where=table.studio == \"WB\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 614,
+    "cache_read_tokens": 22124,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0052914,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

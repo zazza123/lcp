@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-cast-dtypes",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create a sample narwhals DataFrame with string user_id and float64 score\nnative_df = pd.DataFrame({\n    \"user_id\": [\"123\", \"456\", \"789\"],\n    \"score\": [0.95, 0.87, 0.92]\n})\n\ndf = nw.from_native(native_df, eager_only=True)\n\n# Convert user_id to Int32 and score to Float32\ndf_converted = df.with_columns([\n    nw.col(\"user_id\").cast(nw.Int32()),\n    nw.col(\"score\").cast(nw.Float32())\n])\n\nprint(\"Converted DataFrame:\")\nprint(df_converted.to_native())\nprint(\"\\nSchema:\")\nprint(df_converted.schema)",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create a sample narwhals DataFrame with string user_id and float64 score\nnative_df = pd.DataFrame({\n    \"user_id\": [\"123\", \"456\", \"789\"],\n    \"score\": [0.95, 0.87, 0.92]\n})\n\ndf = nw.from_native(native_df, eager_only=True)\n\n# Convert user_id to Int32 and score to Float32\ndf_converted = df.with_columns([\n    nw.col(\"user_id\").cast(nw.Int32()),\n    nw.col(\"score\").cast(nw.Float32())\n])\n\nprint(\"Converted DataFrame:\")\nprint(df_converted.to_native())\nprint(\"\\nSchema:\")\nprint(df_converted.schema)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1740,
+    "cache_read_tokens": 24115,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0111205,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

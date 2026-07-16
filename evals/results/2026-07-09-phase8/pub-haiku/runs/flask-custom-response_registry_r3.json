@@ -1,0 +1,50 @@
+{
+  "case_id": "flask-custom-response",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = Response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == \"__main__\":\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, Response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = Response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == \"__main__\":\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 27,
+    "output_tokens": 882,
+    "cache_read_tokens": 61556,
+    "cache_creation_tokens": 9028,
+    "cost_usd": 0.028648599999999996,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 19.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "flask"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01T5hsu8m16YUa1GoHCU9eFM",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'flask': 'flask' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "flask:make_response"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

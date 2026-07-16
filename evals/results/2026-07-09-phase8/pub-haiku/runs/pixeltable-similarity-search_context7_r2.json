@@ -1,0 +1,38 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Get reference to the existing docs table\ndocs = pxt.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = pxt.builtins.sentence_transformers(\n    docs.content,\n    model='all-MiniLM-L6-v2'\n)\n\n# Create vector index for semantic search\ndocs.create_index('content_embedding')\n\n# Embed the query string\nquery_embedding = pxt.builtins.sentence_transformers(\n    'climate change policy',\n    model='all-MiniLM-L6-v2'\n)\n\n# Find 5 nearest neighbors ranked by distance\nresults = docs.order_by(\n    docs.content_embedding.cosine_distance(query_embedding)\n).limit(5)\n\n# Display results from closest to farthest\nfor row in results.collect():\n    distance = row['content_embedding'].cosine_distance(query_embedding)\n    print(f\"Distance: {distance:.4f}, Content: {row['content']}\")",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Get reference to the existing docs table\ndocs = pxt.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = pxt.builtins.sentence_transformers(\n    docs.content,\n    model='all-MiniLM-L6-v2'\n)\n\n# Create vector index for semantic search\ndocs.create_index('content_embedding')\n\n# Embed the query string\nquery_embedding = pxt.builtins.sentence_transformers(\n    'climate change policy',\n    model='all-MiniLM-L6-v2'\n)\n\n# Find 5 nearest neighbors ranked by distance\nresults = docs.order_by(\n    docs.content_embedding.cosine_distance(query_embedding)\n).limit(5)\n\n# Display results from closest to farthest\nfor row in results.collect():\n    distance = row['content_embedding'].cosine_distance(query_embedding)\n    print(f\"Distance: {distance:.4f}, Content: {row['content']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4038,
+    "cache_read_tokens": 22120,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.022410999999999997,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.builtins",
+      "pixeltable.builtins.sentence_transformers"
+    ],
+    "error": null
+  }
+}

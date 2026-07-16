@@ -1,0 +1,209 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import logging\nfrom typing import Any\n\nfrom fastmcp import FastMCP\nfrom fastmcp.server.server import Middleware, MiddlewareContext, CallNext\n\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s - %(levelname)s - %(message)s\"\n)\nlogger = logging.getLogger(__name__)\n\n\nclass RequestLoggingMiddleware(Middleware):\n    \"\"\"Custom middleware that logs all incoming requests.\"\"\"\n    \n    async def on_request(\n        self, context: MiddlewareContext[Any], call_next: CallNext[Any, Any]\n    ) -> Any:\n        \"\"\"Log incoming request before passing to next handler.\"\"\"\n        request = context.data\n        logger.info(\n            f\"Incoming request: method={getattr(request, 'method', 'unknown')}, \"\n            f\"params={getattr(request, 'params', {})}\"\n        )\n        \n        # Call the next middleware or handler in the chain\n        response = await call_next(context)\n        \n        logger.info(f\"Request completed\")\n        return response\n\n\n# Create the FastMCP server\nmcp = FastMCP(\"RequestLoggingServer\", version=\"1.0.0\")\n\n# Add the custom middleware\nmcp.add_middleware(RequestLoggingMiddleware())\n\n\n# Add a simple tool to demonstrate the server\n@mcp.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\"\"\"\n    return f\"Hello, {name}!\"\n\n\n@mcp.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nimport logging\nfrom typing import Any\n\nfrom fastmcp import FastMCP\nfrom fastmcp.server.server import Middleware, MiddlewareContext, CallNext\n\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s - %(levelname)s - %(message)s\"\n)\nlogger = logging.getLogger(__name__)\n\n\nclass RequestLoggingMiddleware(Middleware):\n    \"\"\"Custom middleware that logs all incoming requests.\"\"\"\n    \n    async def on_request(\n        self, context: MiddlewareContext[Any], call_next: CallNext[Any, Any]\n    ) -> Any:\n        \"\"\"Log incoming request before passing to next handler.\"\"\"\n        request = context.data\n        logger.info(\n            f\"Incoming request: method={getattr(request, 'method', 'unknown')}, \"\n            f\"params={getattr(request, 'params', {})}\"\n        )\n        \n        # Call the next middleware or handler in the chain\n        response = await call_next(context)\n        \n        logger.info(f\"Request completed\")\n        return response\n\n\n# Create the FastMCP server\nmcp = FastMCP(\"RequestLoggingServer\", version=\"1.0.0\")\n\n# Add the custom middleware\nmcp.add_middleware(RequestLoggingMiddleware())\n\n\n# Add a simple tool to demonstrate the server\n@mcp.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\"\"\"\n    return f\"Hello, {name}!\"\n\n\n@mcp.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 141,
+    "output_tokens": 2874,
+    "cache_read_tokens": 458521,
+    "cache_creation_tokens": 13308,
+    "cost_usd": 0.0869791,
+    "num_turns": 17,
+    "tool_calls": 16,
+    "duration_s": 57.0
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "claude-api"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "library": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "middleware",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp.server",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server.server:Middleware"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "class Server add_middleware",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "add_middleware",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#add_middleware",
+          "fastmcp.server.middleware.logging:LoggingMiddleware"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server.server:Middleware#on_request",
+          "fastmcp.server.server:Middleware#on_message"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_013NPtSskQqYUarmMMVsiLxU",
+      "content": "2 validation errors for call[resolve_library]\nname\n  Missing required argument [type=missing_argument, input_value={'library': 'fastmcp', 'version': '3.4.4'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing_argument\nlibrary\n  Unexpected keyword argument [type=unexpected_keyword_argument, input_value='fastmcp', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/unexpected_keyword_argument"
+    },
+    {
+      "tool_use_id": "toolu_019CRVr5PY979dW57YGH8tXv",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012AtwYs94ThzF124yJceJoM",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.server:Middleware\",\"kind\":\"class\",\"summary\":\"Base class for FastMCP middleware with dispatching hooks.\",\"import\":\"from fastmcp.server.server import Middleware\",\"resolved_via_alias\":\"fastmcp.server.middleware.middleware:Middleware\"},{\"id\":\"fastmcp.server.context:MiddlewareServerSession\",\"kind\":\"class\",\"summary\":\"ServerSession that routes initialization requests through FastMCP middleware.\",\"import\":\"from fastmcp.server.context import MiddlewareServerSession\",\"resolved_via_alias\":\"fastmcp.server.low_level:MiddlewareServerSession\"},{\"id\":\"fastmcp.server.server:MiddlewareContext\",\"kind\":\"class\",\"summary\":\"Unified context for all middleware operations.\",\"import\":\"from fastmcp.server.server import MiddlewareContext\",\"resolved_via_alias\":\"fastmcp.server.middleware.middleware:MiddlewareContext\"},{\"id\":\"fastmcp.server.auth:AuthProvider#get_middleware\",\"kind\":\"method\",\"summary\":\"Get HTTP application-level middleware for this auth provider.\",\"import\":\"from fastmcp.server.auth import AuthProvider\",\"resolved_via_alias\":\"fastmcp.server.auth.auth:AuthProvider#get_middleware\"},{\"id\":\"fastmcp.server.auth:MultiAuth#get_middleware\",\"kind\":\"method\",\"summary\":\"Get HTTP application-level middleware for this auth provider.\",\"import\":\"from fastmcp.server.auth import MultiAuth\",\"resolved_via_alias\":\"fastmcp.server.auth.auth:MultiAuth#get_middleware\"},{\"id\":\"fastmcp.server.auth:OAuthProvider#get_middleware\",\"kind\":\"method\",\"summary\":\"Get HTTP application-level middleware for this auth provider.\",\"import\":\"from fastmcp.server.auth import OAuthProvider\",\"resolved_via_alias\":\"fastmcp.server.auth.auth:OAuthProvider#get_middleware\"},{\"id\":\"fastmcp.server.auth:RemoteAuthProvider#get_middleware\",\"kind\":\"method\",\"summary\":\"Get HTTP application-level middleware for this auth provider.\",\"import\":\"from fastmcp.server.auth import RemoteAuthProvider\",\"resolved_via_alias\":\"fastmcp.server.auth.auth:RemoteAuthProvider#get_middleware\"},{\"id\":\"fastmcp.server.auth:TokenVerifie"
+    },
+    {
+      "tool_use_id": "toolu_019DrRrrKs4GbHvAN7dcepEX",
+      "content": "{\"results\":[{\"id\":\"fastmcp.cli.client:DiscoveredServer\",\"kind\":\"class\",\"summary\":\"A single MCP server found in an editor or project config.\",\"import\":\"from fastmcp.cli.client import DiscoveredServer\",\"resolved_via_alias\":\"fastmcp.cli.discovery:DiscoveredServer\"},{\"id\":\"fastmcp.cli.discovery:RemoteMCPServer\",\"kind\":\"class\",\"summary\":\"MCP server configuration for HTTP/SSE transport.\",\"import\":\"from fastmcp.cli.discovery import RemoteMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:RemoteMCPServer\"},{\"id\":\"fastmcp.cli.discovery:StdioMCPServer\",\"kind\":\"class\",\"summary\":\"MCP server configuration for stdio transport.\",\"import\":\"from fastmcp.cli.discovery import StdioMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:StdioMCPServer\"},{\"id\":\"fastmcp.client.transports.config:TransformingRemoteMCPServer\",\"kind\":\"class\",\"summary\":\"A Remote server with tool transforms.\",\"import\":\"from fastmcp.client.transports.config import TransformingRemoteMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:TransformingRemoteMCPServer\"},{\"id\":\"fastmcp.client.transports.config:TransformingStdioMCPServer\",\"kind\":\"class\",\"summary\":\"A Stdio server with tool transforms.\",\"import\":\"from fastmcp.client.transports.config import TransformingStdioMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:TransformingStdioMCPServer\"},{\"id\":\"fastmcp.server.server:LowLevelServer\",\"kind\":\"class\",\"summary\":\"Class LowLevelServer\",\"import\":\"from fastmcp.server.server import LowLevelServer\",\"resolved_via_alias\":\"fastmcp.server.low_level:LowLevelServer\"},{\"id\":\"fastmcp.server.context:MiddlewareServerSession\",\"kind\":\"class\",\"summary\":\"ServerSession that routes initialization requests through FastMCP middleware.\",\"import\":\"from fastmcp.server.context import MiddlewareServerSession\",\"resolved_via_alias\":\"fastmcp.server.low_level:MiddlewareServerSession\"},{\"id\":\"fastmcp.cli.cli:MCPServerConfig\",\"kind\":\"class\",\"summary\":\"Configuration for a FastMCP server.\",\"import\":\"from fastmcp.cli.cli import MCPServerConfig\",\"resolv"
+    },
+    {
+      "tool_use_id": "toolu_01HBos478tZbyvQ8bB3RZs53",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01RCxVLPcyB93kCJf4SFTrAp",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01E5JcZjBoXwrUhdrtRf6sBv",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.middleware.middleware\",\"aliases\":[\"fastmcp.server.middleware.authorization:Middleware\",\"fastmcp.server.middleware.caching:Middleware\",\"fastmcp.server.middleware.dereference:Middleware\",\"fastmcp.server.middleware.error_handling:Middleware\",\"fastmcp.server.middleware.logging:Middleware\",\"fastmcp.server.middleware.ping:Middleware\",\"fastmcp.server.middleware.rate_limiting:Middleware\",\"fastmcp.server.middleware.timing:Middleware\",\"fastmcp.server.middleware.tool_injection:Middleware\",\"fastmcp.server.middleware:Middleware\",\"fastmcp.server.providers.proxy:Middleware\",\"fastmcp.server.server:Middleware\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"Base class for FastMCP middleware with dispatching hooks.\"},\"id\":\"fastmcp.server.server:Middleware\",\"resolved_via_alias\":\"fastmcp.server.middleware.middleware:Middleware\",\"import\":\"from fastmcp.server.server import Middleware\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"fastmcp.server.server:Middleware#__call__\",\"kind\":\"method\",\"summary\":\"Main entry point that orchestrates the pipeline.\"},{\"id\":\"fastmcp.server.server:Middleware#on_call_tool\",\"kind\":\"method\",\"summary\":\"Method on_call_tool\"},{\"id\":\"fastmcp.server.server:Middleware#on_get_prompt\",\"kind\":\"method\",\"summary\":\"Method on_get_prompt\"},{\"id\":\"fastmcp.server.server:Middleware#on_initialize\",\"kind\":\"method\",\"summary\":\"Method on_initialize\"},{\"id\":\"fastmcp.server.server:Middleware#on_list_prompts\",\"kind\":\"method\",\"summary\":\"Method on_list_prompts\"},{\"id\":\"fastmcp.server.server:Middleware#on_list_resource_templates\",\"kind\":\"method\",\"summary\":\"Method on_list_resource_templates\"},{\"id\":\"fastmcp.server.server:Middleware#on_lis"
+    },
+    {
+      "tool_use_id": "toolu_01Wmmosq8ov35hbHpiaRWMEk",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_017W58gC816KoQpCbLbc6uwy",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#add_middleware\",\"kind\":\"method\",\"summary\":\"Method add_middleware\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#add_middleware\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#add_middleware\",\"kind\":\"method\",\"summary\":\"Method add_middleware\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#add_middleware\"},{\"id\":\"fastmcp.server:FastMCP#add_middleware\",\"kind\":\"method\",\"summary\":\"Method add_middleware\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_middleware\"},{\"id\":\"fastmcp.server.middleware.error_handling:ErrorHandlingMiddleware\",\"kind\":\"class\",\"summary\":\"Middleware that provides consistent error handling and logging.\",\"import\":\"from fastmcp.server.middleware.error_handling import ErrorHandlingMiddleware\"},{\"id\":\"fastmcp.server.middleware.error_handling:RetryMiddleware\",\"kind\":\"class\",\"summary\":\"Middleware that implements automatic retry logic for failed requests.\",\"import\":\"from fastmcp.server.middleware.error_handling import RetryMiddleware\"},{\"id\":\"fastmcp.server.middleware.logging:LoggingMiddleware\",\"kind\":\"class\",\"summary\":\"Middleware that provides comprehensive request and response logging.\",\"import\":\"from fastmcp.server.middleware.logging import LoggingMiddleware\"},{\"id\":\"fastmcp.server.middleware.logging:StructuredLoggingMiddleware\",\"kind\":\"class\",\"summary\":\"Middleware that provides structured JSON logging for better log analysis.\",\"import\":\"from fastmcp.server.middleware.logging import StructuredLoggingMiddleware\"},{\"id\":\"fastmcp.server.middleware:PingMiddleware\",\"kind\":\"class\",\"summary\":\"Middleware that sends periodic pings to keep client connections alive.\",\"import\":\"from fastmcp.server.middleware import PingMiddleware\",\"resolved_via_alias\":\"fastmcp.server.middleware.ping:PingMiddleware\"},{\"id\":\"f"
+    },
+    {
+      "tool_use_id": "toolu_01RLvg6cBHL6nfsNa9DrTQeo",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"middleware\",\"type\":\"Middleware\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Method add_middleware\"},\"id\":\"fastmcp.server:FastMCP#add_middleware\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_middleware\",\"import\":\"from fastmcp.server import FastMCP\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"middleware\",\"type\":\"Middleware\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"}},{\"kind\":\"class\",\"module\":\"fastmcp.server.middleware.logging\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"logger\",\"type\":\"UnionType[Logger, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"log_level\",\"type\":\"int\",\"required\":false,\"default\":20,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"include_payloads\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"include_payload_length\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"estimate_payload_tokens\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"max_payload_length\",\"type\":\"int\",\"required\":false,\"default\":1000,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"methods\",\"type\":\"UnionType[list[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"payload_serializer\",\"type\":\"UnionType[Callable[[typing.Any], str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"}]}],\"semantics\":{\"summary\":\"Middleware that provides comprehensive request and response logging.\",\"description\":\"Logs all MCP messages with configurable detail levels. Useful for debugging,\\n    monitoring, and understanding server usage patterns.\\n\\n    Example:\\n        ```python\\n        from fastmcp.server.middleware.logging import LoggingMiddleware\\n        import logging\\n\\n        # Configu"
+    },
+    {
+      "tool_use_id": "toolu_01TV7X8yhXbWz6GAkKYnTqC4",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.middleware.middleware\",\"signatures\":[{\"async_\":true,\"params\":[{\"name\":\"context\",\"type\":\"MiddlewareContext[Request[Any, Any]]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"call_next\",\"type\":\"CallNext[Request[Any, Any], Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Any\"}],\"semantics\":{\"summary\":\"Method on_request\"},\"id\":\"fastmcp.server.server:Middleware#on_request\",\"resolved_via_alias\":\"fastmcp.server.middleware.middleware:Middleware#on_request\",\"import\":\"from fastmcp.server.server import Middleware\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"context\",\"type\":\"MiddlewareContext[Request[Any, Any]]\"},{\"name\":\"call_next\",\"type\":\"CallNext[Request[Any, Any], Any]\"}],\"optional_parameters\":[],\"is_async\":true,\"return_type\":\"Any\"}},{\"kind\":\"method\",\"module\":\"fastmcp.server.middleware.middleware\",\"signatures\":[{\"async_\":true,\"params\":[{\"name\":\"context\",\"type\":\"MiddlewareContext[Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"call_next\",\"type\":\"CallNext[Any, Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Any\"}],\"semantics\":{\"summary\":\"Method on_message\"},\"id\":\"fastmcp.server.server:Middleware#on_message\",\"resolved_via_alias\":\"fastmcp.server.middleware.middleware:Middleware#on_message\",\"import\":\"from fastmcp.server.server import Middleware\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"context\",\"type\":\"MiddlewareContext[Any]\"},{\"name\":\"call_next\",\"type\":\"CallNext[Any, Any]\"}],\"optional_parameters\":[],\"is_async\":true,\"return_type\":\"Any\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01Mg7j19aDtXSLNH7tNY4Gx2",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.example:FastMCP\",\"fastmcp.contrib.component_manager.component_manager:FastMCP\",\"fastmcp.contrib.component_manager.example:FastMCP\",\"fastmcp.contrib.mcp_mixin.example:FastMCP\",\"fastmcp.server.context:FastMCP\",\"fastmcp.server.providers.proxy:FastMCP\",\"fastmcp.server:FastMCP\",\"fastmcp.utilities.inspect:FastMCP\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"instructions\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"version\",\"type\":\"str | int | float | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"website_url\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"list[mcp.types.Icon] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"AuthProvider | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"middleware\",\"type\":\"Sequence[Middleware] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"providers\",\"type\":\"Sequence[Provider] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"transforms\",\"type\":\"Sequence[Transform] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lifespan\",\"type\":\"LifespanCallable | Lifespan | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tools\",\"type\":\"Sequence[Tool | Callable[..., Any]] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"on_duplicate\",\"type\":\"DuplicateBehavior | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"mask_error_details\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dereference_schemas\",\"type\":\"bool\""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

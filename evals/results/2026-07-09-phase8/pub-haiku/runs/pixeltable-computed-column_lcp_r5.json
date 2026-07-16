@@ -1,0 +1,31 @@
+{
+  "case_id": "pixeltable-computed-column",
+  "arm": "lcp",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Get the table\ntable = pxt.get_table('films')\n\n# Add computed column 'profit' as revenue - budget\ntable.add_column('profit', table.revenue - table.budget)",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Get the table\ntable = pxt.get_table('films')\n\n# Add computed column 'profit' as revenue - budget\ntable.add_column('profit', table.revenue - table.budget)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1093,
+    "cache_read_tokens": 22128,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007686800000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable:Table#add_computed_column"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

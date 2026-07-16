@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-lazy-collect",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create an in-memory DataFrame with transactions\ndf = pl.DataFrame({\n    \"user\": [\"alice\", \"bob\", \"charlie\", \"david\", \"eve\"],\n    \"amount\": [50, 150, 80, 200, 120]\n})\n\n# Build a deferred query\nquery = df.lazy().filter(pl.col(\"amount\") > 100).select(\"user\")\n\n# Materialize the result eagerly\nresult = query.collect()\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\n# Create an in-memory DataFrame with transactions\ndf = pl.DataFrame({\n    \"user\": [\"alice\", \"bob\", \"charlie\", \"david\", \"eve\"],\n    \"amount\": [50, 150, 80, 200, 120]\n})\n\n# Build a deferred query\nquery = df.lazy().filter(pl.col(\"amount\") > 100).select(\"user\")\n\n# Materialize the result eagerly\nresult = query.collect()\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1036,
+    "cache_read_tokens": 22933,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007482300000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

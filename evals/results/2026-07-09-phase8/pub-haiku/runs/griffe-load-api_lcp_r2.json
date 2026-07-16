@@ -1,0 +1,138 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\n\nrequests_module = load(\"requests\")\n\npublic_function_names = [\n    name for name, func in requests_module.functions.items()\n    if func.is_public\n]\n\nfor name in sorted(public_function_names):\n    print(name)",
+  "result_text": "```python\nfrom griffe import load\n\nrequests_module = load(\"requests\")\n\npublic_function_names = [\n    name for name, func in requests_module.functions.items()\n    if func.is_public\n]\n\nfor name in sorted(public_function_names):\n    print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 1887,
+    "cache_read_tokens": 221457,
+    "cache_creation_tokens": 16707,
+    "cost_usd": 0.06506970000000001,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 28.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe",
+        "version": "2.1.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load",
+        "library": "griffe",
+        "module": "griffe",
+        "kind": "function",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "griffe",
+        "module": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load",
+        "library": "griffe",
+        "kind": "function",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:load"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Object",
+        "library": "griffe",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Object"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01VRZwhdkDWFWethhDU7KwxM",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_019zt9yynpDWTntYE23wJ9Jr",
+      "content": "{\"library\":{\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"griffe\",\"symbols\":2},{\"module\":\"griffe._internal\",\"symbols\":1},{\"module\":\"griffe._internal.agents\",\"symbols\":1},{\"module\":\"griffe._internal.agents.inspector\",\"symbols\":25},{\"module\":\"griffe._internal.agents.nodes\",\"symbols\":1},{\"module\":\"griffe._internal.agents.nodes.assignments\",\"symbols\":5},{\"module\":\"griffe._internal.agents.nodes.ast\",\"symbols\":11},{\"module\":\"griffe._internal.agents.nodes.docstrings\",\"symbols\":2},{\"module\":\"griffe._internal.agents.nodes.exports\",\"symbols\":4},{\"module\":\"griffe._internal.agents.nodes.imports\",\"symbols\":3},{\"module\":\"griffe._internal.agents.nodes.parameters\",\"symbols\":3},{\"module\":\"griffe._internal.agents.nodes.runtime\",\"symbols\":9},{\"module\":\"griffe._internal.agents.nodes.values\",\"symbols\":4},{\"module\":\"griffe._internal.agents.visitor\",\"symbols\":23},{\"module\":\"griffe._internal.c3linear\",\"symbols\":2},{\"module\":\"griffe._internal.collections\",\"symbols\":22},{\"module\":\"griffe._internal.debug\",\"symbols\":1},{\"module\":\"griffe._internal.diff\",\"symbols\":81},{\"module\":\"griffe._internal.docstrings\",\"symbols\":1},{\"module\":\"griffe._internal.docstrings.auto\",\"symbols\":6},{\"module\":\"griffe._internal.docstrings.google\",\"symbols\":4},{\"module\":\"griffe._internal.docstrings.models\",\"symbols\":131},{\"module\":\"griffe._internal.docstrings.numpy\",\"symbols\":4},{\"module\":\"griffe._internal.docstrings.parsers\",\"symbols\":3},{\"module\":\"griffe._internal.docstrings.sphinx\",\"symbols\":4},{\"module\":\"griffe._internal.docstrings.utils\",\"symbols\":4},{\"module\":\"griffe._internal.encoders\",\"symbols\":6},{\"module\":\"griffe._internal.enumerations\",\"symbols\":28},{\"module\":\"griffe._internal.exceptions\",\"symbols\":17},{\"module\":\"griffe._internal.expressions\",\"symbols\":590},{\"module\":\"griffe._internal.extensions\",\"symbols\":1},{\"module\":\"griffe._internal.extensions.base\",\"symbols\":36},{\"module\":\"griffe._internal.extensions.dataclasses\",\"symbols\":30},{\"modul"
+    },
+    {
+      "tool_use_id": "toolu_0198PJs86LEx49bcq4WcFv5h",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01CcjBQtudw6QepdcCwoXe4u",
+      "content": "{\"results\":[{\"id\":\"griffe:DEFAULT_LOG_LEVEL\",\"kind\":\"constant\",\"summary\":\"Constant DEFAULT_LOG_LEVEL\",\"import\":\"from griffe import DEFAULT_LOG_LEVEL\"},{\"id\":\"griffe:\",\"kind\":\"module\",\"summary\":\"Griffe library package.\",\"import\":\"import griffe\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01M8rWeZaKJmDtArxz8NdDY7",
+      "content": "{\"results\":[{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:load_extensions\",\"kind\":\"function\",\"summary\":\"Load configured extensions.\",\"import\":\"from griffe import load_extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:load_extensions\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\"from griffe import load_git\",\"resolved_via_alias\":\"griffe._internal.loader:load_git\"},{\"id\":\"griffe:load_pypi\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific package version downloaded using pip.\",\"import\":\"from griffe import load_pypi\",\"resolved_via_alias\":\"griffe._internal.loader:load_pypi\"},{\"id\":\"griffe:inspect\",\"kind\":\"function\",\"summary\":\"Inspect a module.\",\"import\":\"from griffe import inspect\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:inspect\"},{\"id\":\"griffe:visit\",\"kind\":\"function\",\"summary\":\"Parse and visit a module file.\",\"import\":\"from griffe import visit\",\"resolved_via_alias\":\"griffe._internal.agents.visitor:visit\"},{\"id\":\"griffe:find_breaking_changes\",\"kind\":\"function\",\"summary\":\"Find breaking changes between two versions of the same API.\",\"import\":\"from griffe import find_breaking_changes\",\"resolved_via_alias\":\"griffe._internal.diff:find_breaking_changes\"},{\"id\":\"griffe:json_decoder\",\"kind\":\"function\",\"summary\":\"Decode dictionaries as data classes.\",\"import\":\"from griffe import json_decoder\",\"resolved_via_alias\":\"griffe._internal.encoders:json_decoder\"},{\"id\":\"griffe:temporary_inspected_package\",\"kind\":\"function\",\"summary\":\"Create and inspect a temporary package.\",\"import\":\"from griffe import temporary_inspected_package\",\"resolved_via_alias\":\"griffe._internal.helpers:temporary_inspected_package\"},{\"id\":\"griffe:temporary_visited_package\",\"kind\":\"function\",\"summary\":\"Create and visit a temporary package.\",\"import\":\"f"
+    },
+    {
+      "tool_use_id": "toolu_01U8cu16KVp3iLz8hMw6nVtj",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"griffe._internal.loader\",\"aliases\":[\"griffe._internal.helpers:load\",\"griffe:load\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"objspec\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"The Python path of an object, or file path to a module.\"},{\"name\":\"submodules\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to recurse on the submodules.\\nThis parameter only makes sense when loading a package (top-level module).\"},{\"name\":\"try_relative_path\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to try finding the module as a relative path.\"},{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The extensions to use.\"},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The paths to search into.\"},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The docstring parser to use. By default, no parsing is done.\"},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Docstring parsing options.\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of source code lines.\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of modules.\"},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to allow inspecting modules when visiting them is not possible.\"},{\"name\":\"force_inspection\",\"type\":\"bool\",\"re"
+    },
+    {
+      "tool_use_id": "toolu_01TYvJB8e399K65d6ymH2CZR",
+      "content": "{\"results\":[{\"id\":\"griffe:Object\",\"kind\":\"class\",\"summary\":\"An abstract class representing a Python object.\",\"import\":\"from griffe import Object\",\"resolved_via_alias\":\"griffe._internal.models:Object\"},{\"id\":\"griffe:ObjectNode\",\"kind\":\"class\",\"summary\":\"Helper class to represent an object tree.\",\"import\":\"from griffe import ObjectNode\",\"resolved_via_alias\":\"griffe._internal.agents.nodes.runtime:ObjectNode\"},{\"id\":\"griffe:ObjectChangedKindBreakage\",\"kind\":\"class\",\"summary\":\"Specific breakage class for objects whose kind changed.\",\"import\":\"from griffe import ObjectChangedKindBreakage\",\"resolved_via_alias\":\"griffe._internal.diff:ObjectChangedKindBreakage\"},{\"id\":\"griffe:ObjectRemovedBreakage\",\"kind\":\"class\",\"summary\":\"Specific breakage class for removed objects.\",\"import\":\"from griffe import ObjectRemovedBreakage\",\"resolved_via_alias\":\"griffe._internal.diff:ObjectRemovedBreakage\"},{\"id\":\"griffe:ObjectKind\",\"kind\":\"class\",\"summary\":\"Enumeration of the different runtime object kinds.\",\"import\":\"from griffe import ObjectKind\",\"resolved_via_alias\":\"griffe._internal.enumerations:ObjectKind\"},{\"id\":\"griffe:ObjectAliasMixin\",\"kind\":\"class\",\"summary\":\"Mixin class to share methods that appear both in objects and aliases, unchanged.\",\"import\":\"from griffe import ObjectAliasMixin\",\"resolved_via_alias\":\"griffe._internal.mixins:ObjectAliasMixin\"},{\"id\":\"griffe:Kind\",\"kind\":\"class\",\"summary\":\"Enumeration of the different object kinds.\",\"import\":\"from griffe import Kind\",\"resolved_via_alias\":\"griffe._internal.enumerations:Kind\"},{\"id\":\"griffe:NameResolutionError\",\"kind\":\"class\",\"summary\":\"Exception for names that cannot be resolved in a object scope.\",\"import\":\"from griffe import NameResolutionError\",\"resolved_via_alias\":\"griffe._internal.exceptions:NameResolutionError\"},{\"id\":\"griffe:ExprName\",\"kind\":\"class\",\"summary\":\"This class represents a Python object identified by a name in a given scope.\",\"import\":\"from griffe import ExprName\",\"resolved_via_alias\":\"griffe._internal.expression"
+    },
+    {
+      "tool_use_id": "toolu_01MbKSFQUaiWC3PcS4uMCaBB",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.models\",\"aliases\":[\"griffe._internal.encoders:Object\",\"griffe._internal.helpers:Object\",\"griffe._internal.loader:Object\",\"griffe:Object\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"lineno\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"endlineno\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"runtime\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"docstring\",\"type\":\"Docstring | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"type_parameters\",\"type\":\"TypeParameters | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"parent\",\"type\":\"Module | Class | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"git_info\",\"type\":\"GitInfo | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"analysis\",\"type\":\"Literal['static', 'dynamic'] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"An abstract class representing a Python object.\"},\"id\":\"griffe:Object\",\"resolved_via_alias\":\"griffe._internal.models:Object\",\"import\":\"from griffe import Object\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"name\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"lineno\",\"type\":\"int | None\",\"default\":null},{\"name\":\"endlineno\",\"type\":\"int | None\",\"default\":null},{\"name\":\"runtime\",\"type\":\"bool\",\"default\":true},{\"name\":\"docstring\",\"type\":\"Docstring | None\",\"default\":null},{\"name\":\"type_parameters\",\"type\":\"TypeParameters | None\",\"default\":null},{\"name\":\"parent\",\"type"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

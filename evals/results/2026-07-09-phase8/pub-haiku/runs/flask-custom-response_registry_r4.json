@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-custom-response",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, make_response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = make_response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == '__main__':\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, make_response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = make_response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == '__main__':\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 419,
+    "cache_read_tokens": 22128,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0043168,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 5.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

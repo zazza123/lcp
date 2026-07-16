@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp.server import Server\nimport inspect\nfrom typing import Any\n\ndef create_proxy_server(backend_server: Server) -> Server:\n    \"\"\"Create a transparent FastMCP proxy server that forwards all requests to a backend server.\"\"\"\n    proxy = Server(\"transparent-proxy\")\n    \n    # Proxy all tools from backend\n    if hasattr(backend_server, '_tools'):\n        for tool_name, tool in backend_server._tools.items():\n            def make_tool_proxy(backend_tool):\n                def tool_proxy(**kwargs):\n                    result = backend_tool.handler(**kwargs)\n                    if inspect.iscoroutine(result):\n                        return result\n                    return result\n                return tool_proxy\n            \n            handler = make_tool_proxy(tool)\n            proxy.tool(name=tool_name, description=tool.description)(handler)\n    \n    # Proxy all resources from backend\n    if hasattr(backend_server, '_resources'):\n        for resource_uri, resource in backend_server._resources.items():\n            def make_resource_proxy(backend_resource):\n                def resource_proxy():\n                    result = backend_resource.handler()\n                    if inspect.iscoroutine(result):\n                        return result\n                    return result\n                return resource_proxy\n            \n            handler = make_resource_proxy(resource)\n            proxy.resource(resource_uri)(handler)\n    \n    return proxy\n\n\n# Example usage\nif __name__ == \"__main__\":\n    # Create a simple backend server\n    backend = Server(\"backend\")\n    \n    @backend.tool()\n    def example_tool(text: str) -> str:\n        \"\"\"Example tool that echoes input\"\"\"\n        return f\"Backend received: {text}\"\n    \n    @backend.resource(\"resource://example\")\n    def example_resource() -> str:\n        \"\"\"Example resource\"\"\"\n        return \"Backend resource content\"\n    \n    # Create proxy server\n    proxy = create_proxy_server(backend)\n    \n    print(\"Proxy server created with tools and resources from backend\")\n    print(f\"Proxy tools: {list(proxy._tools.keys())}\")\n    print(f\"Proxy resources: {list(proxy._resources.keys())}\")",
+  "result_text": "```python\nfrom fastmcp.server import Server\nimport inspect\nfrom typing import Any\n\ndef create_proxy_server(backend_server: Server) -> Server:\n    \"\"\"Create a transparent FastMCP proxy server that forwards all requests to a backend server.\"\"\"\n    proxy = Server(\"transparent-proxy\")\n    \n    # Proxy all tools from backend\n    if hasattr(backend_server, '_tools'):\n        for tool_name, tool in backend_server._tools.items():\n            def make_tool_proxy(backend_tool):\n                def tool_proxy(**kwargs):\n                    result = backend_tool.handler(**kwargs)\n                    if inspect.iscoroutine(result):\n                        return result\n                    return result\n                return tool_proxy\n            \n            handler = make_tool_proxy(tool)\n            proxy.tool(name=tool_name, description=tool.description)(handler)\n    \n    # Proxy all resources from backend\n    if hasattr(backend_server, '_resources'):\n        for resource_uri, resource in backend_server._resources.items():\n            def make_resource_proxy(backend_resource):\n                def resource_proxy():\n                    result = backend_resource.handler()\n                    if inspect.iscoroutine(result):\n                        return result\n                    return result\n                return resource_proxy\n            \n            handler = make_resource_proxy(resource)\n            proxy.resource(resource_uri)(handler)\n    \n    return proxy\n\n\n# Example usage\nif __name__ == \"__main__\":\n    # Create a simple backend server\n    backend = Server(\"backend\")\n    \n    @backend.tool()\n    def example_tool(text: str) -> str:\n        \"\"\"Example tool that echoes input\"\"\"\n        return f\"Backend received: {text}\"\n    \n    @backend.resource(\"resource://example\")\n    def example_resource() -> str:\n        \"\"\"Example resource\"\"\"\n        return \"Backend resource content\"\n    \n    # Create proxy server\n    proxy = create_proxy_server(backend)\n    \n    print(\"Proxy server created with tools and resources from backend\")\n    print(f\"Proxy tools: {list(proxy._tools.keys())}\")\n    print(f\"Proxy resources: {list(proxy._resources.keys())}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2469,
+    "cache_read_tokens": 24086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014762599999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.server.Server"
+    ],
+    "error": null
+  }
+}

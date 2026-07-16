@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection: at least 2 muons with pT > threshold\n    and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get('pt_threshold', 15)\n    \n    muons = events.Muon\n    high_pt_muons = muons[muons.pt > pt_threshold]\n    \n    n_muons = ak.count(high_pt_muons.pt, axis=1)\n    has_2_muons = n_muons >= 2\n    \n    pair = ak.pad_none(high_pt_muons, 2, clip=True)[:, :2]\n    \n    q1 = pair[:, 0].charge\n    q2 = pair[:, 1].charge\n    opposite_charge = (q1 * q2) < 0\n    \n    return has_2_muons & opposite_charge\n\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection: at least 2 muons with pT > threshold\n    and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get('pt_threshold', 15)\n    \n    muons = events.Muon\n    high_pt_muons = muons[muons.pt > pt_threshold]\n    \n    n_muons = ak.count(high_pt_muons.pt, axis=1)\n    has_2_muons = n_muons >= 2\n    \n    pair = ak.pad_none(high_pt_muons, 2, clip=True)[:, :2]\n    \n    q1 = pair[:, 0].charge\n    q2 = pair[:, 1].charge\n    opposite_charge = (q1 * q2) < 0\n    \n    return has_2_muons & opposite_charge\n\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2287,
+    "cache_read_tokens": 22073,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.013651300000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

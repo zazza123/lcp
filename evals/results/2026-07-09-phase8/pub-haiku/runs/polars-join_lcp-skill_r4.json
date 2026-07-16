@@ -1,0 +1,37 @@
+{
+  "case_id": "polars-join",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create the two DataFrames\ndf1 = pl.DataFrame({\"id\": [1, 2, 3], \"name\": [\"Alice\", \"Bob\", \"Charlie\"]})\ndf2 = pl.DataFrame({\"id\": [2, 3, 4], \"amount\": [100, 200, 300]})\n\n# Inner join on id to keep only matching rows\nresult = df1.join(df2, on=\"id\", how=\"inner\")\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\n# Create the two DataFrames\ndf1 = pl.DataFrame({\"id\": [1, 2, 3], \"name\": [\"Alice\", \"Bob\", \"Charlie\"]})\ndf2 = pl.DataFrame({\"id\": [2, 3, 4], \"amount\": [100, 200, 300]})\n\n# Inner join on id to keep only matching rows\nresult = df1.join(df2, on=\"id\", how=\"inner\")\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1504,
+    "cache_read_tokens": 45872,
+    "cache_creation_tokens": 1021,
+    "cost_usd": 0.0141662,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 22.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nfrom hamana.connectors import SQLiteConnector\n\ndef stream_events_in_batches(db_path: str, batch_size: int = 5000):\n    \"\"\"Stream events from SQLite in fixed-size batches.\"\"\"\n    connector = SQLiteConnector(db_path)\n    \n    with connector.connect() as connection:\n        cursor = connection.cursor()\n        cursor.execute(\"SELECT * FROM events\")\n        \n        while True:\n            batch = cursor.fetchmany(batch_size)\n            if not batch:\n                break\n            \n            yield batch\n\nif __name__ == \"__main__\":\n    db_file = \"warehouse.db\"\n    \n    for batch_num, batch in enumerate(stream_events_in_batches(db_file), 1):\n        print(f\"Batch {batch_num}: {len(batch)} rows\")\n        for row in batch:\n            print(row)",
+  "result_text": "```python\nimport hamana\nfrom hamana.connectors import SQLiteConnector\n\ndef stream_events_in_batches(db_path: str, batch_size: int = 5000):\n    \"\"\"Stream events from SQLite in fixed-size batches.\"\"\"\n    connector = SQLiteConnector(db_path)\n    \n    with connector.connect() as connection:\n        cursor = connection.cursor()\n        cursor.execute(\"SELECT * FROM events\")\n        \n        while True:\n            batch = cursor.fetchmany(batch_size)\n            if not batch:\n                break\n            \n            yield batch\n\nif __name__ == \"__main__\":\n    db_file = \"warehouse.db\"\n    \n    for batch_num, batch in enumerate(stream_events_in_batches(db_file), 1):\n        print(f\"Batch {batch_num}: {len(batch)} rows\")\n        for row in batch:\n            print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 45,
+    "output_tokens": 2122,
+    "cache_read_tokens": 121840,
+    "cache_creation_tokens": 5077,
+    "cost_usd": 0.032993,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 71.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "hamana SQLite connector batch query",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "SQLite connector batch query streaming"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana database",
+        "query": "SQLite database connector streaming batch results"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana 1.0.1 SQLite connector"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_012Mp3QMq4Dwy69t8cNPgdaS",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_01RfsVD4WsrQcb986vuY9yMM",
+      "content": "Available Libraries:\n\n- Title: Turso Database\n- Context7-compatible library ID: /tursodatabase/turso\n- Description: Turso is an in-process SQL database written in Rust, compatible with SQLite, featuring change data capture, multi-language support, and cross-platform compatibility.\n- Code Snippets: 4598\n- Source Reputation: High\n- Benchmark Score: 77.31"
+    },
+    {
+      "tool_use_id": "toolu_01S3eUiNDP52dENQbH7vNbPU",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.connectors.SQLiteConnector"
+    ],
+    "error": null
+  }
+}

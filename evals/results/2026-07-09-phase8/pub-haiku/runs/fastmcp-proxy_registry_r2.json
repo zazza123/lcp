@@ -1,0 +1,152 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.server import create_proxy, FastMCP\n\nasync def main():\n    backend = FastMCP(\"Backend Server\")\n    \n    @backend.tool()\n    def example_tool(name: str) -> str:\n        \"\"\"An example tool.\"\"\"\n        return f\"Backend processed: {name}\"\n    \n    @backend.resource()\n    def example_resource() -> str:\n        \"\"\"An example resource.\"\"\"\n        return \"Backend resource content\"\n    \n    proxy = create_proxy(backend, name=\"Transparent Proxy\")\n    \n    await proxy.run_stdio_async()\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.server import create_proxy, FastMCP\n\nasync def main():\n    backend = FastMCP(\"Backend Server\")\n    \n    @backend.tool()\n    def example_tool(name: str) -> str:\n        \"\"\"An example tool.\"\"\"\n        return f\"Backend processed: {name}\"\n    \n    @backend.resource()\n    def example_resource() -> str:\n        \"\"\"An example resource.\"\"\"\n        return \"Backend resource content\"\n    \n    proxy = create_proxy(backend, name=\"Transparent Proxy\")\n    \n    await proxy.run_stdio_async()\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 2803,
+    "cache_read_tokens": 309859,
+    "cache_creation_tokens": 14589,
+    "cost_usd": 0.0742699,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 53.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__get_overview,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server class main",
+        "library": "fastmcp",
+        "limit": 15
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.server.proxy:FastMCPProxy"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create_proxy as_proxy",
+        "library": "fastmcp",
+        "limit": 15
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#as_proxy",
+          "fastmcp.client:FastMCPTransport"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create_proxy",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:create_proxy"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01WHMtPCCaRjzwu8JdT9HW55",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01MWE7aK32B4kV9bbHNnTjhW",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01D2rNKntE6cwxZD6zKZTB7K",
+      "content": "{\"results\":[{\"id\":\"fastmcp._install_hints:SERVER_SUPPORT\",\"kind\":\"constant\",\"summary\":\"Constant SERVER_SUPPORT\",\"import\":\"from fastmcp._install_hints import SERVER_SUPPORT\"},{\"id\":\"fastmcp.server.server:server_span\",\"kind\":\"function\",\"summary\":\"Create a SERVER span with standard MCP attributes and auth context.\",\"import\":\"from fastmcp.server.server import server_span\",\"resolved_via_alias\":\"fastmcp.server.telemetry:server_span\"},{\"id\":\"fastmcp.cli.generate:resolve_server_spec\",\"kind\":\"function\",\"summary\":\"Turn CLI inputs into something ``Client()`` accepts.\",\"import\":\"from fastmcp.cli.generate import resolve_server_spec\",\"resolved_via_alias\":\"fastmcp.cli.client:resolve_server_spec\"},{\"id\":\"fastmcp.cli.client:DiscoveredServer\",\"kind\":\"class\",\"summary\":\"A single MCP server found in an editor or project config.\",\"import\":\"from fastmcp.cli.client import DiscoveredServer\",\"resolved_via_alias\":\"fastmcp.cli.discovery:DiscoveredServer\"},{\"id\":\"fastmcp.cli.client:discover_servers\",\"kind\":\"function\",\"summary\":\"Run all scanners and return the combined results.\",\"import\":\"from fastmcp.cli.client import discover_servers\",\"resolved_via_alias\":\"fastmcp.cli.discovery:discover_servers\"},{\"id\":\"fastmcp.cli.install.gemini_cli:validate_server_name\",\"kind\":\"function\",\"summary\":\"Validate that a server name is safe for use as a subprocess argument.\",\"import\":\"from fastmcp.cli.install.gemini_cli import validate_server_name\",\"resolved_via_alias\":\"fastmcp.cli.install.shared:validate_server_name\"},{\"id\":\"fastmcp.cli.run:create_client_server\",\"kind\":\"function\",\"summary\":\"Create a FastMCP server from a client URL.\",\"import\":\"from fastmcp.cli.run import create_client_server\"},{\"id\":\"fastmcp.cli.run:create_mcp_config_server\",\"kind\":\"function\",\"summary\":\"Create a FastMCP server from a MCPConfig.\",\"import\":\"from fastmcp.cli.run import create_mcp_config_server\"},{\"id\":\"fastmcp.cli.run:load_mcp_server_config\",\"kind\":\"function\",\"summary\":\"Load a FastMCP configuration from a fastmcp.json file.\",\"import\""
+    },
+    {
+      "tool_use_id": "toolu_01C92ue98E4VsbJiS9b3j7A6",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:Context#fastmcp\",\"kind\":\"attribute\",\"summary\":\"Get the FastMCP instance.\",\"import\":\"from fastmcp.server import Context\",\"resolved_via_alias\":\"fastmcp.server.context:Context#fastmcp\"},{\"id\":\"fastmcp.server.server:LowLevelServer#fastmcp\",\"kind\":\"attribute\",\"summary\":\"Get the FastMCP instance.\",\"import\":\"from fastmcp.server.server import LowLevelServer\",\"resolved_via_alias\":\"fastmcp.server.low_level:LowLevelServer#fastmcp\"},{\"id\":\"fastmcp.server.context:MiddlewareServerSession#fastmcp\",\"kind\":\"attribute\",\"summary\":\"Get the FastMCP instance.\",\"import\":\"from fastmcp.server.context import MiddlewareServerSession\",\"resolved_via_alias\":\"fastmcp.server.low_level:MiddlewareServerSession#fastmcp\"},{\"id\":\"fastmcp.server:FastMCP\",\"kind\":\"class\",\"summary\":\"Class FastMCP\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP\"},{\"id\":\"fastmcp.server.app:FastMCPApp\",\"kind\":\"class\",\"summary\":\"A Provider that represents an MCP application.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp\"},{\"id\":\"fastmcp.client:FastMCPTransport\",\"kind\":\"class\",\"summary\":\"In-memory transport for FastMCP servers.\",\"import\":\"from fastmcp.client import FastMCPTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.memory:FastMCPTransport\"},{\"id\":\"fastmcp.client.transports:FastMCPStdioTransport\",\"kind\":\"class\",\"summary\":\"Transport for running FastMCP servers using the FastMCP CLI.\",\"import\":\"from fastmcp.client.transports import FastMCPStdioTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.stdio:FastMCPStdioTransport\"},{\"id\":\"fastmcp:FastMCPDeprecationWarning\",\"kind\":\"class\",\"summary\":\"Deprecation warning for FastMCP APIs.\",\"import\":\"from fastmcp import FastMCPDeprecationWarning\",\"resolved_via_alias\":\"fastmcp.exceptions:FastMCPDeprecationWarning\"},{\"id\":\"fastmcp.server.server:FastMCPError\",\"kind\":\"class\",\"summary\":\"Base error for FastMCP.\",\"import\":\"from fastmcp.s"
+    },
+    {
+      "tool_use_id": "toolu_01LCZwbFswh6JUoERTzkFBzt",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.example:FastMCP\",\"fastmcp.contrib.component_manager.component_manager:FastMCP\",\"fastmcp.contrib.component_manager.example:FastMCP\",\"fastmcp.contrib.mcp_mixin.example:FastMCP\",\"fastmcp.server.context:FastMCP\",\"fastmcp.server.providers.proxy:FastMCP\",\"fastmcp.server:FastMCP\",\"fastmcp.utilities.inspect:FastMCP\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"instructions\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"version\",\"type\":\"str | int | float | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"website_url\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"list[mcp.types.Icon] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"AuthProvider | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"middleware\",\"type\":\"Sequence[Middleware] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"providers\",\"type\":\"Sequence[Provider] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"transforms\",\"type\":\"Sequence[Transform] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lifespan\",\"type\":\"LifespanCallable | Lifespan | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tools\",\"type\":\"Sequence[Tool | Callable[..., Any]] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"on_duplicate\",\"type\":\"DuplicateBehavior | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"mask_error_details\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dereference_schemas\",\"type\":\"bool\""
+    },
+    {
+      "tool_use_id": "toolu_01D1CxdnHVwyrgZt5sMQvXfD",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_017BipxyRA9itPNkeE5NZLCY",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"backend\",\"type\":\"Client[ClientTransportT] | ClientTransport | FastMCP[Any] | FastMCP1Server | AnyUrl | Path | MCPConfig | dict[str, Any] | str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"settings\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"FastMCPProxy\"}],\"semantics\":{\"summary\":\"Create a FastMCP proxy server for the given backend.\",\"description\":\".. deprecated::\\n            Use :func:`fastmcp.server.create_proxy` instead.\\n            This method will be removed in a future version.\\n\\n        The `backend` argument can be either an existing `fastmcp.client.Client`\\n        instance or any value accepted as the `transport` argument of\\n        `fastmcp.client.Client`. This mirrors the convenience of the\\n        `fastmcp.client.Client` constructor.\"},\"id\":\"fastmcp.server:FastMCP#as_proxy\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#as_proxy\",\"import\":\"from fastmcp.server import FastMCP\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"backend\",\"type\":\"Client[ClientTransportT] | ClientTransport | FastMCP[Any] | FastMCP1Server | AnyUrl | Path | MCPConfig | dict[str, Any] | str\"},{\"name\":\"settings\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"FastMCPProxy\",\"returns_classes\":[\"fastmcp.server.proxy:FastMCPProxy\"],\"next\":\"returns FastMCPProxy \u2192 get_symbol(ids=['fastmcp.server.proxy:FastMCPProxy']) to see its members\"}},{\"kind\":\"class\",\"module\":\"fastmcp.client.transports.memory\",\"aliases\":[\"fastmcp.client.transports.config:FastMCPTransport\",\"fastmcp.client.transports.inference:FastMCPTransport\",\"fastmcp.client.transports:FastMCPTransport\",\"fastmcp.client:FastMCPTransport\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCPTransport\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"mcp\",\"type\":\"FastMCP[Any] | FastMCP1Server\",\"required\":true,\"variadic\":false,\"kind\":\"positional"
+    },
+    {
+      "tool_use_id": "toolu_01NSR68K858vh7nMS7hUBWaH",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:create_proxy\",\"kind\":\"function\",\"summary\":\"Create a FastMCP proxy server for the given target.\",\"import\":\"from fastmcp.server import create_proxy\",\"resolved_via_alias\":\"fastmcp.server.server:create_proxy\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#as_proxy\",\"kind\":\"method\",\"summary\":\"Create a FastMCP proxy server for the given backend.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#as_proxy\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#mount\",\"kind\":\"method\",\"summary\":\"Mount another FastMCP server on this server with an optional namespace.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#mount\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy\",\"kind\":\"class\",\"summary\":\"A FastMCP server that acts as a proxy to a remote MCP-compliant server.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the proxy server.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#__init__\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#as_proxy\",\"kind\":\"method\",\"summary\":\"Create a FastMCP proxy server for the given backend.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#as_proxy\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#mount\",\"kind\":\"method\",\"summary\":\"Mount another FastMCP server on this server with an optional namespace.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#mount\"},{\"id\":\"fastmcp.server:FastMCP#as_proxy\",\"kind\":\"method\",\"summary\":\"Create a FastMCP proxy server for the given backend.\",\"import\":\"from fastmcp."
+    },
+    {
+      "tool_use_id": "toolu_01HBEfxT4gyo3WXyYQdXHPv1",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:create_proxy\",\"fastmcp.server:create_proxy\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"target\",\"type\":\"Client[ClientTransportT] | ClientTransport | FastMCP[Any] | FastMCP1Server | AnyUrl | Path | MCPConfig | dict[str, Any] | str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The backend to proxy to. Can be:\\n- A Client instance (connected or disconnected)\\n- A ClientTransport\\n- A FastMCP server instance\\n- A URL string or AnyUrl\\n- A Path to a server script\\n- An MCPConfig or dict\"},{\"name\":\"settings\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional settings passed to FastMCPProxy (name, etc.)\"}],\"returns\":\"FastMCPProxy\",\"returns_description\":\"A FastMCPProxy server that proxies to the target.\"}],\"semantics\":{\"summary\":\"Create a FastMCP proxy server for the given target.\",\"description\":\"This is the recommended way to create a proxy server. For lower-level control,\\n    use `FastMCPProxy` or `ProxyProvider` directly from `fastmcp.server.providers.proxy`.\\n\\n    Args:\\n        target: The backend to proxy to. Can be:\\n            - A Client instance (connected or disconnected)\\n            - A ClientTransport\\n            - A FastMCP server instance\\n            - A URL string or AnyUrl\\n            - A Path to a server script\\n            - An MCPConfig or dict\\n        **settings: Additional settings passed to FastMCPProxy (name, etc.)\\n\\n    Returns:\\n        A FastMCPProxy server that proxies to the target.\\n\\n    Example:\\n        ```python\\n        from fastmcp.server import create_proxy\\n\\n        # Create a proxy to a remote server\\n        proxy = create_proxy(\\\"http://remote-server/mcp\\\")\\n\\n        # Create a proxy to another FastMCP server\\n        proxy = create_proxy(other_server)\\n        ```\",\"examples\":[{\"code\":\"```python\\nfrom fastmcp.server import create_proxy\\n\\n# Create a proxy to a remote ser"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

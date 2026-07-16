@@ -1,0 +1,32 @@
+{
+  "case_id": "hamana-query-result-dataframe",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable documentation for the `hamana` library's API in my training data. To provide accurate, runnable code, I'd need clarification on:\n\n- The correct way to import and instantiate a Query object\n- Whether there's a specific database connection method or if it uses an internal database by default\n- The method to execute the query and retrieve results\n\nCould you provide a brief example of hamana's API, or point me to its documentation?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1058,
+    "cache_read_tokens": 22106,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0075096,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.connector.db.query:Query#result"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

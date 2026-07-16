@@ -1,0 +1,42 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp.server import Server\nimport json\n\n# Create MCP server with optional tools/resources\nserver = Server(name=\"health-check-server\")\n\n# Access the underlying Starlette/FastAPI app to add HTTP routes\napp = server.app\n\n# Add health check endpoint\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"ok\"}\n\n# Add any MCP tools here (example)\n@server.call_tool()\nasync def example_tool(arg: str) -> str:\n    return f\"Processed: {arg}\"\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, host=\"0.0.0.0\", port=8000)",
+  "result_text": "```python\nfrom fastmcp.server import Server\nimport json\n\n# Create MCP server with optional tools/resources\nserver = Server(name=\"health-check-server\")\n\n# Access the underlying Starlette/FastAPI app to add HTTP routes\napp = server.app\n\n# Add health check endpoint\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"ok\"}\n\n# Add any MCP tools here (example)\n@server.call_tool()\nasync def example_tool(arg: str) -> str:\n    return f\"Processed: {arg}\"\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, host=\"0.0.0.0\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1310,
+    "cache_read_tokens": 45872,
+    "cache_creation_tokens": 802,
+    "cost_usd": 0.012758199999999999,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 20.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#custom_route"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.server.Server"
+    ],
+    "error": null
+  }
+}

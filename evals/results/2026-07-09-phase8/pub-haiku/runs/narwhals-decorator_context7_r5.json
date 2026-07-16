@@ -1,0 +1,33 @@
+{
+  "case_id": "narwhals-decorator",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\nimport polars as pl\n\n@nw.narwhal\ndef add_total(df):\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\n# Example with pandas\npandas_df = pd.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(pandas_df))\n\n# Example with polars\npolars_df = pl.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(polars_df))",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\nimport polars as pl\n\n@nw.narwhal\ndef add_total(df):\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\n# Example with pandas\npandas_df = pd.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(pandas_df))\n\n# Example with polars\npolars_df = pl.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(polars_df))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.026395599999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "narwhals:narwhalify"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "narwhals.narwhal"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport subprocess\nimport tempfile\nimport shutil\nimport griffe\nfrom griffe.diff import get_breakages\n\ndef load_from_git_ref(package_name: str, git_ref: str) -> griffe.Module:\n    \"\"\"Load a module from a specific git reference.\"\"\"\n    tmpdir = tempfile.mkdtemp()\n    worktree_path = os.path.join(tmpdir, \"worktree\")\n    \n    # Create git worktree for the reference\n    subprocess.run(\n        [\"git\", \"worktree\", \"add\", worktree_path, git_ref],\n        check=True,\n        capture_output=True\n    )\n    \n    try:\n        # Load the package from the worktree's src directory\n        return griffe.load(package_name, search_paths=[os.path.join(worktree_path, \"src\")])\n    finally:\n        # Clean up\n        subprocess.run([\"git\", \"worktree\", \"remove\", worktree_path], capture_output=True)\n        shutil.rmtree(tmpdir, ignore_errors=True)\n\n# Load versions from different git references\nold = load_from_git_ref(\"mypkg\", \"v1.0.0\")\nnew = load_from_git_ref(\"mypkg\", \"HEAD\")\n\n# Detect and print all breakages\nbreakages = get_breakages(old, new)\nfor breakage in breakages:\n    print(breakage)",
+  "result_text": "```python\nimport os\nimport subprocess\nimport tempfile\nimport shutil\nimport griffe\nfrom griffe.diff import get_breakages\n\ndef load_from_git_ref(package_name: str, git_ref: str) -> griffe.Module:\n    \"\"\"Load a module from a specific git reference.\"\"\"\n    tmpdir = tempfile.mkdtemp()\n    worktree_path = os.path.join(tmpdir, \"worktree\")\n    \n    # Create git worktree for the reference\n    subprocess.run(\n        [\"git\", \"worktree\", \"add\", worktree_path, git_ref],\n        check=True,\n        capture_output=True\n    )\n    \n    try:\n        # Load the package from the worktree's src directory\n        return griffe.load(package_name, search_paths=[os.path.join(worktree_path, \"src\")])\n    finally:\n        # Clean up\n        subprocess.run([\"git\", \"worktree\", \"remove\", worktree_path], capture_output=True)\n        shutil.rmtree(tmpdir, ignore_errors=True)\n\n# Load versions from different git references\nold = load_from_git_ref(\"mypkg\", \"v1.0.0\")\nnew = load_from_git_ref(\"mypkg\", \"HEAD\")\n\n# Detect and print all breakages\nbreakages = get_breakages(old, new)\nfor breakage in breakages:\n    print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4112,
+    "cache_read_tokens": 22091,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0227781,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 43.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:load_git",
+      "griffe:find_breaking_changes"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.diff.get_breakages"
+    ],
+    "error": null
+  }
+}

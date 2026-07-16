@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    trigger_selection,\n    object_multiplicity,\n    btag_multiplicity,\n)\n\nparams = {\n    \"era\": 2018,\n    \"primary_dataset\": \"semileptonic\",\n}\n\ncutslist = [\n    (\"HLT\", trigger_selection(params[\"primary_dataset\"])),\n    (\"Njet\", object_multiplicity(\"JetGood\", 4, pt_min=30)),\n    (\"Nbtag\", btag_multiplicity(\"JetGood\", 2)),\n]\n\npreselection = []",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    trigger_selection,\n    object_multiplicity,\n    btag_multiplicity,\n)\n\nparams = {\n    \"era\": 2018,\n    \"primary_dataset\": \"semileptonic\",\n}\n\ncutslist = [\n    (\"HLT\", trigger_selection(params[\"primary_dataset\"])),\n    (\"Njet\", object_multiplicity(\"JetGood\", 4, pt_min=30)),\n    (\"Nbtag\", btag_multiplicity(\"JetGood\", 2)),\n]\n\npreselection = []\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3380,
+    "cache_read_tokens": 22101,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0191191,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.btag_multiplicity",
+      "pocket_coffea.lib.cut_functions.object_multiplicity",
+      "pocket_coffea.lib.cut_functions.trigger_selection"
+    ],
+    "error": null
+  }
+}

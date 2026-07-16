@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"CLI with TOML configuration support using cyclopts.\"\"\"\n\nfrom pathlib import Path\nfrom cyclopts import App\nfrom cyclopts.sources import TOMLSource\n\n# Create app with TOML configuration source\napp = App(\n    config_sources=[\n        TOMLSource(\n            file_path=Path(\"pyproject.toml\"),\n            section=[\"tool\", \"mycli\"]\n        )\n    ]\n)\n\n@app.default\ndef hello(name: str = \"World\", greeting: str = \"Hello\"):\n    \"\"\"Say hello to someone.\n    \n    Parameters\n    ----------\n    name : str\n        The name to greet.\n    greeting : str\n        The greeting to use.\n    \"\"\"\n    print(f\"{greeting}, {name}!\")\n\n@app.command\ndef goodbye(name: str = \"World\"):\n    \"\"\"Say goodbye to someone.\n    \n    Parameters\n    ----------\n    name : str\n        The name to say goodbye to.\n    \"\"\"\n    print(f\"Goodbye, {name}!\")\n\nif __name__ == \"__main__\":\n    # Create example pyproject.toml if it doesn't exist\n    config_file = Path(\"pyproject.toml\")\n    if not config_file.exists():\n        config_file.write_text(\"\"\"\\\n[tool.mycli]\nname = \"Alice\"\ngreeting = \"Hello\"\n\"\"\")\n    \n    # Command-line arguments override config file values\n    # Examples:\n    # python script.py              # Uses config values: \"Hello, Alice!\"\n    # python script.py --name Bob   # \"Hello, Bob!\" (overrides config)\n    # python script.py --greeting Hi --name Charlie  # \"Hi, Charlie!\"\n    # python script.py goodbye --name Dave  # \"Goodbye, Dave!\"\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"CLI with TOML configuration support using cyclopts.\"\"\"\n\nfrom pathlib import Path\nfrom cyclopts import App\nfrom cyclopts.sources import TOMLSource\n\n# Create app with TOML configuration source\napp = App(\n    config_sources=[\n        TOMLSource(\n            file_path=Path(\"pyproject.toml\"),\n            section=[\"tool\", \"mycli\"]\n        )\n    ]\n)\n\n@app.default\ndef hello(name: str = \"World\", greeting: str = \"Hello\"):\n    \"\"\"Say hello to someone.\n    \n    Parameters\n    ----------\n    name : str\n        The name to greet.\n    greeting : str\n        The greeting to use.\n    \"\"\"\n    print(f\"{greeting}, {name}!\")\n\n@app.command\ndef goodbye(name: str = \"World\"):\n    \"\"\"Say goodbye to someone.\n    \n    Parameters\n    ----------\n    name : str\n        The name to say goodbye to.\n    \"\"\"\n    print(f\"Goodbye, {name}!\")\n\nif __name__ == \"__main__\":\n    # Create example pyproject.toml if it doesn't exist\n    config_file = Path(\"pyproject.toml\")\n    if not config_file.exists():\n        config_file.write_text(\"\"\"\\\n[tool.mycli]\nname = \"Alice\"\ngreeting = \"Hello\"\n\"\"\")\n    \n    # Command-line arguments override config file values\n    # Examples:\n    # python script.py              # Uses config values: \"Hello, Alice!\"\n    # python script.py --name Bob   # \"Hello, Bob!\" (overrides config)\n    # python script.py --greeting Hi --name Charlie  # \"Hi, Charlie!\"\n    # python script.py goodbye --name Dave  # \"Goodbye, Dave!\"\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6800,
+    "cache_read_tokens": 22045,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.036213499999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 43.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.sources.TOMLSource"
+    ],
+    "error": null
+  }
+}

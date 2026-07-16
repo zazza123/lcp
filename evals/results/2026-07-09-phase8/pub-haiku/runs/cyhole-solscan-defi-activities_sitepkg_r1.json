@@ -1,0 +1,49 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solscan.v2 import Solscan\n\napi_key = os.getenv(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable is not set\")\n\nsolscan = Solscan(api_key=api_key)\naccount_address = input(\"Enter Solana account address: \")\n\nactivities = solscan.client.get_account_defi_activities(account_address)\n\nprint(activities.model_dump(mode='json'))",
+  "result_text": "```python\nimport os\nfrom cyhole.solscan.v2 import Solscan\n\napi_key = os.getenv(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable is not set\")\n\nsolscan = Solscan(api_key=api_key)\naccount_address = input(\"Enter Solana account address: \")\n\nactivities = solscan.client.get_account_defi_activities(account_address)\n\nprint(activities.model_dump(mode='json'))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 33,
+    "output_tokens": 2700,
+    "cache_read_tokens": 113544,
+    "cache_creation_tokens": 39145,
+    "cost_usd": 0.1031774,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 36.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/site-packages/cyhole/**/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/client.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

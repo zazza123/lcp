@@ -1,0 +1,60 @@
+{
+  "case_id": "narwhals-lazy-parquet",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\n\n# Scan the parquet file lazily with polars backend\ndf = nw.scan_parquet(\"events.parquet\", engine=\"polars\")\n\n# Build the lazy pipeline: filter, select, then materialize\nresult = (\n    df\n    .filter(nw.col(\"status\") == \"ok\")\n    .select([\"user\", \"duration\"])\n    .collect()\n)\n\nprint(result)",
+  "result_text": "```python\nimport narwhals as nw\n\n# Scan the parquet file lazily with polars backend\ndf = nw.scan_parquet(\"events.parquet\", engine=\"polars\")\n\n# Build the lazy pipeline: filter, select, then materialize\nresult = (\n    df\n    .filter(nw.col(\"status\") == \"ok\")\n    .select([\"user\", \"duration\"])\n    .collect()\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 27,
+    "output_tokens": 885,
+    "cache_read_tokens": 61041,
+    "cache_creation_tokens": 9021,
+    "cost_usd": 0.0285981,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 17.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "scan_parquet from_parquet",
+        "library": "narwhals"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_014ifzEZgTFuxMqgpVe1NHxX",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01LBRg2dWuf5PHTfbcwwh6DM",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'narwhals' is not loaded.\",\"hint\":\"Call resolve_library('narwhals') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

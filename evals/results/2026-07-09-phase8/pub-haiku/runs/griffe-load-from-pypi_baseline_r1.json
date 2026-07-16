@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.loader import GriffeLoader\n\nloader = GriffeLoader()\npackage = loader.load_from_distribution(\"click==8.1.7\")\nprint(package.name)",
+  "result_text": "```python\nfrom griffe.loader import GriffeLoader\n\nloader = GriffeLoader()\npackage = loader.load_from_distribution(\"click==8.1.7\")\nprint(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2227,
+    "cache_read_tokens": 15189,
+    "cache_creation_tokens": 6844,
+    "cost_usd": 0.0263509,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:load_pypi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

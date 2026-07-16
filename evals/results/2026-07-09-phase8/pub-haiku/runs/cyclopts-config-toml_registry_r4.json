@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"CLI with pyproject.toml configuration support using cyclopts.\"\"\"\n\nimport cyclopts\n\n# Create app with TOML config file support\n# Defaults are loaded from [tool.mycli] in pyproject.toml\n# Command-line arguments override config file values\napp = cyclopts.App(\n    config_paths=[\"pyproject.toml\"],\n    config_key=\"tool.mycli\"\n)\n\n@app.default\ndef main(\n    name: str = \"World\",\n    greeting: str = \"Hello\",\n    count: int = 1,\n    verbose: bool = False,\n):\n    \"\"\"Greet someone with configurable options.\n    \n    Defaults can be set in pyproject.toml under [tool.mycli]:\n    \n    [tool.mycli]\n    name = \"Alice\"\n    greeting = \"Hi\"\n    count = 3\n    verbose = true\n    \n    Command-line arguments override these defaults:\n    \n    $ python cli.py --name Bob --greeting Howdy\n    \"\"\"\n    for _ in range(count):\n        message = f\"{greeting}, {name}!\"\n        print(message)\n    \n    if verbose:\n        print(\"Verbose mode enabled\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"CLI with pyproject.toml configuration support using cyclopts.\"\"\"\n\nimport cyclopts\n\n# Create app with TOML config file support\n# Defaults are loaded from [tool.mycli] in pyproject.toml\n# Command-line arguments override config file values\napp = cyclopts.App(\n    config_paths=[\"pyproject.toml\"],\n    config_key=\"tool.mycli\"\n)\n\n@app.default\ndef main(\n    name: str = \"World\",\n    greeting: str = \"Hello\",\n    count: int = 1,\n    verbose: bool = False,\n):\n    \"\"\"Greet someone with configurable options.\n    \n    Defaults can be set in pyproject.toml under [tool.mycli]:\n    \n    [tool.mycli]\n    name = \"Alice\"\n    greeting = \"Hi\"\n    count = 3\n    verbose = true\n    \n    Command-line arguments override these defaults:\n    \n    $ python cli.py --name Bob --greeting Howdy\n    \"\"\"\n    for _ in range(count):\n        message = f\"{greeting}, {name}!\"\n        print(message)\n    \n    if verbose:\n        print(\"Verbose mode enabled\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2234,
+    "cache_read_tokens": 22140,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.013393,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

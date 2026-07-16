@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\nfrom pathlib import Path\nimport cyclopts\n\n# Create a sample pyproject.toml if it doesn't exist\ndef setup_config():\n    config_file = Path(\"pyproject.toml\")\n    if not config_file.exists():\n        config_file.write_text(\"\"\"[tool.mycli]\nname = \"DefaultName\"\ncount = 3\nverbose = false\ngreet_format = \"Hello, {name}!\"\n\"\"\")\n\nsetup_config()\n\n# Create the App with TOML configuration support\napp = cyclopts.App(\n    name=\"mycli\",\n    config_search_paths=[\"pyproject.toml\"],\n)\n\n@app.default\ndef greet(\n    name: str = \"World\",\n    count: int = 1,\n    verbose: bool = False,\n    greet_format: str = \"Hello, {name}!\",\n) -> None:\n    \"\"\"\n    Greet someone multiple times.\n    \n    Defaults are read from [tool.mycli] in pyproject.toml.\n    Command-line arguments override config file values.\n    \"\"\"\n    for i in range(count):\n        message = greet_format.format(name=name)\n        if verbose:\n            print(f\"[{i+1}/{count}] {message}\")\n        else:\n            print(message)\n\n@app.command\ndef config() -> None:\n    \"\"\"Display the current configuration.\"\"\"\n    config_file = Path(\"pyproject.toml\")\n    if config_file.exists():\n        print(\"Current pyproject.toml [tool.mycli] section:\")\n        print(config_file.read_text())\n    else:\n        print(\"No pyproject.toml found.\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\nfrom pathlib import Path\nimport cyclopts\n\n# Create a sample pyproject.toml if it doesn't exist\ndef setup_config():\n    config_file = Path(\"pyproject.toml\")\n    if not config_file.exists():\n        config_file.write_text(\"\"\"[tool.mycli]\nname = \"DefaultName\"\ncount = 3\nverbose = false\ngreet_format = \"Hello, {name}!\"\n\"\"\")\n\nsetup_config()\n\n# Create the App with TOML configuration support\napp = cyclopts.App(\n    name=\"mycli\",\n    config_search_paths=[\"pyproject.toml\"],\n)\n\n@app.default\ndef greet(\n    name: str = \"World\",\n    count: int = 1,\n    verbose: bool = False,\n    greet_format: str = \"Hello, {name}!\",\n) -> None:\n    \"\"\"\n    Greet someone multiple times.\n    \n    Defaults are read from [tool.mycli] in pyproject.toml.\n    Command-line arguments override config file values.\n    \"\"\"\n    for i in range(count):\n        message = greet_format.format(name=name)\n        if verbose:\n            print(f\"[{i+1}/{count}] {message}\")\n        else:\n            print(message)\n\n@app.command\ndef config() -> None:\n    \"\"\"Display the current configuration.\"\"\"\n    config_file = Path(\"pyproject.toml\")\n    if config_file.exists():\n        print(\"Current pyproject.toml [tool.mycli] section:\")\n        print(config_file.read_text())\n    else:\n        print(\"No pyproject.toml found.\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1978,
+    "cache_read_tokens": 22140,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.012113000000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

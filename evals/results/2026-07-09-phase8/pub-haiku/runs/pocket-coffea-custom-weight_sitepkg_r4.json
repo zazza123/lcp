@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.weights import WeightData\n\nclass ToyReweight(WeightData):\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def weight(self, events):\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized\n    \n    def up(self, events):\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 1.05\n    \n    def down(self, events):\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 0.95\n\n# Usage in PocketCoffea configuration\nconfig = {\n    \"weights_classes\": [ToyReweight()]\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.weights import WeightData\n\nclass ToyReweight(WeightData):\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def weight(self, events):\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized\n    \n    def up(self, events):\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 1.05\n    \n    def down(self, events):\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 0.95\n\n# Usage in PocketCoffea configuration\nconfig = {\n    \"weights_classes\": [ToyReweight()]\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2666,
+    "cache_read_tokens": 24157,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0157547,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

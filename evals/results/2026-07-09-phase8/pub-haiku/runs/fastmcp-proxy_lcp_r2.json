@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nfrom typing import Any, Callable\n\ndef create_tool_forwarder(original_handler: Callable) -> Callable:\n    \"\"\"Create a forwarding handler for a tool\"\"\"\n    async def forwarder(**kwargs) -> Any:\n        return await original_handler(**kwargs)\n    return forwarder\n\ndef create_resource_forwarder(original_handler: Callable) -> Callable:\n    \"\"\"Create a forwarding handler for a resource\"\"\"\n    async def forwarder() -> str:\n        return await original_handler()\n    return forwarder\n\ndef create_transparent_proxy(backend_server: Server) -> Server:\n    \"\"\"\n    Create a transparent proxy server that forwards all tools and resources\n    from a backend FastMCP server.\n    \n    Args:\n        backend_server: The backend Server instance to proxy\n        \n    Returns:\n        A new Server instance that acts as a transparent proxy\n    \"\"\"\n    proxy = Server(\"transparent-proxy\")\n    \n    # Forward all tools from backend\n    if hasattr(backend_server, '_tools'):\n        for tool_name, tool_info in backend_server._tools.items():\n            proxy.add_tool(\n                name=tool_name,\n                description=tool_info.get('description', ''),\n                handler=create_tool_forwarder(tool_info['handler']),\n                input_schema=tool_info.get('input_schema')\n            )\n    \n    # Forward all resources from backend\n    if hasattr(backend_server, '_resources'):\n        for resource_uri, resource_info in backend_server._resources.items():\n            proxy.add_resource(\n                uri=resource_uri,\n                name=resource_info.get('name', ''),\n                mime_type=resource_info.get('mime_type', 'text/plain'),\n                handler=create_resource_forwarder(resource_info['handler'])\n            )\n    \n    return proxy\n\n\nif __name__ == \"__main__\":\n    import asyncio\n    \n    # Example: create a backend server and proxy it\n    backend = Server(\"backend-server\")\n    \n    @backend.tool()\n    async def greet(name: str) -> str:\n        \"\"\"Greet someone\"\"\"\n        return f\"Hello, {name}!\"\n    \n    @backend.resource()\n    async def status() -> str:\n        \"\"\"Get status\"\"\"\n        return \"Backend is running\"\n    \n    # Create the transparent proxy\n    proxy = create_transparent_proxy(backend)\n    \n    print(f\"Proxy server created: {proxy.name}\")\n    print(f\"Forwarded tools: {list(proxy._tools.keys())}\")\n    print(f\"Forwarded resources: {list(proxy._resources.keys())}\")",
+  "result_text": "```python\nfrom fastmcp import Server\nfrom typing import Any, Callable\n\ndef create_tool_forwarder(original_handler: Callable) -> Callable:\n    \"\"\"Create a forwarding handler for a tool\"\"\"\n    async def forwarder(**kwargs) -> Any:\n        return await original_handler(**kwargs)\n    return forwarder\n\ndef create_resource_forwarder(original_handler: Callable) -> Callable:\n    \"\"\"Create a forwarding handler for a resource\"\"\"\n    async def forwarder() -> str:\n        return await original_handler()\n    return forwarder\n\ndef create_transparent_proxy(backend_server: Server) -> Server:\n    \"\"\"\n    Create a transparent proxy server that forwards all tools and resources\n    from a backend FastMCP server.\n    \n    Args:\n        backend_server: The backend Server instance to proxy\n        \n    Returns:\n        A new Server instance that acts as a transparent proxy\n    \"\"\"\n    proxy = Server(\"transparent-proxy\")\n    \n    # Forward all tools from backend\n    if hasattr(backend_server, '_tools'):\n        for tool_name, tool_info in backend_server._tools.items():\n            proxy.add_tool(\n                name=tool_name,\n                description=tool_info.get('description', ''),\n                handler=create_tool_forwarder(tool_info['handler']),\n                input_schema=tool_info.get('input_schema')\n            )\n    \n    # Forward all resources from backend\n    if hasattr(backend_server, '_resources'):\n        for resource_uri, resource_info in backend_server._resources.items():\n            proxy.add_resource(\n                uri=resource_uri,\n                name=resource_info.get('name', ''),\n                mime_type=resource_info.get('mime_type', 'text/plain'),\n                handler=create_resource_forwarder(resource_info['handler'])\n            )\n    \n    return proxy\n\n\nif __name__ == \"__main__\":\n    import asyncio\n    \n    # Example: create a backend server and proxy it\n    backend = Server(\"backend-server\")\n    \n    @backend.tool()\n    async def greet(name: str) -> str:\n        \"\"\"Greet someone\"\"\"\n        return f\"Hello, {name}!\"\n    \n    @backend.resource()\n    async def status() -> str:\n        \"\"\"Get status\"\"\"\n        return \"Backend is running\"\n    \n    # Create the transparent proxy\n    proxy = create_transparent_proxy(backend)\n    \n    print(f\"Proxy server created: {proxy.name}\")\n    print(f\"Forwarded tools: {list(proxy._tools.keys())}\")\n    print(f\"Forwarded resources: {list(proxy._resources.keys())}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4639,
+    "cache_read_tokens": 22107,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0254147,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

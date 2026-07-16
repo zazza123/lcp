@@ -1,0 +1,79 @@
+{
+  "case_id": "cyhole-solanafm-account-transfers",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole import SolanaFM\n\napi_key = os.getenv(\"SOLANA_FM_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\naccount_address = \"TokenkegQfeZyiNwAJsyFbPVwwQQfKP5rWNq4gDsFiea\"\n\nsolana_fm = SolanaFM(api_key=api_key)\ntransfers = solana_fm.get_token_transfers(account=account_address)\n\nfor transfer in transfers:\n    print(f\"From: {transfer.from_address}\")\n    print(f\"To: {transfer.to_address}\")\n    print(f\"Amount: {transfer.amount}\")\n    print(f\"Mint: {transfer.mint}\")\n    print(f\"Tx: {transfer.tx_hash}\")\n    print(\"---\")",
+  "result_text": "```python\nimport os\nfrom cyhole import SolanaFM\n\napi_key = os.getenv(\"SOLANA_FM_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\naccount_address = \"TokenkegQfeZyiNwAJsyFbPVwwQQfKP5rWNq4gDsFiea\"\n\nsolana_fm = SolanaFM(api_key=api_key)\ntransfers = solana_fm.get_token_transfers(account=account_address)\n\nfor transfer in transfers:\n    print(f\"From: {transfer.from_address}\")\n    print(f\"To: {transfer.to_address}\")\n    print(f\"Amount: {transfer.amount}\")\n    print(f\"Mint: {transfer.mint}\")\n    print(f\"Tx: {transfer.tx_hash}\")\n    print(\"---\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 55,
+    "output_tokens": 2114,
+    "cache_read_tokens": 172158,
+    "cache_creation_tokens": 12994,
+    "cost_usd": 0.0538288,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 45.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "cyhole documentation API reference",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "documentation fetch read",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "cyhole SolanaFM API token transfers"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "cyhole Python Solana blockchain"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_017uHjXQLuzLfUEgBCrbrDz1",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01TKzHNjDB9ZcpshpWUA3p3s",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.SolanaFM"
+    ],
+    "error": null
+  }
+}

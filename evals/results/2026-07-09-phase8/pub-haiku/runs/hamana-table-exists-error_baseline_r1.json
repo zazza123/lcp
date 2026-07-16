@@ -1,0 +1,37 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nfrom hamana import ImportMode\n\ntry:\n    # Execute a Query\n    query = hamana.Query(\"SELECT 1 as id, 'sales_record' as description\")\n    \n    # Import result into SQLite with FAIL mode\n    # (raises exception if 'sales' table already exists)\n    hamana.import_result(\n        query,\n        table_name=\"sales\",\n        import_mode=ImportMode.FAIL\n    )\n    print(\"Successfully imported data to 'sales' table\")\n    \nexcept hamana.HamanaException as e:\n    print(f\"Import failed: {e}\")",
+  "result_text": "```python\nimport hamana\nfrom hamana import ImportMode\n\ntry:\n    # Execute a Query\n    query = hamana.Query(\"SELECT 1 as id, 'sales_record' as description\")\n    \n    # Import result into SQLite with FAIL mode\n    # (raises exception if 'sales' table already exists)\n    hamana.import_result(\n        query,\n        table_name=\"sales\",\n        import_mode=ImportMode.FAIL\n    )\n    print(\"Successfully imported data to 'sales' table\")\n    \nexcept hamana.HamanaException as e:\n    print(f\"Import failed: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2237,
+    "cache_read_tokens": 15189,
+    "cache_creation_tokens": 6843,
+    "cost_usd": 0.0263989,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.HamanaException",
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL",
+      "hamana.import_result"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import Cut\nimport awkward as ak\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level dimuon preselection cut.\n    \n    Requires:\n    - At least two muons with pT above threshold\n    - Opposite-charge leading pair\n    \n    Parameters:\n        pt_threshold: pT threshold in GeV\n    \"\"\"\n    muons = events.Muon\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    \n    # Select muons passing pT threshold\n    muons_pass = muons[muons.pt > pt_threshold]\n    \n    # Count selected muons\n    n_muons = ak.num(muons_pass)\n    has_two_muons = n_muons >= 2\n    \n    # Check opposite charge of leading pair\n    leading = muons_pass[:, 0]\n    subleading = muons_pass[:, 1]\n    \n    # Opposite charge: sum of charges should be 0\n    opposite_charge = (leading.charge + subleading.charge) == 0\n    opposite_charge = ak.fill_none(opposite_charge, False)\n    \n    return has_two_muons & opposite_charge\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n)\n\n# Usage in configuration:\n# preselections = [\n#     {\"dimuon\": {\"pt_threshold\": 15}}\n# ]",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import Cut\nimport awkward as ak\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level dimuon preselection cut.\n    \n    Requires:\n    - At least two muons with pT above threshold\n    - Opposite-charge leading pair\n    \n    Parameters:\n        pt_threshold: pT threshold in GeV\n    \"\"\"\n    muons = events.Muon\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    \n    # Select muons passing pT threshold\n    muons_pass = muons[muons.pt > pt_threshold]\n    \n    # Count selected muons\n    n_muons = ak.num(muons_pass)\n    has_two_muons = n_muons >= 2\n    \n    # Check opposite charge of leading pair\n    leading = muons_pass[:, 0]\n    subleading = muons_pass[:, 1]\n    \n    # Opposite charge: sum of charges should be 0\n    opposite_charge = (leading.charge + subleading.charge) == 0\n    opposite_charge = ak.fill_none(opposite_charge, False)\n    \n    return has_two_muons & opposite_charge\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n)\n\n# Usage in configuration:\n# preselections = [\n#     {\"dimuon\": {\"pt_threshold\": 15}}\n# ]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3773,
+    "cache_read_tokens": 22127,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0210867,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

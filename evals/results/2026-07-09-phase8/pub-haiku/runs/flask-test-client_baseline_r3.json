@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-test-client",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route(\"/\")\ndef home():\n    return \"Hello, World!\", 200\n\nclient = app.test_client()\nresponse = client.get(\"/\")\nassert response.status_code == 200\nprint(f\"\u2713 GET / returned {response.status_code}\")",
+  "result_text": "```python\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.route(\"/\")\ndef home():\n    return \"Hello, World!\", 200\n\nclient = app.test_client()\nresponse = client.get(\"/\")\nassert response.status_code == 200\nprint(f\"\u2713 GET / returned {response.status_code}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 456,
+    "cache_read_tokens": 22005,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0044895000000000004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

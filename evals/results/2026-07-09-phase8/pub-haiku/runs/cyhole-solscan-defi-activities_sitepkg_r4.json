@@ -1,0 +1,49 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport json\nfrom cyhole import Solscan\n\ndef main():\n    api_key = os.getenv(\"SOLSCAN_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n    \n    account_address = \"your_solana_address_here\"\n    \n    solscan = Solscan(api_key=api_key)\n    defi_activities = solscan.v2.get_defi_activities(account_address)\n    \n    print(json.dumps(defi_activities, indent=2))\n    return defi_activities\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\nimport json\nfrom cyhole import Solscan\n\ndef main():\n    api_key = os.getenv(\"SOLSCAN_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n    \n    account_address = \"your_solana_address_here\"\n    \n    solscan = Solscan(api_key=api_key)\n    defi_activities = solscan.v2.get_defi_activities(account_address)\n    \n    print(json.dumps(defi_activities, indent=2))\n    return defi_activities\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 1490,
+    "cache_read_tokens": 73401,
+    "cache_creation_tokens": 2037,
+    "cost_usd": 0.0188891,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 21.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cy*"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan",
+      "cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities"
+    ],
+    "forbidden_used": [
+      "cyhole.solscan.v2.client:SolscanClient#get_defi_activities"
+    ],
+    "unresolved_usages": [
+      "cyhole.Solscan"
+    ],
+    "error": null
+  }
+}

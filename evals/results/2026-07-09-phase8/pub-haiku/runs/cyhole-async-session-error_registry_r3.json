@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole import SolanaFM\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    client = SolanaFM(api_key=api_key)\n    \n    try:\n        # Call method without entering async context manager\n        result = await client.get_balance(\"So11111111111111111111111111111111111111112\")\n        print(f\"Balance: {result}\")\n    except RuntimeError as e:\n        # Catches the exception when async HTTP session is not available\n        print(f\"Session not initialized: {e}\")\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole import SolanaFM\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    client = SolanaFM(api_key=api_key)\n    \n    try:\n        # Call method without entering async context manager\n        result = await client.get_balance(\"So11111111111111111111111111111111111111112\")\n        print(f\"Balance: {result}\")\n    except RuntimeError as e:\n        # Catches the exception when async HTTP session is not available\n        print(f\"Session not initialized: {e}\")\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2376,
+    "cache_read_tokens": 22131,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014102100000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.SolanaFM"
+    ],
+    "error": null
+  }
+}

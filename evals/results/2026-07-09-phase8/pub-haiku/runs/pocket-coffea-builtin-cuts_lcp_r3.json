@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import (\n    hlt_trigger_selection,\n    object_multiplicity,\n    nbtagging,\n)\n\n# Configuration for 2018 semileptonic ttbar analysis\nconfig = {\n    \"year\": 2018,\n    \"era\": \"UL\",\n    \"dataset\": \"TTbar\",\n    \"channel\": \"semileptonic\",\n    \n    # Skim: HLT trigger selection for semileptonic primary dataset\n    \"skim\": [\n        hlt_trigger_selection(\"semileptonic\", from_params=True)\n    ],\n    \n    # Preselection: Object multiplicity and b-tagging requirements\n    \"preselection\": [\n        object_multiplicity(\"JetGood\", \">=\", 4, pt_min=30),\n        nbtagging(\">=\", 2),\n    ],\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import (\n    hlt_trigger_selection,\n    object_multiplicity,\n    nbtagging,\n)\n\n# Configuration for 2018 semileptonic ttbar analysis\nconfig = {\n    \"year\": 2018,\n    \"era\": \"UL\",\n    \"dataset\": \"TTbar\",\n    \"channel\": \"semileptonic\",\n    \n    # Skim: HLT trigger selection for semileptonic primary dataset\n    \"skim\": [\n        hlt_trigger_selection(\"semileptonic\", from_params=True)\n    ],\n    \n    # Preselection: Object multiplicity and b-tagging requirements\n    \"preselection\": [\n        object_multiplicity(\"JetGood\", \">=\", 4, pt_min=30),\n        nbtagging(\">=\", 2),\n    ],\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2204,
+    "cache_read_tokens": 22181,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0132471,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.hlt_trigger_selection",
+      "pocket_coffea.lib.cuts.nbtagging",
+      "pocket_coffea.lib.cuts.object_multiplicity"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\n\n\nclass ToyReweight:\n    \"\"\"Custom per-event MC weight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / ak.mean(nominal)\n    \n    @staticmethod\n    def weight_up(events):\n        \"\"\"Up variation: +5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 1.05\n    \n    @staticmethod\n    def weight_down(events):\n        \"\"\"Down variation: -5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 0.95\n\n\n# Configuration usage\nweights_classes = [ToyReweight]",
+  "result_text": "```python\nimport awkward as ak\n\n\nclass ToyReweight:\n    \"\"\"Custom per-event MC weight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / ak.mean(nominal)\n    \n    @staticmethod\n    def weight_up(events):\n        \"\"\"Up variation: +5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 1.05\n    \n    @staticmethod\n    def weight_down(events):\n        \"\"\"Down variation: -5% around nominal.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / ak.mean(nominal)\n        return normalized * 0.95\n\n\n# Configuration usage\nweights_classes = [ToyReweight]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2329,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6894,
+    "cost_usd": 0.026962399999999997,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

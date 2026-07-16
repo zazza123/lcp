@@ -1,0 +1,90 @@
+{
+  "case_id": "polars-map-rows",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [1, 5, 6, 8],\n    \"b\": [5, 8, 5, 3]\n})\n\nresult = df.map_rows(lambda t: \"hi\" if t[0] + t[1] > 10 else \"lo\", return_dtype=pl.String)\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [1, 5, 6, 8],\n    \"b\": [5, 8, 5, 3]\n})\n\nresult = df.map_rows(lambda t: \"hi\" if t[0] + t[1] > 10 else \"lo\", return_dtype=pl.String)\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 59,
+    "output_tokens": 1478,
+    "cache_read_tokens": 167654,
+    "cache_creation_tokens": 3814,
+    "cost_usd": 0.0318424,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 24.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "map_rows row callback",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "map_rows",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#map_rows"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01MA9xsKXyYCsAL2p9amt4Te",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01TofC955zHhxJHzJe9vimZk",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_0113wqsUKbBeSEbLk436QYsc",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#map_rows\",\"kind\":\"method\",\"summary\":\"Apply a custom/user-defined function (UDF) over the rows of the DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#map_rows\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01RfogS52H7TKQmtV3vkR9Dv",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"function\",\"type\":\"Callable[[tuple[Any, ...]], Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Custom function or lambda.\"},{\"name\":\"return_dtype\",\"type\":\"PolarsDataType | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Output type of the operation. If none given, Polars tries to infer the type.\"},{\"name\":\"inference_size\",\"type\":\"int\",\"required\":false,\"default\":256,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Only used in the case when the custom function returns rows.\\nThis uses the first `n` rows to determine the output schema.\"}],\"returns\":\"DataFrame\"}],\"semantics\":{\"summary\":\"Apply a custom/user-defined function (UDF) over the rows of the DataFrame.\",\"description\":\".. warning::\\n            This method is much slower than the native expressions API.\\n            Only use it if you cannot implement your logic otherwise.\\n\\n        The UDF will receive each row as a tuple of values: `udf(row)`.\\n\\n        Implementing logic using a Python function is almost always *significantly*\\n        slower and more memory intensive than implementing the same logic using\\n        the native expression API because:\\n\\n        - The native expression engine runs in Rust; UDFs run in Python.\\n        - Use of Python UDFs forces the DataFrame to be materialized in memory.\\n        - Polars-native expressions can be parallelised (UDFs typically cannot).\\n        - Polars-native expressions can be logically optimised (UDFs cannot).\\n\\n        Wherever possible you should strongly prefer the native expression API\\n        to achieve the best performance.\\n\\n        Parameters\\n        ----------\\n        function\\n            Custom function or lambda.\\n        return_dtype\\n            Output type of the operation. If none given, Polars tries to infer the type.\\n        inference_size\\n            Only used in t"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

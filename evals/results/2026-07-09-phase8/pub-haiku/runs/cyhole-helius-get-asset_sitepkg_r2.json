@@ -1,0 +1,55 @@
+{
+  "case_id": "cyhole-helius-get-asset",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport json\nimport sys\nfrom cyhole.helius import Helius\n\n# Read API key from environment variable\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n\n# Initialize Helius client\nhelius = Helius(api_key=api_key)\n\n# Asset ID to fetch metadata for (use command line arg or default example)\nasset_id = sys.argv[1] if len(sys.argv) > 1 else \"4ZkS7zADmEFnkLPMHqJfPvHDN8oqfPjqDFGEQHiqPbEz\"\n\n# Fetch full DAS metadata synchronously\nresponse = helius.client.post_get_asset(asset_id)\n\n# Access the full metadata via response.result\nmetadata = response.result\n\n# Print the full metadata\nprint(json.dumps(metadata.model_dump(), indent=2))",
+  "result_text": "```python\nimport os\nimport json\nimport sys\nfrom cyhole.helius import Helius\n\n# Read API key from environment variable\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n\n# Initialize Helius client\nhelius = Helius(api_key=api_key)\n\n# Asset ID to fetch metadata for (use command line arg or default example)\nasset_id = sys.argv[1] if len(sys.argv) > 1 else \"4ZkS7zADmEFnkLPMHqJfPvHDN8oqfPjqDFGEQHiqPbEz\"\n\n# Fetch full DAS metadata synchronously\nresponse = helius.client.post_get_asset(asset_id)\n\n# Access the full metadata via response.result\nmetadata = response.result\n\n# Print the full metadata\nprint(json.dumps(metadata.model_dump(), indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 41,
+    "output_tokens": 2198,
+    "cache_read_tokens": 135823,
+    "cache_creation_tokens": 18160,
+    "cost_usd": 0.0609333,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 31.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole",
+        "pattern": "*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/client.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

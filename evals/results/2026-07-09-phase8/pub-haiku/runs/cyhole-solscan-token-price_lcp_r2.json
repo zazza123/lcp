@@ -1,0 +1,32 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable documentation for the exact cyhole 0.3.0 API for Solscan V2 historical price data. Rather than generate code that might be incorrect, I'd need to either:\n\n1. Check the cyhole library's source or installed documentation directly\n2. Have you provide an example of how the cyhole Solscan API is structured\n\nWould you like me to read the cyhole package documentation from your environment, or can you share the expected method signature/usage pattern for fetching historical price data?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 698,
+    "cache_read_tokens": 22114,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0057104,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan",
+      "cyhole.solscan.v2.client:SolscanClient#get_token_price"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

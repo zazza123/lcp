@@ -1,0 +1,37 @@
+{
+  "case_id": "pixeltable-update-rows",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.where(films.studio == \"WB\").update({\"distributor\": \"Warner Bros.\"})",
+  "result_text": "```python\nimport pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.where(films.studio == \"WB\").update({\"distributor\": \"Warner Bros.\"})\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 661,
+    "cache_read_tokens": 38952,
+    "cache_creation_tokens": 7138,
+    "cost_usd": 0.0214932,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 13.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

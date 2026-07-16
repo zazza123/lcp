@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.cuts.hlt_triggers import hlt_trigger_sel\nfrom pocket_coffea.cuts.object_selection import (\n    object_multiplicity,\n    btag_multiplicity,\n)\n\n# Configuration parameters\nconfig = {\n    \"year\": 2018,\n    \"channel\": \"semileptonic\",\n    \"primary_dataset\": \"semileptonic\",\n}\n\n# Skim cuts - HLT trigger selection for semileptonic events\nskim_cuts = {\n    \"triggers\": hlt_trigger_sel(dataset=config[\"primary_dataset\"]),\n}\n\n# Preselection cuts - kinematic and tagging requirements\npreselection_cuts = {\n    \"jet_multiplicity\": object_multiplicity(\n        collection=\"JetGood\",\n        min_count=4,\n        pt_min=30.0,\n    ),\n    \"btag_multiplicity\": btag_multiplicity(\n        collection=\"JetGood\",\n        min_count=2,\n    ),\n}\n\n# Combine into complete cut configuration\ncuts = {\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}",
+  "result_text": "```python\nfrom pocket_coffea.cuts.hlt_triggers import hlt_trigger_sel\nfrom pocket_coffea.cuts.object_selection import (\n    object_multiplicity,\n    btag_multiplicity,\n)\n\n# Configuration parameters\nconfig = {\n    \"year\": 2018,\n    \"channel\": \"semileptonic\",\n    \"primary_dataset\": \"semileptonic\",\n}\n\n# Skim cuts - HLT trigger selection for semileptonic events\nskim_cuts = {\n    \"triggers\": hlt_trigger_sel(dataset=config[\"primary_dataset\"]),\n}\n\n# Preselection cuts - kinematic and tagging requirements\npreselection_cuts = {\n    \"jet_multiplicity\": object_multiplicity(\n        collection=\"JetGood\",\n        min_count=4,\n        pt_min=30.0,\n    ),\n    \"btag_multiplicity\": btag_multiplicity(\n        collection=\"JetGood\",\n        min_count=2,\n    ),\n}\n\n# Combine into complete cut configuration\ncuts = {\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4351,
+    "cache_read_tokens": 22181,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0239821,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 47.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.cuts.hlt_triggers.hlt_trigger_sel",
+      "pocket_coffea.cuts.object_selection.btag_multiplicity",
+      "pocket_coffea.cuts.object_selection.object_multiplicity"
+    ],
+    "error": null
+  }
+}

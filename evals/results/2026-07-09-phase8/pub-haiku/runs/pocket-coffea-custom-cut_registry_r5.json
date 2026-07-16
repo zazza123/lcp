@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection cut: at least 2 muons with pT above threshold\n    and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Filter muons by pT threshold\n    muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Count muons per event\n    n_muons = ak.count(muons.pt, axis=1)\n    \n    # Pad muons array to safely access first two\n    muons_pad = ak.pad_none(muons, 2)\n    mu1 = muons_pad[:, 0]\n    mu2 = muons_pad[:, 1]\n    \n    # Require at least 2 muons\n    at_least_two_muons = n_muons >= 2\n    \n    # Require opposite charge for leading pair\n    opposite_charge = ak.fill_none((mu1.charge * mu2.charge) < 0, False)\n    \n    return at_least_two_muons & opposite_charge\n\n# Declare the cut for use in preselections\ndimuon = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15.0},\n    function=dimuon_mask\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection cut: at least 2 muons with pT above threshold\n    and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Filter muons by pT threshold\n    muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Count muons per event\n    n_muons = ak.count(muons.pt, axis=1)\n    \n    # Pad muons array to safely access first two\n    muons_pad = ak.pad_none(muons, 2)\n    mu1 = muons_pad[:, 0]\n    mu2 = muons_pad[:, 1]\n    \n    # Require at least 2 muons\n    at_least_two_muons = n_muons >= 2\n    \n    # Require opposite charge for leading pair\n    opposite_charge = ak.fill_none((mu1.charge * mu2.charge) < 0, False)\n    \n    return at_least_two_muons & opposite_charge\n\n# Declare the cut for use in preselections\ndimuon = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15.0},\n    function=dimuon_mask\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3021,
+    "cache_read_tokens": 22073,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.017321299999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

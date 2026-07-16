@@ -1,0 +1,31 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\n\nclass AppendCheckedExtension:\n    def on_object(self, obj):\n        if hasattr(obj, 'is_function') and obj.is_function:\n            if hasattr(obj, 'docstring') and obj.docstring:\n                obj.docstring.value += \" [checked]\"\n\nextensions = [AppendCheckedExtension()]\npackage = load(\"mypkg\", extensions=extensions)",
+  "result_text": "```python\nfrom griffe import load\n\nclass AppendCheckedExtension:\n    def on_object(self, obj):\n        if hasattr(obj, 'is_function') and obj.is_function:\n            if hasattr(obj, 'docstring') and obj.docstring:\n                obj.docstring.value += \" [checked]\"\n\nextensions = [AppendCheckedExtension()]\npackage = load(\"mypkg\", extensions=extensions)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6491,
+    "cache_read_tokens": 22034,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0346674,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 62.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

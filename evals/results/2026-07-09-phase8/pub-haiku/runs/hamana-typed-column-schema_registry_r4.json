@@ -1,0 +1,67 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query, IntegerColumn, StringColumn, DateColumn\n\nquery = Query(\n    \"SELECT id, name, created_at FROM users\",\n    schema=[\n        IntegerColumn(\"id\"),\n        StringColumn(\"name\"),\n        DateColumn(\"created_at\"),\n    ]\n)\n\nprint(query)",
+  "result_text": "```python\nfrom hamana import Query, IntegerColumn, StringColumn, DateColumn\n\nquery = Query(\n    \"SELECT id, name, created_at FROM users\",\n    schema=[\n        IntegerColumn(\"id\"),\n        StringColumn(\"name\"),\n        DateColumn(\"created_at\"),\n    ]\n)\n\nprint(query)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1161,
+    "cache_read_tokens": 84766,
+    "cache_creation_tokens": 9121,
+    "cost_usd": 0.0325586,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 23.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "hamana",
+        "limit": 20
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QVZEbpRpjpQh9pcqQeosDD",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01AUnZ4waaDrRiEaMscJMwsZ",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"No library is loaded.\",\"hint\":\"Call resolve_library(<package name>) first.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "hamana.core.column:IntegerColumn",
+      "hamana.core.column:StringColumn"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.DateColumn",
+      "hamana.IntegerColumn",
+      "hamana.StringColumn"
+    ],
+    "error": null
+  }
+}

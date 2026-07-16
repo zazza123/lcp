@@ -1,0 +1,91 @@
+{
+  "case_id": "hamana-query-to-sqlite",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query\n\n# Build Query object from SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nresult = query.execute()\n\n# Persist the result to SQLite table using Query's persistence method\nquery.persist(\"orders\")",
+  "result_text": "```python\nfrom hamana import Query\n\n# Build Query object from SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nresult = query.execute()\n\n# Persist the result to SQLite table using Query's persistence method\nquery.persist(\"orders\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 59,
+    "output_tokens": 2740,
+    "cache_read_tokens": 177854,
+    "cache_creation_tokens": 7593,
+    "cost_usd": 0.046730400000000005,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 70.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:context7",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "hamana library documentation",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve_library_id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Query object SQL execution persistence SQLite database"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Query object SQL execution persistence SQLite"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana python",
+        "query": "SQL Query database SQLite persistence"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "Query execute persist"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Gv5gGAdU2s77a56kAHshfU",
+      "content": "<tool_use_error>Error: No such tool available: mcp__context7__resolve_library_id</tool_use_error>"
+    },
+    {
+      "tool_use_id": "toolu_01YbdwR9QM5euhGo3uBGr4KE",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_015EXWPLH5NQTo2WvCRsV5vy",
+      "content": "Available Libraries:\n\n- Title: Python\n- Context7-compatible library ID: /python/cpython\n- Description: The Python programming language\n- Code Snippets: 46700\n- Source Reputation: High\n- Benchmark Score: 79.37\n- Versions: v3.9.22, v3.11.14, v3.13.9\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/python_3\n- Description: Python is a high-level, interpreted programming language emphasizing code readability and simplicity, with extensive standard library support and versatile use cases.\n- Code Snippets: 37695\n- Source Reputation: High\n- Benchmark Score: 69.75\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/devdocs_io_python_3_14\n- Description: Python is a high-level, interpreted programming language known for its simple syntax and versatile applications in web development, data science, automation, and scientific computing.\n- Code Snippets: 24206\n- Source Reputation: High\n- Benchmark Score: 70.34\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/python_3_10\n- Description: Python is a high-level, interpreted programming language that emphasizes readability and developer productivity, offering dynamic typing, a comprehensive standard library, and a broad ecosystem for web development, scripting, automation, and data science.\n- Code Snippets: 29392\n- Source Reputation: High\n- Benchmark Score: 70.12\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/python_3_16\n- Description: Python is a high-level, interpreted programming language widely used for web development, data analysis, artificial intelligence, and scientific computing.\n- Code Snippets: 28483\n- Source Reputation: High\n- Benchmark Score: 68.5"
+    },
+    {
+      "tool_use_id": "toolu_01Me5MKdLZnARxps5Udokb2Y",
+      "content": "Available Libraries:\n\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.query:Query#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

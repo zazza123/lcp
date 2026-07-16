@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_HLT_trigger_cut,\n    get_nObjects,\n    get_btagging\n)\n\n# Parameters including semileptonic trigger selection\nparameters = {\n    \"year\": 2018,\n    \"dataset_primary\": \"semileptonic\",\n    \"semileptonic_triggers\": [\"HLT_IsoMu24\", \"HLT_IsoTkMu24\"],\n}\n\n# Skim cuts (loose cuts for data reduction)\nskim_cuts = {\n    \"HLT_semileptonic\": get_HLT_trigger_cut(\n        dataset=parameters[\"dataset_primary\"],\n        triggers=parameters[\"semileptonic_triggers\"]\n    ),\n}\n\n# Preselection cuts (tighter cuts for analysis)\npreselection_cuts = {\n    \"HLT_semileptonic\": get_HLT_trigger_cut(\n        dataset=parameters[\"dataset_primary\"],\n        triggers=parameters[\"semileptonic_triggers\"]\n    ),\n    \"N_jets\": get_nObjects(\n        collection=\"JetGood\",\n        pt_min=30,\n        n_min=4\n    ),\n    \"N_btags\": get_btagging(\n        n_min=2\n    ),\n}\n\nprint(\"Skim cuts:\", skim_cuts)\nprint(\"Preselection cuts:\", preselection_cuts)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_HLT_trigger_cut,\n    get_nObjects,\n    get_btagging\n)\n\n# Parameters including semileptonic trigger selection\nparameters = {\n    \"year\": 2018,\n    \"dataset_primary\": \"semileptonic\",\n    \"semileptonic_triggers\": [\"HLT_IsoMu24\", \"HLT_IsoTkMu24\"],\n}\n\n# Skim cuts (loose cuts for data reduction)\nskim_cuts = {\n    \"HLT_semileptonic\": get_HLT_trigger_cut(\n        dataset=parameters[\"dataset_primary\"],\n        triggers=parameters[\"semileptonic_triggers\"]\n    ),\n}\n\n# Preselection cuts (tighter cuts for analysis)\npreselection_cuts = {\n    \"HLT_semileptonic\": get_HLT_trigger_cut(\n        dataset=parameters[\"dataset_primary\"],\n        triggers=parameters[\"semileptonic_triggers\"]\n    ),\n    \"N_jets\": get_nObjects(\n        collection=\"JetGood\",\n        pt_min=30,\n        n_min=4\n    ),\n    \"N_btags\": get_btagging(\n        n_min=2\n    ),\n}\n\nprint(\"Skim cuts:\", skim_cuts)\nprint(\"Preselection cuts:\", preselection_cuts)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2504,
+    "cache_read_tokens": 22135,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0147425,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.get_HLT_trigger_cut",
+      "pocket_coffea.lib.cut_functions.get_btagging",
+      "pocket_coffea.lib.cut_functions.get_nObjects"
+    ],
+    "error": null
+  }
+}

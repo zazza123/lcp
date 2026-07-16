@@ -1,0 +1,136 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"simple-tool-server\")\n\n@server.call_tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers together.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\n#!/usr/bin/env python3\n\nfrom fastmcp import FastMCP\n\nserver = FastMCP(\"simple-tool-server\")\n\n@server.call_tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers together.\"\"\"\n    return a + b\n\nif __name__ == \"__main__\":\n    server.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 129,
+    "output_tokens": 3550,
+    "cache_read_tokens": 456133,
+    "cache_creation_tokens": 21297,
+    "cost_usd": 0.1060863,
+    "num_turns": 16,
+    "tool_calls": 15,
+    "duration_s": 58.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/site-packages/fastmcp*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/*fastmcp*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/fastmcp/__init__.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/__init__.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/fastmcp/server/server.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "limit": 300
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run_http",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/fastmcp/server/mixins.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**mixins*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "fastmcp/**/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "run_http_async|def run",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "head_limit": 50
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "async def run_http_async",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/mixins/transport.py",
+        "limit": 200
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/mixins/transport.py",
+        "offset": 200,
+        "limit": 300
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

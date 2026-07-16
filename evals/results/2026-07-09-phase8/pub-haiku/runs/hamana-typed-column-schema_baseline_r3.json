@@ -1,0 +1,36 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query, IntegerColumn, StringColumn, DateColumn\n\nschema = {\n    \"id\": IntegerColumn(),\n    \"name\": StringColumn(),\n    \"created_at\": DateColumn(),\n}\n\nquery = Query(\"SELECT id, name, created_at FROM users\", schema=schema)\n\nprint(query)\nprint(query.schema)",
+  "result_text": "```python\nfrom hamana import Query, IntegerColumn, StringColumn, DateColumn\n\nschema = {\n    \"id\": IntegerColumn(),\n    \"name\": StringColumn(),\n    \"created_at\": DateColumn(),\n}\n\nquery = Query(\"SELECT id, name, created_at FROM users\", schema=schema)\n\nprint(query)\nprint(query.schema)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 887,
+    "cache_read_tokens": 22026,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.006646600000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "hamana.core.column:IntegerColumn",
+      "hamana.core.column:StringColumn"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.DateColumn",
+      "hamana.IntegerColumn",
+      "hamana.StringColumn"
+    ],
+    "error": null
+  }
+}

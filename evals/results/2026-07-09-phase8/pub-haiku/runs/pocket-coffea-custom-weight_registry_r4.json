@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.weights import WeightWrapper\nimport awkward as ak\n\nclass ToyReweight(WeightWrapper):\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def weight(self, events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        mean_weight = ak.mean(nominal)\n        return nominal / mean_weight\n    \n    def weight_up(self, events):\n        \"\"\"Nominal weight + 5% variation\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        mean_weight = ak.mean(nominal)\n        return (nominal / mean_weight) * 1.05\n    \n    def weight_down(self, events):\n        \"\"\"Nominal weight - 5% variation\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        mean_weight = ak.mean(nominal)\n        return (nominal / mean_weight) * 0.95\n\n\n# Example usage in a PocketCoffea configuration:\nif __name__ == \"__main__\":\n    # Define the weight instance\n    toy_reweight = ToyReweight()\n    \n    # Use in processor configuration\n    cfg = {\n        \"weights_classes\": [toy_reweight],\n        # ... rest of configuration\n    }",
+  "result_text": "```python\nfrom pocket_coffea.lib.weights import WeightWrapper\nimport awkward as ak\n\nclass ToyReweight(WeightWrapper):\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def weight(self, events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        mean_weight = ak.mean(nominal)\n        return nominal / mean_weight\n    \n    def weight_up(self, events):\n        \"\"\"Nominal weight + 5% variation\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        mean_weight = ak.mean(nominal)\n        return (nominal / mean_weight) * 1.05\n    \n    def weight_down(self, events):\n        \"\"\"Nominal weight - 5% variation\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        mean_weight = ak.mean(nominal)\n        return (nominal / mean_weight) * 0.95\n\n\n# Example usage in a PocketCoffea configuration:\nif __name__ == \"__main__\":\n    # Define the weight instance\n    toy_reweight = ToyReweight()\n    \n    # Use in processor configuration\n    cfg = {\n        \"weights_classes\": [toy_reweight],\n        # ... rest of configuration\n    }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1670,
+    "cache_read_tokens": 22078,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.010566800000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

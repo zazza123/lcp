@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-default-action",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\nimport cyclopts\n\napp = cyclopts.App()\n\n@app.default\ndef status():\n    \"\"\"Display the current status.\"\"\"\n    print(\"Status: OK\")\n\n@app.command\ndef start():\n    \"\"\"Start the service.\"\"\"\n    print(\"Service started\")\n\n@app.command\ndef stop():\n    \"\"\"Stop the service.\"\"\"\n    print(\"Service stopped\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\nimport cyclopts\n\napp = cyclopts.App()\n\n@app.default\ndef status():\n    \"\"\"Display the current status.\"\"\"\n    print(\"Status: OK\")\n\n@app.command\ndef start():\n    \"\"\"Start the service.\"\"\"\n    print(\"Service started\")\n\n@app.command\ndef stop():\n    \"\"\"Stop the service.\"\"\"\n    print(\"Service stopped\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2732,
+    "cache_read_tokens": 22955,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0159645,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 31.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\nfrom griffe.extensions import Extension\n\nclass CheckedDocstringExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to function docstrings.\"\"\"\n    \n    def on_member_loaded(self, member):\n        \"\"\"Called when a member is loaded.\"\"\"\n        if member.is_function and member.docstring:\n            member.docstring.value += \" [checked]\"\n\n# Aggregate extension the way Griffe expects\nextensions = [CheckedDocstringExtension()]\n\n# Load the package with the extension enabled\npackage = load(\"mypkg\", extensions=extensions)",
+  "result_text": "```python\nfrom griffe import load\nfrom griffe.extensions import Extension\n\nclass CheckedDocstringExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to function docstrings.\"\"\"\n    \n    def on_member_loaded(self, member):\n        \"\"\"Called when a member is loaded.\"\"\"\n        if member.is_function and member.docstring:\n            member.docstring.value += \" [checked]\"\n\n# Aggregate extension the way Griffe expects\nextensions = [CheckedDocstringExtension()]\n\n# Load the package with the extension enabled\npackage = load(\"mypkg\", extensions=extensions)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 7769,
+    "cache_read_tokens": 24108,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0412648,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 71.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

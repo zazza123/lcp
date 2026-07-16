@@ -1,0 +1,51 @@
+{
+  "case_id": "cyhole-solanafm-account-transfers",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solana_fm import SolanaFM\n\ndef get_token_transfers(account_address: str):\n    solana_fm = SolanaFM()\n    \n    response = solana_fm.client.get_account_transfers(account_address)\n    \n    if response.result and response.result.data:\n        for transfer in response.result.data:\n            print(f\"Transfer: {transfer}\")\n        return response.result.data\n    else:\n        print(\"No transfers found or error occurred\")\n        return None\n\nif __name__ == \"__main__\":\n    account = \"YOUR_ACCOUNT_ADDRESS\"\n    transfers = get_token_transfers(account)",
+  "result_text": "```python\nimport os\nfrom cyhole.solana_fm import SolanaFM\n\ndef get_token_transfers(account_address: str):\n    solana_fm = SolanaFM()\n    \n    response = solana_fm.client.get_account_transfers(account_address)\n    \n    if response.result and response.result.data:\n        for transfer in response.result.data:\n            print(f\"Transfer: {transfer}\")\n        return response.result.data\n    else:\n        print(\"No transfers found or error occurred\")\n        return None\n\nif __name__ == \"__main__\":\n    account = \"YOUR_ACCOUNT_ADDRESS\"\n    transfers = get_token_transfers(account)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 33,
+    "output_tokens": 1565,
+    "cache_read_tokens": 109878,
+    "cache_creation_tokens": 20191,
+    "cost_usd": 0.059227800000000004,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 24.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "cyhole",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages",
+        "output_mode": "files_with_matches",
+        "head_limit": 20
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solana_fm/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solana_fm/client.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

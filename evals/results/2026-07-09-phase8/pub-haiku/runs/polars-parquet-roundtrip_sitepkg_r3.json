@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"A\": [1, 2, 3, 4, 5],\n    \"B\": [\"x\", \"y\", \"z\", \"w\", \"v\"],\n    \"C\": [1.1, 2.2, 3.3, 4.4, 5.5]\n})\n\nprint(\"Original DataFrame:\")\nprint(df)\n\n# Serialize to Parquet in memory\nbuffer = BytesIO()\ndf.write_parquet(buffer)\n\n# Get the bytes and reset pointer\nparquet_bytes = buffer.getvalue()\nprint(f\"\\nSerialized to {len(parquet_bytes)} bytes in memory\")\n\n# Deserialize from bytes back to DataFrame\nbuffer.seek(0)\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Verify round trip\nassert df.frame_equal(df_restored), \"DataFrames do not match!\"\nprint(\"\\n\u2713 Round trip successful - DataFrames are identical\")",
+  "result_text": "```python\nimport polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"A\": [1, 2, 3, 4, 5],\n    \"B\": [\"x\", \"y\", \"z\", \"w\", \"v\"],\n    \"C\": [1.1, 2.2, 3.3, 4.4, 5.5]\n})\n\nprint(\"Original DataFrame:\")\nprint(df)\n\n# Serialize to Parquet in memory\nbuffer = BytesIO()\ndf.write_parquet(buffer)\n\n# Get the bytes and reset pointer\nparquet_bytes = buffer.getvalue()\nprint(f\"\\nSerialized to {len(parquet_bytes)} bytes in memory\")\n\n# Deserialize from bytes back to DataFrame\nbuffer.seek(0)\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Verify round trip\nassert df.frame_equal(df_restored), \"DataFrames do not match!\"\nprint(\"\\n\u2713 Round trip successful - DataFrames are identical\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 927,
+    "cache_read_tokens": 24088,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0070528000000000006,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\nfrom pixeltable.iterators import FrameIterator\n\n# Assume 'videos' table exists with a 'video' column\nvideos_table = px.get_table('videos')\n\n# Create a view that expands each video into frames sampled at 1 fps\nframes_view = px.create_view(\n    path='video_frames',\n    base=videos_table,\n    iterator=FrameIterator.create(video=videos_table.video, fps=1)\n)\n\n# Optionally, display the view\nframes_view.show()",
+  "result_text": "```python\nimport pixeltable as px\nfrom pixeltable.iterators import FrameIterator\n\n# Assume 'videos' table exists with a 'video' column\nvideos_table = px.get_table('videos')\n\n# Create a view that expands each video into frames sampled at 1 fps\nframes_view = px.create_view(\n    path='video_frames',\n    base=videos_table,\n    iterator=FrameIterator.create(video=videos_table.video, fps=1)\n)\n\n# Optionally, display the view\nframes_view.show()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 155,
+    "output_tokens": 3194,
+    "cache_read_tokens": 554202,
+    "cache_creation_tokens": 24005,
+    "cost_usd": 0.11955519999999996,
+    "num_turns": 19,
+    "tool_calls": 18,
+    "duration_s": 58.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "frame extraction video iterator",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "frame",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable.iterators:FrameIterator"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create view",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "view",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:View",
+          "pixeltable.catalog:Catalog#create_view"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FrameIterator.create fps",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable.iterators:FrameIterator#create"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "fps frame rate sampl",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "iterator video frames",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable.iterators",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable.iterators.video",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable.iterators:FrameIterator#input_schema",
+          "pixeltable.iterators:FrameIterator#output_schema"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "video",
+        "library": "pixeltable",
+        "kind": "function",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable.iterators.video",
+        "kind": "class",
+        "limit": 20
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01G9ijRxcHYu9DxKU2oCsSZe",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012kg7GuhKHQZZ5v4YeWG6C9",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01HxnnuRhwzYRbFPVN1zbRJY",
+      "content": "{\"results\":[{\"id\":\"pixeltable.iterators:FrameIterator\",\"kind\":\"class\",\"summary\":\"Class FrameIterator\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator\"},{\"id\":\"pixeltable.utils.av:VideoFrames\",\"kind\":\"class\",\"summary\":\"Context manager for iterating over video frames at a specified frame rate.\",\"import\":\"from pixeltable.utils.av import VideoFrames\"},{\"id\":\"pixeltable.catalog.local_table:Formatter#extract_first_video_frame\",\"kind\":\"method\",\"summary\":\"Method extract_first_video_frame\",\"import\":\"from pixeltable.catalog.local_table import Formatter\",\"resolved_via_alias\":\"pixeltable.utils.formatter:Formatter#extract_first_video_frame\"},{\"id\":\"pixeltable:ResultSet#to_pandas\",\"kind\":\"method\",\"summary\":\"Convert the `ResultSet` to a Pandas `DataFrame`.\",\"import\":\"from pixeltable import ResultSet\",\"resolved_via_alias\":\"pixeltable._query:ResultSet#to_pandas\"},{\"id\":\"pixeltable.io.table_data_conduit:df_infer_schema\",\"kind\":\"function\",\"summary\":\"Infers a Pixeltable schema from a Pandas DataFrame.\",\"import\":\"from pixeltable.io.table_data_conduit import df_infer_schema\",\"resolved_via_alias\":\"pixeltable.io.pandas:df_infer_schema\"},{\"id\":\"pixeltable.io:import_pandas\",\"kind\":\"function\",\"summary\":\"Creates a new base table from a Pandas [`DataFrame`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html), with the specified name. The schema of the table will be inferred from the DataFrame.\",\"import\":\"from pixeltable.io import import_pandas\",\"resolved_via_alias\":\"pixeltable.io.pandas:import_pandas\"},{\"id\":\"pixeltable.serving:\",\"kind\":\"module\",\"summary\":\"Adapters for web serving frameworks.\",\"import\":\"import pixeltable.serving\"},{\"id\":\"pixeltable.utils.av:estimate_segment_duration\",\"kind\":\"function\",\"summary\":\"Return the length of a segment for which the combined in-memory size of all its decoded frames is roughly approx_decoded_bytes.\",\"import\":\"from pixeltable.utils.av import estimate_segment_duration\"}"
+    },
+    {
+      "tool_use_id": "toolu_01LwZhHCAtU4L5HBz1C5sVSy",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"pixeltable.iterators.video\",\"aliases\":[\"pixeltable.iterators:FrameIterator\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"Class FrameIterator\"},\"id\":\"pixeltable.iterators:FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"pixeltable.iterators:FrameIterator#__iter__\",\"kind\":\"method\",\"summary\":\"Method __iter__\"},{\"id\":\"pixeltable.iterators:FrameIterator#__next__\",\"kind\":\"method\",\"summary\":\"Return the next element of the iterator as a dictionary or raise StopIteration\"},{\"id\":\"pixeltable.iterators:FrameIterator#close\",\"kind\":\"method\",\"summary\":\"Close the iterator and release all resources\"},{\"id\":\"pixeltable.iterators:FrameIterator#create\",\"kind\":\"method\",\"summary\":\"Method create\"},{\"id\":\"pixeltable.iterators:FrameIterator#input_schema\",\"kind\":\"method\",\"summary\":\"Provide the Pixeltable types of the init() parameters\"},{\"id\":\"pixeltable.iterators:FrameIterator#output_schema\",\"kind\":\"method\",\"summary\":\"Specify the dictionary returned by next() and a list of unstored column names\"},{\"id\":\"pixeltable.iterators:FrameIterator#set_pos\",\"kind\":\"method\",\"summary\":\"Set the iterator position to pos\"}]}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01GyaKFgXyg22yYpR95WStme",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Vu3edEnzFQLa5VcQmf31iB",
+      "content": "{\"results\":[{\"id\":\"pixeltable:View\",\"kind\":\"class\",\"summary\":\"A `Table` that presents a virtual view of another table (or view).\",\"import\":\"from pixeltable import View\",\"resolved_via_alias\":\"pixeltable.catalog.view:View\"},{\"id\":\"pixeltable.catalog:TableVersion#view_md\",\"kind\":\"attribute\",\"summary\":\"Attribute view_md\",\"import\":\"from pixeltable.catalog import TableVersion\",\"resolved_via_alias\":\"pixeltable.catalog.table_version:TableVersion#view_md\"},{\"id\":\"pixeltable.metadata.schema:ViewMd\",\"kind\":\"class\",\"summary\":\"ViewMd(is_snapshot: bool, include_base_columns: bool, base_versions: list[tuple[str, int | None]], predicate: dict[str, typing.Any] | None, sample_clause: dict[str, typing.Any] | None, iterator_call: dict[str, typing.Any] | None)\",\"import\":\"from pixeltable.metadata.schema import ViewMd\"},{\"id\":\"pixeltable.catalog:Catalog#create_view\",\"kind\":\"method\",\"summary\":\"Method create_view\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#create_view\"},{\"id\":\"pixeltable.catalog:Catalog#get_view_ids\",\"kind\":\"method\",\"summary\":\"Return the ids of views that directly reference the given table\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_view_ids\"},{\"id\":\"pixeltable.catalog:CatalogBase#create_view\",\"kind\":\"method\",\"summary\":\"Method create_view\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#create_view\"},{\"id\":\"pixeltable.catalog:CatalogProxy#create_view\",\"kind\":\"method\",\"summary\":\"Method create_view\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#create_view\"},{\"id\":\"pixeltable:InsertableTable#list_views\",\"kind\":\"method\",\"summary\":\"Method list_views\",\"import\":\"from pixeltable import InsertableTable\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table:InsertableTable#list_views\"},{\"id\":\"pixeltable"
+    },
+    {
+      "tool_use_id": "toolu_013CLjzurck2uwSE1WfttT7s",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"pixeltable.catalog.view\",\"aliases\":[\"pixeltable.catalog.catalog:View\",\"pixeltable.catalog:View\",\"pixeltable:View\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"id\",\"type\":\"UUID\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"tbl_version_path\",\"type\":\"TableVersionPath\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"snapshot_only\",\"type\":\"bool\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}]}],\"semantics\":{\"summary\":\"A `Table` that presents a virtual view of another table (or view).\",\"description\":\"A view is typically backed by a store table, which records the view's columns and is joined back to the bases\\n    at query execution time.\\n    The exception is a snapshot view without a predicate and without additional columns: in that case, the view\\n    is simply a reference to a specific set of base versions.\"},\"id\":\"pixeltable:View\",\"resolved_via_alias\":\"pixeltable.catalog.view:View\",\"import\":\"from pixeltable import View\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"id\",\"type\":\"UUID\"},{\"name\":\"tbl_version_path\",\"type\":\"TableVersionPath\"},{\"name\":\"snapshot_only\",\"type\":\"bool\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"pixeltable:View#__getitem__\",\"kind\":\"method\",\"summary\":\"Method __getitem__\"},{\"id\":\"pixeltable:View#__hash__\",\"kind\":\"method\",\"summary\":\"Method __hash__\"},{\"id\":\"pixeltable:View#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"pixeltable:View#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"pixeltable:View#add_column\",\"kind\":\"method\",\"summary\":\"Method add_column\"},{\"id\":\"pixeltable:View#add_columns\",\"kind\":\"method\",\"summary\":\"Method add_columns\"},{\"id\":\"pixeltable:View#add_computed_column\",\"kind\":\"method\",\"summary\":\"Method add_computed_column\"},{\"id\":\"pixeltable:View#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Method add_embedding_index\"},{\"id\":\"pixeltable:View#batch_update\",\"kind\":\"method\",\"summary\":\"Meth"
+    },
+    {
+      "tool_use_id": "toolu_01DNpV1TQfQbtSdmUaG7ancj",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019NukPVp8VZPdpcmRUgpaTL",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.iterators.video\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"GeneratingFunctionCall\"}],\"semantics\":{\"summary\":\"Method create\"},\"id\":\"pixeltable.iterators:FrameIterator#create\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator#create\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"GeneratingFunctionCall\",\"returns_classes\":[\"pixeltable.func:GeneratingFunctionCall\"],\"next\":\"returns GeneratingFunctionCall \u2192 get_symbol(ids=['pixeltable.func:GeneratingFunctionCall']) to see its members\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01XmGSQ6omE7Cc7ykgC18Wxm",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01S1tdEKTKuFxAjdaHh8PwCU",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01U6rgPyAimQ8T1W4Z3ofRaa",
+      "content": "{\"results\":[{\"id\":\"pixeltable.iterators:\",\"kind\":\"module\",\"summary\":\"Iterators for splitting media and documents into components.\",\"import\":\"import pixeltable.iterators\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01L5KawaGMPSdDW1zkfmq2Pv",
+      "content": "{\"results\":[{\"id\":\"pixeltable.iterators:FrameIterator\",\"kind\":\"class\",\"summary\":\"Class FrameIterator\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator\"},{\"id\":\"pixeltable.iterators:VideoSplitter\",\"kind\":\"class\",\"summary\":\"Class VideoSplitter\",\"import\":\"from pixeltable.iterators import VideoSplitter\",\"resolved_via_alias\":\"pixeltable.iterators.video:VideoSplitter\"},{\"id\":\"pixeltable.iterators:FrameIterator#__iter__\",\"kind\":\"method\",\"summary\":\"Method __iter__\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator#__iter__\"},{\"id\":\"pixeltable.iterators:VideoSplitter#__iter__\",\"kind\":\"method\",\"summary\":\"Method __iter__\",\"import\":\"from pixeltable.iterators import VideoSplitter\",\"resolved_via_alias\":\"pixeltable.iterators.video:VideoSplitter#__iter__\"},{\"id\":\"pixeltable.iterators:FrameIterator#__next__\",\"kind\":\"method\",\"summary\":\"Return the next element of the iterator as a dictionary or raise StopIteration\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator#__next__\"},{\"id\":\"pixeltable.iterators:VideoSplitter#__next__\",\"kind\":\"method\",\"summary\":\"Return the next element of the iterator as a dictionary or raise StopIteration\",\"import\":\"from pixeltable.iterators import VideoSplitter\",\"resolved_via_alias\":\"pixeltable.iterators.video:VideoSplitter#__next__\"},{\"id\":\"pixeltable.iterators:FrameIterator#close\",\"kind\":\"method\",\"summary\":\"Close the iterator and release all resources\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator#close\"},{\"id\":\"pixeltable.iterators:VideoSplitter#close\",\"kind\":\"method\",\"summary\":\"Close the iterator and release all resources\",\"import\":\"from pixeltable.iterators import VideoSplitter\",\"resolved_via_alias\":\"pixeltable.iterators.video:VideoSplitter#close\"},{\"id\":\"pixeltable.iter"
+    },
+    {
+      "tool_use_id": "toolu_01M72GKKocSKn468sa4x1z7Q",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.iterators.video\",\"signatures\":[{\"async_\":false,\"returns\":\"dict[str, ColumnType]\"}],\"semantics\":{\"summary\":\"Provide the Pixeltable types of the init() parameters\",\"description\":\"The keys need to match the names of the init() parameters. This is equivalent to the parameters_types\\n        parameter of the @function decorator.\"},\"id\":\"pixeltable.iterators:FrameIterator#input_schema\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator#input_schema\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"dict[str, ColumnType]\",\"returns_classes\":[\"pixeltable.iterators.base:ColumnType\"],\"next\":\"returns dict[str, ColumnType] \u2192 get_symbol(ids=['pixeltable.iterators.base:ColumnType']) to see its members\"}},{\"kind\":\"method\",\"module\":\"pixeltable.iterators.video\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"tuple[dict[str, ColumnType], list[str]]\",\"returns_description\":\"a dictionary which is turned into a list of columns in the output table\\na list of unstored column names\"}],\"semantics\":{\"summary\":\"Specify the dictionary returned by next() and a list of unstored column names\",\"description\":\"Returns:\\n            a dictionary which is turned into a list of columns in the output table\\n            a list of unstored column names\"},\"id\":\"pixeltable.iterators:FrameIterator#output_schema\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator#output_schema\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"tuple[dict[str, ColumnType], list[str]]\",\"returns_classes\":[\"pixeltable.iterators.base:ColumnTyp"
+    },
+    {
+      "tool_use_id": "toolu_01VerHFcMdrXRKxjkqHXYJtC",
+      "content": "{\"results\":[{\"id\":\"pixeltable.utils.av:append_video_encoder\",\"kind\":\"function\",\"summary\":\"Append video encoder-related args to ffmpeg cmdline.\",\"import\":\"from pixeltable.utils.av import append_video_encoder\"},{\"id\":\"pixeltable.utils.av:get_video_duration\",\"kind\":\"function\",\"summary\":\"Return video duration in seconds.\",\"import\":\"from pixeltable.utils.av import get_video_duration\"},{\"id\":\"pixeltable.utils.av:has_audio_stream\",\"kind\":\"function\",\"summary\":\"Check if video has audio stream using PyAV.\",\"import\":\"from pixeltable.utils.av import has_audio_stream\"},{\"id\":\"pixeltable.io:export_csv\",\"kind\":\"function\",\"summary\":\"Exports a query result or table to a CSV file.\",\"import\":\"from pixeltable.io import export_csv\",\"resolved_via_alias\":\"pixeltable.io.csv:export_csv\"},{\"id\":\"pixeltable.io:create_label_studio_project\",\"kind\":\"function\",\"summary\":\"Create a new Label Studio project and link it to the specified [`Table`][pixeltable.Table].\",\"import\":\"from pixeltable.io import create_label_studio_project\",\"resolved_via_alias\":\"pixeltable.io.globals:create_label_studio_project\"},{\"id\":\"pixeltable.io:export_images_as_fo_dataset\",\"kind\":\"function\",\"summary\":\"Export images from a Pixeltable table as a Voxel51 dataset. The data must consist of a single column (or expression) containing image data, along with optional additional columns containing labels. Currently, only classification and detection labels are supported.\",\"import\":\"from pixeltable.io import export_images_as_fo_dataset\",\"resolved_via_alias\":\"pixeltable.io.globals:export_images_as_fo_dataset\"},{\"id\":\"pixeltable.io:import_huggingface_dataset\",\"kind\":\"function\",\"summary\":\"Create a new base table from a Huggingface dataset, or dataset dict with multiple splits. Requires `datasets` library to be installed.\",\"import\":\"from pixeltable.io import import_huggingface_dataset\",\"resolved_via_alias\":\"pixeltable.io.hf_datasets:import_huggingface_dataset\"},{\"id\":\"pixeltable.io:export_json\",\"kind\":\"function\",\"summary\":\"Exports a que"
+    },
+    {
+      "tool_use_id": "toolu_01QyggkqZ6qL8A8mLFVQaBpH",
+      "content": "{\"library\":{\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"pixeltable\",\"symbols\":1},{\"module\":\"pixeltable._query\",\"symbols\":60},{\"module\":\"pixeltable._version\",\"symbols\":1},{\"module\":\"pixeltable.catalog\",\"symbols\":1},{\"module\":\"pixeltable.catalog.catalog\",\"symbols\":43},{\"module\":\"pixeltable.catalog.catalog_base\",\"symbols\":12},{\"module\":\"pixeltable.catalog.catalog_proxy\",\"symbols\":13},{\"module\":\"pixeltable.catalog.column\",\"symbols\":43},{\"module\":\"pixeltable.catalog.dir\",\"symbols\":3},{\"module\":\"pixeltable.catalog.globals\",\"symbols\":39},{\"module\":\"pixeltable.catalog.insertable_table\",\"symbols\":49},{\"module\":\"pixeltable.catalog.insertable_table_proxy\",\"symbols\":45},{\"module\":\"pixeltable.catalog.local_table\",\"symbols\":48},{\"module\":\"pixeltable.catalog.path\",\"symbols\":23},{\"module\":\"pixeltable.catalog.schema_object\",\"symbols\":4},{\"module\":\"pixeltable.catalog.table\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_metadata\",\"symbols\":6},{\"module\":\"pixeltable.catalog.table_path\",\"symbols\":73},{\"module\":\"pixeltable.catalog.table_proxy\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_version\",\"symbols\":80},{\"module\":\"pixeltable.catalog.table_version_handle\",\"symbols\":21},{\"module\":\"pixeltable.catalog.tbl_ops\",\"symbols\":95},{\"module\":\"pixeltable.catalog.update_status\",\"symbols\":27},{\"module\":\"pixeltable.catalog.view\",\"symbols\":49},{\"module\":\"pixeltable.config\",\"symbols\":26},{\"module\":\"pixeltable.env\",\"symbols\":64},{\"module\":\"pixeltable.exceptions\",\"symbols\":50},{\"module\":\"pixeltable.exec\",\"symbols\":1},{\"module\":\"pixeltable.exec.aggregation_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.cache_prefetch_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_materialization_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_reconstruction_node\",\"symbols\":18},{\"module\":\"pixeltable.exec.component_iteration_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.data_row_batch\",\"symbols\":8},{\"module\":\"pixeltable.exec.e"
+    },
+    {
+      "tool_use_id": "toolu_01Lmh8wbXiqUMuNdYd6xLY9i",
+      "content": "{\"results\":[{\"id\":\"pixeltable.iterators:FrameIterator\",\"kind\":\"class\",\"summary\":\"Class FrameIterator\",\"import\":\"from pixeltable.iterators import FrameIterator\",\"resolved_via_alias\":\"pixeltable.iterators.video:FrameIterator\"},{\"id\":\"pixeltable.iterators:VideoSplitter\",\"kind\":\"class\",\"summary\":\"Class VideoSplitter\",\"import\":\"from pixeltable.iterators import VideoSplitter\",\"resolved_via_alias\":\"pixeltable.iterators.video:VideoSplitter\"}],\"total\":2,\"truncated\":false}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

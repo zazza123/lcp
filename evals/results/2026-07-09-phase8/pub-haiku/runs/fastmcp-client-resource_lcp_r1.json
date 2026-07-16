@@ -1,0 +1,86 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import FastMCP, Client\n\n\nasync def main():\n    # Create an in-memory FastMCP server\n    server = FastMCP(\"example-server\")\n\n    # Register a resource handler\n    @server.resource(\"data://config\")\n    def get_config() -> str:\n        return '{\"key\": \"value\", \"setting\": \"enabled\"}'\n\n    # Create a client connected directly to the server (no subprocess, no network)\n    client = Client(server)\n\n    # Fetch the resource contents\n    async with client:\n        response = await client.read_resource(\"data://config\")\n        print(\"Resource contents:\", response.contents)\n        for content in response.contents:\n            print(\"Text:\", content.text)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP, Client\n\n\nasync def main():\n    # Create an in-memory FastMCP server\n    server = FastMCP(\"example-server\")\n\n    # Register a resource handler\n    @server.resource(\"data://config\")\n    def get_config() -> str:\n        return '{\"key\": \"value\", \"setting\": \"enabled\"}'\n\n    # Create a client connected directly to the server (no subprocess, no network)\n    client = Client(server)\n\n    # Fetch the resource contents\n    async with client:\n        response = await client.read_resource(\"data://config\")\n        print(\"Resource contents:\", response.contents)\n        for content in response.contents:\n            print(\"Text:\", content.text)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 973,
+    "cache_read_tokens": 86811,
+    "cache_creation_tokens": 14502,
+    "cost_usd": 0.0425851,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 20.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "transport in_memory session",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "library": "fastmcp",
+        "ids": [
+          "fastmcp.client:Client"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_018P6hF22UHzAwPCVXNSEicR",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01NEDmxF3AaHcyQFTDUNENU8",
+      "content": "{\"results\":[{\"id\":\"fastmcp.client:Client\",\"kind\":\"class\",\"summary\":\"MCP client that delegates connection management to a Transport instance.\",\"import\":\"from fastmcp.client import Client\",\"resolved_via_alias\":\"fastmcp.client.client:Client\"},{\"id\":\"fastmcp._install_hints:CLIENT_SUPPORT\",\"kind\":\"constant\",\"summary\":\"Constant CLIENT_SUPPORT\",\"import\":\"from fastmcp._install_hints import CLIENT_SUPPORT\"},{\"id\":\"fastmcp.client.mixins:ClientPromptsMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing prompt-related methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientPromptsMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.prompts:ClientPromptsMixin\"},{\"id\":\"fastmcp.client.mixins:ClientResourcesMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing resource-related methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientResourcesMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.resources:ClientResourcesMixin\"},{\"id\":\"fastmcp.client.mixins:ClientTaskManagementMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing task management methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientTaskManagementMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.task_management:ClientTaskManagementMixin\"},{\"id\":\"fastmcp.client.mixins:ClientToolsMixin\",\"kind\":\"class\",\"summary\":\"Mixin providing tool-related methods for Client.\",\"import\":\"from fastmcp.client.mixins import ClientToolsMixin\",\"resolved_via_alias\":\"fastmcp.client.mixins.tools:ClientToolsMixin\"},{\"id\":\"fastmcp.client.mixins.tools:client_span\",\"kind\":\"function\",\"summary\":\"Create a CLIENT span with standard MCP attributes.\",\"import\":\"from fastmcp.client.mixins.tools import client_span\",\"resolved_via_alias\":\"fastmcp.client.telemetry:client_span\"},{\"id\":\"fastmcp.client:ClientTransport\",\"kind\":\"class\",\"summary\":\"Abstract base class for different MCP client transport mechanisms.\",\"import\":\"from fastmcp.client import ClientTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.base:ClientTransport\"},{"
+    },
+    {
+      "tool_use_id": "toolu_01V9uVUnXQ14wsrhritT4BHd",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019KcKXs2SZrcR73voLyMNb3",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.client.client\",\"aliases\":[\"fastmcp.cli.client:Client\",\"fastmcp.client:Client\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:Client\",\"fastmcp.server.providers.proxy:Client\",\"fastmcp.utilities.inspect:Client\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"transport\",\"type\":\"Union[ClientTransportT, Any, FastMCP, AnyUrl, Path, MCPConfig, dict[str, Any], str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Connection source specification, which can be:\\n\\n- ClientTransport: Direct transport instance\\n- FastMCP: In-process FastMCP server\\n- AnyUrl or str: URL to connect to\\n- Path: File path for local socket\\n- MCPConfig: MCP server configuration\\n- dict: Transport configuration\"},{\"name\":\"name\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"roots\",\"type\":\"UnionType[list[str], list[Root], list[UnionType[str, Root]], Callable[[mcp.shared.context.RequestContext[mcp.client.session.ClientSession, ~LifespanContextT, typing.Any]], UnionType[list[str], list[Root], list[UnionType[str, Root]]]], Callable[[mcp.shared.context.RequestContext[mcp.client.session.ClientSession, ~LifespanContextT, typing.Any]], Awaitable[UnionType[list[str], list[Root], list[UnionType[str, Root]]]]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional RootsList or RootsHandler for filesystem access\"},{\"name\":\"sampling_handler\",\"type\":\"UnionType[Callable[[list[mcp.types.SamplingMessage], <class 'mcp.types.CreateMessageRequestParams'>, mcp.shared.context.RequestContext[~SessionT, ~LifespanContextT, typing.Any]], UnionType[str, CreateMessageResult, CreateMessageResultWithTools, Awaitable[UnionType[str, CreateMessageResult, CreateMessageResultWithTools]]]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional handler for sampling requests\"},{\"name\":\"sampling_capabilities\",\"type\":\"UnionType[SamplingCapability, None]\",\"require"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

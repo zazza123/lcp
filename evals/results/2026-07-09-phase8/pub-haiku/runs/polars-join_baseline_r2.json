@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-join",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create sample DataFrames\ndf1 = pl.DataFrame({\n    \"id\": [1, 2, 3, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"]\n})\n\ndf2 = pl.DataFrame({\n    \"id\": [2, 3, 4, 5],\n    \"amount\": [100, 200, 300, 400]\n})\n\n# Inner join on id to keep only matching rows\nresult = df1.join(df2, on=\"id\", how=\"inner\")\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\n# Create sample DataFrames\ndf1 = pl.DataFrame({\n    \"id\": [1, 2, 3, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"]\n})\n\ndf2 = pl.DataFrame({\n    \"id\": [2, 3, 4, 5],\n    \"amount\": [100, 200, 300, 400]\n})\n\n# Inner join on id to keep only matching rows\nresult = df1.join(df2, on=\"id\", how=\"inner\")\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1042,
+    "cache_read_tokens": 22038,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0074228,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

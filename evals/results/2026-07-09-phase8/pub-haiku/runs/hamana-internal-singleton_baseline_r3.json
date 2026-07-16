@@ -1,0 +1,58 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\n\n# Get the singleton instance from the DatabaseConnector class\ndb_connector = hamana.DatabaseConnector.get_instance()\n\n# Get the underlying raw database connection\nraw_connection = db_connector._connection\n\nprint(raw_connection)",
+  "result_text": "```python\nimport hamana\n\n# Get the singleton instance from the DatabaseConnector class\ndb_connector = hamana.DatabaseConnector.get_instance()\n\n# Get the underlying raw database connection\nraw_connection = db_connector._connection\n\nprint(raw_connection)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 2093,
+    "cache_read_tokens": 91445,
+    "cache_creation_tokens": 4498,
+    "cost_usd": 0.0286405,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 26.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PythonEval",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "python bash shell execute",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.DatabaseConnector",
+      "hamana.DatabaseConnector.get_instance"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "case_id": "pixeltable-query",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Get the films table\ntable = pxt.get_table('films')\n\n# Filter for year > 1990 and select title and revenue columns\nresult = table.where(table['year'] > 1990).select(table['title'], table['revenue'])\n\n# Materialize the results locally\ndf = result.to_pandas()\nprint(df)",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Get the films table\ntable = pxt.get_table('films')\n\n# Filter for year > 1990 and select title and revenue columns\nresult = table.where(table['year'] > 1990).select(table['title'], table['revenue'])\n\n# Materialize the results locally\ndf = result.to_pandas()\nprint(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1127,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6930,
+    "cost_usd": 0.0210186,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable:Table#collect"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
