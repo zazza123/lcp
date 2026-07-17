@@ -99,6 +99,7 @@ nav:
       - Introduction: introduction.md
       - Quickstart: quickstart.md
       - CLI reference: cli.md
+  - Benchmark: benchmark.md
   - Guides:
       - MCP Server: guides/mcp-server.md
       - Claude Code plugin: guides/claude-code-plugin.md
