@@ -63,8 +63,9 @@ cells are ceiling context; churned cells measure stale-training traps.
 
 1. **The shipped product (lcp-skill) is the strongest verified configuration
    on the target workload for a small model.** Haiku niche pass 28.2 → 65.7
-   (+37.5pp, +133% relative; CIs disjoint), misuse 0.70 → 0.35. This is the
-   headline and it clears the >20%-relative bar by a wide margin.
+   (+37.5pp, +133% relative; CIs disjoint), niche misuse 0.91 → 0.42 (−54%;
+   overall-arm misuse 0.70 → 0.35). This is the headline and it clears the
+   >20%-relative bar by a wide margin.
 
 2. **The client-side skill is what closes the F1 adoption gap.** Only the
    `lcp-skill` arm carries the plugin skill; the bare `lcp`, `registry` and
@@ -142,4 +143,11 @@ the Phase 0 delta "within noise" is closed where it matters.
   excluded (upstream pgvector break, lcp-registry issue #168), and
   fastmcp/cyclopts/griffe resolve via local scan in the bare server venv
   because they are lcp's own dependencies (labeled, not counted as registry
-  evidence).
+  evidence). The aggregated registry *niche* cell above is therefore
+  local-scan-inclusive; it sits at baseline regardless and is not a headline.
+- **Post-freeze harness commits.** The pre-registration froze the harness at
+  `fc0fd11`; the grid ran with two later commits — `bd53ee4` (tool_result
+  capture fix) and `03e4c4b` (bootstrap-CI helper), recorded in `meta.json`.
+  Both are metric-neutral: engagement derives from `tool_call_details`, and
+  pass/misuse from the verifier — neither touches an arm definition or a
+  scored field.

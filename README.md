@@ -21,7 +21,7 @@
 
 **lcp** (*Library Context Protocol*) is primarly a protocol designed to solve the problem of AI agents not having access to up-to-date library documentation, which leads to hallucinations and inaccurate code generation. The LCP SDK provides tools to scan Python packages, extract API information, and generate LCP-compliant JSON manifests. It also includes features for analyzing documentation coverage and generating missing docstrings using AI.
 
-> **On niche and post-cutoff Python libraries, the shipped LCP plugin lifts a small model's task success rate from 28% to 66% and halves its API-misuse rate — beating an agent that reads the installed source.** Full reproducible methodology and per-run data: [Benchmark](https://zazza123.github.io/lcp/benchmark/).
+> **On niche and post-cutoff Python libraries, the shipped LCP plugin lifts a small model's task success rate from 28% to 66% and halves its API-misuse rate — beating, on task success, an agent that reads the installed source.** Full reproducible methodology and per-run data: [Benchmark](https://zazza123.github.io/lcp/benchmark/).
 
 ## Installation
 

@@ -66,7 +66,9 @@ Overall, by arm:
 | sonnet | lcp-skill | 91.7% (88–95) | 0.04 | 2312 |
 | sonnet | sitepkg | 92.9% (90–96) | 0.02 | 1320 |
 
-Confidence intervals are seeded percentile bootstraps.
+Confidence intervals are seeded percentile bootstraps. The full six-arm
+table for every model, with per-class breakdowns, is in
+[`analysis.md`](https://github.com/zazza123/lcp/blob/main/evals/results/2026-07-09-phase8/analysis.md).
 
 ## What the numbers say — honestly
 
