@@ -1,0 +1,75 @@
+{
+  "case_id": "polars-sort-desc",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"product\": [\"A\", \"B\", \"C\", \"D\"],\n    \"revenue\": [250.0, 900.0, 100.0, 400.0],\n})\n\nsorted_df = df.sort(\"revenue\", descending=True)\n\nprint(sorted_df)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"product\": [\"A\", \"B\", \"C\", \"D\"],\n    \"revenue\": [250.0, 900.0, 100.0, 400.0],\n})\n\nsorted_df = df.sort(\"revenue\", descending=True)\n\nprint(sorted_df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 680,
+    "cache_read_tokens": 149359,
+    "cache_creation_tokens": 16706,
+    "cost_usd": 0.1552737,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 18.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars",
+        "version": "1.42.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "sort",
+        "library": "polars",
+        "module": "polars.dataframe.frame",
+        "kind": "method"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#sort"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01JB5cSuDxBK4nyppkJVuR9Y",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01UASR8kKdp2ZuqvpLEb7Ax5",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#sort\",\"kind\":\"method\",\"summary\":\"Sort the dataframe by the given columns.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#sort\"},{\"id\":\"polars:DataFrame#is_sorted\",\"kind\":\"method\",\"summary\":\"Check whether the DataFrame is sorted by the given columns.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#is_sorted\"},{\"id\":\"polars:DataFrame#merge_sorted\",\"kind\":\"method\",\"summary\":\"Take two sorted DataFrames and merge them by the sorted key.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#merge_sorted\"},{\"id\":\"polars:DataFrame#set_sorted\",\"kind\":\"method\",\"summary\":\"Flag a column as sorted.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#set_sorted\"},{\"id\":\"polars:DataFrame#bottom_k\",\"kind\":\"method\",\"summary\":\"Return the `k` smallest rows.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#bottom_k\"},{\"id\":\"polars:DataFrame#group_by_dynamic\",\"kind\":\"method\",\"summary\":\"Group based on a time value (or index value of type Int32, Int64).\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#group_by_dynamic\"},{\"id\":\"polars:DataFrame#join_asof\",\"kind\":\"method\",\"summary\":\"Perform an asof join.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#join_asof\"},{\"id\":\"polars:DataFrame#pipe\",\"kind\":\"method\",\"summary\":\"Offers a structured way to apply a sequence of user-defined functions (UDFs).\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#pipe\"},{\"id\":\"polars:DataFrame#pivot\",\"kind\":\"method\",\"summary\":\"Create a spreadsheet-style pivot table as a DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#pivot\"},{\"id\":\"polars:DataFrame#rol"
+    },
+    {
+      "tool_use_id": "toolu_01GUSANWj98BcGB1H5f1uK5h",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"by\",\"type\":\"IntoExpr | Iterable[IntoExpr]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Column(s) to sort by. Accepts expression input, including selectors. Strings\\nare parsed as column names.\"},{\"name\":\"more_by\",\"type\":\"IntoExpr\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional columns to sort by, specified as positional arguments.\"},{\"name\":\"descending\",\"type\":\"bool | Sequence[bool]\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Sort in descending order. When sorting by multiple columns, can be specified\\nper column by passing a sequence of booleans.\"},{\"name\":\"nulls_last\",\"type\":\"bool | Sequence[bool]\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Place null values last; can specify a single boolean applying to all columns\\nor a sequence of booleans for per-column control.\"},{\"name\":\"multithreaded\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Sort using multiple threads.\"},{\"name\":\"maintain_order\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether the order should be maintained if elements are equal.\"}],\"returns\":\"DataFrame\"}],\"semantics\":{\"summary\":\"Sort the dataframe by the given columns.\",\"description\":\"Parameters\\n        ----------\\n        by\\n            Column(s) to sort by. Accepts expression input, including selectors. Strings\\n            are parsed as column names.\\n        *more_by\\n            Additional columns to sort by, specified as positional arguments.\\n        descending\\n            Sort in descending order. When sorting by multiple columns, can be specified\\n            per column by passing a sequence of booleans.\\n        nulls_last\\n            Place null values last; can specify a single b"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-agnostic-filter",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\nfrom narwhals.typing import IntoFrameT\n\n\ndef top_sales(df: IntoFrameT) -> IntoFrameT:\n    ndf = nw.from_native(df)\n    result = ndf.filter(nw.col(\"amount\") > 100).sort(\"amount\", descending=True)\n    return result.to_native()",
+  "result_text": "```python\nimport narwhals as nw\nfrom narwhals.typing import IntoFrameT\n\n\ndef top_sales(df: IntoFrameT) -> IntoFrameT:\n    ndf = nw.from_native(df)\n    result = ndf.filter(nw.col(\"amount\") > 100).sort(\"amount\", descending=True)\n    return result.to_native()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 512,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9858,
+    "cost_usd": 0.0729447,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

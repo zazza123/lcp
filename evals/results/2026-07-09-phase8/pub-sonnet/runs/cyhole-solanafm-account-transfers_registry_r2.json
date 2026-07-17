@@ -1,0 +1,105 @@
+{
+  "case_id": "cyhole-solanafm-account-transfers",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solana_fm import SolanaFM\n\n\ndef get_token_transfers(account_address: str):\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n    return solana_fm.client.get_account_transfers(account=account_address)\n\n\nif __name__ == \"__main__\":\n    address = \"AAXAeQ2yGCTgb42WSK1sTLLXofZAe8ZQ4Xa4rWAJ2AXk\"\n    transfers = get_token_transfers(address)\n    print(transfers)",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\n\n\ndef get_token_transfers(account_address: str):\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n    return solana_fm.client.get_account_transfers(account=account_address)\n\n\nif __name__ == \"__main__\":\n    address = \"AAXAeQ2yGCTgb42WSK1sTLLXofZAe8ZQ4Xa4rWAJ2AXk\"\n    transfers = get_token_transfers(address)\n    print(transfers)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 7221,
+    "cache_read_tokens": 433317,
+    "cache_creation_tokens": 36849,
+    "cost_usd": 0.45946410000000004,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 96.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell command execute",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell shell command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute command file read write",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file contents",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "transfer",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_018qDcd84GXCw4toUHg8rfsN",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01WfyCzZMbLiBPM1TYP2BtiA",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_01Y84xj8CsRvgjXSQRkFMTg3",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

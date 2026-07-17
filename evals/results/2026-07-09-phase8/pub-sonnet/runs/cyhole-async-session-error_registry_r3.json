@@ -1,0 +1,136 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\nimport os\n\nfrom cyhole.solana_fm.interaction import SolanaFM\nfrom cyhole.core.exception import MissingSessionError\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    try:\n        # Calling the async client's method directly, without first doing\n        # `async with solana_fm.async_client as client:` \u2014 no aiohttp/httpx\n        # session has been opened yet.\n        result = await solana_fm.async_client.get_circulating_supply()\n        print(result)\n    except MissingSessionError as e:\n        print(f\"Async session not available: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\n\nfrom cyhole.solana_fm.interaction import SolanaFM\nfrom cyhole.core.exception import MissingSessionError\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    try:\n        # Calling the async client's method directly, without first doing\n        # `async with solana_fm.async_client as client:` \u2014 no aiohttp/httpx\n        # session has been opened yet.\n        result = await solana_fm.async_client.get_circulating_supply()\n        print(result)\n    except MissingSessionError as e:\n        print(f\"Async session not available: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 28,
+    "output_tokens": 11020,
+    "cache_read_tokens": 626083,
+    "cache_creation_tokens": 36667,
+    "cost_usd": 0.5732109,
+    "num_turns": 14,
+    "tool_calls": 13,
+    "duration_s": 191.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell execute shell command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute run",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Glob,Grep,Write,Edit",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SolanaFM",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:ListMcpResourcesTool",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ListMcpResourcesTool",
+      "input": {
+        "server": "lcp"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url browser",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01RBKNo9P91xNV8vTxZzqu5C",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01DGuh4XJkFAJyXu44vFioEN",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01YLQnXR3B9Jsg8ywP4z7ec7",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.core.exception.MissingSessionError"
+    ],
+    "error": null
+  }
+}

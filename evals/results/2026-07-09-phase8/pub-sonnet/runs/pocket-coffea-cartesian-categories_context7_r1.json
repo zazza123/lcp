@@ -1,0 +1,49 @@
+{
+  "case_id": "pocket-coffea-cartesian-categories",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.lib.cut_functions import get_nObj_eq, get_nObj_min\nfrom pocket_coffea.lib.categorization import MultiCut, CartesianSelection\nfrom pocket_coffea.parameters.cuts import passthrough\nfrom pocket_coffea.utils.configurator import Configurator\n\n# Multi-bin cut wrapper: jet multiplicity binning (exactly 4, exactly 5, at least 6 \"JetGood\")\nnjet_categories = MultiCut(\n    name=\"Njet\",\n    cuts=[\n        get_nObj_eq(4, coll=\"JetGood\"),\n        get_nObj_eq(5, coll=\"JetGood\"),\n        get_nObj_min(6, coll=\"JetGood\"),\n    ],\n    cuts_names=[\"4j\", \"5j\", \"6j\"],\n)\n\n# Multi-bin cut wrapper: b-tag multiplicity binning (exactly 2, at least 3 \"BJetGood\")\nnbjet_categories = MultiCut(\n    name=\"Nbjet\",\n    cuts=[\n        get_nObj_eq(2, coll=\"BJetGood\"),\n        get_nObj_min(3, coll=\"BJetGood\"),\n    ],\n    cuts_names=[\"2b\", \"3b\"],\n)\n\n# Cartesian combination container: cross product of the two binnings\n# -> 4j_2b, 4j_3b, 5j_2b, 5j_3b, 6j_2b, 6j_3b\ncartesian_categories = CartesianSelection(\n    multicuts=[njet_categories, nbjet_categories],\n    common_cats=[passthrough],\n)\n\ncfg = Configurator(\n    parameters={},\n    datasets={\n        \"jsons\": [],\n        \"filter\": {\"samples\": [], \"samples_exclude\": [], \"year\": []},\n    },\n    workflow=None,\n    skim=[],\n    preselections=[passthrough],\n    categories=cartesian_categories,\n    weights={\"common\": {\"inclusive\": [], \"bycategory\": {}}, \"bysample\": {}},\n    variables={},\n    columns={},\n)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import get_nObj_eq, get_nObj_min\nfrom pocket_coffea.lib.categorization import MultiCut, CartesianSelection\nfrom pocket_coffea.parameters.cuts import passthrough\nfrom pocket_coffea.utils.configurator import Configurator\n\n# Multi-bin cut wrapper: jet multiplicity binning (exactly 4, exactly 5, at least 6 \"JetGood\")\nnjet_categories = MultiCut(\n    name=\"Njet\",\n    cuts=[\n        get_nObj_eq(4, coll=\"JetGood\"),\n        get_nObj_eq(5, coll=\"JetGood\"),\n        get_nObj_min(6, coll=\"JetGood\"),\n    ],\n    cuts_names=[\"4j\", \"5j\", \"6j\"],\n)\n\n# Multi-bin cut wrapper: b-tag multiplicity binning (exactly 2, at least 3 \"BJetGood\")\nnbjet_categories = MultiCut(\n    name=\"Nbjet\",\n    cuts=[\n        get_nObj_eq(2, coll=\"BJetGood\"),\n        get_nObj_min(3, coll=\"BJetGood\"),\n    ],\n    cuts_names=[\"2b\", \"3b\"],\n)\n\n# Cartesian combination container: cross product of the two binnings\n# -> 4j_2b, 4j_3b, 5j_2b, 5j_3b, 6j_2b, 6j_3b\ncartesian_categories = CartesianSelection(\n    multicuts=[njet_categories, nbjet_categories],\n    common_cats=[passthrough],\n)\n\ncfg = Configurator(\n    parameters={},\n    datasets={\n        \"jsons\": [],\n        \"filter\": {\"samples\": [], \"samples_exclude\": [], \"year\": []},\n    },\n    workflow=None,\n    skim=[],\n    preselections=[passthrough],\n    categories=cartesian_categories,\n    weights={\"common\": {\"inclusive\": [], \"bycategory\": {}}, \"bysample\": {}},\n    variables={},\n    columns={},\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 6848,
+    "cache_read_tokens": 84789,
+    "cache_creation_tokens": 14024,
+    "cost_usd": 0.2123187,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 70.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve-library-id get-library-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "cartesian categorization MultiCut CartesianSelection cut_functions categories",
+        "libraryName": "PocketCoffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01NQfKQgGaNGXrLFyNJ3GbGE",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

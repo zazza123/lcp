@@ -1,0 +1,94 @@
+{
+  "case_id": "pixeltable-udf",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\n\n@pxt.udf\ndef word_count(text: str) -> int:\n    return len(text.split())\n\n\ndocs = pxt.get_table('docs')\ndocs.add_computed_column(n_words=word_count(docs.content))",
+  "result_text": "Verified API confirms `pxt.udf` decorator, `pxt.get_table`, and `Table.add_computed_column(col_name=expression)`.\n\n```python\nimport pixeltable as pxt\n\n\n@pxt.udf\ndef word_count(text: str) -> int:\n    return len(text.split())\n\n\ndocs = pxt.get_table('docs')\ndocs.add_computed_column(n_words=word_count(docs.content))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 897,
+    "cache_read_tokens": 188682,
+    "cache_creation_tokens": 19373,
+    "cost_usd": 0.18633360000000002,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 22.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library pixeltable",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "udf",
+        "library": "pixeltable",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_table",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:udf",
+          "pixeltable:Table#add_computed_column",
+          "pixeltable:get_table"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01VJcgQC7ubXZAf5686WdSPB",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_0122SME1fcLLEd4WH6U1JuWH",
+      "content": "{\"results\":[{\"id\":\"pixeltable:udf\",\"kind\":\"function\",\"summary\":\"A decorator to create a Function from a function definition.\",\"import\":\"from pixeltable import udf\",\"resolved_via_alias\":\"pixeltable.func.udf:udf\"},{\"id\":\"pixeltable.func.mcp:mcp_tool_to_udf\",\"kind\":\"function\",\"summary\":\"Function mcp_tool_to_udf\",\"import\":\"from pixeltable.func.mcp import mcp_tool_to_udf\"},{\"id\":\"pixeltable:mcp_udfs\",\"kind\":\"function\",\"summary\":\"Function mcp_udfs\",\"import\":\"from pixeltable import mcp_udfs\",\"resolved_via_alias\":\"pixeltable.func.mcp:mcp_udfs\"},{\"id\":\"pixeltable.func.mcp:mcp_udfs_async\",\"kind\":\"function\",\"summary\":\"Function mcp_udfs_async\",\"import\":\"from pixeltable.func.mcp import mcp_udfs_async\"},{\"id\":\"pixeltable:retrieval_udf\",\"kind\":\"function\",\"summary\":\"Constructs a retrieval UDF for the given table. The retrieval UDF is a UDF whose parameters are columns of the table and whose return value is a list of rows from the table. The return value of >>> f(col1=x, col2=y, ...) will be a list of all rows from the table that match the specified arguments.\",\"import\":\"from pixeltable import retrieval_udf\",\"resolved_via_alias\":\"pixeltable.func.query_template_function:retrieval_udf\"},{\"id\":\"pixeltable:expr_udf\",\"kind\":\"function\",\"summary\":\"Function expr_udf\",\"import\":\"from pixeltable import expr_udf\",\"resolved_via_alias\":\"pixeltable.func.udf:expr_udf\"},{\"id\":\"pixeltable:tool\",\"kind\":\"function\",\"summary\":\"Specifies a Pixeltable UDF to be used as an LLM tool with customizable metadata. See the documentation for [pxt.tools()][pixeltable.tools] for more details.\",\"import\":\"from pixeltable import tool\",\"resolved_via_alias\":\"pixeltable.globals:tool\"},{\"id\":\"pixeltable:tools\",\"kind\":\"function\",\"summary\":\"Specifies a collection of UDFs to be used as LLM tools. Pixeltable allows any UDF to be used as an input into an LLM tool-calling API. To use one or more UDFs as tools, wrap them in a `pxt.tools` call and pass the return value to an LLM API.\",\"import\":\"from pixeltable import tools\",\"resol"
+    },
+    {
+      "tool_use_id": "toolu_01Acd7faJ9NqUEwTWJgShQVa",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.catalog:Catalog#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Must be executed inside a transaction. Might raise PendingTableOpsError.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table_by_id\"},{\"id\":\"pixeltable.catalog:LocalTable#compute\",\"kind\":\"method\",\"summary\":\"Materialize the computed columns of this table for the given input rows and return the resulting rows without persisting them.\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#compute\"},{\"id\":\"pixeltabl"
+    },
+    {
+      "tool_use_id": "toolu_017vAJzPgmJVE3WGTsjeCXmY",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.func.udf\",\"aliases\":[\"pixeltable.func.tools:udf\",\"pixeltable.func:udf\",\"pixeltable.index.btree:udf\",\"pixeltable:udf\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"A decorator to create a Function from a function definition.\",\"description\":\"Examples:\\n        >>> @pxt.udf\\n        ... def my_function(x: int) -> int:\\n        ...     return x + 1\",\"examples\":[{\"code\":\">>> @pxt.udf\\n... def my_function(x: int) -> int:\\n...     return x + 1\"}]},\"id\":\"pixeltable:udf\",\"resolved_via_alias\":\"pixeltable.func.udf:udf\",\"import\":\"from pixeltable import udf\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null}},{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"stored\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether the column is materialized and stored or computed on demand.\"},{\"name\":\"destination\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An object store reference for persisting computed files.\"},{\"name\":\"custom_metadata\",\"type\":\"Any\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional user-defined metadata to associate with the column. Must be a valid\\nJSON-serializable object.\"},{\"name\":\"comment\",\"type\":\"str\",\"required\":false,\"default\":\"\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional comment; its meaning is user-defined.\"},{\"name\":\"print_stats\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If `True`, print execution metrics during evaluation.\"},{\"name\":\"on_error\",\"type\":\"Literal['abort', 'i"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

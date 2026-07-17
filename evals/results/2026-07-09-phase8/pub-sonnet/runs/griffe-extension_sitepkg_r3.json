@@ -1,0 +1,140 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    \"\"\"Griffe extension that appends ' [checked]' to every function docstring.\"\"\"\n\n    def on_function(self, *, func: griffe.Function, loader: griffe.GriffeLoader, **kwargs) -> None:\n        if func.docstring is not None:\n            func.docstring.value = func.docstring.value + \" [checked]\"\n        else:\n            func.docstring = griffe.Docstring(\" [checked]\", parent=func)\n\n\nextensions = griffe.load_extensions(AppendCheckedExtension)\n\nmodule = griffe.load(\"mypkg\", extensions=extensions)",
+  "result_text": "```python\nimport griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    \"\"\"Griffe extension that appends ' [checked]' to every function docstring.\"\"\"\n\n    def on_function(self, *, func: griffe.Function, loader: griffe.GriffeLoader, **kwargs) -> None:\n        if func.docstring is not None:\n            func.docstring.value = func.docstring.value + \" [checked]\"\n        else:\n            func.docstring = griffe.Docstring(\" [checked]\", parent=func)\n\n\nextensions = griffe.load_extensions(AppendCheckedExtension)\n\nmodule = griffe.load(\"mypkg\", extensions=extensions)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 28,
+    "output_tokens": 2884,
+    "cache_read_tokens": 605018,
+    "cache_creation_tokens": 19729,
+    "cost_usd": 0.3432234,
+    "num_turns": 15,
+    "tool_calls": 14,
+    "duration_s": 46.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Extension|def load_extensions|class Extensions|load_git|def visit_functiondef|on_function|on_instance",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/extensions/base.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/griffe/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/griffe/**/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/extensions/base.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "\"load\"|\"load_extensions\"|\"Extension\"|\"Docstring\"|^def load\\(|^from|^import",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/__init__.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load\\(\" -A 40",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def load\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def load\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "output_mode": "content",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "offset": 1,
+        "limit": 1
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Docstring",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/docstrings/models.py",
+        "-A": 20
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Docstring\\b",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "-A": 15
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Docstring",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "output_mode": "content",
+        "-A": 30
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Skill using-superpowers brainstorming",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

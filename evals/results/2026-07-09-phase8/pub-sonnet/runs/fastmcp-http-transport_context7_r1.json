@@ -1,0 +1,60 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(\"Example Server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "This confirms the `mcp.run(transport=\"http\", host=..., port=...)` API for FastMCP v3.\n\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"Example Server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1005,
+    "cache_read_tokens": 124997,
+    "cache_creation_tokens": 19031,
+    "cost_usd": 0.1667841,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 22.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "fastmcp streamable http server run entry point",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "run server with streamable-http transport host port mcp.run()"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_013Eycq5EiHKTpMkRADFJBi2",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 88.87\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms-full_txt\n- Description: FastMCP is a Python framework for building MCP servers, featuring an experimental OpenAPI parser, JWT claims, and optimized payload handling.\n- Code Snippets: 25492\n- Source Reputation: High\n- Benchmark Score: 73.06\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp_v2_getting-started\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients with a clean, Pythonic interface, providing production-ready features including enterprise authentication, deployment tools, and comprehensive client libraries.\n- Code Snippets: 37\n- Source Reputation: High\n- Benchmark Score: 61.14"
+    },
+    {
+      "tool_use_id": "toolu_01Hvr1ig1V22BpviPH23dqHQ",
+      "content": "### Run FastMCP Server with HTTP Transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/server.mdx\n\nThis example shows how to configure and run the FastMCP server using the HTTP transport instead of the default STDIO. Specify the host and port for network accessibility.\n\n```python\n# Run with HTTP transport\nmcp.run(transport=\"http\", host=\"127.0.0.1\", port=9000)\n```\n\n--------------------------------\n\n### Configure FastMCP transport settings in run()\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/getting-started/upgrading/from-fastmcp-2.mdx\n\nFastMCP v3 moves transport and server settings from the `FastMCP()` constructor to the `run()` method. Pass host and port arguments when starting the server.\n\n```python\n# Before\nmcp = FastMCP(\"server\", host=\"0.0.0.0\", port=8080)\nmcp.run()\n```\n\n```python\n# After\nmcp = FastMCP(\"server\")\nmcp.run(transport=\"http\", host=\"0.0.0.0\", port=8080)\n```\n\n--------------------------------\n\n### Run the Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/getting-started/quickstart.mdx\n\nRun the FastMCP server using its `run()` method with different transports.\n\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"My MCP Server\")\n\n@mcp.tool\ndef greet(name: str) -> str:\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    mcp.run()\n```\n\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"My MCP Server\")\n\n@mcp.tool\ndef greet(name: str) -> str:\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\", port=8000)\n```\n\n--------------------------------\n\n### Running a Proxy Server over Streamable-HTTP on Host/Port\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/mixins/transport.py\n\nShows how to run a proxy server over streamable-http transport using run_http_async() with custom middleware.\n\n```python\nimport asyncio\nfrom fastmcp.server import create_proxy\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNex"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

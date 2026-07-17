@@ -1,0 +1,76 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nimport cyclopts\nfrom cyclopts.config import Toml\n\napp = cyclopts.App(\n    config=Toml(\n        Path(\"pyproject.toml\"),\n        root_keys=(\"tool\", \"mycli\"),\n        must_exist=False,\n    ),\n)\n\n\n@app.default\ndef main(*, name: str = \"world\", count: int = 1, verbose: bool = False):\n    \"\"\"Greet someone.\n\n    Parameters\n    ----------\n    name: str\n        Who to greet.\n    count: int\n        How many times to greet.\n    verbose: bool\n        Whether to print extra info.\n    \"\"\"\n    for _ in range(count):\n        if verbose:\n            print(f\"[verbose] greeting {name!r}\")\n        print(f\"Hello, {name}!\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Confirmed: `App(config=...)` accepts config sources, and `cyclopts.config.Toml` with `root_keys` navigates nested tables. Config sources only fill arguments not already supplied on the CLI, so explicit CLI values naturally win.\n\n```python\nfrom pathlib import Path\n\nimport cyclopts\nfrom cyclopts.config import Toml\n\napp = cyclopts.App(\n    config=Toml(\n        Path(\"pyproject.toml\"),\n        root_keys=(\"tool\", \"mycli\"),\n        must_exist=False,\n    ),\n)\n\n\n@app.default\ndef main(*, name: str = \"world\", count: int = 1, verbose: bool = False):\n    \"\"\"Greet someone.\n\n    Parameters\n    ----------\n    name: str\n        Who to greet.\n    count: int\n        How many times to greet.\n    verbose: bool\n        Whether to print extra info.\n    \"\"\"\n    for _ in range(count):\n        if verbose:\n            print(f\"[verbose] greeting {name!r}\")\n        print(f\"Hello, {name}!\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1795,
+    "cache_read_tokens": 170826,
+    "cache_creation_tokens": 5307,
+    "cost_usd": 0.1100448,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 24.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Toml",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/config*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/config/_toml.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/config/_common.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "version",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts-4.20.0.dist-info/METADATA",
+        "output_mode": "content",
+        "head_limit": 5
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "config",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "output_mode": "content",
+        "-n": true,
+        "head_limit": 40
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

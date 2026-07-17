@@ -1,0 +1,73 @@
+{
+  "case_id": "polars-pivot",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"date\": [\"2024-01-01\", \"2024-01-01\", \"2024-01-02\", \"2024-01-02\"],\n        \"city\": [\"Rome\", \"Milan\", \"Rome\", \"Milan\"],\n        \"temperature\": [15.2, 12.8, 16.0, 13.5],\n    }\n)\n\nwide_df = df.pivot(\n    \"city\",\n    index=\"date\",\n    values=\"temperature\",\n)\n\nprint(wide_df)",
+  "result_text": "Verified against installed polars 1.42.1 API.\n\n```python\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"date\": [\"2024-01-01\", \"2024-01-01\", \"2024-01-02\", \"2024-01-02\"],\n        \"city\": [\"Rome\", \"Milan\", \"Rome\", \"Milan\"],\n        \"temperature\": [15.2, 12.8, 16.0, 13.5],\n    }\n)\n\nwide_df = df.pivot(\n    \"city\",\n    index=\"date\",\n    values=\"temperature\",\n)\n\nprint(wide_df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 956,
+    "cache_read_tokens": 160007,
+    "cache_creation_tokens": 9989,
+    "cost_usd": 0.1223061,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 23.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars",
+        "version": "1.42.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "pivot",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#pivot"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01GeMf7fMaCqegtUmwkmtbcn",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_013wKrB39dEP5gSoS1N1tX2S",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#pivot\",\"kind\":\"method\",\"summary\":\"Create a spreadsheet-style pivot table as a DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#pivot\"},{\"id\":\"polars:LazyFrame#pivot\",\"kind\":\"method\",\"summary\":\"Create a spreadsheet-style pivot table as a DataFrame.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#pivot\"},{\"id\":\"polars:DataFrame#unpivot\",\"kind\":\"method\",\"summary\":\"Unpivot a DataFrame from wide to long format.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#unpivot\"},{\"id\":\"polars:LazyFrame#unpivot\",\"kind\":\"method\",\"summary\":\"Unpivot a DataFrame from wide to long format.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#unpivot\"},{\"id\":\"polars:DataFrame#melt\",\"kind\":\"method\",\"summary\":\"Unpivot a DataFrame from wide to long format.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#melt\"},{\"id\":\"polars:LazyFrame#melt\",\"kind\":\"method\",\"summary\":\"Unpivot a DataFrame from wide to long format.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#melt\"},{\"id\":\"polars:DataFrame#unstack\",\"kind\":\"method\",\"summary\":\"Unstack a long table to a wide form without doing an aggregation.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#unstack\"},{\"id\":\"polars.selectors:digit\",\"kind\":\"function\",\"summary\":\"Select all columns having names consisting only of digits.\",\"import\":\"from polars.selectors import digit\"}],\"total\":8,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FDoJZo66eay81fgzUJqk4Q",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"on\",\"type\":\"ColumnNameOrSelector | Sequence[ColumnNameOrSelector]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The column(s) whose values will be used as the new columns of the output\\nDataFrame.\"},{\"name\":\"on_columns\",\"type\":\"Sequence[Any] | pl.Series | pl.DataFrame | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"What value combinations will be considered for the output table.\"},{\"name\":\"index\",\"type\":\"ColumnNameOrSelector | Sequence[ColumnNameOrSelector] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The column(s) that remain from the input to the output. The output DataFrame will have one row\\nfor each unique combination of the `index`'s values.\\nIf None, all remaining columns not specified on `on` and `values` will be used. At least one\\nof `index` and `values` must be specified.\"},{\"name\":\"values\",\"type\":\"ColumnNameOrSelector | Sequence[ColumnNameOrSelector] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The existing column(s) of values which will be moved under the new columns from index. If an\\naggregation is specified, these are the values on which the aggregation will be computed.\\nIf None, all remaining columns not specified on `on` and `index` will be used.\\nAt least one of `index` and `values` must be specified.\"},{\"name\":\"aggregate_function\",\"type\":\"PivotAgg | Expr | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Choose from:\\n\\n- None: no aggregation takes place, will raise error if multiple values are in group.\\n- A predefined aggregate function string, one of\\n  {'min', 'max', 'first', 'last', 'sum', 'mean', 'median', 'len'}\\n- An expression to do the aggregation. The expression can only access data from the respective\\n  'values' columns as generated by pivot, through `pl.element()`.\"},{\"name\":\""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "case_id": "pixeltable-update-rows",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.update(\n    {\"distributor\": \"Warner Bros.\"},\n    where=films.studio == \"WB\",\n)",
+  "result_text": "I have the confirmed API. Here's the code:\n\n```python\nimport pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.update(\n    {\"distributor\": \"Warner Bros.\"},\n    where=films.studio == \"WB\",\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 999,
+    "cache_read_tokens": 221494,
+    "cache_creation_tokens": 16206,
+    "cost_usd": 0.1787112,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 19.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "table update where condition",
+        "library": "pixeltable",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_table",
+        "library": "pixeltable",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Table#update",
+        "library": "pixeltable",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "update",
+        "library": "pixeltable",
+        "module": "pixeltable.catalog.table",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#update",
+          "pixeltable:get_table"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Dw6ZQgkuCv5LCKaTsGtbBy",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01Y8xEPip7Eckx3iabjRm37x",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01YYcW7ShpyJJx6SKVc3gdbb",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.catalog:Catalog#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Must be executed inside a transaction. Might raise PendingTableOpsError.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table_by_id\"},{\"id\":\"pixeltable.catalog:LocalTable#compute\",\"kind\":\"method\",\"summary\":\"Materialize the computed columns of this table for the given input rows and return the resulting rows without persisting them.\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#compute\"},{\"id\":\"pixeltabl"
+    },
+    {
+      "tool_use_id": "toolu_01CZyr5GyRcJjMgVUZXt34VJ",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01YMQpsRVHzJcfcNXKwUFQMV",
+      "content": "{\"results\":[{\"id\":\"pixeltable:Table#update\",\"kind\":\"method\",\"summary\":\"Update rows in this table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#update\"},{\"id\":\"pixeltable:Table#batch_update\",\"kind\":\"method\",\"summary\":\"Update rows in this table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#batch_update\"},{\"id\":\"pixeltable:Table\",\"kind\":\"class\",\"summary\":\"A handle to a table, view, or snapshot. This class is the primary interface through which table operations (queries, insertions, updates, etc.) are performed in Pixeltable.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table\"},{\"id\":\"pixeltable:Table#insert\",\"kind\":\"method\",\"summary\":\"Inserts rows into this table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#insert\"},{\"id\":\"pixeltable:Table#recompute_columns\",\"kind\":\"method\",\"summary\":\"Recompute the values in one or more computed columns of this table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#recompute_columns\"}],\"total\":5,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01T7HaqPqqPfXxBZxy1c1tXX",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"value_spec\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"a dictionary mapping column names to literal values or Pixeltable expressions.\"},{\"name\":\"where\",\"type\":\"'exprs.Expr' | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"a predicate to filter rows to update.\"},{\"name\":\"cascade\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"if True, also update all computed columns that transitively depend on the updated columns.\"},{\"name\":\"return_rows\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"If `True`, populate `UpdateStatus.rows` with one dict per updated row, mapping column\\nnames to their new stored values.  If `False` (default), `UpdateStatus.rows` is `None`.\"}],\"returns\":\"UpdateStatus\",\"returns_description\":\"An [`UpdateStatus`][pixeltable.UpdateStatus] object containing information about the update.\"}],\"semantics\":{\"summary\":\"Update rows in this table.\",\"description\":\"Args:\\n            value_spec: a dictionary mapping column names to literal values or Pixeltable expressions.\\n            where: a predicate to filter rows to update.\\n            cascade: if True, also update all computed columns that transitively depend on the updated columns.\\n            return_rows: If `True`, populate `UpdateStatus.rows` with one dict per updated row, mapping column\\n                names to their new stored values.  If `False` (default), `UpdateStatus.rows` is `None`.\\n\\n        Returns:\\n            An [`UpdateStatus`][pixeltable.UpdateStatus] object containing information about the update.\\n\\n        Examples:\\n            Set column `int_col` to 1 for all rows:\\n\\n            >>> tbl.update({'int_col': 1})\\n\\n            Set column `int_col` to 1 for all rows where `int_col` is 0:\\n\\n     "
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

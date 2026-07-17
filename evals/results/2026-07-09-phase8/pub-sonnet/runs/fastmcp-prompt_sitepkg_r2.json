@@ -1,0 +1,81 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\nfrom fastmcp.prompts.base import Message\n\nmcp = FastMCP(\"summarizer\")\n\n\n@mcp.prompt(name=\"summarize\")\ndef summarize(text: str) -> list[Message]:\n    return [\n        Message(\n            role=\"user\",\n            content=f\"Please summarize the following text:\\n\\n{text}\",\n        )\n    ]\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "Good \u2014 `Message` is exported from `fastmcp.prompts.base`. I have enough to write the server.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.prompts.base import Message\n\nmcp = FastMCP(\"summarizer\")\n\n\n@mcp.prompt(name=\"summarize\")\ndef summarize(text: str) -> list[Message]:\n    return [\n        Message(\n            role=\"user\",\n            content=f\"Please summarize the following text:\\n\\n{text}\",\n        )\n    ]\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 1549,
+    "cache_read_tokens": 241401,
+    "cache_creation_tokens": 5295,
+    "cost_usd": 0.1274673,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 26.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def prompt",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def prompt\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def prompt",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "-A": 60
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "prompt",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "-n": true,
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "offset": 2060,
+        "limit": 50
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Message|^from|^import",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/prompts/base.py",
+        "-n": true,
+        "output_mode": "content",
+        "head_limit": 30
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

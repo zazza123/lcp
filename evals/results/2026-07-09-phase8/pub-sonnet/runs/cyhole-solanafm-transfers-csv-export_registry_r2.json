@@ -1,0 +1,101 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solana_fm import SolanaFM\n\n# NOTE: cyhole's installed API could not be verified via the LCP MCP server in\n# this session (scan-interpreter mismatch, no local access to repoint it) \u2014\n# confirm SolanaFM's sync client method/params against cyhole==0.3.0 before relying on this.\n\ndef main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    account_hash = \"REPLACE_WITH_ACCOUNT_ADDRESS\"\n\n    solana_fm = SolanaFM(api_key=api_key)\n    csv_report = solana_fm.client.get_account_transfers_csv_export(account_hash=account_hash)\n\n    with open(\"account_transfers_report.csv\", \"w\", encoding=\"utf-8\") as csv_file:\n        csv_file.write(csv_report)\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "I couldn't verify cyhole's API through the lcp MCP server \u2014 it can't load the library because it's not installed in the interpreter that server is bound to, and I have no shell/file tools in this session to repoint it. The code below is my best-effort reconstruction of cyhole's documented client pattern, flagged accordingly.\n\n```python\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\n\n# NOTE: cyhole's installed API could not be verified via the LCP MCP server in\n# this session (scan-interpreter mismatch, no local access to repoint it) \u2014\n# confirm SolanaFM's sync client method/params against cyhole==0.3.0 before relying on this.\n\ndef main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    account_hash = \"REPLACE_WITH_ACCOUNT_ADDRESS\"\n\n    solana_fm = SolanaFM(api_key=api_key)\n    csv_report = solana_fm.client.get_account_transfers_csv_export(account_hash=account_hash)\n\n    with open(\"account_transfers_report.csv\", \"w\", encoding=\"utf-8\") as csv_file:\n        csv_file.write(csv_report)\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 9478,
+    "cache_read_tokens": 359357,
+    "cache_creation_tokens": 27334,
+    "cost_usd": 0.41403509999999993,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 127.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell powershell execute command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,PowerShell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file glob grep search codebase",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SolanaFM",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Lw9URnci74RCR8jSGzfqQq",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01KPsRDYFKEKJcdkRCdwnduw",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_014cRi17FqfHJUfJUagHLZuy",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_0192yZYLfHjrsMB8W9zmCb2e",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "case_id": "griffe-json-roundtrip",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import json\n\nimport griffe\n\n# `mod` is an already-loaded griffe module object (e.g. from griffe.load(...))\n\n# Step 1: serialize the module to JSON using its own serialization support\nwith open(\"api.json\", \"w\", encoding=\"utf-8\") as f:\n    f.write(mod.as_json(indent=2))\n\n# Step 2: reconstruct an equivalent griffe module object from the file's text\nwith open(\"api.json\", encoding=\"utf-8\") as f:\n    api_json_text = f.read()\n\nreconstructed_mod = json.loads(api_json_text, object_hook=griffe.json_decoder)",
+  "result_text": "```python\nimport json\n\nimport griffe\n\n# `mod` is an already-loaded griffe module object (e.g. from griffe.load(...))\n\n# Step 1: serialize the module to JSON using its own serialization support\nwith open(\"api.json\", \"w\", encoding=\"utf-8\") as f:\n    f.write(mod.as_json(indent=2))\n\n# Step 2: reconstruct an equivalent griffe module object from the file's text\nwith open(\"api.json\", encoding=\"utf-8\") as f:\n    api_json_text = f.read()\n\nreconstructed_mod = json.loads(api_json_text, object_hook=griffe.json_decoder)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 2303,
+    "cache_read_tokens": 87820,
+    "cache_creation_tokens": 17147,
+    "cost_usd": 0.163791,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 32.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "griffe",
+        "query": "serialize module to JSON and load module back from JSON"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01CKNRtqczukVT248J8mDwH7",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "griffe:Module#from_json"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

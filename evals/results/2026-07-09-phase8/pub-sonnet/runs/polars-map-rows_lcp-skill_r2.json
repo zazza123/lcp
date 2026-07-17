@@ -1,0 +1,88 @@
+{
+  "case_id": "polars-map-rows",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [1, 5, 8, 2],\n    \"b\": [2, 4, 3, 7],\n})\n\n\ndef classify_row(row: dict) -> str:\n    return \"hi\" if row[\"a\"] + row[\"b\"] > 10 else \"lo\"\n\n\nresult = df.with_columns(\n    pl.struct(\"a\", \"b\")\n    .map_elements(classify_row, return_dtype=pl.String)\n    .alias(\"category\")\n)\n\nprint(result)",
+  "result_text": "Confirmed API: `pl.struct(\"a\", \"b\")` builds a per-row struct expression, and `Expr.map_elements(function, return_dtype=...)` applies a plain Python callback once per row (each element being the struct/row as a dict-like object).\n\n```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [1, 5, 8, 2],\n    \"b\": [2, 4, 3, 7],\n})\n\n\ndef classify_row(row: dict) -> str:\n    return \"hi\" if row[\"a\"] + row[\"b\"] > 10 else \"lo\"\n\n\nresult = df.with_columns(\n    pl.struct(\"a\", \"b\")\n    .map_elements(classify_row, return_dtype=pl.String)\n    .alias(\"category\")\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 982,
+    "cache_read_tokens": 168254,
+    "cache_creation_tokens": 12722,
+    "cost_usd": 0.1415682,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 19.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars",
+        "version": "1.42.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "map_elements",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "struct",
+        "library": "polars",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:struct",
+          "polars:Expr#map_elements"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Ev8Ro77ZkfK2Tidg3qmxms",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_011w3xgq2yFeJQZ7jrYb5m8G",
+      "content": "{\"results\":[{\"id\":\"polars:Expr#map_elements\",\"kind\":\"method\",\"summary\":\"Map a custom/user-defined function (UDF) to each element of a column.\",\"import\":\"from polars import Expr\",\"resolved_via_alias\":\"polars.expr.expr:Expr#map_elements\"},{\"id\":\"polars.expr.whenthen:ChainedThen#map_elements\",\"kind\":\"method\",\"summary\":\"Map a custom/user-defined function (UDF) to each element of a column.\",\"import\":\"from polars.expr.whenthen import ChainedThen\"},{\"id\":\"polars.expr.whenthen:Then#map_elements\",\"kind\":\"method\",\"summary\":\"Map a custom/user-defined function (UDF) to each element of a column.\",\"import\":\"from polars.expr.whenthen import Then\"},{\"id\":\"polars._reexport:Selector#map_elements\",\"kind\":\"method\",\"summary\":\"Map a custom/user-defined function (UDF) to each element of a column.\",\"import\":\"from polars._reexport import Selector\",\"resolved_via_alias\":\"polars.selectors:Selector#map_elements\"},{\"id\":\"polars:Series#map_elements\",\"kind\":\"method\",\"summary\":\"Map a custom/user-defined function (UDF) over elements in this Series.\",\"import\":\"from polars import Series\",\"resolved_via_alias\":\"polars.series.series:Series#map_elements\"},{\"id\":\"polars:self_dtype\",\"kind\":\"function\",\"summary\":\"Get the dtype of `self` in `map_elements` and `map_batches`.\",\"import\":\"from polars import self_dtype\",\"resolved_via_alias\":\"polars.functions.datatype:self_dtype\"},{\"id\":\"polars:DataFrame#map_rows\",\"kind\":\"method\",\"summary\":\"Apply a custom/user-defined function (UDF) over the rows of the DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#map_rows\"},{\"id\":\"polars.dataframe.frame:DynamicGroupBy#map_groups\",\"kind\":\"method\",\"summary\":\"Apply a custom/user-defined function (UDF) over the groups as a new DataFrame.\",\"import\":\"from polars.dataframe.frame import DynamicGroupBy\",\"resolved_via_alias\":\"polars.dataframe.group_by:DynamicGroupBy#map_groups\"},{\"id\":\"polars.dataframe.frame:RollingGroupBy#map_groups\",\"kind\":\"method\",\"summary\":\"Apply a custom/user"
+    },
+    {
+      "tool_use_id": "toolu_01Q8trk2dTsS1ZBe3jzzE3GV",
+      "content": "{\"results\":[{\"id\":\"polars:struct\",\"kind\":\"function\",\"summary\":\"Collect columns into a struct column.\",\"import\":\"from polars import struct\",\"resolved_via_alias\":\"polars.functions.as_datatype:struct\"},{\"id\":\"polars.selectors:struct\",\"kind\":\"function\",\"summary\":\"Select all struct columns.\",\"import\":\"from polars.selectors import struct\"},{\"id\":\"polars:struct_with_fields\",\"kind\":\"function\",\"summary\":\"Create a new datatype expression that represents a Struct datatype.\",\"import\":\"from polars import struct_with_fields\",\"resolved_via_alias\":\"polars.functions.datatype:struct_with_fields\"},{\"id\":\"polars.datatypes:numpy_type_to_constructor\",\"kind\":\"function\",\"summary\":\"Get the right PySeries constructor for the given Polars dtype.\",\"import\":\"from polars.datatypes import numpy_type_to_constructor\",\"resolved_via_alias\":\"polars.datatypes.constructor:numpy_type_to_constructor\"},{\"id\":\"polars.datatypes:polars_type_to_constructor\",\"kind\":\"function\",\"summary\":\"Get the right PySeries constructor for the given Polars dtype.\",\"import\":\"from polars.datatypes import polars_type_to_constructor\",\"resolved_via_alias\":\"polars.datatypes.constructor:polars_type_to_constructor\"},{\"id\":\"polars.datatypes:py_type_to_constructor\",\"kind\":\"function\",\"summary\":\"Get the right PySeries constructor for the given Python dtype.\",\"import\":\"from polars.datatypes import py_type_to_constructor\",\"resolved_via_alias\":\"polars.datatypes.constructor:py_type_to_constructor\"},{\"id\":\"polars.convert.general:arrow_to_pydf\",\"kind\":\"function\",\"summary\":\"Construct a PyDataFrame from an Arrow Table or RecordBatch.\",\"import\":\"from polars.convert.general import arrow_to_pydf\",\"resolved_via_alias\":\"polars._utils.construction.dataframe:arrow_to_pydf\"},{\"id\":\"polars.dataframe.frame:dataframe_to_pydf\",\"kind\":\"function\",\"summary\":\"Construct a PyDataFrame from an existing Polars DataFrame.\",\"import\":\"from polars.dataframe.frame import dataframe_to_pydf\",\"resolved_via_alias\":\"polars._utils.construction.dataframe:dataframe_to_pydf\"},{\""
+    },
+    {
+      "tool_use_id": "toolu_01NvipnHMHGu53xbkF85MU4w",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"polars.functions.as_datatype\",\"aliases\":[\"polars.functions:struct\",\"polars:struct\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"exprs\",\"type\":\"IntoExpr | Iterable[IntoExpr]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Column(s) to collect into a struct column, specified as positional arguments.\\nAccepts expression input. Strings are parsed as column names,\\nother non-expression inputs are parsed as literals.\"},{\"name\":\"schema\",\"type\":\"SchemaDict | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional schema that explicitly defines the struct field dtypes. If no columns\\nor expressions are provided, schema keys are used to define columns.\"},{\"name\":\"eager\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Evaluate immediately and return a `Series`. If set to `False` (default),\\nreturn an expression instead.\"},{\"name\":\"named_exprs\",\"type\":\"IntoExpr\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional columns to collect into the struct column, specified as keyword\\narguments. The columns will be renamed to the keyword used.\"}],\"returns\":\"Expr | Series\"}],\"semantics\":{\"summary\":\"Collect columns into a struct column.\",\"description\":\"Parameters\\n    ----------\\n    *exprs\\n        Column(s) to collect into a struct column, specified as positional arguments.\\n        Accepts expression input. Strings are parsed as column names,\\n        other non-expression inputs are parsed as literals.\\n    schema\\n        Optional schema that explicitly defines the struct field dtypes. If no columns\\n        or expressions are provided, schema keys are used to define columns.\\n    eager\\n        Evaluate immediately and return a `Series`. If set to `False` (default),\\n        return an expression instead.\\n    **named_exprs\\n        Additional columns to collect into the struct column, specified as keyword\\n        argument"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "polars:DataFrame#map_rows"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

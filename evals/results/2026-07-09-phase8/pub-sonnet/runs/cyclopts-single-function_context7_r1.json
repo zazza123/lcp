@@ -1,0 +1,60 @@
+{
+  "case_id": "cyclopts-single-function",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from cyclopts import run\n\n\ndef greet(name: str, excited: bool = False):\n    print(f\"Hello, {name}!\" + (\"!!!\" if excited else \"\"))\n\n\nif __name__ == \"__main__\":\n    run(greet)",
+  "result_text": "Confirmed via docs: `cyclopts.run()` is the minimal, App-object-free entry point.\n\n```python\nfrom cyclopts import run\n\n\ndef greet(name: str, excited: bool = False):\n    print(f\"Hello, {name}!\" + (\"!!!\" if excited else \"\"))\n\n\nif __name__ == \"__main__\":\n    run(greet)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 891,
+    "cache_read_tokens": 124284,
+    "cache_creation_tokens": 17376,
+    "cost_usd": 0.1549302,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 29.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "minimal CLI without explicitly creating App object",
+        "libraryName": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/brianpugh/cyclopts",
+        "query": "run a single function as CLI without creating App object, cyclopts.run"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01N6gZg3Y5c8PunPrWZhrpDr",
+      "content": "Available Libraries:\n\n- Title: Cyclopts\n- Context7-compatible library ID: /brianpugh/cyclopts\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework that provides an intuitive and efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 1468\n- Source Reputation: High\n- Benchmark Score: 83.77\n----------\n- Title: Cyclopts\n- Context7-compatible library ID: /websites/cyclopts_readthedocs_io_en_stable\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework providing an intuitive & efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 996\n- Source Reputation: High\n- Benchmark Score: 84.33"
+    },
+    {
+      "tool_use_id": "toolu_01NQ8quxe36chmrhn1GnSGev",
+      "content": "### Run a Simple Function with Cyclopts\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/README.md\n\nImport `cyclopts.run()` and pass a function to it. This is a quick way to create a basic CLI from a single function.\n\n```python\nfrom cyclopts import run\n\ndef foo(loops: int):\n    for i in range(loops):\n        print(f\"Looping! {i}\")\n\nrun(foo)\n```\n\n--------------------------------\n\n### Run Simple Application with cyclopts.run\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/getting_started.rst\n\nThis Python code shows an alternative, simpler way to run a Cyclopts application using the `cyclopts.run` function. It takes a single callable and executes it as the application's main command.\n\n```python\nimport cyclopts\n\ndef main(name: str, count: int):\n    for _ in range(count):\n        print(f\"Hello {name}!\")\n\nif __name__ == \"__main__\":\n    cyclopts.run(main)\n```\n\n### Cyclopts Documentation\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/getting_started.rst\n\nFor simpler applications with a single command, Cyclopts offers a terser API using the `~cyclopts.run` function. This function takes a single callable and executes it as a Cyclopts application.\n\n--------------------------------\n\n### Cyclopts Documentation\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/getting_started.rst\n\nThe `~cyclopts.run` function is designed for simplicity. For more complex applications requiring greater control, the conventional `~cyclopts.App` interface should be used instead."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

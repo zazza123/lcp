@@ -1,0 +1,59 @@
+{
+  "case_id": "requests-json-post",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import requests\n\nresponse = requests.post(\n    \"https://api.example.com/items\",\n    json={\"name\": \"widget\", \"qty\": 3},\n)\ndata = response.json()\nprint(data)",
+  "result_text": "`requests` isn't importable by the LCP scan interpreter in this environment, so I can't verify it through the server. Its `post`/`json` API is unambiguous and unchanged for this task, so proceeding with the standard usage.\n\n```python\nimport requests\n\nresponse = requests.post(\n    \"https://api.example.com/items\",\n    json={\"name\": \"widget\", \"qty\": 3},\n)\ndata = response.json()\nprint(data)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 782,
+    "cache_read_tokens": 116178,
+    "cache_creation_tokens": 12654,
+    "cost_usd": 0.12253139999999998,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 16.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01APk2D4jhFaDpRAZFBRpSRm",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'requests': 'requests' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_016U196qKXa3zTx5msbQDQQM",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'requests': 'requests' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\npackage = griffe.load_pypi_package(\n    \"click\",\n    distribution_name=\"click\",\n    version_specifier=\"==8.1.7\",\n)\nprint(package.name)",
+  "result_text": "```python\nimport griffe\n\npackage = griffe.load_pypi_package(\n    \"click\",\n    distribution_name=\"click\",\n    version_specifier=\"==8.1.7\",\n)\nprint(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 5050,
+    "cache_read_tokens": 306480,
+    "cache_creation_tokens": 17112,
+    "cost_usd": 0.27041400000000004,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 66.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "load a package's API directly from PyPI without installing it",
+        "libraryName": "griffe"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url",
+        "max_results": 8
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "WebFetch WebSearch",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "powershell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash,Read,Grep,Glob",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Ph5sd77hHHjTtisuWdrF9y",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:load_pypi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.load_pypi_package"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp.server import create_proxy\n\n# `backend_mcp` is the existing in-memory FastMCP server instance.\n# create_proxy() wraps it in an in-memory Client and forwards every\n# tool/resource/prompt request to it transparently.\nproxy_mcp = create_proxy(backend_mcp, name=\"Proxy Server\")\n\nif __name__ == \"__main__\":\n    proxy_mcp.run()",
+  "result_text": "Verified against the installed `fastmcp` package (`fastmcp.server.create_proxy`, which passes an in-memory `FastMCP` instance straight to a `FastMCPProxy` via a client factory \u2014 a fully transparent proxy with no extra plumbing needed).\n\n```python\nfrom fastmcp.server import create_proxy\n\n# `backend_mcp` is the existing in-memory FastMCP server instance.\n# create_proxy() wraps it in an in-memory Client and forwards every\n# tool/resource/prompt request to it transparently.\nproxy_mcp = create_proxy(backend_mcp, name=\"Proxy Server\")\n\nif __name__ == \"__main__\":\n    proxy_mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1671,
+    "cache_read_tokens": 161016,
+    "cache_creation_tokens": 15934,
+    "cost_usd": 0.1690038,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 27.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "as_proxy|FastMCPProxy|class FastMCP",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def as_proxy",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def create_proxy",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/proxy.py",
+        "output_mode": "content",
+        "-A": 50
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def create_proxy",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp",
+        "output_mode": "content",
+        "-A": 60
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

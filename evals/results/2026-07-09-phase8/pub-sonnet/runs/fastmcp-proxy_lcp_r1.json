@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\n# --- Existing backend server (already running in memory) ---\nbackend = FastMCP(name=\"BackendServer\")\n\n\n@backend.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\n@backend.resource(\"data://greeting\")\ndef greeting() -> str:\n    \"\"\"Return a greeting.\"\"\"\n    return \"Hello from backend!\"\n\n\n# --- Transparent proxy server in front of the backend ---\n# FastMCP.as_proxy() wraps an existing server (or client) and forwards\n# every tool call, resource read, and other MCP request straight through.\nproxy = FastMCP.as_proxy(backend, name=\"ProxyServer\")\n\n\nif __name__ == \"__main__\":\n    proxy.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\n# --- Existing backend server (already running in memory) ---\nbackend = FastMCP(name=\"BackendServer\")\n\n\n@backend.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\n@backend.resource(\"data://greeting\")\ndef greeting() -> str:\n    \"\"\"Return a greeting.\"\"\"\n    return \"Hello from backend!\"\n\n\n# --- Transparent proxy server in front of the backend ---\n# FastMCP.as_proxy() wraps an existing server (or client) and forwards\n# every tool call, resource read, and other MCP request straight through.\nproxy = FastMCP.as_proxy(backend, name=\"ProxyServer\")\n\n\nif __name__ == \"__main__\":\n    proxy.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1064,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9922,
+    "cost_usd": 0.0816087,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

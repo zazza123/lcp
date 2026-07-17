@@ -1,0 +1,55 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\nold = griffe.load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\nnew = griffe.load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\nfor breakage in griffe.find_breaking_changes(old, new):\n    print(breakage)",
+  "result_text": "Confirmed. Both are public top-level exports.\n\n```python\nimport griffe\n\nold = griffe.load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\nnew = griffe.load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\nfor breakage in griffe.find_breaking_changes(old, new):\n    print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1043,
+    "cache_read_tokens": 125357,
+    "cache_creation_tokens": 12770,
+    "cost_usd": 0.1298961,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 16.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def find_breaking_changes|def load_git|class Breakage",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def load_git|def find_breaking_changes",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal",
+        "output_mode": "content",
+        "-A": 15
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^from griffe._internal.diff import|^from griffe._internal.loader import|\"find_breaking_changes\"|\"load_git\"",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/__init__.py",
+        "output_mode": "content"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

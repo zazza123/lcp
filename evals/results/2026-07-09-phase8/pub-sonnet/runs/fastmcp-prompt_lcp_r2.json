@@ -1,0 +1,133 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\nfrom fastmcp.prompts import Message\n\nmcp = FastMCP(\"Summarizer\")\n\n\n@mcp.prompt\ndef summarize(text: str) -> Message:\n    return Message(f\"Please summarize the following text:\\n\\n{text}\")\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "Verified API against fastmcp 3.4.4. Here's the server:\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.prompts import Message\n\nmcp = FastMCP(\"Summarizer\")\n\n\n@mcp.prompt\ndef summarize(text: str) -> Message:\n    return Message(f\"Please summarize the following text:\\n\\n{text}\")\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 1656,
+    "cache_read_tokens": 226440,
+    "cache_creation_tokens": 19524,
+    "cost_usd": 0.209958,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 26.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "prompt",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "UserMessage",
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#prompt"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Message",
+        "library": "fastmcp",
+        "module": "fastmcp.prompts.prompt"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "PromptMessage",
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Message",
+        "library": "fastmcp",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.prompts:Message"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01JyGnJZAGPd9SGdsVYTaPtB",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01NzrLU3V5DVAa3y7bsfGhXX",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP#prompt\",\"kind\":\"method\",\"summary\":\"Decorator to register a prompt.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#prompt\"},{\"id\":\"fastmcp.server:FastMCP#add_prompt\",\"kind\":\"method\",\"summary\":\"Add a prompt to the server.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_prompt\"},{\"id\":\"fastmcp.server:FastMCP#get_prompt\",\"kind\":\"method\",\"summary\":\"Get a prompt by name, filtering disabled prompts.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#get_prompt\"},{\"id\":\"fastmcp.server:FastMCP#list_prompts\",\"kind\":\"method\",\"summary\":\"List all enabled prompts from providers.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#list_prompts\"},{\"id\":\"fastmcp.server:FastMCP#render_prompt\",\"kind\":\"method\",\"summary\":\"Render a prompt by name.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#render_prompt\"},{\"id\":\"fastmcp.server:FastMCP#add_provider\",\"kind\":\"method\",\"summary\":\"Add a provider for dynamic tools, resources, and prompts.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_provider\"},{\"id\":\"fastmcp.server:FastMCP#add_transform\",\"kind\":\"method\",\"summary\":\"Add a server-level transform.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_transform\"},{\"id\":\"fastmcp.server:FastMCP#disable\",\"kind\":\"method\",\"summary\":\"Disable components matching all specified criteria.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#disable\"},{\"id\":\"fastmcp.server:FastMCP#enable\",\"kind\":\"method\",\"summary\":\"Enable components matching all specified criteria.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#ena"
+    },
+    {
+      "tool_use_id": "toolu_01QckkLNaia4otGBCAmqAg7D",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01QYRPCqogT13tSB9EMWvUN9",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name_or_fn\",\"type\":\"UnionType[str, Callable[Ellipsis, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"name\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version\",\"type\":\"UnionType[str, int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"title\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"description\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"UnionType[list[Icon], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tags\",\"type\":\"UnionType[set[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"meta\",\"type\":\"UnionType[dict[str, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"task\",\"type\":\"UnionType[bool, TaskConfig, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"UnionType[Callable[[<class 'fastmcp.utilities.authorization.AuthContext'>], bool], Callable[[<class 'fastmcp.utilities.authorization.AuthContext'>], Awaitable[bool]], list[UnionType[Callable[[<class 'fastmcp.utilities.authorization.AuthContext'>], bool], Callable[[<class 'fastmcp.utilities.authorization.AuthContext'>], Awaitable[bool]]]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"UnionType[Callable[[collections.abc.Callable[..., typing.Any]], FunctionPrompt], FunctionPrompt, partial[UnionType[Callable[[collections.abc.Callable[..., typing.Any]], FunctionPrompt], FunctionPrompt]]]\"}],\"semantics\":{\"summary\":\"Decorator to register a prompt.\",\"description\":\"Prompts can optionally request a Context object by adding a parameter with the\\n        Context type annotation. The context provides access to MCP capabilities like\\n        logg"
+    },
+    {
+      "tool_use_id": "toolu_0148m7LrMKqb4HvQebFLMEJd",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012dYuX14JfDFcvHpUW81BAu",
+      "content": "{\"results\":[{\"id\":\"fastmcp.prompts:Message#to_mcp_prompt_message\",\"kind\":\"method\",\"summary\":\"Convert to MCP PromptMessage.\",\"import\":\"from fastmcp.prompts import Message\",\"resolved_via_alias\":\"fastmcp.prompts.base:Message#to_mcp_prompt_message\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01CebCnLcnn2KUmnDerLu4Cj",
+      "content": "{\"results\":[{\"id\":\"fastmcp.prompts:Message\",\"kind\":\"class\",\"summary\":\"Wrapper for prompt message with auto-serialization.\",\"import\":\"from fastmcp.prompts import Message\",\"resolved_via_alias\":\"fastmcp.prompts.base:Message\"},{\"id\":\"fastmcp.client.tasks:MessageHandler\",\"kind\":\"class\",\"summary\":\"This class is used to handle MCP messages sent to the client. It is used to handle all messages, requests, notifications, and exceptions. Users can override any of the hooks\",\"import\":\"from fastmcp.client.tasks import MessageHandler\",\"resolved_via_alias\":\"fastmcp.client.messages:MessageHandler\"},{\"id\":\"fastmcp.server.middleware.caching:CachableMessage\",\"kind\":\"class\",\"summary\":\"A wrapper for Message that can be cached.\",\"import\":\"from fastmcp.server.middleware.caching import CachableMessage\"},{\"id\":\"fastmcp.client.tasks:TaskNotificationHandler\",\"kind\":\"class\",\"summary\":\"MessageHandler that routes task status notifications to Task objects.\",\"import\":\"from fastmcp.client.tasks import TaskNotificationHandler\"},{\"id\":\"fastmcp.server.http:RequireAuthMiddleware\",\"kind\":\"class\",\"summary\":\"Enhanced authentication middleware with detailed error messages.\",\"import\":\"from fastmcp.server.http import RequireAuthMiddleware\",\"resolved_via_alias\":\"fastmcp.server.auth.middleware:RequireAuthMiddleware\"},{\"id\":\"fastmcp.client:Client\",\"kind\":\"class\",\"summary\":\"MCP client that delegates connection management to a Transport instance.\",\"import\":\"from fastmcp.client import Client\",\"resolved_via_alias\":\"fastmcp.client.client:Client\"},{\"id\":\"fastmcp.prompts:PromptResult\",\"kind\":\"class\",\"summary\":\"Canonical result type for prompt rendering.\",\"import\":\"from fastmcp.prompts import PromptResult\",\"resolved_via_alias\":\"fastmcp.prompts.base:PromptResult\"},{\"id\":\"fastmcp.server:Context\",\"kind\":\"class\",\"summary\":\"Context object providing access to MCP capabilities.\",\"import\":\"from fastmcp.server import Context\",\"resolved_via_alias\":\"fastmcp.server.context:Context\"},{\"id\":\"fastmcp.server.middleware.logging:Logging"
+    },
+    {
+      "tool_use_id": "toolu_01MkxBQUBjmiyKP6UCkpUHqL",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.prompts.base\",\"aliases\":[\"fastmcp.prompts:Message\",\"fastmcp.server.middleware.caching:Message\",\"fastmcp.server.providers.proxy:Message\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"content\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"role\",\"type\":\"Literal[user, assistant]\",\"required\":false,\"default\":\"user\",\"variadic\":false,\"kind\":\"positional\"}]}],\"semantics\":{\"summary\":\"Wrapper for prompt message with auto-serialization.\",\"description\":\"Accepts any content - strings pass through, other types\\n    (dict, list, BaseModel) are JSON-serialized to text.\\n\\n    Example:\\n        ```python\\n        from fastmcp.prompts import Message\\n\\n        # String content (user role by default)\\n        Message(\\\"Hello, world!\\\")\\n\\n        # Explicit role\\n        Message(\\\"I can help with that.\\\", role=\\\"assistant\\\")\\n\\n        # Auto-serialized to JSON\\n        Message({\\\"key\\\": \\\"value\\\"})\\n        Message([\\\"item1\\\", \\\"item2\\\"])\\n        ```\",\"examples\":[{\"code\":\"```python\\nfrom fastmcp.prompts import Message\\n\\n# String content (user role by default)\\nMessage(\\\"Hello, world!\\\")\\n\\n# Explicit role\\nMessage(\\\"I can help with that.\\\", role=\\\"assistant\\\")\\n\\n# Auto-serialized to JSON\\nMessage({\\\"key\\\": \\\"value\\\"})\\nMessage([\\\"item1\\\", \\\"item2\\\"])\\n```\"}]},\"id\":\"fastmcp.prompts:Message\",\"resolved_via_alias\":\"fastmcp.prompts.base:Message\",\"import\":\"from fastmcp.prompts import Message\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"content\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"role\",\"type\":\"Literal[user, assistant]\",\"default\":\"user\"}],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"fastmcp.prompts:Message#__init__\",\"kind\":\"method\",\"summary\":\"Create Message with automatic serialization.\"},{\"id\":\"fastmcp.prompts:Message#to_mcp_prompt_message\",\"kind\":\"method\",\"summary\":\"Convert to MCP PromptMessage.\"}]}],\"not_found\":[]}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

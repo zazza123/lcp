@@ -1,0 +1,54 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": null,
+  "result_text": "I don't have reliable, verified knowledge of `hamana`'s actual public API (class/method names, streaming/batch interface) \u2014 it's not a library I can confirm from training data with confidence, and this environment has no shell/filesystem/web-search tools available to inspect the installed package or its docs. Writing out specific method calls as if they were confirmed would risk presenting fabricated API surface as fact.\n\nCould you paste the relevant part of `hamana`'s docs (or the connector/Query class signatures, e.g. from `help(hamana.connectors.sqlite)` or its README) so I can write code against the real API? Alternatively, if you can run `python -c \"import hamana; help(hamana)\"` (or check its PyPI page) and share the output, I'll produce accurate code immediately.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 3402,
+    "cache_read_tokens": 132364,
+    "cache_creation_tokens": 10501,
+    "cost_usd": 0.1537692,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 68.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Grep",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from __future__ import annotations\n\nimport griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    \"\"\"Griffe extension: append ' [checked]' to every collected function's docstring.\"\"\"\n\n    def on_function_instance(\n        self,\n        node,\n        func: griffe.Function,\n        agent: griffe.Visitor | griffe.Inspector,\n        **kwargs,\n    ) -> None:\n        if func.docstring is not None:\n            func.docstring.value += \" [checked]\"\n        else:\n            func.docstring = griffe.Docstring(\" [checked]\", parent=func)\n\n\n# Aggregate extensions the way griffe expects (accepts instances, classes,\n# dotted paths, or config dicts) and get back an `Extensions` collection.\nextensions = griffe.load_extensions(AppendCheckedExtension())\n\n# Load the package through griffe's module-level entry point with the\n# extension enabled.\npackage = griffe.load(\"mypkg\", extensions=extensions)",
+  "result_text": "```python\nfrom __future__ import annotations\n\nimport griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    \"\"\"Griffe extension: append ' [checked]' to every collected function's docstring.\"\"\"\n\n    def on_function_instance(\n        self,\n        node,\n        func: griffe.Function,\n        agent: griffe.Visitor | griffe.Inspector,\n        **kwargs,\n    ) -> None:\n        if func.docstring is not None:\n            func.docstring.value += \" [checked]\"\n        else:\n            func.docstring = griffe.Docstring(\" [checked]\", parent=func)\n\n\n# Aggregate extensions the way griffe expects (accepts instances, classes,\n# dotted paths, or config dicts) and get back an `Extensions` collection.\nextensions = griffe.load_extensions(AppendCheckedExtension())\n\n# Load the package through griffe's module-level entry point with the\n# extension enabled.\npackage = griffe.load(\"mypkg\", extensions=extensions)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 3955,
+    "cache_read_tokens": 96994,
+    "cache_creation_tokens": 6394,
+    "cost_usd": 0.1268052,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 46.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "griffe extension system to modify docstrings while loading",
+        "libraryName": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01PZUfv8tRVUVEP7V22q6s49",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

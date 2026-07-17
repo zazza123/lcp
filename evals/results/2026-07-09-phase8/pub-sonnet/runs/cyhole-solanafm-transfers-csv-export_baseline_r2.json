@@ -1,0 +1,29 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\nfrom pathlib import Path\n\nfrom cyhole.solana_fm import SolanaFM\n\ndef main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    client = SolanaFM(api_key=api_key)\n\n    account_hash = \"REPLACE_WITH_ACCOUNT_HASH\"\n\n    response = client.client.get_account_transfers_csv_export(account_hash)\n\n    output_path = Path(\"account_transfers_report.csv\")\n    output_path.write_bytes(response.content)\n\n    print(f\"CSV report saved to {output_path.resolve()}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\nfrom pathlib import Path\n\nfrom cyhole.solana_fm import SolanaFM\n\ndef main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    client = SolanaFM(api_key=api_key)\n\n    account_hash = \"REPLACE_WITH_ACCOUNT_HASH\"\n\n    response = client.client.get_account_transfers_csv_export(account_hash)\n\n    output_path = Path(\"account_transfers_report.csv\")\n    output_path.write_bytes(response.content)\n\n    print(f\"CSV report saved to {output_path.resolve()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2717,
+    "cache_read_tokens": 30170,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.049811999999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

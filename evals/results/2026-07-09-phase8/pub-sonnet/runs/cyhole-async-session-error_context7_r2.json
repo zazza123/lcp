@@ -1,0 +1,92 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import MissingSessionError\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    # Calling the async client without entering `async with solana_fm:` first\n    # means the underlying aiohttp/httpx session was never opened.\n    try:\n        stats = await solana_fm.async_client.get_blockchain_stats()\n        print(stats)\n    except MissingSessionError as error:\n        print(f\"Async session not available: {error}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import MissingSessionError\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    # Calling the async client without entering `async with solana_fm:` first\n    # means the underlying aiohttp/httpx session was never opened.\n    try:\n        stats = await solana_fm.async_client.get_blockchain_stats()\n        print(stats)\n    except MissingSessionError as error:\n        print(f\"Async session not available: {error}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 6603,
+    "cache_read_tokens": 312852,
+    "cache_creation_tokens": 20224,
+    "cost_usd": 0.3142926,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 80.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "SolanaFM async client interaction, exception for missing async session"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole crypto API SDK",
+        "query": "SolanaFM async client session exception"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute shell command terminal",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Read,Grep,Glob",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Fuqcs41tiretct5Y4zPYyg",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01KC3h4z7NBNS9qvjTHu8W7Z",
+      "content": "Available Libraries:\n\n- Title: Crypto Pay API\n- Context7-compatible library ID: /foile/crypto-pay-api\n- Description: A library to interact with the Crypto Pay API, enabling cryptocurrency payments through @CryptoBot.\n- Code Snippets: 17\n- Source Reputation: Medium\n- Benchmark Score: 57.33\n----------\n- Title: Matrix SDK Crypto WASM\n- Context7-compatible library ID: /matrix-org/matrix-sdk-crypto-wasm\n- Description: Matrix SDK Crypto WASM provides WebAssembly bindings for end-to-end encryption support in Matrix clients, enabling secure E2EE cryptographic operations in JavaScript environments.\n- Code Snippets: 624\n- Source Reputation: High\n- Benchmark Score: 81.5\n----------\n- Title: Crypto News API\n- Context7-compatible library ID: /websites/cryptonews-api\n- Description: Crypto News API offers various GET endpoints to retrieve real-time and historical news for cryptocurrencies, including ticker-specific, general, sentiment analysis, events, and trending headlines, with advanced filtering capabilities.\n- Code Snippets: 13\n- Source Reputation: High\n----------\n- Title: Crypto++\n- Context7-compatible library ID: /websites/cryptopp_ref\n- Description: Crypto++ is a free C++ class library of cryptographic schemes providing implementations of block ciphers, stream ciphers, hash functions, public-key cryptography, and more.\n- Code Snippets: 19058\n- Source Reputation: Medium\n- Benchmark Score: 97\n----------\n- Title: Crypto.com AI Agent SDK\n- Context7-compatible library ID: /websites/ai-agent-sdk-docs_crypto\n- Description: The Crypto.com AI Agent SDK provides a natural-language interface powered by LLMs, enabling end users to interact with Cronos EVM and Cronos zkEVM blockchain functionality using plain language.\n- Code Snippets: 314\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.core.exception.MissingSessionError"
+    ],
+    "error": null
+  }
+}

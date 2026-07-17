@@ -1,0 +1,111 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "\"\"\"\nNOTE: Context7/library-doc lookup and shell/file tools were unavailable in this\nsession (Context7 quota exceeded, no filesystem/web access to introspect the\ninstalled `hamana==1.0.1` package), so this reconstructs the API from\nbest-available knowledge of the library's public surface. Verify against the\nactual `hamana` 1.0.1 API (e.g. `python -c \"import hamana; help(hamana)\"`)\nbefore relying on this in production.\n\"\"\"\n\nimport hamana\nfrom hamana import ImportMode\nfrom hamana.exception import TableAlreadyExistsError\n\n\ndef main() -> None:\n    # Build a connector to the external source and prepare the query to run.\n    connector = hamana.connector.SQLiteConnector(path=\"source.db\")\n    query = connector.query(\"SELECT * FROM sales_raw\")\n\n    # `Hamana()` is the singleton managing the internal SQLite database\n    # that query results get persisted into.\n    core = hamana.Hamana()\n\n    try:\n        core.import_data(query=query, table_name=\"sales\", mode=ImportMode.FAIL)\n    except TableAlreadyExistsError as exc:\n        print(f\"Import aborted: table 'sales' already exists in the internal database: {exc}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\n\"\"\"\nNOTE: Context7/library-doc lookup and shell/file tools were unavailable in this\nsession (Context7 quota exceeded, no filesystem/web access to introspect the\ninstalled `hamana==1.0.1` package), so this reconstructs the API from\nbest-available knowledge of the library's public surface. Verify against the\nactual `hamana` 1.0.1 API (e.g. `python -c \"import hamana; help(hamana)\"`)\nbefore relying on this in production.\n\"\"\"\n\nimport hamana\nfrom hamana import ImportMode\nfrom hamana.exception import TableAlreadyExistsError\n\n\ndef main() -> None:\n    # Build a connector to the external source and prepare the query to run.\n    connector = hamana.connector.SQLiteConnector(path=\"source.db\")\n    query = connector.query(\"SELECT * FROM sales_raw\")\n\n    # `Hamana()` is the singleton managing the internal SQLite database\n    # that query results get persisted into.\n    core = hamana.Hamana()\n\n    try:\n        core.import_data(query=query, table_name=\"sales\", mode=ImportMode.FAIL)\n    except TableAlreadyExistsError as exc:\n        print(f\"Import aborted: table 'sales' already exists in the internal database: {exc}\")\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 8205,
+    "cache_read_tokens": 420442,
+    "cache_creation_tokens": 52384,
+    "cost_usd": 0.5635716,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 105.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "execute a query and import results into internal SQLite database with fail-on-exists import mode"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url",
+        "max_results": 8
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell shell command execute",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "WebSearch",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Read Glob Grep file inspect package",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "github repository search code",
+        "max_results": 8
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/zazza123/hamana",
+        "query": "import query result into SQLite table with ImportMode fail on table exists"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01FP3WpWkcvRWUEyeZuGufg3",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    },
+    {
+      "tool_use_id": "toolu_01Bn6Ca87WRgPd29a3ZM4dH3",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 5,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.Hamana",
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL",
+      "hamana.connector.SQLiteConnector",
+      "hamana.exception.TableAlreadyExistsError"
+    ],
+    "error": null
+  }
+}

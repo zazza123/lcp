@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\nfrom pocket_coffea.workflows.base import BaseProcessorABC\n\n\nclass DimuonProcessor(BaseProcessorABC):\n    def apply_object_preselection(self, variation):\n        muons = self.events.Muon\n        good_muon_mask = (muons.pt > 15) & (abs(muons.eta) < 2.4)\n        self.events[\"MuonGood\"] = muons[good_muon_mask]\n\n    def count_objects(self, variation):\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood, axis=1)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.workflows.base import BaseProcessorABC\n\n\nclass DimuonProcessor(BaseProcessorABC):\n    def apply_object_preselection(self, variation):\n        muons = self.events.Muon\n        good_muon_mask = (muons.pt > 15) & (abs(muons.eta) < 2.4)\n        self.events[\"MuonGood\"] = muons[good_muon_mask]\n\n    def count_objects(self, variation):\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood, axis=1)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 906,
+    "cache_read_tokens": 30228,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0226644,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

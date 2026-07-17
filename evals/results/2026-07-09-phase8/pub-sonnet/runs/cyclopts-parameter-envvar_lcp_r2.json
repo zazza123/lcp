@@ -1,0 +1,88 @@
+{
+  "case_id": "cyclopts-parameter-envvar",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Annotated\n\nfrom cyclopts import App, Parameter\n\napp = App(name=\"mycli\")\n\n\n@app.command\ndef deploy(\n    target: str,\n    token: Annotated[str, Parameter(env_var=\"DEPLOY_TOKEN\", help=\"API token\")],\n):\n    print(f\"Deploying to {target} with token {token}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom typing import Annotated\n\nfrom cyclopts import App, Parameter\n\napp = App(name=\"mycli\")\n\n\n@app.command\ndef deploy(\n    target: str,\n    token: Annotated[str, Parameter(env_var=\"DEPLOY_TOKEN\", help=\"API token\")],\n):\n    print(f\"Deploying to {target} with token {token}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1167,
+    "cache_read_tokens": 153062,
+    "cache_creation_tokens": 25082,
+    "cost_usd": 0.2139456,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 20.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts",
+        "version": "4.20.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Parameter",
+        "library": "cyclopts",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "App",
+        "library": "cyclopts",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:Parameter",
+          "cyclopts:App",
+          "cyclopts.core:App#command"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01PdbTNCZxoz9DNKXRR1Ko58",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01Y3o7Q374xfAXx1G3khFPrg",
+      "content": "{\"results\":[{\"id\":\"cyclopts:Parameter\",\"kind\":\"class\",\"summary\":\"Cyclopts configuration for individual function parameters with :obj:`~typing.Annotated`.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter\"},{\"id\":\"cyclopts.group:DEFAULT_PARAMETERS_GROUP_SORT_MARKER\",\"kind\":\"class\",\"summary\":\"Class DEFAULT_PARAMETERS_GROUP_SORT_MARKER\",\"import\":\"from cyclopts.group import DEFAULT_PARAMETERS_GROUP_SORT_MARKER\"},{\"id\":\"cyclopts:Argument\",\"kind\":\"class\",\"summary\":\"Encapsulates functionality and additional contextual information for parsing a parameter.\",\"import\":\"from cyclopts import Argument\",\"resolved_via_alias\":\"cyclopts.argument._argument:Argument\"},{\"id\":\"cyclopts:RepeatArgumentError\",\"kind\":\"class\",\"summary\":\"The same parameter has erroneously been specified multiple times.\",\"import\":\"from cyclopts import RepeatArgumentError\",\"resolved_via_alias\":\"cyclopts.exceptions:RepeatArgumentError\"},{\"id\":\"cyclopts._convert:FieldInfo\",\"kind\":\"class\",\"summary\":\"Extension of :class:`inspect.Parameter`.\",\"import\":\"from cyclopts._convert import FieldInfo\",\"resolved_via_alias\":\"cyclopts.field_info:FieldInfo\"},{\"id\":\"cyclopts.help:AsteriskRenderer\",\"kind\":\"class\",\"summary\":\"Renderer for required parameter asterisk indicator.\",\"import\":\"from cyclopts.help import AsteriskRenderer\",\"resolved_via_alias\":\"cyclopts.help.specs:AsteriskRenderer\"},{\"id\":\"cyclopts.help:NameRenderer\",\"kind\":\"class\",\"summary\":\"Renderer for parameter/command names with optional text wrapping.\",\"import\":\"from cyclopts.help import NameRenderer\",\"resolved_via_alias\":\"cyclopts.help.specs:NameRenderer\"},{\"id\":\"cyclopts.core:CommandSpec\",\"kind\":\"class\",\"summary\":\"Specification for a command that will be lazily loaded on first access.\",\"import\":\"from cyclopts.core import CommandSpec\",\"resolved_via_alias\":\"cyclopts.command_spec:CommandSpec\"},{\"id\":\"cyclopts:UnknownOptionError\",\"kind\":\"class\",\"summary\":\"Unknown/unregistered option provided by the cli.\",\"import\":\"from cyclopts "
+    },
+    {
+      "tool_use_id": "toolu_01QaBTJ2pi3VKvDA88C9tXfi",
+      "content": "{\"results\":[{\"id\":\"cyclopts:App\",\"kind\":\"class\",\"summary\":\"Class App\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App\"},{\"id\":\"cyclopts.core:AppStack\",\"kind\":\"class\",\"summary\":\"Class AppStack\",\"import\":\"from cyclopts.core import AppStack\",\"resolved_via_alias\":\"cyclopts.app_stack:AppStack\"},{\"id\":\"cyclopts:CommandCollisionError\",\"kind\":\"class\",\"summary\":\"A command with the same name has already been registered to the app.\",\"import\":\"from cyclopts import CommandCollisionError\",\"resolved_via_alias\":\"cyclopts.exceptions:CommandCollisionError\"},{\"id\":\"cyclopts.help:NameRenderer\",\"kind\":\"class\",\"summary\":\"Renderer for parameter/command names with optional text wrapping.\",\"import\":\"from cyclopts.help import NameRenderer\",\"resolved_via_alias\":\"cyclopts.help.specs:NameRenderer\"},{\"id\":\"cyclopts:Token\",\"kind\":\"class\",\"summary\":\"Tracks how a user supplied a value to the application.\",\"import\":\"from cyclopts import Token\",\"resolved_via_alias\":\"cyclopts.token:Token\"},{\"id\":\"cyclopts.core:CommandSpec\",\"kind\":\"class\",\"summary\":\"Specification for a command that will be lazily loaded on first access.\",\"import\":\"from cyclopts.core import CommandSpec\",\"resolved_via_alias\":\"cyclopts.command_spec:CommandSpec\"},{\"id\":\"cyclopts.completion._base:RegisteredCommand\",\"kind\":\"class\",\"summary\":\"A command with the names it was registered under.\",\"import\":\"from cyclopts.completion._base import RegisteredCommand\",\"resolved_via_alias\":\"cyclopts.group_extractors:RegisteredCommand\"},{\"id\":\"cyclopts.help:DefaultFormatter\",\"kind\":\"class\",\"summary\":\"Default help formatter using Rich library with customizable specs.\",\"import\":\"from cyclopts.help import DefaultFormatter\",\"resolved_via_alias\":\"cyclopts.help.formatters.default:DefaultFormatter\"},{\"id\":\"cyclopts.help.formatters:HtmlFormatter\",\"kind\":\"class\",\"summary\":\"HTML documentation formatter.\",\"import\":\"from cyclopts.help.formatters import HtmlFormatter\",\"resolved_via_alias\":\"cyclopts.help.formatters.html:HtmlFormatter\"},{\"id"
+    },
+    {
+      "tool_use_id": "toolu_01NYNCE6251pJmswcBgLwheH",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.parameter\",\"aliases\":[\"cyclopts._path_type:Parameter\",\"cyclopts.app_stack:Parameter\",\"cyclopts.argument._argument:Parameter\",\"cyclopts.argument._collection:Parameter\",\"cyclopts.argument.utils:Parameter\",\"cyclopts.cli._complete:Parameter\",\"cyclopts.cli.docs:Parameter\",\"cyclopts.cli.run:Parameter\",\"cyclopts.cli.tree:Parameter\",\"cyclopts.completion.install:Parameter\",\"cyclopts.core:Parameter\",\"cyclopts:Parameter\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"converter\",\"type\":\"UnionType[Callable[Ellipsis, Any], str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"validator\",\"type\":\"UnionType[Callable[Ellipsis, Any], str, Iterable[UnionType[Callable[Ellipsis, Any], str]], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"alias\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"negative\",\"type\":\"UnionType[bool, str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"group\",\"type\":\"UnionType[None, Group, str, Iterable[UnionType[Group, str]]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"parse\",\"type\":\"UnionType[bool, Pattern[str], str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show_default\",\"type\":\"UnionType[None, bool, str, Callable[[typing.Any], Any]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show_choices\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show_env_var\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

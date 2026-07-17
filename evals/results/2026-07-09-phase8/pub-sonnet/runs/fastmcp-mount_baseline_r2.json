@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\n# Sub-server providing math tools\nmath_server = FastMCP(name=\"MathServer\")\n\n\n@math_server.tool\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\n\n    Args:\n        a: First operand.\n        b: Second operand.\n\n    Returns:\n        The sum of a and b.\n    \"\"\"\n    return a + b\n\n\n@math_server.tool\ndef subtract(a: float, b: float) -> float:\n    \"\"\"Subtract one number from another.\n\n    Args:\n        a: Minuend.\n        b: Subtrahend.\n\n    Returns:\n        The result of a minus b.\n    \"\"\"\n    return a - b\n\n\n@math_server.tool\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\n\n    Args:\n        a: First factor.\n        b: Second factor.\n\n    Returns:\n        The product of a and b.\n    \"\"\"\n    return a * b\n\n\n@math_server.tool\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide one number by another.\n\n    Args:\n        a: Dividend.\n        b: Divisor.\n\n    Returns:\n        The result of a divided by b.\n\n    Raises:\n        ValueError: If b is zero.\n    \"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero.\")\n    return a / b\n\n\n# Main server composing the math sub-server under the \"math\" prefix\nmain_server = FastMCP(name=\"MainServer\")\nmain_server.mount(math_server, prefix=\"math\")\n\n\nif __name__ == \"__main__\":\n    main_server.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\n# Sub-server providing math tools\nmath_server = FastMCP(name=\"MathServer\")\n\n\n@math_server.tool\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\n\n    Args:\n        a: First operand.\n        b: Second operand.\n\n    Returns:\n        The sum of a and b.\n    \"\"\"\n    return a + b\n\n\n@math_server.tool\ndef subtract(a: float, b: float) -> float:\n    \"\"\"Subtract one number from another.\n\n    Args:\n        a: Minuend.\n        b: Subtrahend.\n\n    Returns:\n        The result of a minus b.\n    \"\"\"\n    return a - b\n\n\n@math_server.tool\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\n\n    Args:\n        a: First factor.\n        b: Second factor.\n\n    Returns:\n        The product of a and b.\n    \"\"\"\n    return a * b\n\n\n@math_server.tool\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide one number by another.\n\n    Args:\n        a: Dividend.\n        b: Divisor.\n\n    Returns:\n        The result of a divided by b.\n\n    Raises:\n        ValueError: If b is zero.\n    \"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero.\")\n    return a / b\n\n\n# Main server composing the math sub-server under the \"math\" prefix\nmain_server = FastMCP(name=\"MainServer\")\nmain_server.mount(math_server, prefix=\"math\")\n\n\nif __name__ == \"__main__\":\n    main_server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2061,
+    "cache_read_tokens": 30155,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.039967499999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

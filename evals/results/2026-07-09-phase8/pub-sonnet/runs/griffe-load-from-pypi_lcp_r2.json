@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\npackage = griffe.load_pypi_package(\"click\", distribution=\"click\", version_spec=\"==8.1.7\")\nprint(package.name)",
+  "result_text": "```python\nimport griffe\n\npackage = griffe.load_pypi_package(\"click\", distribution=\"click\", version_spec=\"==8.1.7\")\nprint(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2198,
+    "cache_read_tokens": 30315,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0420705,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:load_pypi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.load_pypi_package"
+    ],
+    "error": null
+  }
+}

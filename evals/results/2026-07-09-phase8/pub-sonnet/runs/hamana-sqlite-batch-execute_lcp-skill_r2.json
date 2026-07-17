@@ -1,0 +1,97 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from hamana.connector.db import SQLite\nfrom hamana import Query\n\nconnector = SQLite(\"warehouse.db\")\nquery = Query(\"SELECT * FROM events\")\n\nfor batch in connector.batch_execute(query, batch_size=5000):\n    for row in batch:\n        print(row)",
+  "result_text": "```python\nfrom hamana.connector.db import SQLite\nfrom hamana import Query\n\nconnector = SQLite(\"warehouse.db\")\nquery = Query(\"SELECT * FROM events\")\n\nfor batch in connector.batch_execute(query, batch_size=5000):\n    for row in batch:\n        print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 863,
+    "cache_read_tokens": 156868,
+    "cache_creation_tokens": 17765,
+    "cost_usd": 0.16662540000000003,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 21.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SQLite connector",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Query",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "batch",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db:SQLite",
+          "hamana.connector.db:SQLite#batch_execute",
+          "hamana:Query"
+        ],
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01TUoSziu1dQ1CfdPU1TjydM",
+      "content": "{\"status\":\"loaded\",\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"symbol_count\":245,\"module_count\":21,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='hamana') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01NJ1MvfrxiTBAUc2NhaFq66",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012J3XjQyqrx2fppfirbJtyG",
+      "content": "{\"results\":[{\"id\":\"hamana:Query\",\"kind\":\"class\",\"summary\":\"Class to represent a query object.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query\"},{\"id\":\"hamana.connector.db.query:QueryColumnsNotAvailable\",\"kind\":\"class\",\"summary\":\"Class QueryColumnsNotAvailable\",\"import\":\"from hamana.connector.db.query import QueryColumnsNotAvailable\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryColumnsNotAvailable\"},{\"id\":\"hamana.connector.db.query:QueryInitializationError\",\"kind\":\"class\",\"summary\":\"Class QueryInitializationError\",\"import\":\"from hamana.connector.db.query import QueryInitializationError\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryInitializationError\"},{\"id\":\"hamana.connector.db.query:QueryResultNotAvailable\",\"kind\":\"class\",\"summary\":\"Class QueryResultNotAvailable\",\"import\":\"from hamana.connector.db.query import QueryResultNotAvailable\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryResultNotAvailable\"},{\"id\":\"hamana.connector.db.query:QueryParam\",\"kind\":\"class\",\"summary\":\"Class to represent a parameter used in a query. A parameter is represented by a name and its value.\",\"import\":\"from hamana.connector.db.query import QueryParam\"},{\"id\":\"hamana:Query#get_create_query\",\"kind\":\"method\",\"summary\":\"This function returns a query to create a table based on the query result.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query#get_create_query\"},{\"id\":\"hamana:Query#get_insert_query\",\"kind\":\"method\",\"summary\":\"This function returns a query to insert the query result into a table.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query#get_insert_query\"},{\"id\":\"hamana:execute\",\"kind\":\"function\",\"summary\":\"Execute the query on the internal database. This function is a helper function to execute a query on the `hamana` SQLite database.\",\"import\":\"from hamana import execute\",\"resolved_via_alias\":\"hamana.connector.db.hamana:exec"
+    },
+    {
+      "tool_use_id": "toolu_01QUxUEFJm4MSAsQDfynUKL9",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.oracle:BaseConnector#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#batch_execute\"},{\"id\":\"hamana.connector.db:Hamana#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\",\"import\":\"from hamana.connector.db import Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector#batch_execute\"},{\"id\":\"hamana.connector.db.base:DatabaseConnectorABC#batch_execute\",\"kind\":\"method\",\"summary\":\"Function used to execute a query on the database and return the results in batches. This approach is used to avoid memory issues when dealing with large datasets.\",\"import\":\"from hamana.connector.db.base import DatabaseConnectorABC\",\"resolved_via_alias\":\"hamana.connector.db.interface:DatabaseConnectorABC#batch_execute\"},{\"id\":\"hamana.connector.db:Oracle#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\",\"import\":\"from hamana.connector.db import Oracle\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#batch_execute\"},{\"id\":\"hamana.connector.db:SQLite#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\",\"import\":\"from hamana.connector.db import SQLite\",\"resolved_via_alias\":\"hamana.connector.db.sqlite:SQLiteConnector#batch_execute\"},{\"id\":\"hamana.connector.db:Teradata#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\",\"import\":\"from hamana.connector.db import Teradata\",\"resolved_via_alias\":\"hamana.connector.db.teradata:TeradataConnector#batch_execute\"},{\"id\":\"hamana.connector.file:CSV#batch_execute\",\"kind\":\"method\",\"summary\":\"Function used to extract data from the CSV file and return the results in batches. This approach is used to avoid memory issues when dealing with large datasets.\",\"import\":\"from hamana.connector.file import CSV\",\"resolved_via_alias\":\"hamana.connector.file.csv:CSVConnector#batch_execute\"},{\"id\":\"hamana.connector.db.bas"
+    },
+    {
+      "tool_use_id": "toolu_01EheHMPoHBX9WMVvp4zSMDA",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"hamana.connector.db.sqlite\",\"aliases\":[\"hamana.connector.db.hamana:SQLiteConnector\",\"hamana.connector.db:SQLite\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"kwargs\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class representing a connector to a SQLite database.\"},\"id\":\"hamana.connector.db:SQLite\",\"resolved_via_alias\":\"hamana.connector.db.sqlite:SQLiteConnector\",\"import\":\"from hamana.connector.db import SQLite\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"path\",\"type\":\"str\"},{\"name\":\"kwargs\",\"type\":\"dict[str, Any]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"hamana.connector.db:SQLite#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\"},{\"id\":\"hamana.connector.db:SQLite#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\"},{\"id\":\"hamana.connector.db:SQLite#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"hamana.connector.db:SQLite#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\"},{\"id\":\"hamana.connector.db:SQLite#execute\",\"kind\":\"method\",\"summary\":\"Method execute\"},{\"id\":\"hamana.connector.db:SQLite#get_column_from_dtype\",\"kind\":\"method\",\"summary\":\"Method get_column_from_dtype\"},{\"id\":\"hamana.connector.db:SQLite#parse_cursor_description\",\"kind\":\"method\",\"summary\":\"Method parse_cursor_description\"},{\"id\":\"hamana.connector.db:SQLite#ping\",\"kind\":\"method\",\"summary\":\"Method ping\"},{\"id\":\"hamana.connector.db:SQLite#to_sqlite\",\"kind\":\"method\",\"summary\":\"Method to_sqlite\"}]},{\"kind\":\"method\",\"module\":\"hamana.connector.db.sqlite\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"query\",\"type\":\"Query\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"batch_size\",\"type\":\"int\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Generator[list[tuple], None, None]\"}],\"semantics\":{\"summary"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

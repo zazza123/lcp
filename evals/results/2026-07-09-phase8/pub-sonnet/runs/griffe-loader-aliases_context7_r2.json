@@ -1,0 +1,49 @@
+{
+  "case_id": "griffe-loader-aliases",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nimport griffe\n\nsearch_paths = [Path(\"./src\")]\nloader = griffe.GriffeLoader(search_paths=search_paths)\n\npackage = loader.load(\"mypkg\")\n\nloader.resolve_aliases()",
+  "result_text": "```python\nfrom pathlib import Path\n\nimport griffe\n\nsearch_paths = [Path(\"./src\")]\nloader = griffe.GriffeLoader(search_paths=search_paths)\n\npackage = loader.load(\"mypkg\")\n\nloader.resolve_aliases()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 592,
+    "cache_read_tokens": 93066,
+    "cache_creation_tokens": 2448,
+    "cost_usd": 0.0515058,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 13.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve-library-id get-library-docs context7",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "griffe",
+        "query": "GriffeLoader load package with search path and resolve aliases"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_014zynZP8kk3XNQPc79aAJLF",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "case_id": "griffe-json-roundtrip",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\nfrom griffe import Module\n\n# Serialize the already-loaded module to JSON and write it to disk.\njson_text = mod.as_json(full=True)\nPath(\"api.json\").write_text(json_text, encoding=\"utf-8\")\n\n# Reconstruct an equivalent module object from the file's text content.\nreloaded_text = Path(\"api.json\").read_text(encoding=\"utf-8\")\nreconstructed_mod = Module.from_json(reloaded_text)",
+  "result_text": "Confirmed the API: `mod.as_json(full=True)` returns a JSON string, and `Module.from_json(json_string)` is a classmethod reconstructing an equivalent `Module` instance.\n\n```python\nfrom pathlib import Path\nfrom griffe import Module\n\n# Serialize the already-loaded module to JSON and write it to disk.\njson_text = mod.as_json(full=True)\nPath(\"api.json\").write_text(json_text, encoding=\"utf-8\")\n\n# Reconstruct an equivalent module object from the file's text content.\nreloaded_text = Path(\"api.json\").read_text(encoding=\"utf-8\")\nreconstructed_mod = Module.from_json(reloaded_text)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1231,
+    "cache_read_tokens": 156558,
+    "cache_creation_tokens": 16047,
+    "cost_usd": 0.1617444,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 19.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe",
+        "version": "2.1.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "as_json",
+        "library": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "from_json",
+        "library": "griffe",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Module#as_json",
+          "griffe:Module#from_json"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QYg5wGDnFtn767nKXKz95e",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01JKBS5iXkuk9YMw8Ag6VbEL",
+      "content": "{\"results\":[{\"id\":\"griffe:ObjectAliasMixin#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import ObjectAliasMixin\",\"resolved_via_alias\":\"griffe._internal.mixins:ObjectAliasMixin#as_json\"},{\"id\":\"griffe:SerializationMixin#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import SerializationMixin\",\"resolved_via_alias\":\"griffe._internal.mixins:SerializationMixin#as_json\"},{\"id\":\"griffe:Alias#as_json\",\"kind\":\"method\",\"summary\":\"Return this target's data as a JSON string.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#as_json\"},{\"id\":\"griffe:Attribute#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import Attribute\",\"resolved_via_alias\":\"griffe._internal.models:Attribute#as_json\"},{\"id\":\"griffe:Class#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import Class\",\"resolved_via_alias\":\"griffe._internal.models:Class#as_json\"},{\"id\":\"griffe:Function#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import Function\",\"resolved_via_alias\":\"griffe._internal.models:Function#as_json\"},{\"id\":\"griffe:Module#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import Module\",\"resolved_via_alias\":\"griffe._internal.models:Module#as_json\"},{\"id\":\"griffe:Object#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import Object\",\"resolved_via_alias\":\"griffe._internal.models:Object#as_json\"},{\"id\":\"griffe:TypeAlias#as_json\",\"kind\":\"method\",\"summary\":\"Return this object's data as a JSON string.\",\"import\":\"from griffe import TypeAlias\",\"resolved_via_alias\":\"griffe._internal.models:TypeAlias#as_json\"},{\"id\":\"griffe:Alias#as_dict\",\"kind\":\"method\",\"summary\":\"Return this alias' data as a d"
+    },
+    {
+      "tool_use_id": "toolu_012HfEgAuLLLedPc8bvtejfx",
+      "content": "{\"results\":[{\"id\":\"griffe:ObjectAliasMixin#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import ObjectAliasMixin\",\"resolved_via_alias\":\"griffe._internal.mixins:ObjectAliasMixin#from_json\"},{\"id\":\"griffe:SerializationMixin#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import SerializationMixin\",\"resolved_via_alias\":\"griffe._internal.mixins:SerializationMixin#from_json\"},{\"id\":\"griffe:Alias#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#from_json\"},{\"id\":\"griffe:Attribute#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import Attribute\",\"resolved_via_alias\":\"griffe._internal.models:Attribute#from_json\"},{\"id\":\"griffe:Class#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import Class\",\"resolved_via_alias\":\"griffe._internal.models:Class#from_json\"},{\"id\":\"griffe:Function#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import Function\",\"resolved_via_alias\":\"griffe._internal.models:Function#from_json\"},{\"id\":\"griffe:Module#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import Module\",\"resolved_via_alias\":\"griffe._internal.models:Module#from_json\"},{\"id\":\"griffe:Object#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import Object\",\"resolved_via_alias\":\"griffe._internal.models:Object#from_json\"},{\"id\":\"griffe:TypeAlias#from_json\",\"kind\":\"method\",\"summary\":\"Create an instance of this class from a JSON string.\",\"import\":\"from griffe import TypeAlias\",\"resolved_via_alias\":\"griffe._interna"
+    },
+    {
+      "tool_use_id": "toolu_019fMxJSdoHUYyaw9unjey2R",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"griffe._internal.models\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"full\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to return full info, or just base info.\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional serialization options passed to encoder.\"}],\"returns\":\"str\",\"returns_description\":\"A JSON string.\"}],\"semantics\":{\"summary\":\"Return this object's data as a JSON string.\",\"description\":\"Parameters:\\n            full: Whether to return full info, or just base info.\\n            **kwargs: Additional serialization options passed to encoder.\\n\\n        Returns:\\n            A JSON string.\"},\"id\":\"griffe:Module#as_json\",\"resolved_via_alias\":\"griffe._internal.models:Module#as_json\",\"import\":\"from griffe import Module\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"full\",\"type\":\"bool\",\"default\":false}],\"is_async\":false,\"return_type\":\"str\"}},{\"kind\":\"method\",\"module\":\"griffe._internal.models\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"json_string\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"JSON to decode into Object.\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional options passed to decoder.\"}],\"returns\":\"_ObjType\",\"returns_description\":\"An Object instance.\",\"raises\":[{\"type\":\"TypeError\",\"condition\":\"When the json_string does not represent and object\\nof the class from which this classmethod has been called.\"}]}],\"semantics\":{\"summary\":\"Create an instance of this class from a JSON string.\",\"description\":\"Parameters:\\n            json_string: JSON to decode into Object.\\n            **kwargs: Additional options passed to decoder.\\n\\n        Returns:\\n            An Object instance.\\n\\n        Raises:\\n            TypeError: When the json_string does not repres"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

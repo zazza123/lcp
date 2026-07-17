@@ -1,0 +1,49 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\n# Load the package \"mypkg\" as it existed at tag \"v1.0.0\"\nold = griffe.load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\n\n# Load the package \"mypkg\" as it currently exists at HEAD\nnew = griffe.load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\n# Detect and print each API breakage between the two versions\nfor breakage in griffe.find_breaking_changes(old, new):\n    print(breakage.explain(style=griffe.ExplanationStyle.ONE_LINE))",
+  "result_text": "```python\nimport griffe\n\n# Load the package \"mypkg\" as it existed at tag \"v1.0.0\"\nold = griffe.load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\n\n# Load the package \"mypkg\" as it currently exists at HEAD\nnew = griffe.load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\n# Detect and print each API breakage between the two versions\nfor breakage in griffe.find_breaking_changes(old, new):\n    print(breakage.explain(style=griffe.ExplanationStyle.ONE_LINE))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 3519,
+    "cache_read_tokens": 87834,
+    "cache_creation_tokens": 17115,
+    "cost_usd": 0.18184319999999998,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 44.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "griffe git-aware loading and API breakage detection",
+        "libraryName": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_013Ciy3v31k83nRKcu764Xua",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

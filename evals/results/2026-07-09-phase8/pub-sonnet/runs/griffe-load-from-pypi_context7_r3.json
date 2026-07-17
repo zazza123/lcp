@@ -1,0 +1,77 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\npackage = griffe.load_pypi(\"click\", distribution=\"click\", version_spec=\"==8.1.7\")\nprint(package.name)",
+  "result_text": "```python\nimport griffe\n\npackage = griffe.load_pypi(\"click\", distribution=\"click\", version_spec=\"==8.1.7\")\nprint(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 6930,
+    "cache_read_tokens": 265355,
+    "cache_creation_tokens": 24922,
+    "cost_usd": 0.3331305,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 89.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "load a package from PyPI without installing using griffe",
+        "libraryName": "griffe"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "powershell execute",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute python code run script terminal",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01BWHqskj5p363Lm3bhovFTj",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

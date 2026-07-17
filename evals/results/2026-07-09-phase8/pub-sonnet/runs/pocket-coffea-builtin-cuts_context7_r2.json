@@ -1,0 +1,49 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.parameters import defaults\nfrom pocket_coffea.lib.cut_functions import get_HLTsel, get_nObj_min, get_nBtagMin\n\n# Default PocketCoffea parameters (holds the HLT trigger paths per primary dataset)\nparameters = defaults.get_default_parameters()\n\n# Skim: cheap event-level cut applied first to reduce the processed volume\nskim = [\n    get_HLTsel(primaryDataset=\"semileptonic\"),\n]\n\n# Preselection: analysis-level object multiplicity requirements\npreselections = [\n    get_nObj_min(4, 30.0, coll=\"JetGood\"),\n    get_nBtagMin(2, coll=\"BJetGood\"),\n]",
+  "result_text": "```python\nfrom pocket_coffea.parameters import defaults\nfrom pocket_coffea.lib.cut_functions import get_HLTsel, get_nObj_min, get_nBtagMin\n\n# Default PocketCoffea parameters (holds the HLT trigger paths per primary dataset)\nparameters = defaults.get_default_parameters()\n\n# Skim: cheap event-level cut applied first to reduce the processed volume\nskim = [\n    get_HLTsel(primaryDataset=\"semileptonic\"),\n]\n\n# Preselection: analysis-level object multiplicity requirements\npreselections = [\n    get_nObj_min(4, 30.0, coll=\"JetGood\"),\n    get_nBtagMin(2, coll=\"BJetGood\"),\n]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 7061,
+    "cache_read_tokens": 97136,
+    "cache_creation_tokens": 6364,
+    "cost_usd": 0.17325780000000002,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 74.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "skim and preselection cut factories, HLT trigger selection, object multiplicity cut, b-tag multiplicity cut, get_HLTsel, get_nObj_min, get_nBtagMin",
+        "libraryName": "pocket-coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01R8ezc4d5C8qF9b5tisz1Ys",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

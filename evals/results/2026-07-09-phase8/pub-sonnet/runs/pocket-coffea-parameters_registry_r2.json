@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom pocket_coffea.parameters import defaults\n\nlocaldir = os.path.dirname(os.path.abspath(__file__))\n\n# Step 1: fetch the framework's default parameter set\ndefault_parameters = defaults.get_default_parameters()\n\n# Step 2: overlay the two YAML files onto the defaults, file values win\nparameters = defaults.merge_parameters_from_files(\n    default_parameters,\n    os.path.join(localdir, \"params/object_preselection.yaml\"),\n    os.path.join(localdir, \"params/triggers.yaml\"),\n    update=True,\n)",
+  "result_text": "```python\nimport os\n\nfrom pocket_coffea.parameters import defaults\n\nlocaldir = os.path.dirname(os.path.abspath(__file__))\n\n# Step 1: fetch the framework's default parameter set\ndefault_parameters = defaults.get_default_parameters()\n\n# Step 2: overlay the two YAML files onto the defaults, file values win\nparameters = defaults.merge_parameters_from_files(\n    default_parameters,\n    os.path.join(localdir, \"params/object_preselection.yaml\"),\n    os.path.join(localdir, \"params/triggers.yaml\"),\n    update=True,\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 791,
+    "cache_read_tokens": 30349,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0209757,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,352 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from cyclopts import App\nfrom cyclopts.types import ExistingFile\n\napp = App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    \"\"\"Convert a file to a new output.\n\n    Parameters\n    ----------\n    input_file: ExistingFile\n        Path to the file to convert; must already exist on disk.\n    output_name: str\n        Name to give the converted output.\n    \"\"\"\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Good, App and `@app.command` are verified. Now writing the code using `cyclopts.types.ExistingFile` for the file-must-exist annotation.\n\n```python\nfrom cyclopts import App\nfrom cyclopts.types import ExistingFile\n\napp = App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    \"\"\"Convert a file to a new output.\n\n    Parameters\n    ----------\n    input_file: ExistingFile\n        Path to the file to convert; must already exist on disk.\n    output_name: str\n        Name to give the converted output.\n    \"\"\"\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 38,
+    "output_tokens": 7743,
+    "cache_read_tokens": 883692,
+    "cache_creation_tokens": 49984,
+    "cost_usd": 0.6812705999999998,
+    "num_turns": 29,
+    "tool_calls": 28,
+    "duration_s": 146.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts",
+        "version": "4.20.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "ExistingPath",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "\"\"",
+        "module": "cyclopts.types",
+        "library": "cyclopts",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.types"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Path",
+        "library": "cyclopts",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Existing",
+        "library": "cyclopts",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts._path_type:"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.types:"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.annotations:"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "File",
+        "module": "cyclopts.types",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "a",
+        "module": "cyclopts.types",
+        "library": "cyclopts",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Path",
+        "module": "cyclopts.types",
+        "library": "cyclopts",
+        "kind": "constant"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Path",
+        "module": "cyclopts.types",
+        "library": "cyclopts",
+        "kind": "attribute"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "grep search files",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Grep,Glob",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "module": "cyclopts.types",
+        "library": "cyclopts",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.validators:Path",
+          "cyclopts.validators:Path#__init__"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.types:ExistingPath",
+          "cyclopts.types:ResolvedExistingPath",
+          "cyclopts.types:ExistingFile",
+          "cyclopts.types:ExistingDirectory"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "ExistingFile",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.annotations:"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "module": "cyclopts.annotations",
+        "library": "cyclopts",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "App",
+        "library": "cyclopts",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:App#command",
+          "cyclopts:App#__init__",
+          "cyclopts:App#__call__"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01F3nRyCkZ8LujhF8TrjAike",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01EBEnxe9LNEzutKnKGZP3fj",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01LVc2JXjhgpGqQmzGqqDfXg",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_013fjwnarM1K5Tp9C3wvLJPu",
+      "content": "{\"symbols\":[],\"not_found\":[\"cyclopts.types\"],\"hint\":\"Some ids were not found \u2014 take ids from search() results; the format is 'module:name' or 'module:Class#member'.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012SzEGK5gfWxQWbDfBNCkDw",
+      "content": "{\"results\":[{\"id\":\"cyclopts.validators:Path\",\"kind\":\"class\",\"summary\":\"Assertions on properties of :class:`pathlib.Path`.\",\"import\":\"from cyclopts.validators import Path\",\"resolved_via_alias\":\"cyclopts.validators._path:Path\"},{\"id\":\"cyclopts._path_type:StdioPath\",\"kind\":\"class\",\"summary\":\"A :class:`~pathlib.Path` subclass that treats ``-`` as stdin/stdout.\",\"import\":\"from cyclopts._path_type import StdioPath\"},{\"id\":\"cyclopts.completion:get_default_completion_path\",\"kind\":\"function\",\"summary\":\"Get the default completion script path for a given shell.\",\"import\":\"from cyclopts.completion import get_default_completion_path\",\"resolved_via_alias\":\"cyclopts.completion.install:get_default_completion_path\"},{\"id\":\"cyclopts._path_type:\",\"kind\":\"module\",\"summary\":\":class:`StdioPath` - A Path subclass that treats ``-`` as stdin/stdout.\",\"import\":\"import cyclopts._path_type\"},{\"id\":\"cyclopts._path_type:StdioPath#exists\",\"kind\":\"method\",\"summary\":\"Return True if path exists. Always True for stdio.\",\"import\":\"from cyclopts._path_type import StdioPath\"},{\"id\":\"cyclopts.completion.zsh:CompletionData\",\"kind\":\"class\",\"summary\":\"Completion data for a command path.\",\"import\":\"from cyclopts.completion.zsh import CompletionData\",\"resolved_via_alias\":\"cyclopts.completion._base:CompletionData\"},{\"id\":\"cyclopts.docs.html:format_usage_line\",\"kind\":\"function\",\"summary\":\"Format usage line with proper command path.\",\"import\":\"from cyclopts.docs.html import format_usage_line\",\"resolved_via_alias\":\"cyclopts.docs.base:format_usage_line\"},{\"id\":\"cyclopts.docs.rst:generate_anchor\",\"kind\":\"function\",\"summary\":\"Generate a URL-friendly anchor from a command path.\",\"import\":\"from cyclopts.docs.rst import generate_anchor\",\"resolved_via_alias\":\"cyclopts.docs.base:generate_anchor\"},{\"id\":\"cyclopts.docs.rst:get_app_info\",\"kind\":\"function\",\"summary\":\"Get app name, full command path, and title.\",\"import\":\"from cyclopts.docs.rst import get_app_info\",\"resolved_via_alias\":\"cyclopts.docs.base:get_app_info\"},{\"id\""
+    },
+    {
+      "tool_use_id": "toolu_01SLWRRjzaERRwjhHBV7ExQp",
+      "content": "{\"results\":[{\"id\":\"cyclopts:App#run_async\",\"kind\":\"method\",\"summary\":\"Async equivalent of :meth:`__call__` for use within existing event loops.\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#run_async\"},{\"id\":\"cyclopts.docs:generate_rst_docs\",\"kind\":\"function\",\"summary\":\"Generate reStructuredText documentation for a CLI application.\",\"import\":\"from cyclopts.docs import generate_rst_docs\",\"resolved_via_alias\":\"cyclopts.docs.rst:generate_rst_docs\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01A2dz3c1UjArhwoJQ93bx9U",
+      "content": "{\"symbols\":[{\"kind\":\"module\",\"module\":\"cyclopts._path_type\",\"semantics\":{\"summary\":\":class:`StdioPath` - A Path subclass that treats ``-`` as stdin/stdout.\",\"description\":\"Requires Python 3.12+ for proper Path subclassing support.\"},\"id\":\"cyclopts._path_type:\",\"import\":\"import cyclopts._path_type\"}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01G9yZGtiNMCM2d2JnSSMsta",
+      "content": "{\"library\":{\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"cyclopts\",\"symbols\":1},{\"module\":\"cyclopts._convert\",\"symbols\":7},{\"module\":\"cyclopts._edit\",\"symbols\":6},{\"module\":\"cyclopts._env_var\",\"symbols\":2},{\"module\":\"cyclopts._markup\",\"symbols\":6},{\"module\":\"cyclopts._path_type\",\"symbols\":11},{\"module\":\"cyclopts._result_action\",\"symbols\":3},{\"module\":\"cyclopts._run\",\"symbols\":3},{\"module\":\"cyclopts._version\",\"symbols\":1},{\"module\":\"cyclopts.annotations\",\"symbols\":23},{\"module\":\"cyclopts.app_stack\",\"symbols\":10},{\"module\":\"cyclopts.argument\",\"symbols\":1},{\"module\":\"cyclopts.argument._argument\",\"symbols\":29},{\"module\":\"cyclopts.argument._collection\",\"symbols\":12},{\"module\":\"cyclopts.argument.utils\",\"symbols\":15},{\"module\":\"cyclopts.bind\",\"symbols\":4},{\"module\":\"cyclopts.cli\",\"symbols\":1},{\"module\":\"cyclopts.cli._complete\",\"symbols\":4},{\"module\":\"cyclopts.cli.docs\",\"symbols\":2},{\"module\":\"cyclopts.cli.run\",\"symbols\":2},{\"module\":\"cyclopts.cli.tree\",\"symbols\":2},{\"module\":\"cyclopts.command_spec\",\"symbols\":10},{\"module\":\"cyclopts.completion\",\"symbols\":1},{\"module\":\"cyclopts.completion._base\",\"symbols\":14},{\"module\":\"cyclopts.completion.bash\",\"symbols\":3},{\"module\":\"cyclopts.completion.detect\",\"symbols\":3},{\"module\":\"cyclopts.completion.fish\",\"symbols\":3},{\"module\":\"cyclopts.completion.install\",\"symbols\":4},{\"module\":\"cyclopts.completion.zsh\",\"symbols\":3},{\"module\":\"cyclopts.config\",\"symbols\":1},{\"module\":\"cyclopts.config._common\",\"symbols\":29},{\"module\":\"cyclopts.config._env\",\"symbols\":8},{\"module\":\"cyclopts.config._json\",\"symbols\":9},{\"module\":\"cyclopts.config._toml\",\"symbols\":9},{\"module\":\"cyclopts.config._yaml\",\"symbols\":9},{\"module\":\"cyclopts.core\",\"symbols\":47},{\"module\":\"cyclopts.docs\",\"symbols\":1},{\"module\":\"cyclopts.docs.base\",\"symbols\":18},{\"module\":\"cyclopts.docs.html\",\"symbols\":4},{\"module\":\"cyclopts.docs.markdown\",\"symbols\":4},{\"module\":\"cyclopts.docs.rst\",\"symbols\":5},{\"module\":\"cyclo"
+    },
+    {
+      "tool_use_id": "toolu_01TJKJpxdc6BepFsyyxkLfUA",
+      "content": "{\"symbols\":[{\"kind\":\"module\",\"module\":\"cyclopts.types\",\"semantics\":{\"summary\":\"Module cyclopts.types\"},\"id\":\"cyclopts.types:\",\"import\":\"import cyclopts.types\"}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01Ph23rYzHcxgGAMdek42MRd",
+      "content": "{\"symbols\":[{\"kind\":\"module\",\"module\":\"cyclopts.annotations\",\"semantics\":{\"summary\":\"Module cyclopts.annotations\"},\"id\":\"cyclopts.annotations:\",\"import\":\"import cyclopts.annotations\"}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01RLPzBqyza6ChFnrusLCRR9",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_0146qSm9nyYVLHG8H2mYusxq",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019VHqEoRuo5CWZToEkybLsB",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019gqGukTAZjAntR72aDYGMJ",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_017diZ7vocYNMHPoJjXMDskX",
+      "content": "{\"results\":[{\"id\":\"cyclopts.types:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.types\",\"import\":\"import cyclopts.types\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01YX1HSihyzdsLmPmjg7Jzqt",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.validators._path\",\"aliases\":[\"cyclopts.validators:Path\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"exists\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"file_okay\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dir_okay\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"ext\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Assertions on properties of :class:`pathlib.Path`.\",\"description\":\"Example Usage:\\n\\n    .. code-block:: python\\n\\n        from cyclopts import App, Parameter, validators\\n        from pathlib import Path\\n        from typing import Annotated\\n\\n        app = App()\\n\\n\\n        @app.default\\n        def main(\\n            # ``src`` must be a file that exists.\\n            src: Annotated[Path, Parameter(validator=validators.Path(exists=True, dir_okay=False))],\\n            # ``dst`` must be a path that does **not** exist.\\n            dst: Annotated[Path, Parameter(validator=validators.Path(dir_okay=False, file_okay=False))],\\n        ):\\n            \\\"Copies src->dst.\\\"\\n            dst.write_bytes(src.read_bytes())\\n\\n\\n        app()\\n\\n    .. code-block:: console\\n\\n        $ my-script foo.bin bar.bin  # if foo.bin does not exist\\n        \u256d\u2500 Error \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\\n        \u2502 Invalid value \\\"foo.bin\\\" for \\\"SRC\\\". \\\"foo.bin\\\" does not exist.  \u2502\\n        \u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\\n\\n        $ my-script foo.bin bar.bin  # if bar.bin exists\\n        \u256d\u2500 Error \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\\n        \u2502 Invalid value \\\"bar.bin\\\" for \\\"DST\\\". \\\"bar.bin\\\" already exists.  \u2502\\n        \u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\"},\"id\":\"cyclopt"
+    },
+    {
+      "tool_use_id": "toolu_01NozTJYkHVFb2GuiUXxUjyA",
+      "content": "{\"symbols\":[],\"not_found\":[\"cyclopts.types:ExistingPath\",\"cyclopts.types:ResolvedExistingPath\",\"cyclopts.types:ExistingFile\",\"cyclopts.types:ExistingDirectory\"],\"hint\":\"Some ids were not found \u2014 take ids from search() results; the format is 'module:name' or 'module:Class#member'.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01PXp1qotcvBVMLT6vvA2CQR",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_016HJdW1NZTPrSRSD6VL4FM9",
+      "content": "{\"symbols\":[{\"kind\":\"module\",\"module\":\"cyclopts.annotations\",\"semantics\":{\"summary\":\"Module cyclopts.annotations\"},\"id\":\"cyclopts.annotations:\",\"import\":\"import cyclopts.annotations\"}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01Ap1MLZXSC2szSb7yamfMWo",
+      "content": "{\"results\":[{\"id\":\"cyclopts.argument._argument:contains_hint\",\"kind\":\"function\",\"summary\":\"Indicates if ``target_type`` is in a possibly annotated/unioned ``hint``.\",\"import\":\"from cyclopts.argument._argument import contains_hint\",\"resolved_via_alias\":\"cyclopts.annotations:contains_hint\"},{\"id\":\"cyclopts._convert:get_annotated_discriminator\",\"kind\":\"function\",\"summary\":\"Return the ``discriminator`` metadata from an ``Annotated[...]`` hint, else ``None``.\",\"import\":\"from cyclopts._convert import get_annotated_discriminator\",\"resolved_via_alias\":\"cyclopts.annotations:get_annotated_discriminator\"},{\"id\":\"cyclopts.argument._argument:get_hint_name\",\"kind\":\"function\",\"summary\":\"Function get_hint_name\",\"import\":\"from cyclopts.argument._argument import get_hint_name\",\"resolved_via_alias\":\"cyclopts.annotations:get_hint_name\"},{\"id\":\"cyclopts._convert:is_annotated\",\"kind\":\"function\",\"summary\":\"Function is_annotated\",\"import\":\"from cyclopts._convert import is_annotated\",\"resolved_via_alias\":\"cyclopts.annotations:is_annotated\"},{\"id\":\"cyclopts.field_info:is_attrs\",\"kind\":\"function\",\"summary\":\"Function is_attrs\",\"import\":\"from cyclopts.field_info import is_attrs\",\"resolved_via_alias\":\"cyclopts.annotations:is_attrs\"},{\"id\":\"cyclopts.field_info:is_dataclass\",\"kind\":\"function\",\"summary\":\"Function is_dataclass\",\"import\":\"from cyclopts.field_info import is_dataclass\",\"resolved_via_alias\":\"cyclopts.annotations:is_dataclass\"},{\"id\":\"cyclopts._convert:is_enum_flag\",\"kind\":\"function\",\"summary\":\"Check if a type hint is an enum.Flag subclass.\",\"import\":\"from cyclopts._convert import is_enum_flag\",\"resolved_via_alias\":\"cyclopts.annotations:is_enum_flag\"},{\"id\":\"cyclopts.completion.zsh:is_iterable_type\",\"kind\":\"function\",\"summary\":\"Check if a type hint is a collection/iterable type (list, set, tuple, etc.).\",\"import\":\"from cyclopts.completion.zsh import is_iterable_type\",\"resolved_via_alias\":\"cyclopts.annotations:is_iterable_type\"},{\"id\":\"cyclopts.field_info:is_namedtuple\",\"kind\":\"function\","
+    },
+    {
+      "tool_use_id": "toolu_01Hzq4pLAAku7zcXi2ZJBSME",
+      "content": "{\"results\":[{\"id\":\"cyclopts:App\",\"kind\":\"class\",\"summary\":\"Class App\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App\"},{\"id\":\"cyclopts.core:AppStack\",\"kind\":\"class\",\"summary\":\"Class AppStack\",\"import\":\"from cyclopts.core import AppStack\",\"resolved_via_alias\":\"cyclopts.app_stack:AppStack\"},{\"id\":\"cyclopts:CommandCollisionError\",\"kind\":\"class\",\"summary\":\"A command with the same name has already been registered to the app.\",\"import\":\"from cyclopts import CommandCollisionError\",\"resolved_via_alias\":\"cyclopts.exceptions:CommandCollisionError\"},{\"id\":\"cyclopts.help:NameRenderer\",\"kind\":\"class\",\"summary\":\"Renderer for parameter/command names with optional text wrapping.\",\"import\":\"from cyclopts.help import NameRenderer\",\"resolved_via_alias\":\"cyclopts.help.specs:NameRenderer\"},{\"id\":\"cyclopts:Token\",\"kind\":\"class\",\"summary\":\"Tracks how a user supplied a value to the application.\",\"import\":\"from cyclopts import Token\",\"resolved_via_alias\":\"cyclopts.token:Token\"},{\"id\":\"cyclopts.core:CommandSpec\",\"kind\":\"class\",\"summary\":\"Specification for a command that will be lazily loaded on first access.\",\"import\":\"from cyclopts.core import CommandSpec\",\"resolved_via_alias\":\"cyclopts.command_spec:CommandSpec\"},{\"id\":\"cyclopts.completion._base:RegisteredCommand\",\"kind\":\"class\",\"summary\":\"A command with the names it was registered under.\",\"import\":\"from cyclopts.completion._base import RegisteredCommand\",\"resolved_via_alias\":\"cyclopts.group_extractors:RegisteredCommand\"},{\"id\":\"cyclopts.help:DefaultFormatter\",\"kind\":\"class\",\"summary\":\"Default help formatter using Rich library with customizable specs.\",\"import\":\"from cyclopts.help import DefaultFormatter\",\"resolved_via_alias\":\"cyclopts.help.formatters.default:DefaultFormatter\"},{\"id\":\"cyclopts.help.formatters:HtmlFormatter\",\"kind\":\"class\",\"summary\":\"HTML documentation formatter.\",\"import\":\"from cyclopts.help.formatters import HtmlFormatter\",\"resolved_via_alias\":\"cyclopts.help.formatters.html:HtmlFormatter\"},{\"id"
+    },
+    {
+      "tool_use_id": "toolu_017PNbXLmBJCKAycE7Up8GYR",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyclopts.core\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"obj\",\"type\":\"Union[T, None, str]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Function, :class:`App`, or import path string to be registered as a command.\\nFor lazy loading, provide a string in format \\\"module.path:function_or_app_name\\\".\"},{\"name\":\"name\",\"type\":\"UnionType[None, str, Iterable[str]]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Name(s) to register the command to.\\nIf not provided, defaults to:\\n\\n* If registering an :class:`App`, then the app's name.\\n* If registering a **function**, then the function's name after applying :attr:`name_transform`.\\n* If registering via **import path**, then the attribute name after applying :attr:`name_transform`.\\n\\nSpecial value ``\\\"*\\\"`` flattens all sub-App commands into this app (App instances only).\\nSee :ref:`Flattening SubCommands` for details.\"},{\"name\":\"alias\",\"type\":\"UnionType[None, str, Iterable[str]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"kwargs\",\"type\":\"object\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Union[T, Callable[[~T], T], None]\"}],\"semantics\":{\"summary\":\"Decorator to register a function as a CLI command.\",\"description\":\"Example usage:\\n\\n        .. code-block::\\n\\n            from cyclopts import App\\n\\n            app = App()\\n\\n            @app.command\\n            def foo():\\n                print(\\\"foo!\\\")\\n\\n            @app.command(name=\\\"buzz\\\")\\n            def bar():\\n                print(\\\"bar!\\\")\\n\\n            # Lazy loading via import path\\n            app.command(\\\"myapp.commands:create_user\\\", name=\\\"create\\\")\\n\\n            app()\\n\\n        .. code-block:: console\\n\\n            $ my-script foo\\n            foo!\\n\\n            $ my-script buzz\\n            bar!\\n\\n            $ my-script create\\n            # Imports and runs myapp.commands:create_user\\n\\n        Parameters\\n        ---"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

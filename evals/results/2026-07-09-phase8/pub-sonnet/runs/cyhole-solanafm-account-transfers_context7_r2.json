@@ -1,0 +1,88 @@
+{
+  "case_id": "cyhole-solanafm-account-transfers",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solana_fm import SolanaFM\n\ndef get_token_transfers(account_address: str):\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    response = solana_fm.client.get_account_transfers(account=account_address)\n    return response\n\nif __name__ == \"__main__\":\n    account_address = \"5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1\"\n    transfers = get_token_transfers(account_address)\n    print(transfers)",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\n\ndef get_token_transfers(account_address: str):\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    response = solana_fm.client.get_account_transfers(account=account_address)\n    return response\n\nif __name__ == \"__main__\":\n    account_address = \"5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1\"\n    transfers = get_token_transfers(account_address)\n    print(transfers)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 4804,
+    "cache_read_tokens": 306069,
+    "cache_creation_tokens": 20962,
+    "cost_usd": 0.28970070000000003,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 67.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "SolanaFM token transfers synchronous account address API key",
+        "libraryName": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "cyhole solana fm python sdk crypto",
+        "libraryName": "cyhole solana"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Read,Grep,Glob",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "powershell run command",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01WfAPT1STT8CjYJCXFdfVN3",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_012LJ9jguWpSTURL5WiXKY7C",
+      "content": "Available Libraries:\n\n- Title: Solana Go\n- Context7-compatible library ID: /solana-foundation/solana-go\n- Description: Solana Go is a Go library providing interfaces to Solana JSON RPC and WebSocket APIs for building blockchain applications.\n- Code Snippets: 445\n- Source Reputation: High\n- Benchmark Score: 91.67\n----------\n- Title: Solana SDK\n- Context7-compatible library ID: /anza-xyz/solana-sdk\n- Description: The Solana SDK is a Rust library for interacting with the Solana blockchain, used by on-chain programs and the Agave validator.\n- Code Snippets: 505\n- Source Reputation: High\n- Benchmark Score: 67.64\n----------\n- Title: Solana SDK\n- Context7-compatible library ID: /websites/rs_solana-sdk_solana_sdk\n- Description: Solana SDK is the base library for off-chain programs that interact with Solana or operate on Solana data structures, providing core functionality for clients and host programs.\n- Code Snippets: 3517\n- Source Reputation: High\n- Benchmark Score: 39.15\n----------\n- Title: Solana Streamer\n- Context7-compatible library ID: /0xfnzero/solana-streamer\n- Description: A lightweight Rust library for real-time event streaming from Solana DEX trading programs, offering efficient event parsing and subscription capabilities for protocols like PumpFun, PumpSwap, Bonk, and Raydium.\n- Code Snippets: 429\n- Source Reputation: High\n- Benchmark Score: 76.33\n----------\n- Title: Solana Stream\n- Context7-compatible library ID: /validatorsdao/solana-stream\n- Description: A collection of Rust and TypeScript packages for streaming real-time data from the Solana blockchain using Geyser and Shreds approaches.\n- Code Snippets: 83\n- Source Reputation: Medium"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

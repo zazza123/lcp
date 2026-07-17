@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(\"Simple Server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\n\n    Args:\n        a: First number.\n        b: Second number.\n\n    Returns:\n        The sum of a and b.\n    \"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"Simple Server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\n\n    Args:\n        a: First number.\n        b: Second number.\n\n    Returns:\n        The sum of a and b.\n    \"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 956,
+    "cache_read_tokens": 30322,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0234426,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

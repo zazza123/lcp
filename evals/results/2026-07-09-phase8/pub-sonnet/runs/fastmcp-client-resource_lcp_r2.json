@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\nfrom fastmcp import FastMCP, Client\n\nmcp = FastMCP(\"ConfigServer\")\n\n\n@mcp.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\"debug\": True, \"version\": \"1.0.0\"}\n\n\nasync def main():\n    client = Client(mcp)\n    async with client:\n        contents = await client.read_resource(\"data://config\")\n        for content in contents:\n            print(content.text if hasattr(content, \"text\") else content)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP, Client\n\nmcp = FastMCP(\"ConfigServer\")\n\n\n@mcp.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\"debug\": True, \"version\": \"1.0.0\"}\n\n\nasync def main():\n    client = Client(mcp)\n    async with client:\n        contents = await client.read_resource(\"data://config\")\n        for content in contents:\n            print(content.text if hasattr(content, \"text\") else content)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1599,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9923,
+    "cost_usd": 0.08963969999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

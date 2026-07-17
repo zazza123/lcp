@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Annotated\n\nimport cyclopts\nfrom cyclopts import App, Parameter\nfrom cyclopts.validators import Number\n\napp = App()\n\n\n@app.command\ndef serve(\n    port: Annotated[\n        int,\n        Parameter(\n            validator=Number(gte=1024, lte=65535),\n            help=\"Port to serve on (must be between 1024 and 65535).\",\n        ),\n    ],\n):\n    \"\"\"Start the server.\n\n    Parameters\n    ----------\n    port: int\n        Port to bind the server to.\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom typing import Annotated\n\nimport cyclopts\nfrom cyclopts import App, Parameter\nfrom cyclopts.validators import Number\n\napp = App()\n\n\n@app.command\ndef serve(\n    port: Annotated[\n        int,\n        Parameter(\n            validator=Number(gte=1024, lte=65535),\n            help=\"Port to serve on (must be between 1024 and 65535).\",\n        ),\n    ],\n):\n    \"\"\"Start the server.\n\n    Parameters\n    ----------\n    port: int\n        Port to bind the server to.\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 669,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9960,
+    "cost_usd": 0.0759117,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

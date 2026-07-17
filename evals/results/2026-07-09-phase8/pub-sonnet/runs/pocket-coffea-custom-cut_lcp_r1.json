@@ -1,0 +1,81 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\n\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    muons = events.Muon\n    muons = muons[ak.argsort(muons.pt, axis=1, ascending=False)]\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n    padded_muons = ak.pad_none(muons, 2, axis=1)\n    leading_muon = padded_muons[:, 0]\n    subleading_muon = padded_muons[:, 1]\n\n    pt_mask = (leading_muon.pt > params[\"pt\"]) & (subleading_muon.pt > params[\"pt\"])\n    opposite_charge_mask = (leading_muon.charge * subleading_muon.charge) < 0\n\n    mask = has_two_muons & pt_mask & opposite_charge_mask\n    return ak.fill_none(mask, False)\n\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    params={\"pt\": 15},\n    function=dimuon_mask,\n)",
+  "result_text": "```python\nimport awkward as ak\n\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    muons = events.Muon\n    muons = muons[ak.argsort(muons.pt, axis=1, ascending=False)]\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n    padded_muons = ak.pad_none(muons, 2, axis=1)\n    leading_muon = padded_muons[:, 0]\n    subleading_muon = padded_muons[:, 1]\n\n    pt_mask = (leading_muon.pt > params[\"pt\"]) & (subleading_muon.pt > params[\"pt\"])\n    opposite_charge_mask = (leading_muon.charge * subleading_muon.charge) < 0\n\n    mask = has_two_muons & pt_mask & opposite_charge_mask\n    return ak.fill_none(mask, False)\n\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    params={\"pt\": 15},\n    function=dimuon_mask,\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 3596,
+    "cache_read_tokens": 228637,
+    "cache_creation_tokens": 19216,
+    "cost_usd": 0.2378691,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 59.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell execute shell command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Read,Grep,Glob",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01XhdxfDJgmLRSev3kBHpCv1",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01BGTCM9xpeAVZy1ejE5E7rs",
+      "content": "{\"error\":{\"code\":\"library_not_exposed\",\"message\":\"Library 'pocket_coffea' is not exposed by this server.\",\"hint\":\"Ask for one of the exposed libraries instead.\",\"exposed\":[\"cyclopts\",\"cyhole\",\"fastmcp\",\"flask\",\"griffe\",\"hamana\",\"narwhals\",\"pixeltable\",\"pocket-coffea\",\"polars\",\"requests\"]}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import logging\n\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(\"request_logger\")\n\n\nclass RequestLoggingMiddleware(Middleware):\n    async def on_request(self, context: MiddlewareContext, call_next):\n        logger.info(\"Incoming request: method=%s\", context.method)\n        return await call_next(context)\n\n\nmcp = FastMCP(\"MyServer\")\nmcp.add_middleware(RequestLoggingMiddleware())\n\n\n@mcp.tool\ndef echo(text: str) -> str:\n    return text\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nimport logging\n\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(\"request_logger\")\n\n\nclass RequestLoggingMiddleware(Middleware):\n    async def on_request(self, context: MiddlewareContext, call_next):\n        logger.info(\"Incoming request: method=%s\", context.method)\n        return await call_next(context)\n\n\nmcp = FastMCP(\"MyServer\")\nmcp.add_middleware(RequestLoggingMiddleware())\n\n\n@mcp.tool\ndef echo(text: str) -> str:\n    return text\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1095,
+    "cache_read_tokens": 124646,
+    "cache_creation_tokens": 18349,
+    "cost_usd": 0.1639368,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 26.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "custom middleware that logs incoming requests",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "custom Middleware subclass on_request logging incoming request add_middleware"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_012dv2YXB7KvK9ahwTB6sBYn",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 89\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /punkpeye/fastmcp\n- Description: FastMCP is a TypeScript framework for building MCP servers, simplifying the process of handling client sessions, tools, and resources with built-in features like authentication, streaming, and logging.\n- Code Snippets: 732\n- Source Reputation: High\n- Benchmark Score: 80.8\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms-full_txt\n- Description: FastMCP is a Python framework for building MCP servers, featuring an experimental OpenAPI parser, JWT claims, and optimized payload handling.\n- Code Snippets: 25492\n- Source Reputation: High\n- Benchmark Score: 73.06"
+    },
+    {
+      "tool_use_id": "toolu_016tTAfefUnv8wfKRaqSoUQt",
+      "content": "### Creating Custom Middleware in FastMCP\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/middleware.mdx\n\nIllustrates how to create custom middleware by subclassing Middleware and overriding on_request to perform pre- and post-processing for all requests.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext\n\nclass CustomMiddleware(Middleware):\n    async def on_request(self, context: MiddlewareContext, call_next):\n        # Pre-processing\n        print(f\"\u2192 {context.method}\")\n\n        result = await call_next(context)\n\n        # Post-processing\n        print(f\"\u2190 {context.method}\")\n        return result\n\nmcp = FastMCP(\"MyServer\")\nmcp.add_middleware(CustomMiddleware())\n```\n\n--------------------------------\n\n### Implement a Basic Logging Middleware in Python\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/middleware.mdx\n\nThis snippet demonstrates how to create a custom middleware to log incoming requests and outgoing responses, using `call_next` to continue the processing chain.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext\n\nclass LoggingMiddleware(Middleware):\n    async def on_message(self, context: MiddlewareContext, call_next):\n        print(f\"\u2192 {context.method}\")\n        result = await call_next(context)\n        print(f\"\u2190 {context.method}\")\n        return result\n\nmcp = FastMCP(\"MyServer\")\nmcp.add_middleware(LoggingMiddleware())\n```\n\n--------------------------------\n\n### Logging and Re-raising Errors in Middleware (Python)\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/middleware.mdx\n\nImplement middleware to wrap `call_next()` in a try-except block, logging exceptions from downstream components before re-raising them to maintain error propagation.\n\n```python\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext\n\nclass ErrorLogger(Middleware):\n    async def on_request(self, conte"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nimport cyclopts\nfrom cyclopts.types import ExistingFile\n\napp = cyclopts.App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom pathlib import Path\n\nimport cyclopts\nfrom cyclopts.types import ExistingFile\n\napp = cyclopts.App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 984,
+    "cache_read_tokens": 30392,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0238836,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "case_id": "requests-stream-download",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import requests\n\nurl = \"https://example.com/big.bin\"\noutput_path = \"big.bin\"\nchunk_size = 8192\n\nwith requests.get(url, stream=True) as response:\n    response.raise_for_status()\n    with open(output_path, \"wb\") as f:\n        for chunk in response.iter_content(chunk_size=chunk_size):\n            if chunk:\n                f.write(chunk)",
+  "result_text": "The library couldn't be resolved in this environment (requests isn't importable by the scan interpreter), so I'm proceeding with the standard, stable `requests` streaming API (`stream=True` + `iter_content`), which hasn't changed across versions.\n\n```python\nimport requests\n\nurl = \"https://example.com/big.bin\"\noutput_path = \"big.bin\"\nchunk_size = 8192\n\nwith requests.get(url, stream=True) as response:\n    response.raise_for_status()\n    with open(output_path, \"wb\") as f:\n        for chunk in response.iter_content(chunk_size=chunk_size):\n            if chunk:\n                f.write(chunk)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1191,
+    "cache_read_tokens": 116738,
+    "cache_creation_tokens": 12826,
+    "cost_usd": 0.1298664,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 23.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "iter_content"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_012SCKS9ykoq8JCnBfeKhQ1g",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'requests': 'requests' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01Rf7Mq3JHy75QBUyXLQkZz6",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"No library is loaded.\",\"hint\":\"Call resolve_library(<package name>) first.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

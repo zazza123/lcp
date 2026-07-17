@@ -1,0 +1,49 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from __future__ import annotations\n\nimport ast\nfrom typing import Any, Union\n\nimport griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    \"\"\"Extension that appends ' [checked]' to every collected function's docstring.\"\"\"\n\n    def on_function_instance(\n        self,\n        *,\n        node: Union[ast.AST, griffe.ObjectNode],\n        func: griffe.Function,\n        agent: Union[griffe.Visitor, griffe.Inspector],\n        **kwargs: Any,\n    ) -> None:\n        suffix = \" [checked]\"\n        if func.docstring is None:\n            func.docstring = griffe.Docstring(suffix.strip(), parent=func)\n        else:\n            func.docstring.value = func.docstring.value + suffix\n\n\n# Aggregate the extension the way griffe expects (Extensions container).\nextensions = griffe.load_extensions(AppendCheckedExtension())\n\n# Load \"mypkg\" through griffe's module-level entry point with the extension enabled.\npackage = griffe.load(\"mypkg\", extensions=extensions)\n\nif __name__ == \"__main__\":\n    for module_name, module in package.modules.items():\n        for func_name, func in module.functions.items():\n            if func.docstring is not None:\n                print(f\"{module_name}.{func_name}: {func.docstring.value!r}\")",
+  "result_text": "```python\nfrom __future__ import annotations\n\nimport ast\nfrom typing import Any, Union\n\nimport griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    \"\"\"Extension that appends ' [checked]' to every collected function's docstring.\"\"\"\n\n    def on_function_instance(\n        self,\n        *,\n        node: Union[ast.AST, griffe.ObjectNode],\n        func: griffe.Function,\n        agent: Union[griffe.Visitor, griffe.Inspector],\n        **kwargs: Any,\n    ) -> None:\n        suffix = \" [checked]\"\n        if func.docstring is None:\n            func.docstring = griffe.Docstring(suffix.strip(), parent=func)\n        else:\n            func.docstring.value = func.docstring.value + suffix\n\n\n# Aggregate the extension the way griffe expects (Extensions container).\nextensions = griffe.load_extensions(AppendCheckedExtension())\n\n# Load \"mypkg\" through griffe's module-level entry point with the extension enabled.\npackage = griffe.load(\"mypkg\", extensions=extensions)\n\nif __name__ == \"__main__\":\n    for module_name, module in package.modules.items():\n        for func_name, func in module.functions.items():\n            if func.docstring is not None:\n                print(f\"{module_name}.{func_name}: {func.docstring.value!r}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 5265,
+    "cache_read_tokens": 96923,
+    "cache_creation_tokens": 6337,
+    "cost_usd": 0.1460919,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 62.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "griffe",
+        "query": "griffe extensions system, load function, load_extensions, Extension base class, visit/on_function events"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01L57iuc6UUzb3WsoHPVCcP7",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

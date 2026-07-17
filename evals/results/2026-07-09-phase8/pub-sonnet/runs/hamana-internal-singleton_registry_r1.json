@@ -1,0 +1,77 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter",
+  "result_text": "I can't verify this against `hamana` 1.0.1's actual API. The LCP resolver (which I'm required to check before writing code against any third-party library) can't load `hamana` in this environment:\n\n```\nCannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter\n```\n\nThat means either it isn't actually installed where I'm working, or it's installed in a different environment than the one this tool is scanning. Rather than write a fenced code block guessing at class/method names for an \"internal singleton\" and \"raw connection\" API I have no ground truth for, I'd be fabricating a plausible-looking but likely-wrong call site \u2014 which is exactly the failure mode this tooling exists to prevent.\n\nSeparately, worth flagging: the internal singleton connector and its raw underlying connection object are (by your own description) not part of the public API \u2014 the library's top-level shortcut functions exist specifically so callers don't have to reach into that internal state. If you have a concrete reason to bypass them (e.g. you need transaction/cursor control the shortcuts don't expose), let me know what you're actually trying to accomplish and I can check if there's a supported way to do it, or verify the internal path for real once I can resolve the library (e.g. by pointing me at the right Python environment via `.lcp-config.json`'s `scan_python`).",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 3988,
+    "cache_read_tokens": 194133,
+    "cache_creation_tokens": 23660,
+    "cost_usd": 0.2600559,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 63.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Grep,Glob",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "grep search files",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_015BrBEPUcUKk6q5zEGHLm2h",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01AABqg1gjQRDyof7omUCade",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "syntax error in generated code: invalid syntax (<unknown>, line 1)"
+  }
+}

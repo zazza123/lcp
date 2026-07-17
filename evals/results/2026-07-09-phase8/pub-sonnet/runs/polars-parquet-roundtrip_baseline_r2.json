@@ -1,0 +1,37 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import io\n\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"id\": [1, 2, 3],\n        \"name\": [\"alice\", \"bob\", \"carol\"],\n        \"score\": [1.5, 2.75, 3.0],\n    }\n)\n\nbuffer = io.BytesIO()\ndf.write_parquet(buffer)\n\nbuffer.seek(0)\ndf_roundtrip = pl.read_parquet(buffer)\n\nassert df.equals(df_roundtrip)\nprint(df_roundtrip)",
+  "result_text": "```python\nimport io\n\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"id\": [1, 2, 3],\n        \"name\": [\"alice\", \"bob\", \"carol\"],\n        \"score\": [1.5, 2.75, 3.0],\n    }\n)\n\nbuffer = io.BytesIO()\ndf.write_parquet(buffer)\n\nbuffer.seek(0)\ndf_roundtrip = pl.read_parquet(buffer)\n\nassert df.equals(df_roundtrip)\nprint(df_roundtrip)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 4,
+    "output_tokens": 488,
+    "cache_read_tokens": 60336,
+    "cache_creation_tokens": 304,
+    "cost_usd": 0.0272568,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 18.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:none",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

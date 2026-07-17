@@ -1,0 +1,68 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\nt = pxt.get_table(\"docs\")\n\nembed_fn = sentence_transformer.using(model_id=\"all-MiniLM-L6-v2\")\nt.add_embedding_index(\"content\", string_embed=embed_fn)\n\nsim = t.content.similarity(\"climate change policy\")\nresults = (\n    t.order_by(sim, asc=False)\n    .limit(5)\n    .select(t.content, similarity=sim)\n    .collect()\n)\n\nprint(results)",
+  "result_text": "API confirmed. Here's the code.\n\n```python\nimport pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\nt = pxt.get_table(\"docs\")\n\nembed_fn = sentence_transformer.using(model_id=\"all-MiniLM-L6-v2\")\nt.add_embedding_index(\"content\", string_embed=embed_fn)\n\nsim = t.content.similarity(\"climate change policy\")\nresults = (\n    t.order_by(sim, asc=False)\n    .limit(5)\n    .select(t.content, similarity=sim)\n    .collect()\n)\n\nprint(results)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 38,
+    "output_tokens": 1533,
+    "cache_read_tokens": 140599,
+    "cache_creation_tokens": 8190,
+    "cost_usd": 0.11442870000000001,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 22.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pixeltable/functions/huggingface.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pixeltable-0.6*"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def sentence_transformer",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/functions/huggingface.py",
+        "-A": 20
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def add_embedding_index",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable",
+        "-A": 30,
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def sentence_transformer\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/functions/huggingface.py",
+        "-A": 15,
+        "output_mode": "content"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

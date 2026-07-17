@@ -1,0 +1,76 @@
+{
+  "case_id": "requests-session-auth-header",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import requests\n\nsession = requests.Session()\nsession.headers.update({\"Authorization\": \"Bearer TESTTOKEN\"})\n\nresponse = session.get(\"https://api.example.com/me\")\nprint(response.status_code)\nprint(response.json())",
+  "result_text": "```python\nimport requests\n\nsession = requests.Session()\nsession.headers.update({\"Authorization\": \"Bearer TESTTOKEN\"})\n\nresponse = session.get(\"https://api.example.com/me\")\nprint(response.status_code)\nprint(response.json())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 854,
+    "cache_read_tokens": 148993,
+    "cache_creation_tokens": 14998,
+    "cost_usd": 0.14752590000000002,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 63.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Session",
+        "library": "requests",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:Session",
+          "requests:Session#get",
+          "requests:Session#headers"
+        ],
+        "library": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01BsL9TqSMkLJfwjtKtA5CP6",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01NpnPnSVaNEvMesTcxhXM53",
+      "content": "{\"results\":[{\"id\":\"requests:Session\",\"kind\":\"class\",\"summary\":\"A Requests session.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session\"},{\"id\":\"requests.sessions:SessionRedirectMixin\",\"kind\":\"class\",\"summary\":\"Class SessionRedirectMixin\",\"import\":\"from requests.sessions import SessionRedirectMixin\"},{\"id\":\"requests.sessions:HTTPAdapter\",\"kind\":\"class\",\"summary\":\"The built-in HTTP Adapter for urllib3.\",\"import\":\"from requests.sessions import HTTPAdapter\",\"resolved_via_alias\":\"requests.adapters:HTTPAdapter\"},{\"id\":\"requests.sessions:RequestsCookieJar\",\"kind\":\"class\",\"summary\":\"Compatibility class; is a http.cookiejar.CookieJar, but exposes a dict interface.\",\"import\":\"from requests.sessions import RequestsCookieJar\",\"resolved_via_alias\":\"requests.cookies:RequestsCookieJar\"},{\"id\":\"requests:PreparedRequest\",\"kind\":\"class\",\"summary\":\"The fully mutable :class:`PreparedRequest <PreparedRequest>` object, containing the exact bytes that will be sent to the server.\",\"import\":\"from requests import PreparedRequest\",\"resolved_via_alias\":\"requests.models:PreparedRequest\"}],\"total\":5,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01RZV4wupYFdpzbuMjzWCQTN",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"requests.sessions\",\"aliases\":[\"requests:Session\"],\"signatures\":[{\"async_\":false,\"returns\":\"None\"}],\"semantics\":{\"summary\":\"A Requests session.\",\"description\":\"Provides cookie persistence, connection-pooling, and configuration.\\n\\n    Basic Usage::\\n\\n      >>> import requests\\n      >>> s = requests.Session()\\n      >>> s.get('https://httpbin.org/get')\\n      <Response [200]>\\n\\n    Or as a context manager::\\n\\n      >>> with requests.Session() as s:\\n      ...     s.get('https://httpbin.org/get')\\n      <Response [200]>\"},\"id\":\"requests:Session\",\"resolved_via_alias\":\"requests.sessions:Session\",\"import\":\"from requests import Session\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"requests:Session#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\"},{\"id\":\"requests:Session#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\"},{\"id\":\"requests:Session#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"requests:Session#close\",\"kind\":\"method\",\"summary\":\"Closes all adapters and as such the session\"},{\"id\":\"requests:Session#delete\",\"kind\":\"method\",\"summary\":\"Sends a DELETE request. Returns :class:`Response` object.\"},{\"id\":\"requests:Session#get\",\"kind\":\"method\",\"summary\":\"Sends a GET request. Returns :class:`Response` object.\"},{\"id\":\"requests:Session#get_adapter\",\"kind\":\"method\",\"summary\":\"Returns the appropriate connection adapter for the given URL.\"},{\"id\":\"requests:Session#get_redirect_target\",\"kind\":\"method\",\"summary\":\"Receives a Response. Returns a redirect URI or ``None``\"},{\"id\":\"requests:Session#head\",\"kind\":\"method\",\"summary\":\"Sends a HEAD request. Returns :class:`Response` object.\"},{\"id\":\"requests:Session#merge_environment_settings\",\"kind\":\"method\",\"summary\":\"Check the environment and merge it with some settings.\"},{\"id\":\"requests:Session#mount\",\"kind\":\"method\",\"summary\":\"Registers a connection adapter to a prefix.\"},{\"id\":\"requests:S"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

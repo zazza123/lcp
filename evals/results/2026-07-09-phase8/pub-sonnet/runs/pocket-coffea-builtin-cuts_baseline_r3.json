@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.lib.cut_functions import get_HLTsel, get_nObj_min, get_nBtagMin\n\n# HLT trigger selection for the semileptonic primary dataset, taken from parameters[\"HLT\"]\ntrigger_sel = get_HLTsel(primaryDatasets=[\"semileptonic\"])\n\n# At least 4 jets in the \"JetGood\" collection with pT > 30 GeV\njets_sel = get_nObj_min(4, 30., coll=\"JetGood\")\n\n# At least 2 b-tagged jets (\"BJetGood\" collection, default working point)\nbtag_sel = get_nBtagMin(2, coll=\"BJetGood\")\n\n# Skim: loose selection applied directly on NanoAOD before object corrections\nskim = [\n    trigger_sel,\n    jets_sel,\n]\n\n# Preselection: applied after object corrections/calibrations\npreselections = [\n    btag_sel,\n]",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import get_HLTsel, get_nObj_min, get_nBtagMin\n\n# HLT trigger selection for the semileptonic primary dataset, taken from parameters[\"HLT\"]\ntrigger_sel = get_HLTsel(primaryDatasets=[\"semileptonic\"])\n\n# At least 4 jets in the \"JetGood\" collection with pT > 30 GeV\njets_sel = get_nObj_min(4, 30., coll=\"JetGood\")\n\n# At least 2 b-tagged jets (\"BJetGood\" collection, default working point)\nbtag_sel = get_nBtagMin(2, coll=\"BJetGood\")\n\n# Skim: loose selection applied directly on NanoAOD before object corrections\nskim = [\n    trigger_sel,\n    jets_sel,\n]\n\n# Preselection: applied after object corrections/calibrations\npreselections = [\n    btag_sel,\n]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2699,
+    "cache_read_tokens": 30257,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0495681,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

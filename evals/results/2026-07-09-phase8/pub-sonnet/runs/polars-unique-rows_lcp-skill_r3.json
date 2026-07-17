@@ -1,0 +1,81 @@
+{
+  "case_id": "polars-unique-rows",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"id\": [1, 2, 2, 3, 1],\n        \"name\": [\"a\", \"b\", \"b\", \"c\", \"a\"],\n        \"score\": [10, 20, 20, 30, 10],\n    }\n)\n\ndeduped_df = df.unique(keep=\"first\", maintain_order=True)\n\nprint(deduped_df)",
+  "result_text": "Verified `DataFrame.unique(keep=\"first\", maintain_order=True)` against the installed polars 1.42.1 API.\n\n```python\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"id\": [1, 2, 2, 3, 1],\n        \"name\": [\"a\", \"b\", \"b\", \"c\", \"a\"],\n        \"score\": [10, 20, 20, 30, 10],\n    }\n)\n\ndeduped_df = df.unique(keep=\"first\", maintain_order=True)\n\nprint(deduped_df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 756,
+    "cache_read_tokens": 195870,
+    "cache_creation_tokens": 7842,
+    "cost_usd": 0.117189,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 28.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library polars",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars",
+        "version": "1.42.1"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "unique",
+        "library": "polars",
+        "module": "polars.dataframe.frame"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#unique"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01AJx9SCLxaEosfRm11iohS8",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01Gadi1zv6JVS6BP1v6VdzxB",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#unique\",\"kind\":\"method\",\"summary\":\"Drop duplicate rows from this DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#unique\"},{\"id\":\"polars:DataFrame#approx_n_unique\",\"kind\":\"method\",\"summary\":\"Approximate count of unique values.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#approx_n_unique\"},{\"id\":\"polars:DataFrame#is_unique\",\"kind\":\"method\",\"summary\":\"Get a mask of all unique rows in this DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#is_unique\"},{\"id\":\"polars:DataFrame#n_unique\",\"kind\":\"method\",\"summary\":\"Return the number of unique rows, or the number of unique row-subsets.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#n_unique\"},{\"id\":\"polars:DataFrame#join\",\"kind\":\"method\",\"summary\":\"Join in SQL-like fashion.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#join\"},{\"id\":\"polars:DataFrame#pivot\",\"kind\":\"method\",\"summary\":\"Create a spreadsheet-style pivot table as a DataFrame.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#pivot\"},{\"id\":\"polars:DataFrame#rows_by_key\",\"kind\":\"method\",\"summary\":\"Returns all data as a dictionary of python-native values keyed by some column.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#rows_by_key\"},{\"id\":\"polars:DataFrame#write_parquet\",\"kind\":\"method\",\"summary\":\"Write to Apache Parquet file.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#write_parquet\"}],\"total\":8,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01NwFpvyx1xBkqkJEZsots1P",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"subset\",\"type\":\"IntoExpr | Collection[IntoExpr] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Column name(s), selector(s), or expressions to consider when identifying\\nduplicate rows. If set to `None` (default), all columns are considered.\"},{\"name\":\"keep\",\"type\":\"UniqueKeepStrategy\",\"required\":false,\"default\":\"any\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Which of the duplicate rows to keep.\\n\\n* 'any': Does not give any guarantee of which row is kept.\\n         This allows more optimizations.\\n* 'none': Don't keep duplicate rows.\\n* 'first': Keep the first unique row.\\n* 'last': Keep the last unique row.\"},{\"name\":\"maintain_order\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Keep the same order as the original DataFrame. This is more expensive\\nto compute. Settings this to `True` blocks the possibility to run on\\nthe streaming engine.\"}],\"returns\":\"DataFrame\",\"returns_description\":\"DataFrame with unique rows.\"}],\"semantics\":{\"summary\":\"Drop duplicate rows from this DataFrame.\",\"description\":\"Parameters\\n        ----------\\n        subset\\n            Column name(s), selector(s), or expressions to consider when identifying\\n            duplicate rows. If set to `None` (default), all columns are considered.\\n        keep : {'first', 'last', 'any', 'none'}\\n            Which of the duplicate rows to keep.\\n\\n            * 'any': Does not give any guarantee of which row is kept.\\n                     This allows more optimizations.\\n            * 'none': Don't keep duplicate rows.\\n            * 'first': Keep the first unique row.\\n            * 'last': Keep the last unique row.\\n        maintain_order\\n            Keep the same order as the original DataFrame. This is more expensive\\n            to compute. Settings this to `True` blocks the possibility to ru"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

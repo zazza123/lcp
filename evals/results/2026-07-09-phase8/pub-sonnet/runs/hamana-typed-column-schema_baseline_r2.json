@@ -1,0 +1,53 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from hamana.core.query import Query\nfrom hamana.core.column import ColumnInteger, ColumnVarchar, ColumnDate\n\nquery = Query(\n    query=\"SELECT id, name, created_at FROM users\",\n    columns=[\n        ColumnInteger(name=\"id\"),\n        ColumnVarchar(name=\"name\"),\n        ColumnDate(name=\"created_at\"),\n    ],\n)",
+  "result_text": "```python\nfrom hamana.core.query import Query\nfrom hamana.core.column import ColumnInteger, ColumnVarchar, ColumnDate\n\nquery = Query(\n    query=\"SELECT id, name, created_at FROM users\",\n    columns=[\n        ColumnInteger(name=\"id\"),\n        ColumnVarchar(name=\"name\"),\n        ColumnDate(name=\"created_at\"),\n    ],\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 2751,
+    "cache_read_tokens": 96065,
+    "cache_creation_tokens": 5694,
+    "cost_usd": 0.10426649999999998,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 48.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,PowerShell,Read,Grep",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.core.column:IntegerColumn",
+      "hamana.core.column:StringColumn"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.core.column.ColumnDate",
+      "hamana.core.column.ColumnInteger",
+      "hamana.core.column.ColumnVarchar",
+      "hamana.core.query.Query"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-raise-for-status",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import requests\n\nresponse = requests.get(\"https://api.example.com/data\")\nresponse.raise_for_status()\n\ndata = response.json()",
+  "result_text": "This is a plain coding request unrelated to the LCP project or any skill workflow \u2014 answering directly.\n\n```python\nimport requests\n\nresponse = requests.get(\"https://api.example.com/data\")\nresponse.raise_for_status()\n\ndata = response.json()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 77,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9784,
+    "cost_usd": 0.0659757,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

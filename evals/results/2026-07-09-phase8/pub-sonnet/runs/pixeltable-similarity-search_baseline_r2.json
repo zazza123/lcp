@@ -1,0 +1,29 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\ndocs = pxt.get_table('docs')\n\ndocs.add_embedding_index(\n    'content',\n    string_embed=sentence_transformer.using(model_id='all-MiniLM-L6-v2'),\n)\n\nsim = docs.content.similarity('climate change policy')\nresults = (\n    docs.order_by(sim, asc=False)\n    .select(docs.content, similarity=sim)\n    .limit(5)\n    .collect()\n)\n\nprint(results)",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\ndocs = pxt.get_table('docs')\n\ndocs.add_embedding_index(\n    'content',\n    string_embed=sentence_transformer.using(model_id='all-MiniLM-L6-v2'),\n)\n\nsim = docs.content.similarity('climate change policy')\nresults = (\n    docs.order_by(sim, asc=False)\n    .select(docs.content, similarity=sim)\n    .limit(5)\n    .collect()\n)\n\nprint(results)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 875,
+    "cache_read_tokens": 30238,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0222024,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

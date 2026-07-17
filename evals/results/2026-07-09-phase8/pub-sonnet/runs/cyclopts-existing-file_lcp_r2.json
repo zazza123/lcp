@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import cyclopts\nfrom cyclopts.types import ExistingFile\n\napp = cyclopts.App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    \"\"\"Convert input_file and write the result to output_name.\n\n    Parameters\n    ----------\n    input_file: ExistingFile\n        Path to an existing file to convert.\n    output_name: str\n        Name for the converted output.\n    \"\"\"\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nimport cyclopts\nfrom cyclopts.types import ExistingFile\n\napp = cyclopts.App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    \"\"\"Convert input_file and write the result to output_name.\n\n    Parameters\n    ----------\n    input_file: ExistingFile\n        Path to an existing file to convert.\n    output_name: str\n        Name for the converted output.\n    \"\"\"\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 877,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9951,
+    "cost_usd": 0.0789777,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

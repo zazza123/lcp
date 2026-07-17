@@ -1,0 +1,49 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\n\nfrom pocket_coffea.lib.weights.weights import WeightLambda, WeightWrapper\n\n\ndef toy_reweight_function(params, metadata, events, size, shape_variation):\n    \"\"\"Symmetric +/-5% toy reweighting around the normalized LHE weight.\"\"\"\n    raw = events.LHEWeight_originalXWGTUP\n    nominal = raw / ak.mean(raw)\n    up = nominal * 1.05\n    down = nominal * 0.95\n    return nominal, up, down\n\n\nToyReweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=toy_reweight_function,\n    has_variations=True,\n)\n\n# Example usage inside a PocketCoffea Configurator:\n#\n# from pocket_coffea.lib.weights.common import common_weights\n#\n# weights_classes = common_weights + [ToyReweight]\n#\n# cfg = Configurator(\n#     ...\n#     weights_classes=weights_classes,\n#     ...\n# )\n\nassert issubclass(ToyReweight, WeightWrapper)\nassert ToyReweight.name == \"toy_reweight\"\nassert ToyReweight.has_variations is True",
+  "result_text": "```python\nimport awkward as ak\n\nfrom pocket_coffea.lib.weights.weights import WeightLambda, WeightWrapper\n\n\ndef toy_reweight_function(params, metadata, events, size, shape_variation):\n    \"\"\"Symmetric +/-5% toy reweighting around the normalized LHE weight.\"\"\"\n    raw = events.LHEWeight_originalXWGTUP\n    nominal = raw / ak.mean(raw)\n    up = nominal * 1.05\n    down = nominal * 0.95\n    return nominal, up, down\n\n\nToyReweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=toy_reweight_function,\n    has_variations=True,\n)\n\n# Example usage inside a PocketCoffea Configurator:\n#\n# from pocket_coffea.lib.weights.common import common_weights\n#\n# weights_classes = common_weights + [ToyReweight]\n#\n# cfg = Configurator(\n#     ...\n#     weights_classes=weights_classes,\n#     ...\n# )\n\nassert issubclass(ToyReweight, WeightWrapper)\nassert ToyReweight.name == \"toy_reweight\"\nassert ToyReweight.has_variations is True\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 6236,
+    "cache_read_tokens": 98823,
+    "cache_creation_tokens": 8019,
+    "cost_usd": 0.1713189,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 61.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "custom per-event MC weight WeightLambda WeightWrapper weights_classes configuration",
+        "libraryName": "pocket-coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_0183qD1v1iurWq4q5KgtUJzY",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-error-handler",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from flask import Flask, jsonify\n\napp = Flask(__name__)\n\n\n@app.errorhandler(404)\ndef not_found(error):\n    return jsonify({\"error\": \"not found\"}), 404\n\n\nif __name__ == \"__main__\":\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, jsonify\n\napp = Flask(__name__)\n\n\n@app.errorhandler(404)\ndef not_found(error):\n    return jsonify({\"error\": \"not found\"}), 404\n\n\nif __name__ == \"__main__\":\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 307,
+    "cache_read_tokens": 20442,
+    "cache_creation_tokens": 9913,
+    "cost_usd": 0.0702216,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

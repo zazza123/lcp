@@ -1,0 +1,56 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\nmodule = griffe.load(\"requests\")\n\npublic_functions = [\n    name\n    for name, member in module.members.items()\n    if member.is_function and member.is_public\n]\n\nfor name in sorted(public_functions):\n    print(name)",
+  "result_text": "This confirms `member.is_function` and `member.is_public` exist on module members. Here's the code:\n\n```python\nimport griffe\n\nmodule = griffe.load(\"requests\")\n\npublic_functions = [\n    name\n    for name, member in module.members.items()\n    if member.is_function and member.is_public\n]\n\nfor name in sorted(public_functions):\n    print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 858,
+    "cache_read_tokens": 123622,
+    "cache_creation_tokens": 11673,
+    "cost_usd": 0.1200186,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 16.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load|^GriffeLoader|^def load_git|^__all__",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/__init__.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load\\b",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "output_mode": "content",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "is_function|class Kind|is_public|def functions",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

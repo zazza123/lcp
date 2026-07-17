@@ -1,0 +1,31 @@
+{
+  "case_id": "flask-json-route",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from flask import Flask, jsonify\n\napp = Flask(__name__)\n\n\n@app.get(\"/ping\")\ndef ping():\n    return jsonify(message=\"pong\")\n\n\nif __name__ == \"__main__\":\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, jsonify\n\napp = Flask(__name__)\n\n\n@app.get(\"/ping\")\ndef ping():\n    return jsonify(message=\"pong\")\n\n\nif __name__ == \"__main__\":\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 230,
+    "cache_read_tokens": 32929,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.013334699999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 7.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "flask:Flask#route"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

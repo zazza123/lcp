@@ -1,0 +1,82 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nfrom cyclopts import App\nfrom cyclopts.types import ExistingFile\n\napp = App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    \"\"\"Convert an input file and write the result under the given output name.\n\n    Parameters\n    ----------\n    input_file: ExistingFile\n        Path to the file to convert; must already exist on disk.\n    output_name: str\n        Name to use for the converted output.\n    \"\"\"\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Confirmed: `cyclopts.types.ExistingFile` is the ready-made annotated type.\n\n```python\nfrom pathlib import Path\n\nfrom cyclopts import App\nfrom cyclopts.types import ExistingFile\n\napp = App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    \"\"\"Convert an input file and write the result under the given output name.\n\n    Parameters\n    ----------\n    input_file: ExistingFile\n        Path to the file to convert; must already exist on disk.\n    output_name: str\n        Name to use for the converted output.\n    \"\"\"\n    print(f\"Converting {input_file} -> {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1206,
+    "cache_read_tokens": 200457,
+    "cache_creation_tokens": 18329,
+    "cost_usd": 0.18823710000000002,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 34.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "cyclopts types module ExistingFile annotated path",
+        "libraryName": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/brianpugh/cyclopts",
+        "query": "cyclopts.types ExistingFile annotated path type for existing file validation"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/brianpugh/cyclopts",
+        "query": "cyclopts.types.ExistingFile ResolvedExistingFile api reference list of path types"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/websites/cyclopts_readthedocs_io_en_stable",
+        "query": "ExistingFile type from cyclopts.types module example usage"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01SrmXhkczyB8Z6NMmSuCmLB",
+      "content": "Available Libraries:\n\n- Title: Cyclopts\n- Context7-compatible library ID: /brianpugh/cyclopts\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework that provides an intuitive and efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 1468\n- Source Reputation: High\n- Benchmark Score: 84.67\n----------\n- Title: Cyclopts\n- Context7-compatible library ID: /websites/cyclopts_readthedocs_io_en_stable\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework providing an intuitive & efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 996\n- Source Reputation: High\n- Benchmark Score: 84.33"
+    },
+    {
+      "tool_use_id": "toolu_01UXcf497SAXU5tnxKK8j7G4",
+      "content": "### Validate File Existence with Path Validator\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/parameter_validators.rst\n\nUse the `validators.Path(exists=True)` to ensure a provided file path actually exists. This example demonstrates setting up a command-line argument that expects a file and reads its content.\n\n```python\nfrom cyclopts import App, Parameter, validators\nfrom typing import Annotated\nfrom pathlib import Path\n\napp = App()\n\n@app.default()\ndef foo(path: Annotated[Path, Parameter(validator=validators.Path(exists=True))]):\n    print(f\"File contents:\\n{path.read_text()}\")\n\napp()\n```\n\n--------------------------------\n\n### Comparing Typer and Cyclopts Path Validators\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/vs_typer/validation/README.rst\n\nIllustrates the difference in syntax for path validation between Typer and Cyclopts. Typer uses direct keyword arguments, while Cyclopts utilizes a dedicated validator class.\n\n```python\n# Typer\ntyper.Argument(file_okay=True, exists=True)\n\n# Cyclopts\ncyclopts.Parameter(validator=cyclopts.validators.Path(file_okay=True, exists=True))\n```\n\n### Parameter Validators > Path\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/parameter_validators.rst\n\nThe :class:`.Path` validator is used to ensure specific properties of a parsed :class:`pathlib.Path` object. For example, it can assert that a file must exist before proceeding. This helps in validating file paths provided by the user.\n\n--------------------------------\n\n### API Reference > Path Types\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/api.rst\n\nPath annotated types are available for checking existence, type, and performing path-resolution. These types also support sequences of paths, such as tuples or lists.\n\n--------------------------------\n\n### Validation\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/vs_typer/validation/README.rst\n\nCyclopts includes built-in valid"
+    },
+    {
+      "tool_use_id": "toolu_016qt85exfX5q7qqkb7A7t6Z",
+      "content": "### API Reference > Path Types\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/api.rst\n\nPath annotated types are available for checking existence, type, and performing path-resolution. These types also support sequences of paths, such as tuples or lists.\n\n--------------------------------\n\n### API Reference > Path Types > StdioPath\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/api.rst\n\nStdioPath has a class attribute STDIO_STRING defined as '-', which triggers stdio behavior. This can be overridden in subclasses for custom trigger strings. An is_stdio property returns True if the path represents stdin/stdout, which can also be overridden for custom matching logic."
+    },
+    {
+      "tool_use_id": "toolu_0158iBzdSYHrAKAhRiEQybK3",
+      "content": "### Define ExistingFile Type for Existing Files\n\nSource: https://cyclopts.readthedocs.io/en/stable/api\n\nCreates a type alias `ExistingFile` using `Annotated` and `cyclopts.types.Path`. This type enforces that the provided path must exist and be a file.\n\n```python\ncyclopts.types.ExistingFile\n    A `Path` file that **must** exist.\n    alias of `Annotated`[`Path`, Parameter(validator=(Path(exists=True, file_okay=True, dir_okay=False, ext=()),))]\n```"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

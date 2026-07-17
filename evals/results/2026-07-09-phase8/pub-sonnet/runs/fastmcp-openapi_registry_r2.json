@@ -1,0 +1,127 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Any\n\nimport httpx\nfrom fastmcp.server import FastMCP\n\n\ndef build_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI MCP Server\",\n) -> FastMCP:\n    \"\"\"Build an MCP server whose tools mirror the operations of an OpenAPI spec.\n\n    Args:\n        openapi_spec: A minimal OpenAPI 3.0 specification as a dict.\n        client: An httpx.AsyncClient already configured with the API base URL.\n        name: Name to give the generated MCP server.\n\n    Returns:\n        A FastMCP server instance with tools generated from the OpenAPI spec.\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n    )\n\n\nif __name__ == \"__main__\":\n    openapi_spec: dict[str, Any] = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/items/{item_id}\": {\n                \"get\": {\n                    \"operationId\": \"get_item\",\n                    \"summary\": \"Get an item by ID\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"item_id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"integer\"},\n                        }\n                    ],\n                    \"responses\": {\n                        \"200\": {\n                            \"description\": \"The requested item\",\n                            \"content\": {\n                                \"application/json\": {\n                                    \"schema\": {\"type\": \"object\"}\n                                }\n                            },\n                        }\n                    },\n                }\n            }\n        },\n    }\n\n    api_client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    mcp = build_mcp_server(openapi_spec, api_client, name=\"Example API MCP Server\")\n    mcp.run()",
+  "result_text": "I have enough to write verified, runnable code against the installed fastmcp 3.4.4 API.\n\n```python\nfrom typing import Any\n\nimport httpx\nfrom fastmcp.server import FastMCP\n\n\ndef build_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI MCP Server\",\n) -> FastMCP:\n    \"\"\"Build an MCP server whose tools mirror the operations of an OpenAPI spec.\n\n    Args:\n        openapi_spec: A minimal OpenAPI 3.0 specification as a dict.\n        client: An httpx.AsyncClient already configured with the API base URL.\n        name: Name to give the generated MCP server.\n\n    Returns:\n        A FastMCP server instance with tools generated from the OpenAPI spec.\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n    )\n\n\nif __name__ == \"__main__\":\n    openapi_spec: dict[str, Any] = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/items/{item_id}\": {\n                \"get\": {\n                    \"operationId\": \"get_item\",\n                    \"summary\": \"Get an item by ID\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"item_id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"integer\"},\n                        }\n                    ],\n                    \"responses\": {\n                        \"200\": {\n                            \"description\": \"The requested item\",\n                            \"content\": {\n                                \"application/json\": {\n                                    \"schema\": {\"type\": \"object\"}\n                                }\n                            },\n                        }\n                    },\n                }\n            }\n        },\n    }\n\n    api_client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    mcp = build_mcp_server(openapi_spec, api_client, name=\"Example API MCP Server\")\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 2528,
+    "cache_read_tokens": 318555,
+    "cache_creation_tokens": 9877,
+    "cost_usd": 0.1928025,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 51.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "openapi",
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#from_openapi",
+          "fastmcp.server.openapi:FastMCPOpenAPI#__init__"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "run",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server",
+        "limit": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01TrxK1qXKYSHVBXKAz2Ctn1",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_017nt6SaMt4XvnGh1wQcKmce",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.openapi:OpenAPIResource\",\"kind\":\"class\",\"summary\":\"Resource implementation for OpenAPI endpoints.\",\"import\":\"from fastmcp.server.openapi import OpenAPIResource\",\"resolved_via_alias\":\"fastmcp.server.providers.openapi.components:OpenAPIResource\"},{\"id\":\"fastmcp.server.openapi:OpenAPIResourceTemplate\",\"kind\":\"class\",\"summary\":\"Resource template implementation for OpenAPI endpoints.\",\"import\":\"from fastmcp.server.openapi import OpenAPIResourceTemplate\",\"resolved_via_alias\":\"fastmcp.server.providers.openapi.components:OpenAPIResourceTemplate\"},{\"id\":\"fastmcp.server.openapi:OpenAPITool\",\"kind\":\"class\",\"summary\":\"Tool implementation for OpenAPI endpoints.\",\"import\":\"from fastmcp.server.openapi import OpenAPITool\",\"resolved_via_alias\":\"fastmcp.server.providers.openapi.components:OpenAPITool\"},{\"id\":\"fastmcp.server.openapi:OpenAPIProvider\",\"kind\":\"class\",\"summary\":\"Provider that creates MCP components from an OpenAPI specification.\",\"import\":\"from fastmcp.server.openapi import OpenAPIProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.openapi.provider:OpenAPIProvider\"},{\"id\":\"fastmcp.utilities.openapi.parser:OpenAPIParser\",\"kind\":\"class\",\"summary\":\"Unified parser for OpenAPI schemas with generic type parameters to handle both 3.0 and 3.1.\",\"import\":\"from fastmcp.utilities.openapi.parser import OpenAPIParser\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI\",\"kind\":\"class\",\"summary\":\"FastMCP server implementation that creates components from an OpenAPI schema.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#from_openapi\",\"kind\":\"method\",\"summary\":\"Create a FastMCP server from an OpenAPI specification.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#from_openapi\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#from_openapi\",\"kind\":\"method\",\"s"
+    },
+    {
+      "tool_use_id": "toolu_01V4YyN7TTBh6sVSVwtznV2v",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"openapi_spec\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"OpenAPI schema as a dictionary\"},{\"name\":\"client\",\"type\":\"httpx.AsyncClient | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional httpx AsyncClient for making HTTP requests.\\nIf not provided, a default client is created using the first\\nserver URL from the OpenAPI spec with a 30-second timeout.\"},{\"name\":\"name\",\"type\":\"str\",\"required\":false,\"default\":\"OpenAPI Server\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Name for the MCP server\"},{\"name\":\"route_maps\",\"type\":\"list[RouteMap] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional list of RouteMap objects defining route mappings\"},{\"name\":\"route_map_fn\",\"type\":\"OpenAPIRouteMapFn | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional callable for advanced route type mapping\"},{\"name\":\"mcp_component_fn\",\"type\":\"OpenAPIComponentFn | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional callable for component customization\"},{\"name\":\"mcp_names\",\"type\":\"dict[str, str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional dictionary mapping operationId to component names\"},{\"name\":\"tags\",\"type\":\"set[str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional set of tags to add to all components\"},{\"name\":\"validate_output\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"If True (default), tools use the output schema\\nextracted from the OpenAPI spec for response validation. If\\nFalse, a permissive schema is used instead, allowing any\\nresponse structure while still returning structured JSON.\"},{\"name\":\"settings\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest"
+    },
+    {
+      "tool_use_id": "toolu_01SRxwbgbz68zCgn618a2ziH",
+      "content": "{\"results\":[{\"id\":\"fastmcp:\",\"kind\":\"module\",\"summary\":\"FastMCP - An ergonomic MCP interface.\",\"import\":\"import fastmcp\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_014wHZZovo29UcXK64vrbtzy",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP\",\"kind\":\"class\",\"summary\":\"Class FastMCP\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP\"},{\"id\":\"fastmcp.server.app:FastMCPApp\",\"kind\":\"class\",\"summary\":\"A Provider that represents an MCP application.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp\"},{\"id\":\"fastmcp.client:FastMCPTransport\",\"kind\":\"class\",\"summary\":\"In-memory transport for FastMCP servers.\",\"import\":\"from fastmcp.client import FastMCPTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.memory:FastMCPTransport\"},{\"id\":\"fastmcp.client.transports:FastMCPStdioTransport\",\"kind\":\"class\",\"summary\":\"Transport for running FastMCP servers using the FastMCP CLI.\",\"import\":\"from fastmcp.client.transports import FastMCPStdioTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.stdio:FastMCPStdioTransport\"},{\"id\":\"fastmcp:FastMCPDeprecationWarning\",\"kind\":\"class\",\"summary\":\"Deprecation warning for FastMCP APIs.\",\"import\":\"from fastmcp import FastMCPDeprecationWarning\",\"resolved_via_alias\":\"fastmcp.exceptions:FastMCPDeprecationWarning\"}],\"total\":86,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01CbGQDWTMYiipBzUCpK35mr",
+      "content": "{\"symbols\":[],\"not_found\":[\"fastmcp:FastMCP\"],\"hint\":\"Some ids were not found \u2014 take ids from search() results; the format is 'module:name' or 'module:Class#member'.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01AwyvEg9bsQ7KjfLEo2QTXR",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP#run\",\"kind\":\"method\",\"summary\":\"Run the FastMCP server. Note this is a synchronous function.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run\"},{\"id\":\"fastmcp.server:FastMCP#run_async\",\"kind\":\"method\",\"summary\":\"Run the FastMCP server asynchronously.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run_async\"},{\"id\":\"fastmcp.server:FastMCP#run_http_async\",\"kind\":\"method\",\"summary\":\"Run the server using HTTP transport.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run_http_async\"},{\"id\":\"fastmcp.server:FastMCP#run_stdio_async\",\"kind\":\"method\",\"summary\":\"Run the server using stdio transport.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run_stdio_async\"},{\"id\":\"fastmcp.server:FastMCP#call_tool\",\"kind\":\"method\",\"summary\":\"Call a tool by name.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#call_tool\"},{\"id\":\"fastmcp.server:FastMCP#docket\",\"kind\":\"attribute\",\"summary\":\"The Docket instance owned by this server.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#docket\"},{\"id\":\"fastmcp.server:FastMCP#read_resource\",\"kind\":\"method\",\"summary\":\"Read a resource by URI.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#read_resource\"},{\"id\":\"fastmcp.server:FastMCP#render_prompt\",\"kind\":\"method\",\"summary\":\"Render a prompt by name.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#render_prompt\"}],\"total\":8,\"truncated\":false}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#from_openapi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

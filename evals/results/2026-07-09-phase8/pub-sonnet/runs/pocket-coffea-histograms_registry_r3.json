@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-histograms",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.lib.hist_manager import Axis, HistConf\n\nvariables = {\n    \"muon_pt\": HistConf(\n        axes=[\n            Axis(\n                coll=\"MuonGood\",\n                field=\"pt\",\n                pos=0,\n                bins=60,\n                start=0,\n                stop=300,\n                label=\"Muon pT [GeV]\",\n            )\n        ]\n    )\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.hist_manager import Axis, HistConf\n\nvariables = {\n    \"muon_pt\": HistConf(\n        axes=[\n            Axis(\n                coll=\"MuonGood\",\n                field=\"pt\",\n                pos=0,\n                bins=60,\n                start=0,\n                stop=300,\n                label=\"Muon pT [GeV]\",\n            )\n        ]\n    )\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 484,
+    "cache_read_tokens": 30365,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0163755,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

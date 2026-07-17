@@ -1,0 +1,47 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from cyclopts import App\nfrom cyclopts.types import ExistingFile\n\napp = App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    print(f\"Converting {input_file} to {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\nfrom cyclopts.types import ExistingFile\n\napp = App()\n\n\n@app.command\ndef convert(input_file: ExistingFile, output_name: str):\n    print(f\"Converting {input_file} to {output_name}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 681,
+    "cache_read_tokens": 101562,
+    "cache_creation_tokens": 2848,
+    "cost_usd": 0.057789599999999997,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 14.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "ExistingFile|class.*Path|Existing",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/types.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def command|^app\\.command|^App\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "output_mode": "content",
+        "head_limit": 20
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

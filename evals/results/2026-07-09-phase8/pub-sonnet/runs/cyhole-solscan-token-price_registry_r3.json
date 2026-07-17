@@ -1,0 +1,99 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan import Solscan\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111\"  # e.g. wrapped SOL mint\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = Solscan(api_v2_key=api_key)\n\n    response = solscan.client.get_token_price(address=TOKEN_ADDRESS)\n    print(response)\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "I attempted to verify this against the installed `cyhole` package via the LCP MCP server (as required), but the server's scan interpreter doesn't have `cyhole` importable in this environment and I have no shell/file tools in this session to point it at the right venv, so the code below is not tool-verified \u2014 please double-check the exact method/parameter names against the installed `cyhole==0.3.0` source before relying on it.\n\n```python\nimport os\n\nfrom cyhole.solscan import Solscan\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111\"  # e.g. wrapped SOL mint\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = Solscan(api_v2_key=api_key)\n\n    response = solscan.client.get_token_price(address=TOKEN_ADDRESS)\n    print(response)\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 8240,
+    "cache_read_tokens": 347919,
+    "cache_creation_tokens": 37944,
+    "cost_usd": 0.4556937,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 119.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell command execute shell run script",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Solscan",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file write file edit file glob grep search files",
+        "max_results": 15
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "str_replace file editor apply patch write file contents",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_014LFBEVtx4csDnkt9m7K74K",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_017aZ683iBBp35JYkQshnvRe",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.Solscan"
+    ],
+    "error": null
+  }
+}

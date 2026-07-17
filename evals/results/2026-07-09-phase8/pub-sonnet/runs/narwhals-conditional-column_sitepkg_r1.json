@@ -1,0 +1,55 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\ndef add_tier_column(df):\n    nw_df = nw.from_native(df)\n    result = nw_df.with_columns(\n        nw.when(nw.col(\"spend\") >= 1000)\n        .then(nw.lit(\"gold\"))\n        .otherwise(nw.lit(\"standard\"))\n        .alias(\"tier\")\n    )\n    return nw.to_native(result)\n\n\ndf = add_tier_column(df)",
+  "result_text": "Confirmed `nw.when(...).then(...).otherwise(...)` API. Here's the code:\n\n```python\nimport narwhals as nw\n\ndef add_tier_column(df):\n    nw_df = nw.from_native(df)\n    result = nw_df.with_columns(\n        nw.when(nw.col(\"spend\") >= 1000)\n        .then(nw.lit(\"gold\"))\n        .otherwise(nw.lit(\"standard\"))\n        .alias(\"tier\")\n    )\n    return nw.to_native(result)\n\n\ndf = add_tier_column(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 870,
+    "cache_read_tokens": 123227,
+    "cache_creation_tokens": 17483,
+    "cost_usd": 0.1549401,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 21.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def when|^class When|^def col\\b",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/narwhals",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def when\\(|^    def then\\(|^    def otherwise\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/narwhals/functions.py",
+        "-A": 5
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def when",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/narwhals",
+        "-A": 10,
+        "output_mode": "content"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

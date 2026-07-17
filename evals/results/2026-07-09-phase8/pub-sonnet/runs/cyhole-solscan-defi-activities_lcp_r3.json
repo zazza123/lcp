@@ -1,0 +1,187 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan import SolscanV2\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = SolscanV2(api_key=api_key)\n\n    account_address = \"5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1\"\n    response = solscan.client.get_account_defi_activities(account_address)\n\n    for activity in response.data:\n        print(activity)\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan import SolscanV2\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = SolscanV2(api_key=api_key)\n\n    account_address = \"5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1\"\n    response = solscan.client.get_account_defi_activities(account_address)\n\n    for activity in response.data:\n        print(activity)\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 30,
+    "output_tokens": 8227,
+    "cache_read_tokens": 679665,
+    "cache_creation_tokens": 31311,
+    "cost_usd": 0.5152604999999999,
+    "num_turns": 15,
+    "tool_calls": 14,
+    "duration_s": 109.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash,Read,Grep,Glob",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "defi activities",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities",
+          "cyhole.solscan.v2.client:GetAccountDefiActivitiesParam",
+          "cyhole.solscan.v2.client:GetAccountDefiActivitiesResponse",
+          "cyhole.solscan.v2.interaction:Solscan"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "cyhole",
+        "module": "cyhole.solscan.v2.interaction"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyhole",
+        "module": "cyhole.solscan.v2.interaction"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solscan.v2.interaction:Solscan#__init__"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solscan.v2.client:SolscanClient",
+          "cyhole.solscan.v2.interaction:SolscanClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "cyhole",
+        "kind": "attribute"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client",
+        "library": "cyhole",
+        "module": "cyhole.birdeye.interaction"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "_get_account_defi_activities",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetAccountDefiActivitiesResponse",
+        "library": "cyhole",
+        "kind": "attribute"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01URi39sM6bNFApTsiUsz6M7",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyhole\",\"version\":\"0.3.0\",\"language\":\"python\",\"symbol_count\":1274,\"module_count\":67,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyhole') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_018Z6hsRL8CygpE2U3qWpbpp",
+      "content": "{\"results\":[{\"id\":\"cyhole.solscan.v2.interaction:SolscanAsyncClient#get_account_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** for asynchronous logic. All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_defi_activities].\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanAsyncClient\",\"resolved_via_alias\":\"cyhole.solscan.v2.client:SolscanAsyncClient#get_account_defi_activities\"},{\"id\":\"cyhole.solscan.v2.interaction:SolscanAsyncClient#get_token_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Token DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** for asynchronous logic. All the API endopint details are available on [`Solscan._get_token_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_token_defi_activities].\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanAsyncClient\",\"resolved_via_alias\":\"cyhole.solscan.v2.client:SolscanAsyncClient#get_token_defi_activities\"},{\"id\":\"cyhole.solscan.v2.interaction:SolscanClient#get_account_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** for synchronous logic. All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_defi_activities].\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanClient\",\"resolved_via_alias\":\"cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities\"},{\"id\":\"cyhole.solscan.v2.interaction:SolscanClient#get_token_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Token DeFi Act"
+    },
+    {
+      "tool_use_id": "toolu_01PrMSqC8TbxBY9MFwLUJM9g",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyhole.solscan.v2.client\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"account\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"params\",\"type\":\"GetAccountDefiActivitiesParam\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"GetAccountDefiActivitiesResponse\"}],\"semantics\":{\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** for synchronous logic. All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_defi_activities].\"},\"id\":\"cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanClient\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"account\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"params\",\"type\":\"GetAccountDefiActivitiesParam\",\"default\":\"...\"}],\"is_async\":false,\"return_type\":\"GetAccountDefiActivitiesResponse\",\"returns_classes\":[\"cyhole.solscan.v2.client:GetAccountDefiActivitiesResponse\"],\"next\":\"returns GetAccountDefiActivitiesResponse \u2192 get_symbol(ids=['cyhole.solscan.v2.client:GetAccountDefiActivitiesResponse']) to see its members\"}},{\"kind\":\"class\",\"module\":\"cyhole.solscan.v2.schema\",\"aliases\":[\"cyhole.solscan.v2.client:GetAccountDefiActivitiesParam\",\"cyhole.solscan.v2.interaction:GetAccountDefiActivitiesParam\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Model used to identify the parameters of the GET **[Account Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** of **V2** API endpoint.\"},\"id\":\"cyhole.solscan.v2.client:GetAccountDefiActivitiesParam\",\"resolved_via_alias\":\"cyhole.solscan.v2.schema:GetAccountDefiActivitiesParam"
+    },
+    {
+      "tool_use_id": "toolu_016bqnYjwpbpBrxjGf7q8wFQ",
+      "content": "{\"results\":[{\"id\":\"cyhole.solscan:SolscanV2#api_return_model\",\"kind\":\"method\",\"summary\":\"This function is used to execute a request to the API by forwarding the call to the corresponding client (synchronous or asynchronous) according to the `sync` parameter.\",\"import\":\"from cyhole.solscan import SolscanV2\",\"resolved_via_alias\":\"cyhole.solscan.v2.interaction:Solscan#api_return_model\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FUCxmKB3kTjv36aXN5Kvi9",
+      "content": "{\"results\":[{\"id\":\"cyhole.solscan:SolscanV2\",\"kind\":\"class\",\"summary\":\"Class used to connect only [Solscan](https://solscan.io) **V2** API, one of them most popular Solana chain explorer. To have access Solscan Pro API is required to have a valid API key.\",\"import\":\"from cyhole.solscan import SolscanV2\",\"resolved_via_alias\":\"cyhole.solscan.v2.interaction:Solscan\"},{\"id\":\"cyhole.solscan:SolscanV2#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\",\"import\":\"from cyhole.solscan import SolscanV2\",\"resolved_via_alias\":\"cyhole.solscan.v2.interaction:Solscan#__init__\"},{\"id\":\"cyhole.solscan:SolscanV2#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\",\"import\":\"from cyhole.solscan import SolscanV2\",\"resolved_via_alias\":\"cyhole.solscan.v2.interaction:Solscan#__str__\"},{\"id\":\"cyhole.solscan:SolscanV2#api_return_model\",\"kind\":\"method\",\"summary\":\"This function is used to execute a request to the API by forwarding the call to the corresponding client (synchronous or asynchronous) according to the `sync` parameter.\",\"import\":\"from cyhole.solscan import SolscanV2\",\"resolved_via_alias\":\"cyhole.solscan.v2.interaction:Solscan#api_return_model\"},{\"id\":\"cyhole.solscan.v2.interaction:\",\"kind\":\"module\",\"summary\":\"Module cyhole.solscan.v2.interaction\",\"import\":\"import cyhole.solscan.v2.interaction\"}],\"total\":5,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_0141cYwENqjpzdxRNhg7T5Mw",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyhole.solscan.v2.interaction\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"api_key\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Method __init__\"},\"id\":\"cyhole.solscan.v2.interaction:Solscan#__init__\",\"import\":\"from cyhole.solscan import SolscanV2\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"api_key\",\"type\":\"UnionType[str, None]\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01FX7HeUGvxUeKV3LxnxZtT3",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.solscan.v2.client\",\"aliases\":[\"cyhole.solscan.v2.interaction:SolscanClient\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"interaction\",\"type\":\"Solscan\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"headers\",\"type\":\"Any | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Client used for synchronous API calls for `Solscan` interaction on **V2** API.\"},\"id\":\"cyhole.solscan.v2.client:SolscanClient\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanClient\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"interaction\",\"type\":\"Solscan\"}],\"optional_parameters\":[{\"name\":\"headers\",\"type\":\"Any | None\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"cyhole.solscan.v2.client:SolscanClient#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"cyhole.solscan.v2.client:SolscanClient#api\",\"kind\":\"method\",\"summary\":\"Method api\"},{\"id\":\"cyhole.solscan.v2.client:SolscanClient#get_account_balance_change_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account Balance Change Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-balance_change)** for synchronous logic. All the API endopint details are available on [`Solscan._get_account_balance_change_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_balance_change_activities].\"},{\"id\":\"cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** for synchronous logic. All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_defi_activities].\"},{\"id\":\"cyhole.solscan.v2.client:SolscanClient#get_account_detail\",\"kind\":\"method\",\"summary\":\"Call "
+    },
+    {
+      "tool_use_id": "toolu_01QMigPRudUoSQ9bozQ5PwPT",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01EZey6KM5V3LWzFJiHPYaCX",
+      "content": "{\"results\":[{\"id\":\"cyhole.birdeye:Birdeye#api_return_model\",\"kind\":\"method\",\"summary\":\"This function is used to execute a request to the API by forwarding the call to the corresponding client (synchronous or asynchronous) according to the `sync` parameter.\",\"import\":\"from cyhole.birdeye import Birdeye\",\"resolved_via_alias\":\"cyhole.birdeye.interaction:Birdeye#api_return_model\"},{\"id\":\"cyhole.birdeye:Birdeye\",\"kind\":\"class\",\"summary\":\"Class used to connect [https://birdeye.so](https://birdeye.so) API. To have access Birdeye API (public or private) is required to have a valid API key.\",\"import\":\"from cyhole.birdeye import Birdeye\",\"resolved_via_alias\":\"cyhole.birdeye.interaction:Birdeye\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_0147YwPAKMEf3CQcMwEzoQo5",
+      "content": "{\"results\":[{\"id\":\"cyhole.solscan.v2.interaction:SolscanAsyncClient#get_account_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** for asynchronous logic. All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_defi_activities].\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanAsyncClient\",\"resolved_via_alias\":\"cyhole.solscan.v2.client:SolscanAsyncClient#get_account_defi_activities\"},{\"id\":\"cyhole.solscan.v2.interaction:SolscanClient#get_account_defi_activities\",\"kind\":\"method\",\"summary\":\"Call the Solscan's **V2** API endpoint GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** for synchronous logic. All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.v2.interaction.Solscan._get_account_defi_activities].\",\"import\":\"from cyhole.solscan.v2.interaction import SolscanClient\",\"resolved_via_alias\":\"cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01MJsDraJ9rZZ5o2B6VBUAqb",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

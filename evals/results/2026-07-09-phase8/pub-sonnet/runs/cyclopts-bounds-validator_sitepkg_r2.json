@@ -1,0 +1,45 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Annotated\n\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n\n@app.command\ndef serve(\n    port: Annotated[\n        int,\n        Parameter(validator=validators.Number(gte=1024, lte=65535)),\n    ],\n):\n    \"\"\"Start the server.\n\n    Parameters\n    ----------\n    port: int\n        Port to bind the server to (must be between 1024 and 65535).\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Confirmed the API: `cyclopts.validators.Number(gte=..., lte=...)` attached via `Parameter(validator=...)`.\n\n```python\nfrom typing import Annotated\n\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n\n@app.command\ndef serve(\n    port: Annotated[\n        int,\n        Parameter(validator=validators.Number(gte=1024, lte=65535)),\n    ],\n):\n    \"\"\"Start the server.\n\n    Parameters\n    ----------\n    port: int\n        Port to bind the server to (must be between 1024 and 65535).\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 712,
+    "cache_read_tokens": 99381,
+    "cache_creation_tokens": 1577,
+    "cost_usd": 0.0499743,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 14.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Number",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/validators/_number.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

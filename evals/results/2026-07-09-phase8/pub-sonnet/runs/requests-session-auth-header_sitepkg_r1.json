@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-session-auth-header",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import requests\n\nclass BearerAuth(requests.auth.AuthBase):\n    def __init__(self, token):\n        self.token = token\n\n    def __call__(self, r):\n        r.headers[\"Authorization\"] = f\"Bearer {self.token}\"\n        return r\n\n\ndef create_session(token: str) -> requests.Session:\n    session = requests.Session()\n    session.auth = BearerAuth(token)\n    return session\n\n\nif __name__ == \"__main__\":\n    session = create_session(\"TESTTOKEN\")\n    response = session.get(\"https://api.example.com/me\")\n    response.raise_for_status()\n    print(response.json())",
+  "result_text": "```python\nimport requests\n\nclass BearerAuth(requests.auth.AuthBase):\n    def __init__(self, token):\n        self.token = token\n\n    def __call__(self, r):\n        r.headers[\"Authorization\"] = f\"Bearer {self.token}\"\n        return r\n\n\ndef create_session(token: str) -> requests.Session:\n    session = requests.Session()\n    session.auth = BearerAuth(token)\n    return session\n\n\nif __name__ == \"__main__\":\n    session = create_session(\"TESTTOKEN\")\n    response = session.get(\"https://api.example.com/me\")\n    response.raise_for_status()\n    print(response.json())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 690,
+    "cache_read_tokens": 23157,
+    "cache_creation_tokens": 9789,
+    "cost_usd": 0.07603710000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

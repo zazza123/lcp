@@ -1,0 +1,121 @@
+{
+  "case_id": "cyhole-helius-get-asset",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.helius import Helius\n\n\ndef get_das_asset(asset_id: str):\n    helius = Helius(api_key=os.environ[\"HELIUS_API_KEY\"])\n    return helius.client.das.get_asset(id=asset_id)\n\n\nif __name__ == \"__main__\":\n    asset_id = \"F9Lw3ki3hJ7PF9HQXsBzoY8GyE6sPwLcnUq9AkbFYewT\"\n    asset = get_das_asset(asset_id)\n    print(asset.model_dump_json(indent=2))",
+  "result_text": "```python\nimport os\n\nfrom cyhole.helius import Helius\n\n\ndef get_das_asset(asset_id: str):\n    helius = Helius(api_key=os.environ[\"HELIUS_API_KEY\"])\n    return helius.client.das.get_asset(id=asset_id)\n\n\nif __name__ == \"__main__\":\n    asset_id = \"F9Lw3ki3hJ7PF9HQXsBzoY8GyE6sPwLcnUq9AkbFYewT\"\n    asset = get_das_asset(asset_id)\n    print(asset.model_dump_json(indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 22,
+    "output_tokens": 7573,
+    "cache_read_tokens": 445197,
+    "cache_creation_tokens": 45554,
+    "cost_usd": 0.5205441,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 115.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "Helius DAS get asset by id synchronous"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole Helius Python SDK",
+        "query": "Helius DAS get asset by id synchronous Python"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "cyhole python solana toolkit Birdeye Helius Jupiter API wrapper"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell run shell command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file grep search",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/solana-toolkit/cyhole",
+        "query": "Helius DAS get_asset synchronous client example"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Ubiqgba1ngUhEZznDHJvNb",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01Ve9zaRyf6zWovh6ZHpa56s",
+      "content": "Available Libraries:\n\n- Title: Helius SDK\n- Context7-compatible library ID: /helius-labs/helius-sdk\n- Description: The Helius Node.js library provides JavaScript/TypeScript access to the Helius API for building on Solana, offering features like DAS API for NFTs and token management.\n- Code Snippets: 383\n- Source Reputation: High\n- Benchmark Score: 89.9\n----------\n- Title: Helius\n- Context7-compatible library ID: /websites/helius_dev\n- Description: Helius is a high-performance Solana development platform providing RPC infrastructure, real-time data streaming, and powerful APIs for building scalable blockchain applications.\n- Code Snippets: 4079\n- Source Reputation: High\n- Benchmark Score: 83.82\n----------\n- Title: Helius\n- Context7-compatible library ID: /websites/rs_helius_helius\n- Description: Helius is a Rust SDK providing client, RPC, transaction, and webhook functionalities for interacting with the Helius Web3 developer platform and the Solana blockchain.\n- Code Snippets: 3162\n- Source Reputation: High\n- Benchmark Score: 68.67\n----------\n- Title: Helius Rust SDK\n- Context7-compatible library ID: /helius-labs/helius-rust-sdk\n- Description: An asynchronous Rust SDK for building applications on Solana with Helius API integration, including DAS API, ZK Compression, enhanced transactions, webhooks, and wallet management.\n- Code Snippets: 804\n- Source Reputation: High\n----------\n- Title: Helius Documentation\n- Context7-compatible library ID: /llmstxt/helius_dev_llms_txt\n- Description: Helius Documentation provides comprehensive guides and API references for building on Solana using Helius's fast and reliable RPC and infrastructure platform, with a focus on AI agent integration.\n- Code Snippets: 28\n- Source Reputation: High\n- Benchmark Score: 85.33"
+    },
+    {
+      "tool_use_id": "toolu_01GdDaWqm77MTn2VzeQS58nq",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_014HopchDwnUh36jezFysc2x",
+      "content": "Library \"/solana-toolkit/cyhole\" not found. Please check the library ID or your access permissions."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.client:HeliusClient#post_get_asset"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_asset"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

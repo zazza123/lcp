@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import logging\n\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import CallNext, Middleware, MiddlewareContext\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(\"fastmcp.request_logger\")\n\n\nclass RequestLoggingMiddleware(Middleware):\n    async def on_message(self, context: MiddlewareContext, call_next: CallNext):\n        logger.info(\n            \"Incoming request: method=%s source=%s type=%s\",\n            context.method,\n            context.source,\n            context.type,\n        )\n        return await call_next(context)\n\n\nmcp = FastMCP(\"logging-demo-server\")\nmcp.add_middleware(RequestLoggingMiddleware())\n\n\n@mcp.tool()\ndef echo(text: str) -> str:\n    \"\"\"Echo back the provided text.\"\"\"\n    return text\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nimport logging\n\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import CallNext, Middleware, MiddlewareContext\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(\"fastmcp.request_logger\")\n\n\nclass RequestLoggingMiddleware(Middleware):\n    async def on_message(self, context: MiddlewareContext, call_next: CallNext):\n        logger.info(\n            \"Incoming request: method=%s source=%s type=%s\",\n            context.method,\n            context.source,\n            context.type,\n        )\n        return await call_next(context)\n\n\nmcp = FastMCP(\"logging-demo-server\")\nmcp.add_middleware(RequestLoggingMiddleware())\n\n\n@mcp.tool()\ndef echo(text: str) -> str:\n    \"\"\"Echo back the provided text.\"\"\"\n    return text\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1391,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9922,
+    "cost_usd": 0.0865137,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

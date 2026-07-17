@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.weights.weights import WeightLambda\n\n\ndef toy_reweight_function(params, metadata, events, size, shape_variation):\n    \"\"\"Compute the nominal toy_reweight weight and its +/-5% variations.\"\"\"\n    raw = events.LHEWeight_originalXWGTUP\n    nominal = raw / ak.mean(raw)\n\n    if shape_variation == \"nominal\":\n        up = nominal * 1.05\n        down = nominal * 0.95\n        return nominal, [up], [down]\n\n    return nominal\n\n\ntoy_reweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=toy_reweight_function,\n    has_variations=True,\n)\n\n# Example: register the custom weight in a PocketCoffea configuration\nweights_classes = [\n    toy_reweight,\n]",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.weights.weights import WeightLambda\n\n\ndef toy_reweight_function(params, metadata, events, size, shape_variation):\n    \"\"\"Compute the nominal toy_reweight weight and its +/-5% variations.\"\"\"\n    raw = events.LHEWeight_originalXWGTUP\n    nominal = raw / ak.mean(raw)\n\n    if shape_variation == \"nominal\":\n        up = nominal * 1.05\n        down = nominal * 0.95\n        return nominal, [up], [down]\n\n    return nominal\n\n\ntoy_reweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=toy_reweight_function,\n    has_variations=True,\n)\n\n# Example: register the custom weight in a PocketCoffea configuration\nweights_classes = [\n    toy_reweight,\n]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 4624,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 10020,
+    "cost_usd": 0.1355967,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

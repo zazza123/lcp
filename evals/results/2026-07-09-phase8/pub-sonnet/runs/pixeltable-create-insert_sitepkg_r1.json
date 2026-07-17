@@ -1,0 +1,29 @@
+{
+  "case_id": "pixeltable-create-insert",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\npxt.create_dir(\"demo\")\n\nt = pxt.create_table(\n    \"demo.films\",\n    schema={\n        \"title\": pxt.String,\n        \"year\": pxt.Int,\n        \"revenue\": pxt.Float,\n    },\n)\n\nt.insert(\n    [\n        {\"title\": \"Jaws\", \"year\": 1975, \"revenue\": 470.7},\n        {\"title\": \"Alien\", \"year\": 1979, \"revenue\": 184.7},\n    ]\n)",
+  "result_text": "```python\nimport pixeltable as pxt\n\npxt.create_dir(\"demo\")\n\nt = pxt.create_table(\n    \"demo.films\",\n    schema={\n        \"title\": pxt.String,\n        \"year\": pxt.Int,\n        \"revenue\": pxt.Float,\n    },\n)\n\nt.insert(\n    [\n        {\"title\": \"Jaws\", \"year\": 1975, \"revenue\": 470.7},\n        {\"title\": \"Alien\", \"year\": 1979, \"revenue\": 184.7},\n    ]\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 519,
+    "cache_read_tokens": 32975,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.017683499999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\n\nfrom fastmcp import FastMCP, Client\n\n\nmcp = FastMCP(\"ConfigServer\")\n\n\n@mcp.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\"debug\": True, \"version\": \"1.0.0\"}\n\n\nasync def main() -> None:\n    client = Client(mcp)  # in-memory transport: no subprocess, no network\n\n    async with client:\n        result = await client.read_resource(\"data://config\")\n        for item in result:\n            print(item.text)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\n\nfrom fastmcp import FastMCP, Client\n\n\nmcp = FastMCP(\"ConfigServer\")\n\n\n@mcp.resource(\"data://config\")\ndef get_config() -> dict:\n    return {\"debug\": True, \"version\": \"1.0.0\"}\n\n\nasync def main() -> None:\n    client = Client(mcp)  # in-memory transport: no subprocess, no network\n\n    async with client:\n        result = await client.read_resource(\"data://config\")\n        for item in result:\n            print(item.text)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1206,
+    "cache_read_tokens": 152049,
+    "cache_creation_tokens": 15329,
+    "cost_usd": 0.1557087,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 31.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "in-memory client connecting directly to a FastMCP server object and reading a resource",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp/v3.2.4",
+        "query": "Client in-memory transport connect directly to FastMCP server object and read_resource"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp/v3.2.4",
+        "query": "client.read_resource method usage example return contents"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01EwojfL1TNRr8jLqSJ9WJb1",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 89\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms-full_txt\n- Description: FastMCP is a Python framework for building MCP servers, featuring an experimental OpenAPI parser, JWT claims, and optimized payload handling.\n- Code Snippets: 25492\n- Source Reputation: High\n- Benchmark Score: 73.06\n----------\n- Title: FastMCP TS\n- Context7-compatible library ID: /prefecthq/fastmcp-ts\n- Description: FastMCP TS is the official TypeScript library for building Model Context Protocol servers, clients, and apps, providing a fast and efficient framework for developing MCP-enabled applications.\n- Code Snippets: 899\n- Source Reputation: High\n- Benchmark Score: 78"
+    },
+    {
+      "tool_use_id": "toolu_01MXhCneDCzeaqMPjb312Uxm",
+      "content": "### Configure in-memory transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/clients/client.mdx\n\nConnects directly to a FastMCP server instance within the same process for testing purposes.\n\n```python\nfrom fastmcp import Client, FastMCP\n\nserver = FastMCP(\"TestServer\")\nclient = Client(server)  # In-memory, no network or subprocess\n```\n\n--------------------------------\n\n### Initialize In-Memory Transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/clients/transports.mdx\n\nConnect directly to a server instance within the same process for testing purposes.\n\n```python\nfrom fastmcp import FastMCP, Client\nimport os\n\nmcp = FastMCP(\"TestServer\")\n\n@mcp.tool\ndef greet(name: str) -> str:\n    prefix = os.environ.get(\"GREETING_PREFIX\", \"Hello\")\n    return f\"{prefix}, {name}!\"\n\nclient = Client(mcp)\n\nasync with client:\n    result = await client.call_tool(\"greet\", {\"name\": \"World\"})\n```\n\n### The FastMCP Client > Choosing a Transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/clients/client.mdx\n\nThe in-memory transport connects directly to a FastMCP server instance within the same Python process. This is ideal for testing and development scenarios where eliminating subprocess and network complexities is desired. The server shares the process's environment and memory.\n\n--------------------------------\n\n### In-Memory Transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/clients/transports.mdx\n\nIn-memory transport allows a client to connect directly to a FastMCP server instance within the same Python process. This approach removes the need for subprocess management and eliminates network overhead, making it an ideal choice for testing purposes. Note that in-memory servers share the same memory space and environment variables as the client code.\n\n--------------------------------\n\n### fastmcp.client.transports.memory > FastMCPTransport\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/python-sdk/fast"
+    },
+    {
+      "tool_use_id": "toolu_01RTKXcRXhYH38EvT5ZvRJkk",
+      "content": "### Read Server Resources\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/clients/client.mdx\n\nLists available resources and reads content from a specific resource URI.\n\n```python\nasync with client:\n    resources = await client.list_resources()\n    content = await client.read_resource(\"file:///config/settings.json\")\n    print(content[0].text)\n```\n\n--------------------------------\n\n### Read Resource using Tool\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/servers/transforms/resources-as-tools.mdx\n\nCall the `read_resource` tool with a specific URI. For templated resources, fill in the placeholders. The tool automatically matches templates and extracts parameters.\n\n```python\n# Reading a static resource\nresult = await client.call_tool(\"read_resource\", {\"uri\": \"config://app\"})\nprint(result.data)  # '{\"app_name\": \"My App\", \"version\": \"1.0.0\"}'\n\n# Reading a templated resource - fill in {user_id} with an actual ID\nresult = await client.call_tool(\"read_resource\", {\"uri\": \"user://42/profile\"})\nprint(result.data)  # '{\"user_id\": \"42\", \"name\": \"User 42\"}'\n```\n\n--------------------------------\n\n### Read a resource with read_resource\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/python-sdk/fastmcp-server-middleware-tool_injection.mdx\n\nReads a specific resource available on the server by its URI.\n\n```python\nread_resource(context: Context, uri: Annotated[AnyUrl | str, 'The URI of the resource to read.']) -> ResourceResult\n```\n\n--------------------------------\n\n### Handle Binary Content with read_resource Tool\n\nSource: https://github.com/prefecthq/fastmcp/blob/v3.2.4/docs/servers/transforms/resources-as-tools.mdx\n\nResources returning binary data are automatically base64-encoded when accessed via the `read_resource` tool. The client must decode the base64 string to retrieve the original binary data.\n\n```python\n@mcp.resource(\"data://binary\", mime_type=\"application/octet-stream\")\ndef binary_data() -> bytes:\n    return b\"\\x00\\x01\\x02\\x03\"\n"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

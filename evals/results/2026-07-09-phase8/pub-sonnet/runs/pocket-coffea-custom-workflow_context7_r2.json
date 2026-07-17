@@ -1,0 +1,35 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.workflows.base import ProcessorABC\nfrom pocket_coffea.lib.objects import object_preselection\n\n\nclass DimuonProcessor(ProcessorABC):\n    def apply_object_preselection(self, variation):\n        self.events[\"MuonGood\"] = self.events.Muon[\n            (self.events.Muon.pt > 15) & (abs(self.events.Muon.eta) < 2.4)\n        ]\n\n    def count_objects(self, variation):\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood, axis=1)",
+  "result_text": "```python\nfrom pocket_coffea.workflows.base import ProcessorABC\nfrom pocket_coffea.lib.objects import object_preselection\n\n\nclass DimuonProcessor(ProcessorABC):\n    def apply_object_preselection(self, variation):\n        self.events[\"MuonGood\"] = self.events.Muon[\n            (self.events.Muon.pt > 15) & (abs(self.events.Muon.eta) < 2.4)\n        ]\n\n    def count_objects(self, variation):\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood, axis=1)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 491,
+    "cache_read_tokens": 30433,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0165009,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [
+      "pocket_coffea.workflows.base:ProcessorABC"
+    ],
+    "unresolved_usages": [
+      "pocket_coffea.workflows.base.ProcessorABC"
+    ],
+    "error": null
+  }
+}

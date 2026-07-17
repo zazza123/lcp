@@ -1,0 +1,60 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(\"Simple Server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers together.\n\n    Args:\n        a: First integer.\n        b: Second integer.\n\n    Returns:\n        The sum of a and b.\n    \"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"Simple Server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers together.\n\n    Args:\n        a: First integer.\n        b: Second integer.\n\n    Returns:\n        The sum of a and b.\n    \"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1119,
+    "cache_read_tokens": 117326,
+    "cache_creation_tokens": 14644,
+    "cost_usd": 0.1398708,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 26.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "run fastmcp server with streamable-http transport, host and port",
+        "libraryName": "FastMCP"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "mcp.run(transport=\"streamable-http\", host, port) server entry point"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01H3LqPjhqadf5YQiXA2YBz4",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 88.87\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /punkpeye/fastmcp\n- Description: FastMCP is a TypeScript framework for building MCP servers, simplifying the process of handling client sessions, tools, and resources with built-in features like authentication, streaming, and logging.\n- Code Snippets: 732\n- Source Reputation: High\n- Benchmark Score: 80.8\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms-full_txt\n- Description: FastMCP is a Python framework for building MCP servers, featuring an experimental OpenAPI parser, JWT claims, and optimized payload handling.\n- Code Snippets: 25492\n- Source Reputation: High\n- Benchmark Score: 73.06"
+    },
+    {
+      "tool_use_id": "toolu_01GJfPREHjTUH9aXMkYyTsTA",
+      "content": "### Configuring Allowed Hosts via run_http_async\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/mixins/transport.py\n\nThe run_http_async method accepts allowed_hosts and allowed_origins parameters which can be passed directly or read from settings. When running behind a load balancer with a custom domain, these can be specified to override settings.\n\n```python\nasync def run_http_async(\n    self: FastMCP,\n    show_banner: bool = True,\n    transport: Literal[\"http\", \"streamable-http\", \"sse\"] = \"http\",\n    host: str | None = None,\n    port: int | None = None,\n    log_level: str | None = None,\n    path: str | None = None,\n    uvicorn_config: dict[str, Any] | None = None,\n    middleware: list[ASGIMiddleware] | None = None,\n    json_response: bool | None = None,\n    stateless_http: bool | None = None,\n    stateless: bool | None = None,\n    host_origin_protection: bool | None = None,\n    allowed_hosts: list[str] | None = None,\n    allowed_origins: list[str] | None = None,\n    sockets: list[socket.socket] | None = None,\n) -> None:\n    \"\"\"Run the server using HTTP transport.\n\n    Args:\n        allowed_hosts: Additional hostnames that may appear in the Host header.\n        allowed_origins: Additional browser origins trusted by the request guard.\n    \"\"\"\n    app = self.http_app(\n        path=path,\n        transport=transport,\n        middleware=middleware,\n        json_response=json_response,\n        stateless_http=stateless_http,\n        host_origin_protection=host_origin_protection,\n        allowed_hosts=allowed_hosts,\n        allowed_origins=allowed_origins,\n    )\n```\n\n--------------------------------\n\n### Run FastMCP Server with HTTP Transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/server.mdx\n\nThis example shows how to configure and run the FastMCP server using the HTTP transport instead of the default STDIO. Specify the host and port for network accessibility.\n\n```python\n# Run with HTTP transport\nmcp.run(tr"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

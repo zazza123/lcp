@@ -1,0 +1,60 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\nfrom starlette.requests import Request\nfrom starlette.responses import JSONResponse\n\nmcp = FastMCP(\"MyServer\")\n\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health_check(request: Request) -> JSONResponse:\n    return JSONResponse({\"status\": \"ok\"})\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\")",
+  "result_text": "This confirms the `@mcp.custom_route` decorator pattern with `JSONResponse` for the JSON body.\n\n```python\nfrom fastmcp import FastMCP\nfrom starlette.requests import Request\nfrom starlette.responses import JSONResponse\n\nmcp = FastMCP(\"MyServer\")\n\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health_check(request: Request) -> JSONResponse:\n    return JSONResponse({\"status\": \"ok\"})\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 944,
+    "cache_read_tokens": 117305,
+    "cache_creation_tokens": 14268,
+    "cost_usd": 0.13498349999999998,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 23.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "custom HTTP route health check endpoint outside MCP protocol",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "custom_route decorator plain HTTP GET endpoint outside MCP protocol health check"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_019qJTcCHXXNWrwytVbUGEeb",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 89\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /punkpeye/fastmcp\n- Description: FastMCP is a TypeScript framework for building MCP servers, simplifying the process of handling client sessions, tools, and resources with built-in features like authentication, streaming, and logging.\n- Code Snippets: 732\n- Source Reputation: High\n- Benchmark Score: 80.8\n----------\n- Title: FastMCP TS\n- Context7-compatible library ID: /prefecthq/fastmcp-ts\n- Description: FastMCP TS is the official TypeScript library for building Model Context Protocol servers, clients, and apps, providing a fast and efficient framework for developing MCP-enabled applications.\n- Code Snippets: 899\n- Source Reputation: High\n- Benchmark Score: 78\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81"
+    },
+    {
+      "tool_use_id": "toolu_01J22MGFgpL95pVMacrtfpjp",
+      "content": "### Add a Custom Health Check Route to FastMCP\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/server.mdx\n\nUse the `@custom_route` decorator to define a new HTTP endpoint on your FastMCP server. This example creates a GET /health endpoint that returns 'OK'.\n\n```python\nfrom fastmcp import FastMCP\nfrom starlette.requests import Request\nfrom starlette.responses import PlainTextResponse\n\nmcp = FastMCP(\"MyServer\")\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health_check(request: Request) -> PlainTextResponse:\n    return PlainTextResponse(\"OK\")\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\")  # Health check at http://localhost:8000/health\n```\n\n--------------------------------\n\n### Implement health check endpoints in Python\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/deployment/http.mdx\n\nCustom routes are unauthenticated by design, making them ideal for operational endpoints like health checks and readiness probes.\n\n```python\nfrom starlette.responses import JSONResponse\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health_check(request):\n    return JSONResponse({\"status\": \"healthy\", \"service\": \"mcp-server\"})\n```\n\n--------------------------------\n\n### Adding Custom HTTP Routes\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/deployment/running-server.mdx\n\nExample demonstrating how to add a custom /health endpoint to a FastMCP server using the @custom_route decorator, alongside a standard tool.\n\n```python\nfrom fastmcp import FastMCP\nfrom starlette.requests import Request\nfrom starlette.responses import PlainTextResponse\n\nmcp = FastMCP(\"MyServer\")\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health_check(request: Request) -> PlainTextResponse:\n    return PlainTextResponse(\"OK\")\n\n@mcp.tool\ndef process(data: str) -> str:\n    return f\"Processed: {data}\"\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\")  # Health check at http://localhost:8000/health\n```\n\n### Custom Routes\n\nSou"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "case_id": "pixeltable-create-insert",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\npxt.create_dir('demo', if_exists='ignore')\n\nfilms = pxt.create_table(\n    'demo.films',\n    schema={'title': pxt.String, 'year': pxt.Int, 'revenue': pxt.Float},\n    if_exists='ignore',\n)\n\nfilms.insert([\n    {'title': 'Jaws', 'year': 1975, 'revenue': 470.7},\n    {'title': 'Alien', 'year': 1979, 'revenue': 184.7},\n])",
+  "result_text": "Verified the API against pixeltable 0.6.6. Here's the code:\n\n```python\nimport pixeltable as pxt\n\npxt.create_dir('demo', if_exists='ignore')\n\nfilms = pxt.create_table(\n    'demo.films',\n    schema={'title': pxt.String, 'year': pxt.Int, 'revenue': pxt.Float},\n    if_exists='ignore',\n)\n\nfilms.insert([\n    {'title': 'Jaws', 'year': 1975, 'revenue': 470.7},\n    {'title': 'Alien', 'year': 1979, 'revenue': 184.7},\n])\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 1508,
+    "cache_read_tokens": 333227,
+    "cache_creation_tokens": 28389,
+    "cost_usd": 0.2929761,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 26.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create_dir",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create_table",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:create_dir",
+          "pixeltable:create_table"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "String",
+        "library": "pixeltable",
+        "module": "pixeltable.type_system"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "insert",
+        "library": "pixeltable",
+        "module": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Table#insert",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "insert",
+        "library": "pixeltable",
+        "kind": "method"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#insert"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01SswiVj8GVpWXLrZxanNzR6",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01Xg3KymTBYFNiXU7AxYhPrP",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#create_dir\",\"kind\":\"method\",\"summary\":\"Method create_dir\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#create_dir\"},{\"id\":\"pixeltable.catalog:CatalogBase#create_dir\",\"kind\":\"method\",\"summary\":\"Method create_dir\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#create_dir\"},{\"id\":\"pixeltable.catalog:CatalogProxy#create_dir\",\"kind\":\"method\",\"summary\":\"Method create_dir\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#create_dir\"},{\"id\":\"pixeltable:create_dir\",\"kind\":\"function\",\"summary\":\"Create a directory.\",\"import\":\"from pixeltable import create_dir\",\"resolved_via_alias\":\"pixeltable.globals:create_dir\"}],\"total\":4,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Vw53bbbHKWQeQ9AuvwtYxw",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#create_table\",\"kind\":\"method\",\"summary\":\"Creates a new InsertableTable at the given path.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#create_table\"},{\"id\":\"pixeltable.catalog:CatalogBase#create_table\",\"kind\":\"method\",\"summary\":\"Method create_table\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#create_table\"},{\"id\":\"pixeltable.catalog:CatalogProxy#create_table\",\"kind\":\"method\",\"summary\":\"Method create_table\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#create_table\"},{\"id\":\"pixeltable:create_table\",\"kind\":\"function\",\"summary\":\"Create a new base table. Exactly one of `schema` or `source` must be provided.\",\"import\":\"from pixeltable import create_table\",\"resolved_via_alias\":\"pixeltable.globals:create_table\"},{\"id\":\"pixeltable.io:import_json\",\"kind\":\"function\",\"summary\":\"Creates a new base table from a JSON file. This is a convenience method and is equivalent to calling [`create_table()`][pixeltable.create_table] with `pxt.create_table(tbl_path, source=filepath_or_url, extra_args=kwargs, ...)`. The contents of `filepath_or_url` are read and parsed as JSON internally (using `json.loads(**kwargs)`).\",\"import\":\"from pixeltable.io import import_json\",\"resolved_via_alias\":\"pixeltable.io.json:import_json\"},{\"id\":\"pixeltable:create_snapshot\",\"kind\":\"function\",\"summary\":\"Create a snapshot of an existing table object (which itself can be a view or a snapshot or a base table).\",\"import\":\"from pixeltable import create_snapshot\",\"resolved_via_alias\":\"pixeltable.globals:create_snapshot\"},{\"id\":\"pixeltable:create_view\",\"kind\":\"function\",\"summary\":\"Create a view of an existing table object (which itself can be a view or a snapshot or a base table).\",\"import\":\"from pixeltable import create_view\",\"resolved_via_alias\":\"pixeltable."
+    },
+    {
+      "tool_use_id": "toolu_01QUCcTXLwgemHyhhdMmdSfa",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.globals\",\"aliases\":[\"pixeltable:create_dir\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path to the directory.\"},{\"name\":\"if_exists\",\"type\":\"Literal[error, ignore, replace, replace_force]\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Directive regarding how to handle if the path already exists.\\nMust be one of the following:\\n\\n- `'error'`: raise an error\\n- `'ignore'`: do nothing and return the existing directory handle\\n- `'replace'`: if the existing directory is empty, drop it and create a new one\\n- `'replace_force'`: drop the existing directory and all its children, and create a new one\"},{\"name\":\"parents\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Create missing parent directories.\"}],\"returns\":\"UnionType[Dir, None]\",\"returns_description\":\"A handle to the newly created directory, or to an already existing directory at the path when\\n`if_exists='ignore'`. Please note the existing directory may not be empty.\",\"raises\":[{\"type\":\"Error\",\"condition\":\"If\\n- the path is invalid, or\\n- the path already exists and `if_exists='error'`, or\\n- the path already exists and is not a directory, or\\n- an error occurs while attempting to create the directory.\"}]}],\"semantics\":{\"summary\":\"Create a directory.\",\"description\":\"Args:\\n        path: Path to the directory.\\n        if_exists: Directive regarding how to handle if the path already exists.\\n            Must be one of the following:\\n\\n            - `'error'`: raise an error\\n            - `'ignore'`: do nothing and return the existing directory handle\\n            - `'replace'`: if the existing directory is empty, drop it and create a new one\\n            - `'replace_force'`: drop the existing directory and all its children, and create a new one\\n        parents: Create missing "
+    },
+    {
+      "tool_use_id": "toolu_014ACS5YapMSuYphryLhnMWv",
+      "content": "{\"results\":[{\"id\":\"pixeltable.type_system:StringType\",\"kind\":\"class\",\"summary\":\"Class StringType\",\"import\":\"from pixeltable.type_system import StringType\"},{\"id\":\"pixeltable.type_system:ArrayType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import ArrayType\"},{\"id\":\"pixeltable.type_system:AudioType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import AudioType\"},{\"id\":\"pixeltable.type_system:BinaryType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import BinaryType\"},{\"id\":\"pixeltable.type_system:BoolType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import BoolType\"},{\"id\":\"pixeltable.iterators.base:ColumnType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.iterators.base import ColumnType\",\"resolved_via_alias\":\"pixeltable.type_system:ColumnType#is_string_type\"},{\"id\":\"pixeltable.type_system:DateType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import DateType\"},{\"id\":\"pixeltable.type_system:DocumentType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import DocumentType\"},{\"id\":\"pixeltable.type_system:FloatType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import FloatType\"},{\"id\":\"pixeltable.type_system:ImageType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import ImageType\"},{\"id\":\"pixeltable.type_system:IntType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable.type_system import IntType\"},{\"id\":\"pixeltable.type_system:InvalidType#is_string_type\",\"kind\":\"method\",\"summary\":\"Method is_string_type\",\"import\":\"from pixeltable."
+    },
+    {
+      "tool_use_id": "toolu_01BWPXzTyWBQZJdLWKcSmADQ",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01CWjBfeMVA7uGRfc2pExTgE",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01AGTqa3iXSAREC5iSXRzTRk",
+      "content": "{\"results\":[{\"id\":\"pixeltable:InsertableTable#insert\",\"kind\":\"method\",\"summary\":\"Method insert\",\"import\":\"from pixeltable import InsertableTable\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table:InsertableTable#insert\"},{\"id\":\"pixeltable.catalog:InsertableTableProxy#insert\",\"kind\":\"method\",\"summary\":\"Method insert\",\"import\":\"from pixeltable.catalog import InsertableTableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table_proxy:InsertableTableProxy#insert\"},{\"id\":\"pixeltable.catalog:LocalTable#insert\",\"kind\":\"method\",\"summary\":\"Method insert\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#insert\"},{\"id\":\"pixeltable:Table#insert\",\"kind\":\"method\",\"summary\":\"Inserts rows into this table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#insert\"},{\"id\":\"pixeltable.catalog:TableProxy#insert\",\"kind\":\"method\",\"summary\":\"Method insert\",\"import\":\"from pixeltable.catalog import TableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.table_proxy:TableProxy#insert\"},{\"id\":\"pixeltable.catalog:TableVersion#insert\",\"kind\":\"method\",\"summary\":\"Insert rows into this table from an explicit list of dicts, a `Query`, or a `SqlDataSource`.\",\"import\":\"from pixeltable.catalog import TableVersion\",\"resolved_via_alias\":\"pixeltable.catalog.table_version:TableVersion#insert\"},{\"id\":\"pixeltable:View#insert\",\"kind\":\"method\",\"summary\":\"Method insert\",\"import\":\"from pixeltable import View\",\"resolved_via_alias\":\"pixeltable.catalog.view:View#insert\"},{\"id\":\"pixeltable.store:RowCountStats#insert_to_update\",\"kind\":\"method\",\"summary\":\"Convert insert row count stats to update row count stats. This is used when an insert operation is treated as an update.\",\"import\":\"from pixeltable.store import RowCountStats\",\"resolved_via_alias\":\"pixeltable.catalog.update_status:RowCountStats#insert_to_update\"},{\"id\":\"pixeltable:UpdateStatus#insert_msg\",\"kind\":\"method\",\"summary\":\"Returns me"
+    },
+    {
+      "tool_use_id": "toolu_015FwKGNtUzwCPwCA6Sn1LPs",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"source\",\"type\":\"TableDataSource | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"A data source from which data can be imported. Can be any of the following:\\n- A list of dictionaries\\n- A list of Pydantic model instances\\n- A file path or URI of a recognized data source\\n- A Pandas `DataFrame`\\n- Another Pixeltable table or a `Query`\\n- A Hugging Face dataset\"},{\"name\":\"source_format\",\"type\":\"Literal['csv', 'excel', 'parquet', 'json'] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A hint about the format of the source data. If not specified, Pixeltable will attempt\\nto infer the format.\"},{\"name\":\"schema_overrides\",\"type\":\"dict[str, ts.ColumnType] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If specified, then columns in `schema_overrides` will be given the specified types.\\nAny columns not included in `schema_overrides` will have their types inferred as usual.\"},{\"name\":\"on_error\",\"type\":\"Literal['abort', 'ignore']\",\"required\":false,\"default\":\"abort\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if an error occurs while evaluating a computed column or detecting an\\ninvalid media file (such as a corrupt image) for one of the inserted rows.\\n\\n- If `on_error='abort'`, then an exception will be raised and the rows will not be inserted.\\n- If `on_error='ignore'`, then execution will continue and the rows will be inserted. Any cells\\n    with errors will have a `None` value for that cell, with information about the error stored in the\\n    corresponding `tbl.col_name.errortype` and `tbl.col_name.errormsg` fields.\"},{\"name\":\"print_stats\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If `True`, print statistics about the cost of computed columns.\"},{\"name\":\"return_rows\",\"type\":"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

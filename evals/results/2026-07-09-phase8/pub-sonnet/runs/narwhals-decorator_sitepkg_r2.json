@@ -1,0 +1,57 @@
+{
+  "case_id": "narwhals-decorator",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\n\n@nw.narwhalify\ndef add_total(df):\n    return df.with_columns((nw.col(\"price\") * nw.col(\"quantity\")).alias(\"total\"))",
+  "result_text": "Confirmed the API \u2014 `nw.narwhalify` is the decorator that converts native frames in and back out.\n\n```python\nimport narwhals as nw\n\n\n@nw.narwhalify\ndef add_total(df):\n    return df.with_columns((nw.col(\"price\") * nw.col(\"quantity\")).alias(\"total\"))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 855,
+    "cache_read_tokens": 133222,
+    "cache_creation_tokens": 1902,
+    "cost_usd": 0.0642276,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 22.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def narwhalify",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/narwhals",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def narwhalify",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/narwhals/translate.py",
+        "-n": true,
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def narwhalify",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/narwhals/translate.py",
+        "-n": true,
+        "-A": 60,
+        "output_mode": "content"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

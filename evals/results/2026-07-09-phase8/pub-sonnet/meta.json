@@ -1,0 +1,15 @@
+{
+  "experiment": "Phase 8 publication grid — sonnet, all 6 arms",
+  "model": "claude-sonnet-5",
+  "reps": 3,
+  "arms": ["baseline", "lcp-skill", "sitepkg", "lcp", "registry", "context7"],
+  "cases": "evals/cases-v2 (84 cases; registry arm excludes 8 pixeltable per PREREGISTRATION.md)",
+  "total_runs": 1488,
+  "dates_spanned": "2026-07-16 .. 2026-07-18 (subscription-paced across quota windows)",
+  "claude_version": "2.1.205 (Claude Code)",
+  "lcp_commit": "03e4c4b (harness); cases frozen fc0fd11; registry main @ 8483cfd (weekly updater disabled during window)",
+  "skill_file": "plugin/lcp/skills/lcp-universal/SKILL.md (shipped variant B)",
+  "billing": "maintainer subscription (Max 5x); cost_usd fields are notional",
+  "reference": "PREREGISTRATION.md",
+  "note": "Rate-limited runs (claude exited 1) deleted and relaunched; completed runs never re-rolled. Integrity: 0 error records, all (case,rep) pairs distinct."
+}

@@ -1,0 +1,49 @@
+{
+  "case_id": "pocket-coffea-cartesian-categories",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "\"\"\"PocketCoffea configuration snippet: analysis categories as the cartesian\nproduct of jet-multiplicity and b-tag-multiplicity binnings.\n\nRequires: pocket-coffea==0.9.13\n\"\"\"\n\nfrom pocket_coffea.lib.cut_functions import get_nObj_eq, get_nObj_min\nfrom pocket_coffea.lib.categorization import MultiCut, CartesianSelection\n\n# Binning 1: jet multiplicity (JetGood) -> exactly 4, exactly 5, at least 6\nnjet_binning = MultiCut(\n    name=\"Njet\",\n    cuts=[\n        get_nObj_eq(4, coll=\"JetGood\"),\n        get_nObj_eq(5, coll=\"JetGood\"),\n        get_nObj_min(6, coll=\"JetGood\"),\n    ],\n    cuts_names=[\"4j\", \"5j\", \"6j\"],\n)\n\n# Binning 2: b-tag multiplicity (BJetGood) -> exactly 2, at least 3\nnbjet_binning = MultiCut(\n    name=\"Nbjet\",\n    cuts=[\n        get_nObj_eq(2, coll=\"BJetGood\"),\n        get_nObj_min(3, coll=\"BJetGood\"),\n    ],\n    cuts_names=[\"2b\", \"3b\"],\n)\n\n# Cartesian combination of the two binnings -> 3 x 2 = 6 categories:\n# 4j_2b, 4j_3b, 5j_2b, 5j_3b, 6j_2b, 6j_3b\ncategories = CartesianSelection(\n    multicuts=[njet_binning, nbjet_binning],\n)\n\nif __name__ == \"__main__\":\n    combined_names = [\n        f\"{njet}_{nbjet}\"\n        for njet in njet_binning.cuts_names\n        for nbjet in nbjet_binning.cuts_names\n    ]\n    print(f\"Defined {len(combined_names)} categories: {combined_names}\")",
+  "result_text": "```python\n\"\"\"PocketCoffea configuration snippet: analysis categories as the cartesian\nproduct of jet-multiplicity and b-tag-multiplicity binnings.\n\nRequires: pocket-coffea==0.9.13\n\"\"\"\n\nfrom pocket_coffea.lib.cut_functions import get_nObj_eq, get_nObj_min\nfrom pocket_coffea.lib.categorization import MultiCut, CartesianSelection\n\n# Binning 1: jet multiplicity (JetGood) -> exactly 4, exactly 5, at least 6\nnjet_binning = MultiCut(\n    name=\"Njet\",\n    cuts=[\n        get_nObj_eq(4, coll=\"JetGood\"),\n        get_nObj_eq(5, coll=\"JetGood\"),\n        get_nObj_min(6, coll=\"JetGood\"),\n    ],\n    cuts_names=[\"4j\", \"5j\", \"6j\"],\n)\n\n# Binning 2: b-tag multiplicity (BJetGood) -> exactly 2, at least 3\nnbjet_binning = MultiCut(\n    name=\"Nbjet\",\n    cuts=[\n        get_nObj_eq(2, coll=\"BJetGood\"),\n        get_nObj_min(3, coll=\"BJetGood\"),\n    ],\n    cuts_names=[\"2b\", \"3b\"],\n)\n\n# Cartesian combination of the two binnings -> 3 x 2 = 6 categories:\n# 4j_2b, 4j_3b, 5j_2b, 5j_3b, 6j_2b, 6j_3b\ncategories = CartesianSelection(\n    multicuts=[njet_binning, nbjet_binning],\n)\n\nif __name__ == \"__main__\":\n    combined_names = [\n        f\"{njet}_{nbjet}\"\n        for njet in njet_binning.cuts_names\n        for nbjet in nbjet_binning.cuts_names\n    ]\n    print(f\"Defined {len(combined_names)} categories: {combined_names}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 8685,
+    "cache_read_tokens": 98006,
+    "cache_creation_tokens": 7245,
+    "cost_usd": 0.20316480000000003,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 88.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "PocketCoffea",
+        "query": "CartesianSelection MultiCut categorization cross product categories configuration"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01MpCFQW79sFhdbUe1iFkXCu",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

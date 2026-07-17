@@ -1,0 +1,76 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": null,
+  "result_text": "I don't have tool access in this session (no shell or file-read tools are available) to inspect the installed `hamana` package, and I don't have confident, verified knowledge of `hamana` 1.0.1's exact Oracle connector API \u2014 the precise class names, config field names, and method signatures for building a standalone config object and constructing a connector from it. `hamana` isn't a library I can reliably recall the concrete API surface for (unlike, say, `cx_Oracle`/`python-oracledb`), and I'd rather tell you that than hand you code with invented class/method names that looks plausible but likely won't run.\n\nIf you can share the relevant API surface (e.g. output of `python -c \"import hamana; help(hamana)\"` or the connector module's docstrings/source), I'll write the exact code you asked for. Alternatively, if you can grant me shell or file-read access in this session, I can introspect the installed package myself and produce verified, runnable code.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 3597,
+    "cache_read_tokens": 170629,
+    "cache_creation_tokens": 33493,
+    "cost_usd": 0.3061317,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 54.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash,Read,Grep,Glob",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute python",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash execute terminal command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file contents",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "inspect package pip show module introspect",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Oracle",
+      "hamana.connector.db.oracle:OracleConnector#create_config",
+      "hamana.connector.db.oracle:OracleConnector#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}
