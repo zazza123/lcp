@@ -950,7 +950,33 @@ registry in <2s.
 
 ## Phase 8 — Full benchmark + publication
 
-**Status:** not started — blocked by all previous phases
+**Status:** done (2026-07-18) — plan:
+`docs/superpowers/plans/2026-07-09-phase-8-benchmark.md`. Shipped: an
+84-case publication set (`evals/cases-v2/`, 11 libraries: 7 niche / 2
+churned / 2 control — all new tasks, live-introspection-validated),
+pre-registered (`evals/results/2026-07-09-phase8/PREREGISTRATION.md`)
+and run as a **3968-run grid** (6 arms — baseline, lcp-skill, sitepkg,
+lcp, registry, context7 — × haiku 5 reps + sonnet 3 reps),
+integrity-clean. **Headline: on the niche workload the shipped plugin
+takes haiku 28% → 66% pass and halves misuse (0.70 → 0.35), beating the
+read-the-source `sitepkg` arm (55%); sonnet 68% → 92%.** Honest findings
+recorded and published: for the frontier model `sitepkg` edges
+`lcp-skill` on installed packages (96 vs 92%, fewer tokens) — LCP's
+distinct value is the small-model gain and the `registry` arm (works
+with no local source); Context7 stayed at baseline on niche. Skill
+screening (B/A/A+B) kept the shipped variant B (A+B won engagement 36/40
+but missed the +4/40 ship threshold; DQ-threshold miscalibration on the
+harder set reported as a pre-registration deviation). Non-Claude arm
+NOT run (de-scoped 2026-07-09, recorded as a caveat). Published:
+`docs/benchmark.md` + README headline (mkdocs --strict clean); reusable
+regression profile `evals/profiles/regression.yaml`. Registry: 10/11
+libraries served (pixeltable excluded — lcp-registry #168; the
+per-package `env` mechanism landed to keep pocket-coffea in weekly
+monitoring); weekly updater frozen during the measurement window and
+re-enabled after. Harness extended with the 3 new arms, `tool_results`
+capture, engagement + bootstrap-CI modules; three eval venvs
+(legacy/bench/registry). Registry-side scanner-fix wave (issues
+#51/#52) had already been folded in before this phase.
 
 **Objective:** Run the grown-up version of the Phase 0 harness on the
 finished product and publish results as the launch asset.
@@ -1027,6 +1053,9 @@ internal docs live on the roadmap branch during development but must not reach
 | 2026-07-07 | 4b variant A (deferred-tools step) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 4 total (1 in an ENGAGED run) | 20/24 (best ever) | — | cyhole 7.67, fastmcp 5.42 lcp calls/run | engaged 22/24 (cyhole 11/12, fastmcp 11/12), engaged pass 20/22 — but DISQUALIFIED by rule 1: one engaged misuse (missing-api-key r3 imported MissingAPIKeyError from cyhole.birdeye, not cyhole.core.exception, despite 4 lcp calls). Strongest anti-stall treatment measured (only 2 non-engaged runs, both lone-ToolSearch); Phase 8 should re-measure A and an A+B combo with more reps (4.5% engaged-misuse rate on n=1) |
 | 2026-07-07 | 4b variant B (unconditional first action) — **SHIPPED** | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 8 total (ALL in non-engaged runs) | 17/24 | — | cyhole 6.67, fastmcp 5.00 lcp calls/run | WINNER: engaged 18/24 (≥18 exit target met; cyhole 10/12, fastmcp 8/12 vs 4/12 stuck since 2b), engaged pass 17/18, engaged misuse 0; single engaged fail = task-compliance residual (mcp.run() omitted). Shipped byte-identical into plugin/lcp/skills/lcp-universal/SKILL.md. Hook smoke in the same session: PreToolUse verify-reminder fires once, redirects to resolve_library, no interference (3+1 reps) → shipped. Incident: 18 runs killed by a network outage were deleted and re-run identically (meta.json) |
 | 2026-07-07 | 4b variant C (short body, ~36% length) | haiku-4.5, 8 F1 cases, 3 reps, CLI 2.1.202 | 15 total (all in non-engaged runs) | 11/24 | — | cyhole 7.08, fastmcp 1.00 lcp calls/run | engaged 11/24 — BELOW the Phase 4 baseline (13/24); prompt-length compliance hypothesis refuted, compression alone reduces engagement (fastmcp 2/12); engaged quality clean (10/11, 0 misuse). Archived for reference |
+| 2026-07-09 | 8 screening (B vs A vs A+B) | haiku-4.5, 8 false-confidence cases (fastmcp+pocket-coffea), 5 reps, CLI 2.1.205 | B 27, A 27, A+B 25 (engaged) | B 7/40, A 9/40, A+B 10/40 | — | engaged B 33/40, A 30/40, **A+B 36/40** | A+B wins engagement (lone-ToolSearch stalls 7→4) but misses the +4/40 ship threshold (+3) → **shipped B kept**. Pre-registered absolute DQ threshold miscalibrated on this harder set (all variants, control incl., exceed it) — reported as a deviation; ship outcome identical either way. New failure bucket surfaced: engaged-but-hallucinating-module-paths |
+| 2026-07-16 | 8 publication grid — HAIKU | haiku-4.5, 84 cases, 6 arms, 5 reps (2480 runs) | baseline 0.70, **lcp-skill 0.35**, sitepkg 0.34 /run | **niche 28.2→65.7% (lcp-skill); overall 41→69%** | ~2100 (lcp-skill 2113 vs baseline 2079) | baseline 0, lcp-skill 70%, lcp 19% eng | THE headline: niche pass 2.3×, misuse halved, beats sitepkg 55.4%; the skill is the adoption lever (bare lcp 34% niche, 19% eng). registry/context7 ≈ baseline on niche (no task-side skill). cost-overhead-when-unused: lcp +2%, lcp-skill +26%. controls at ceiling ~90%. PREREGISTRATION.md + analysis.md |
+| 2026-07-18 | 8 publication grid — SONNET | sonnet-5, 84 cases, 6 arms, 3 reps (1488 runs) | baseline 0.22, lcp-skill 0.04, sitepkg 0.02 /run | niche 68.5→**91.7% (lcp-skill), sitepkg 96.4%**; overall 75.8→91.7% | lcp-skill 2312 vs sitepkg 1320 | baseline 0, lcp-skill 100%, lcp 43% eng | honest finding: sitepkg edges lcp-skill on installed niche packages (96 vs 92%, fewer tokens) for the capable model — LCP's edge is small-model gain + the registry case (no local source). churned at ceiling from parametric knowledge (F4). Non-Claude arm de-scoped (caveat) |
 
 ---
 
