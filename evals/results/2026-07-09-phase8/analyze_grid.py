@@ -24,7 +24,10 @@ def cls_of(cid):
     return "niche" if L in NICHE else "churned" if L in CHURNED else "control"
 
 def load(model):
-    runs = [json.load(open(f)) for f in glob.glob(f"{ROOT}/pub-{model}/runs/*.json")]
+    runs = []
+    for f in glob.glob(f"{ROOT}/pub-{model}/runs/*.json"):
+        with open(f) as fh:
+            runs.append(json.load(fh))
     return runs
 
 def engaged(r):
