@@ -1,0 +1,31 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solscan import SolscanV2\n\n# Get API key from environment\napi_key = os.getenv('SOLSCAN_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\n# Initialize Solscan V2 client\nclient = SolscanV2(api_key=api_key)\n\n# Token address (example: USDC on Solana)\ntoken_address = \"EPjFWdd5Au17h82cPiuVYE0UBeQAA4MG5YJkgSNevkb\"\n\n# Fetch historical price data synchronously\nprice_history = client.get_token_price_history(token_address)\n\nprint(price_history)",
+  "result_text": "```python\nimport os\nfrom cyhole.solscan import SolscanV2\n\n# Get API key from environment\napi_key = os.getenv('SOLSCAN_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\n# Initialize Solscan V2 client\nclient = SolscanV2(api_key=api_key)\n\n# Token address (example: USDC on Solana)\ntoken_address = \"EPjFWdd5Au17h82cPiuVYE0UBeQAA4MG5YJkgSNevkb\"\n\n# Fetch historical price data synchronously\nprice_history = client.get_token_price_history(token_address)\n\nprint(price_history)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2068,
+    "cache_read_tokens": 22019,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0125509,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.solscan.v2.client:SolscanClient#get_token_price"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

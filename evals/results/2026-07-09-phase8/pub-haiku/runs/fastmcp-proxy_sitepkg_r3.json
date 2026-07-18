@@ -1,0 +1,36 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport logging\nfrom typing import Any\nfrom fastmcp import Server\nfrom fastmcp.client import ClientSession\nfrom fastmcp.client.sse import SSEClientTransport\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\n\nasync def main():\n    proxy_server = Server(\"mcp-transparent-proxy\")\n    backend_session = None\n\n    async def initialize_backend():\n        nonlocal backend_session\n        backend_url = \"http://localhost:3000/sse\"\n        logger.info(f\"Connecting to backend at {backend_url}\")\n        transport = SSEClientTransport(backend_url)\n        backend_session = ClientSession(transport)\n        await backend_session.initialize()\n        logger.info(\"Backend connection established\")\n\n    @proxy_server.call_tool()\n    async def proxy_call_tool(name: str, arguments: dict) -> Any:\n        \"\"\"Forward tool calls to backend server\"\"\"\n        logger.info(f\"Forwarding tool call: {name}\")\n        response = await backend_session.call_tool(name, arguments)\n        return response.content\n\n    @proxy_server.list_tools()\n    async def proxy_list_tools() -> list:\n        \"\"\"Forward tool listing to backend server\"\"\"\n        logger.info(\"Forwarding tool list request\")\n        response = await backend_session.list_tools()\n        return response.tools\n\n    @proxy_server.read_resource()\n    async def proxy_read_resource(uri: str) -> list:\n        \"\"\"Forward resource read to backend server\"\"\"\n        logger.info(f\"Forwarding resource read: {uri}\")\n        response = await backend_session.read_resource(uri)\n        return response.contents\n\n    @proxy_server.list_resources()\n    async def proxy_list_resources() -> list:\n        \"\"\"Forward resource listing to backend server\"\"\"\n        logger.info(\"Forwarding resource list request\")\n        response = await backend_session.list_resources()\n        return response.resources\n\n    await initialize_backend()\n    \n    async with proxy_server.run(host=\"localhost\", port=3001) as server:\n        logger.info(\"Transparent proxy running on localhost:3001\")\n        await asyncio.Event().wait()\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport logging\nfrom typing import Any\nfrom fastmcp import Server\nfrom fastmcp.client import ClientSession\nfrom fastmcp.client.sse import SSEClientTransport\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\n\nasync def main():\n    proxy_server = Server(\"mcp-transparent-proxy\")\n    backend_session = None\n\n    async def initialize_backend():\n        nonlocal backend_session\n        backend_url = \"http://localhost:3000/sse\"\n        logger.info(f\"Connecting to backend at {backend_url}\")\n        transport = SSEClientTransport(backend_url)\n        backend_session = ClientSession(transport)\n        await backend_session.initialize()\n        logger.info(\"Backend connection established\")\n\n    @proxy_server.call_tool()\n    async def proxy_call_tool(name: str, arguments: dict) -> Any:\n        \"\"\"Forward tool calls to backend server\"\"\"\n        logger.info(f\"Forwarding tool call: {name}\")\n        response = await backend_session.call_tool(name, arguments)\n        return response.content\n\n    @proxy_server.list_tools()\n    async def proxy_list_tools() -> list:\n        \"\"\"Forward tool listing to backend server\"\"\"\n        logger.info(\"Forwarding tool list request\")\n        response = await backend_session.list_tools()\n        return response.tools\n\n    @proxy_server.read_resource()\n    async def proxy_read_resource(uri: str) -> list:\n        \"\"\"Forward resource read to backend server\"\"\"\n        logger.info(f\"Forwarding resource read: {uri}\")\n        response = await backend_session.read_resource(uri)\n        return response.contents\n\n    @proxy_server.list_resources()\n    async def proxy_list_resources() -> list:\n        \"\"\"Forward resource listing to backend server\"\"\"\n        logger.info(\"Forwarding resource list request\")\n        response = await backend_session.list_resources()\n        return response.resources\n\n    await initialize_backend()\n    \n    async with proxy_server.run(host=\"localhost\", port=3001) as server:\n        logger.info(\"Transparent proxy running on localhost:3001\")\n        await asyncio.Event().wait()\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4840,
+    "cache_read_tokens": 24086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.026617599999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server",
+      "fastmcp.client.ClientSession",
+      "fastmcp.client.sse.SSEClientTransport"
+    ],
+    "error": null
+  }
+}

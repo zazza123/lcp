@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\nfrom starlette.requests import Request\nfrom starlette.responses import JSONResponse\n\nmcp = FastMCP(\"My Server\")\n\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health(request: Request) -> JSONResponse:\n    return JSONResponse({\"status\": \"ok\"})\n\n\n@mcp.tool\ndef example(x: int) -> int:\n    return x * 2\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\", host=\"0.0.0.0\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nfrom starlette.requests import Request\nfrom starlette.responses import JSONResponse\n\nmcp = FastMCP(\"My Server\")\n\n\n@mcp.custom_route(\"/health\", methods=[\"GET\"])\nasync def health(request: Request) -> JSONResponse:\n    return JSONResponse({\"status\": \"ok\"})\n\n\n@mcp.tool\ndef example(x: int) -> int:\n    return x * 2\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\", host=\"0.0.0.0\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 482,
+    "cache_read_tokens": 23157,
+    "cache_creation_tokens": 9802,
+    "cost_usd": 0.07299510000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

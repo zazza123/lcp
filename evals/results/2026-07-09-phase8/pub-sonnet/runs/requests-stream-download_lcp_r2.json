@@ -1,0 +1,88 @@
+{
+  "case_id": "requests-stream-download",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import requests\n\nCHUNK_SIZE = 8192  # bytes\n\ndef download_file(url: str, dest_path: str) -> None:\n    with requests.get(url, stream=True) as response:\n        response.raise_for_status()\n        with open(dest_path, \"wb\") as f:\n            for chunk in response.iter_content(chunk_size=CHUNK_SIZE):\n                if chunk:\n                    f.write(chunk)\n\nif __name__ == \"__main__\":\n    download_file(\"https://example.com/big.bin\", \"big.bin\")",
+  "result_text": "API confirmed against the installed `requests==2.34.2` package.\n\n```python\nimport requests\n\nCHUNK_SIZE = 8192  # bytes\n\ndef download_file(url: str, dest_path: str) -> None:\n    with requests.get(url, stream=True) as response:\n        response.raise_for_status()\n        with open(dest_path, \"wb\") as f:\n            for chunk in response.iter_content(chunk_size=CHUNK_SIZE):\n                if chunk:\n                    f.write(chunk)\n\nif __name__ == \"__main__\":\n    download_file(\"https://example.com/big.bin\", \"big.bin\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1283,
+    "cache_read_tokens": 161376,
+    "cache_creation_tokens": 6391,
+    "cost_usd": 0.10603380000000001,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 41.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get",
+        "library": "requests",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "iter_content",
+        "library": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:get",
+          "requests:Response#iter_content",
+          "requests:Response#raise_for_status",
+          "requests:Response"
+        ],
+        "library": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01JzXosunwgNm6UKknyBCSf2",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01FsHv8hTcsndAV2wN9JuinF",
+      "content": "{\"results\":[{\"id\":\"requests:get\",\"kind\":\"function\",\"summary\":\"Sends a GET request.\",\"import\":\"from requests import get\",\"resolved_via_alias\":\"requests.api:get\"},{\"id\":\"requests.models:get_cookie_header\",\"kind\":\"function\",\"summary\":\"Produce an appropriate Cookie header string to be sent with `request`, or None.\",\"import\":\"from requests.models import get_cookie_header\",\"resolved_via_alias\":\"requests.cookies:get_cookie_header\"},{\"id\":\"requests.models:get_auth_from_url\",\"kind\":\"function\",\"summary\":\"Given a url with authentication components, extract them into a tuple of username,password.\",\"import\":\"from requests.models import get_auth_from_url\",\"resolved_via_alias\":\"requests.utils:get_auth_from_url\"},{\"id\":\"requests.adapters:get_encoding_from_headers\",\"kind\":\"function\",\"summary\":\"Returns encodings from given HTTP Header Dict.\",\"import\":\"from requests.adapters import get_encoding_from_headers\",\"resolved_via_alias\":\"requests.utils:get_encoding_from_headers\"},{\"id\":\"requests.utils:get_encodings_from_content\",\"kind\":\"function\",\"summary\":\"Returns encodings from given content string.\",\"import\":\"from requests.utils import get_encodings_from_content\"},{\"id\":\"requests.sessions:get_environ_proxies\",\"kind\":\"function\",\"summary\":\"Return a dict of environment proxies.\",\"import\":\"from requests.sessions import get_environ_proxies\",\"resolved_via_alias\":\"requests.utils:get_environ_proxies\"},{\"id\":\"requests.sessions:get_netrc_auth\",\"kind\":\"function\",\"summary\":\"Returns the Requests tuple auth for a given url from netrc.\",\"import\":\"from requests.sessions import get_netrc_auth\",\"resolved_via_alias\":\"requests.utils:get_netrc_auth\"},{\"id\":\"requests.utils:get_unicode_from_response\",\"kind\":\"function\",\"summary\":\"Returns the requested content back in unicode.\",\"import\":\"from requests.utils import get_unicode_from_response\"},{\"id\":\"requests.sessions:merge_setting\",\"kind\":\"function\",\"summary\":\"Determines appropriate setting for a given request, taking into account the explicit setting on that reque"
+    },
+    {
+      "tool_use_id": "toolu_01UQiuurP52yK3hcApTh5eLV",
+      "content": "{\"results\":[{\"id\":\"requests:Response#iter_content\",\"kind\":\"method\",\"summary\":\"Iterates over the response data.  When stream=True is set on the request, this avoids reading the content at once into memory for large responses.  The chunk size is the number of bytes it should read into memory.  This is not necessarily the length of each item returned as decoding can take place.\",\"import\":\"from requests import Response\",\"resolved_via_alias\":\"requests.models:Response#iter_content\"},{\"id\":\"requests:Response#iter_lines\",\"kind\":\"method\",\"summary\":\"Iterates over the response data, one line at a time.  When stream=True is set on the request, this avoids reading the content at once into memory for large responses.\",\"import\":\"from requests import Response\",\"resolved_via_alias\":\"requests.models:Response#iter_lines\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01DHgJFte15fs8Qxjf5sLL7F",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"requests.api\",\"aliases\":[\"requests:get\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"url\",\"type\":\"_t.UriType\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"URL for the new :class:`Request` object.\"},{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"(optional) Dictionary, list of tuples or bytes to send\\nin the query string for the :class:`Request`.\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\",\"returns_description\":\":class:`Response <Response>` object\"}],\"semantics\":{\"summary\":\"Sends a GET request.\",\"description\":\":param url: URL for the new :class:`Request` object.\\n    :param params: (optional) Dictionary, list of tuples or bytes to send\\n        in the query string for the :class:`Request`.\\n    :param \\\\*\\\\*kwargs: Optional arguments that ``request`` takes.\\n    :return: :class:`Response <Response>` object\\n    :rtype: requests.Response\"},\"id\":\"requests:get\",\"resolved_via_alias\":\"requests.api:get\",\"import\":\"from requests import get\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"url\",\"type\":\"_t.UriType\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\"}],\"optional_parameters\":[{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"default\":null}],\"is_async\":false,\"return_type\":\"Response\",\"returns_classes\":[\"requests:Response\"],\"next\":\"returns Response \u2192 get_symbol(ids=['requests:Response']) to see its members\"}},{\"kind\":\"method\",\"module\":\"requests.models\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"chunk_size\",\"type\":\"UnionType[int, None]\",\"required\":false,\"default\":1,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"decode_unicode\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Iterator[UnionType[str, bytes]]\"}],\"semantics\":{\"summary\":\"Iterates over the response data.  When stream=True is set on the request, this avoids reading th"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "case_id": "narwhals-missing-values",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\ndef clean_dataframe(df: nw.DataFrame) -> nw.DataFrame:\n    return df.with_columns(\n        nw.col(\"quantity\").fill_null(0),\n        nw.col(\"region\").fill_null(\"unknown\"),\n    )",
+  "result_text": "I attempted to verify the API through the required LCP MCP server, but `resolve_library` failed because narwhals isn't importable in the scan interpreter (only available in this project's own venvs), and no shell/file tools are available in this session to point it at the right environment. Answering from the stable, well-established narwhals `fill_null` API instead:\n\n```python\nimport narwhals as nw\n\ndef clean_dataframe(df: nw.DataFrame) -> nw.DataFrame:\n    return df.with_columns(\n        nw.col(\"quantity\").fill_null(0),\n        nw.col(\"region\").fill_null(\"unknown\"),\n    )\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 3128,
+    "cache_read_tokens": 272417,
+    "cache_creation_tokens": 26724,
+    "cost_usd": 0.28903710000000005,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 50.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "fill_null",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute shell command run script",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Write,Edit,Grep,Glob,PowerShell",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01AZEzd59WmGsU3uWhJCXDZE",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_0126NuW5taHrpJSeNQVERTk1",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'narwhals' is not loaded.\",\"hint\":\"Call resolve_library('narwhals') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

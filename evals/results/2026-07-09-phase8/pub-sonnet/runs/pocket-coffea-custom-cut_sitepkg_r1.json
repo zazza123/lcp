@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.lib.cut_definition import Cut\nimport awkward as ak\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"At least two muons above pt threshold with an opposite-charge leading pair.\"\"\"\n    muons = events.Muon[events.Muon.pt > params[\"pt_threshold\"]]\n    padded_muons = ak.pad_none(muons, 2)\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n    opposite_charge = padded_muons[:, 0].charge * padded_muons[:, 1].charge < 0\n\n    mask = has_two_muons & opposite_charge\n    return ak.fill_none(mask, False)\n\n\ndimuon = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n\n# Usage in a PocketCoffea configuration:\n# preselections = [dimuon]",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_definition import Cut\nimport awkward as ak\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"At least two muons above pt threshold with an opposite-charge leading pair.\"\"\"\n    muons = events.Muon[events.Muon.pt > params[\"pt_threshold\"]]\n    padded_muons = ak.pad_none(muons, 2)\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n    opposite_charge = padded_muons[:, 0].charge * padded_muons[:, 1].charge < 0\n\n    mask = has_two_muons & opposite_charge\n    return ak.fill_none(mask, False)\n\n\ndimuon = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n\n# Usage in a PocketCoffea configuration:\n# preselections = [dimuon]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1855,
+    "cache_read_tokens": 23157,
+    "cache_creation_tokens": 9873,
+    "cost_usd": 0.09401609999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

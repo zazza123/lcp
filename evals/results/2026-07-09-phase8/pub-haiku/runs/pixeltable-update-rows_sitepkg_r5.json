@@ -1,0 +1,61 @@
+{
+  "case_id": "pixeltable-update-rows",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\n\nfilms = px.get_table('films')\nfilms.update({'distributor': 'Warner Bros.'}, where=films.studio == 'WB')",
+  "result_text": "```python\nimport pixeltable as px\n\nfilms = px.get_table('films')\nfilms.update({'distributor': 'Warner Bros.'}, where=films.studio == 'WB')\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 41,
+    "output_tokens": 1446,
+    "cache_read_tokens": 126784,
+    "cache_creation_tokens": 3592,
+    "cost_usd": 0.027133400000000002,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 23.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable",
+        "type": "py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/table.py",
+        "limit": 100
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/table.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/table.py",
+        "offset": 815,
+        "limit": 60
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Initialize Pixeltable client\npxt.create_client()\n\n# Get reference to the existing videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that expands each video into frame-level rows\n# sampled at 1 fps using the built-in frame extraction iterator\nframes_view = pxt.create_view(\n    'video_frames',\n    select=videos.select(\n        # Include all original columns from videos table\n        videos,\n        # Extract frames at 1 fps using the built-in iterator\n        pxt.io.FrameIterator(\n            videos.video,\n            fps=1\n        ).as_('frame')\n    )\n)\n\nprint(f\"Frame-level view created: {frames_view.name}\")\nprint(f\"Total rows: {frames_view.count()}\")",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Initialize Pixeltable client\npxt.create_client()\n\n# Get reference to the existing videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that expands each video into frame-level rows\n# sampled at 1 fps using the built-in frame extraction iterator\nframes_view = pxt.create_view(\n    'video_frames',\n    select=videos.select(\n        # Include all original columns from videos table\n        videos,\n        # Extract frames at 1 fps using the built-in iterator\n        pxt.io.FrameIterator(\n            videos.video,\n            fps=1\n        ).as_('frame')\n    )\n)\n\nprint(f\"Frame-level view created: {frames_view.name}\")\nprint(f\"Total rows: {frames_view.count()}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3342,
+    "cache_read_tokens": 24103,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0191293,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pixeltable.iterators:FrameIterator"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pixeltable.create_client",
+      "pixeltable.io.FrameIterator"
+    ],
+    "error": null
+  }
+}

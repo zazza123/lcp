@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_HLT_cut,\n    get_nObj_cut,\n    get_nBtag_cut,\n)\n\n# Configuration parameters\nparameters = {\n    \"era\": \"2018\",\n    \"dataset\": \"semileptonic\",\n    \"HLT_triggers\": {\n        \"semileptonic\": [\n            \"HLT_Mu50\",\n            \"HLT_Ele115_CaloIdVT_GsfTrkIdT\",\n            \"HLT_IsoMu27\",\n            \"HLT_IsoMu30\",\n        ]\n    },\n    \"jet_pT_threshold\": 30,\n    \"n_jets_min\": 4,\n    \"n_btags_min\": 2,\n}\n\n# Skim cuts (basic filtering)\nskim_cuts = {\n    \"HLT\": get_HLT_cut(parameters[\"HLT_triggers\"][parameters[\"dataset\"]]),\n    \"Njets\": get_nObj_cut(\n        object_name=\"JetGood\",\n        threshold=parameters[\"jet_pT_threshold\"],\n        min_count=parameters[\"n_jets_min\"],\n    ),\n}\n\n# Preselection cuts (tighter filtering)\npreselection_cuts = {\n    \"HLT\": get_HLT_cut(parameters[\"HLT_triggers\"][parameters[\"dataset\"]]),\n    \"Njets\": get_nObj_cut(\n        object_name=\"JetGood\",\n        threshold=parameters[\"jet_pT_threshold\"],\n        min_count=parameters[\"n_jets_min\"],\n    ),\n    \"Nbtags\": get_nBtag_cut(min_btags=parameters[\"n_btags_min\"]),\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_HLT_cut,\n    get_nObj_cut,\n    get_nBtag_cut,\n)\n\n# Configuration parameters\nparameters = {\n    \"era\": \"2018\",\n    \"dataset\": \"semileptonic\",\n    \"HLT_triggers\": {\n        \"semileptonic\": [\n            \"HLT_Mu50\",\n            \"HLT_Ele115_CaloIdVT_GsfTrkIdT\",\n            \"HLT_IsoMu27\",\n            \"HLT_IsoMu30\",\n        ]\n    },\n    \"jet_pT_threshold\": 30,\n    \"n_jets_min\": 4,\n    \"n_btags_min\": 2,\n}\n\n# Skim cuts (basic filtering)\nskim_cuts = {\n    \"HLT\": get_HLT_cut(parameters[\"HLT_triggers\"][parameters[\"dataset\"]]),\n    \"Njets\": get_nObj_cut(\n        object_name=\"JetGood\",\n        threshold=parameters[\"jet_pT_threshold\"],\n        min_count=parameters[\"n_jets_min\"],\n    ),\n}\n\n# Preselection cuts (tighter filtering)\npreselection_cuts = {\n    \"HLT\": get_HLT_cut(parameters[\"HLT_triggers\"][parameters[\"dataset\"]]),\n    \"Njets\": get_nObj_cut(\n        object_name=\"JetGood\",\n        threshold=parameters[\"jet_pT_threshold\"],\n        min_count=parameters[\"n_jets_min\"],\n    ),\n    \"Nbtags\": get_nBtag_cut(min_btags=parameters[\"n_btags_min\"]),\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2820,
+    "cache_read_tokens": 22101,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0163191,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 28.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.get_HLT_cut",
+      "pocket_coffea.lib.cut_functions.get_nBtag_cut",
+      "pocket_coffea.lib.cut_functions.get_nObj_cut"
+    ],
+    "error": null
+  }
+}

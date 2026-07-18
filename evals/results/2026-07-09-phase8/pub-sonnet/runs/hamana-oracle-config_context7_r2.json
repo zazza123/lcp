@@ -1,0 +1,99 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": null,
+  "result_text": "I can't verify the `hamana` library's actual API for this request. Context7's quota is exhausted (confirmed by two attempts), and this session doesn't expose any tool to run Python, inspect the installed package (`pip show`, `python -c \"import hamana; help(...)\"`), or browse the web \u2014 I have no other way to confirm the real class/method names for `hamana` v1.0.1's Oracle connector.\n\nI don't have reliable built-in knowledge of `hamana`'s specific API (config class name, connector constructor signature, query execution method), so writing a fenced code block now would mean guessing plausible-looking names rather than giving you working code \u2014 that would violate the \"correct, runnable code\" requirement more than declining would.\n\nTo proceed accurately, could you either:\n1. Paste the relevant docstrings/signatures for `hamana`'s Oracle config and connector classes (e.g. `python -c \"import hamana; help(hamana)\"` output, or the source of the Oracle connector module), or\n2. Confirm you'd like a best-effort attempt clearly based on common conventions, which you'd then need to adjust against the real API.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 3856,
+    "cache_read_tokens": 378339,
+    "cache_creation_tokens": 28418,
+    "cost_usd": 0.3419037,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 57.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "Oracle connector configuration and query execution"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command terminal",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Read file Glob Grep",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Grep,Glob",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "Oracle connector standalone configuration"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011cgd5ezT4iMr7fg77ChVyH",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    },
+    {
+      "tool_use_id": "toolu_014yCp7iyTDTRXLZy9SgETSq",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Oracle",
+      "hamana.connector.db.oracle:OracleConnector#create_config",
+      "hamana.connector.db.oracle:OracleConnector#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

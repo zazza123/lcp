@@ -1,0 +1,67 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport sys\nfrom cyhole import Helius\n\ndef main():\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        print(\"Error: HELIUS_API_KEY environment variable not set\", file=sys.stderr)\n        sys.exit(1)\n    \n    wallet_address = sys.argv[1] if len(sys.argv) > 1 else input(\"Enter wallet address: \")\n    \n    helius = Helius(api_key=api_key)\n    assets = helius.get_assets_by_owner(owner=wallet_address)\n    \n    print(assets)\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\nimport sys\nfrom cyhole import Helius\n\ndef main():\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        print(\"Error: HELIUS_API_KEY environment variable not set\", file=sys.stderr)\n        sys.exit(1)\n    \n    wallet_address = sys.argv[1] if len(sys.argv) > 1 else input(\"Enter wallet address: \")\n    \n    helius = Helius(api_key=api_key)\n    assets = helius.get_assets_by_owner(owner=wallet_address)\n    \n    print(assets)\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 2214,
+    "cache_read_tokens": 92530,
+    "cache_creation_tokens": 3357,
+    "cost_usd": 0.027074,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 38.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 cyhole helius",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "cyhole Helius DAS Digital Asset Standard assets wallet"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "Helius API blockchain wallet assets"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_015boR5xyu9vc5EwFACdsSjF",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01N8kfiSqCFUd3CrCpC3rRZa",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.helius.interaction:Helius",
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_assets_by_owner"
+    ],
+    "unresolved_usages": [
+      "cyhole.Helius"
+    ],
+    "error": null
+  }
+}

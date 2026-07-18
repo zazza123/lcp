@@ -1,0 +1,49 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.iterators import FrameIterator\n\nvideos = pxt.get_table(\"videos\")\n\nframes_view = pxt.create_view(\n    \"frames\",\n    videos,\n    iterator=FrameIterator.create(video=videos.video, fps=1),\n)",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.iterators import FrameIterator\n\nvideos = pxt.get_table(\"videos\")\n\nframes_view = pxt.create_view(\n    \"frames\",\n    videos,\n    iterator=FrameIterator.create(video=videos.video, fps=1),\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 1023,
+    "cache_read_tokens": 87156,
+    "cache_creation_tokens": 16451,
+    "cost_usd": 0.14021579999999997,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 20.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "frame extraction iterator from video, create view",
+        "libraryName": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01PTjviVbq1JUD1vMJ8tHFaD",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

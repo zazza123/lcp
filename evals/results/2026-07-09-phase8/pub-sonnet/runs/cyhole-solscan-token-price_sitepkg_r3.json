@@ -1,0 +1,113 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\nfrom datetime import datetime, timedelta\n\nfrom cyhole.solscan.v2 import SolscanV2\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111\"  # replace with the target token address\n\napi_key = os.environ[\"SOLSCAN_API_KEY\"]\n\nsolscan = SolscanV2(api_key=api_key)\n\nend_date = datetime.now()\nstart_date = end_date - timedelta(days=7)\n\nresponse = solscan.client.get_token_price(\n    token=TOKEN_ADDRESS,\n    time_range=(start_date, end_date)\n)\n\nfor entry in response.data:\n    print(f\"{entry.date.date()}: {entry.price}\")",
+  "result_text": "```python\nimport os\nfrom datetime import datetime, timedelta\n\nfrom cyhole.solscan.v2 import SolscanV2\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111\"  # replace with the target token address\n\napi_key = os.environ[\"SOLSCAN_API_KEY\"]\n\nsolscan = SolscanV2(api_key=api_key)\n\nend_date = datetime.now()\nstart_date = end_date - timedelta(days=7)\n\nresponse = solscan.client.get_token_price(\n    token=TOKEN_ADDRESS,\n    time_range=(start_date, end_date)\n)\n\nfor entry in response.data:\n    print(f\"{entry.date.date()}: {entry.price}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 2797,
+    "cache_read_tokens": 355881,
+    "cache_creation_tokens": 22520,
+    "cost_usd": 0.28389329999999996,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 44.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Solscan",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/solscan/**/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def.*price",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py",
+        "-i": true,
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/__init__.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def .*price|Price",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py",
+        "-n": true,
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py",
+        "offset": 1,
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py",
+        "offset": 670,
+        "limit": 80
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/client.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class GetTokenPriceResponse|class GetTokenPrice",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/schema.py",
+        "-n": true,
+        "output_mode": "content",
+        "-A": 15
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py",
+        "offset": 100,
+        "limit": 30
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.v2.SolscanV2"
+    ],
+    "error": null
+  }
+}

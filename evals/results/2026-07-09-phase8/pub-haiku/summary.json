@@ -1,0 +1,2231 @@
+{
+  "model": "claude-haiku-4-5-20251001",
+  "arms": {
+    "baseline": {
+      "runs": 420,
+      "pass_rate": 0.4095238095238095,
+      "total_misuse": 296,
+      "misuse_rate": 0.7047619047619048,
+      "errors": 0,
+      "mean_input_tokens": 9.571428571428571,
+      "mean_output_tokens": 2069.447619047619,
+      "mean_tool_calls": 0.06666666666666667,
+      "mean_cost_usd": 0.01618964023809524,
+      "total_cost_usd": 6.7996489
+    },
+    "context7": {
+      "runs": 420,
+      "pass_rate": 0.4166666666666667,
+      "total_misuse": 269,
+      "misuse_rate": 0.6404761904761904,
+      "errors": 0,
+      "mean_input_tokens": 14.411904761904761,
+      "mean_output_tokens": 1970.3595238095238,
+      "mean_tool_calls": 0.6047619047619047,
+      "mean_cost_usd": 0.01936176619047619,
+      "total_cost_usd": 8.1319418
+    },
+    "lcp": {
+      "runs": 420,
+      "pass_rate": 0.4714285714285714,
+      "total_misuse": 234,
+      "misuse_rate": 0.5571428571428572,
+      "errors": 0,
+      "mean_input_tokens": 22.257142857142856,
+      "mean_output_tokens": 1968.5261904761905,
+      "mean_tool_calls": 1.707142857142857,
+      "mean_cost_usd": 0.024835229047619048,
+      "total_cost_usd": 10.4307962
+    },
+    "lcp-skill": {
+      "runs": 420,
+      "pass_rate": 0.6904761904761905,
+      "total_misuse": 147,
+      "misuse_rate": 0.35,
+      "errors": 0,
+      "mean_input_tokens": 74.88809523809523,
+      "mean_output_tokens": 2038.3642857142856,
+      "mean_tool_calls": 8.188095238095238,
+      "mean_cost_usd": 0.05644502071428572,
+      "total_cost_usd": 23.7069087
+    },
+    "registry": {
+      "runs": 380,
+      "pass_rate": 0.41842105263157897,
+      "total_misuse": 245,
+      "misuse_rate": 0.6447368421052632,
+      "errors": 0,
+      "mean_input_tokens": 14.928947368421053,
+      "mean_output_tokens": 1945.121052631579,
+      "mean_tool_calls": 0.7131578947368421,
+      "mean_cost_usd": 0.019895515,
+      "total_cost_usd": 7.5602957
+    },
+    "sitepkg": {
+      "runs": 420,
+      "pass_rate": 0.6142857142857143,
+      "total_misuse": 142,
+      "misuse_rate": 0.3380952380952381,
+      "errors": 0,
+      "mean_input_tokens": 25.88809523809524,
+      "mean_output_tokens": 2102.519047619048,
+      "mean_tool_calls": 2.169047619047619,
+      "mean_cost_usd": 0.030088172857142857,
+      "total_cost_usd": 12.6370326
+    }
+  },
+  "cases": {
+    "cyclopts-bounds-validator": {
+      "baseline": {
+        "passes": "1/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 7
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 2
+      }
+    },
+    "cyclopts-config-toml": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 1
+      }
+    },
+    "cyclopts-default-action": {
+      "baseline": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 0
+      }
+    },
+    "cyclopts-existing-file": {
+      "baseline": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 0
+      }
+    },
+    "cyclopts-parameter-envvar": {
+      "baseline": {
+        "passes": "4/5",
+        "misuse": 3
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "cyclopts-parse-no-execute": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "1/5",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 5
+      }
+    },
+    "cyclopts-single-function": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "lcp-skill": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 2
+      }
+    },
+    "cyclopts-subcommands": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "cyhole-async-session-error": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 1
+      }
+    },
+    "cyhole-dexscreener-token-pairs": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "cyhole-helius-assets-by-owner": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 7
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 7
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 1
+      }
+    },
+    "cyhole-helius-get-asset": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 8
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "sitepkg": {
+        "passes": "1/5",
+        "misuse": 6
+      }
+    },
+    "cyhole-solanafm-account-transfers": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 0
+      }
+    },
+    "cyhole-solanafm-transfers-csv-export": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 3
+      }
+    },
+    "cyhole-solscan-defi-activities": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 7
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 4
+      }
+    },
+    "cyhole-solscan-token-price": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 1
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 2
+      }
+    },
+    "fastmcp-client-resource": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "1/5",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 3
+      },
+      "registry": {
+        "passes": "1/5",
+        "misuse": 6
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 3
+      }
+    },
+    "fastmcp-custom-route": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "1/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 5
+      }
+    },
+    "fastmcp-http-transport": {
+      "baseline": {
+        "passes": "1/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 4
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 2
+      },
+      "lcp-skill": {
+        "passes": "1/5",
+        "misuse": 3
+      },
+      "registry": {
+        "passes": "2/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 2
+      }
+    },
+    "fastmcp-middleware": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp-skill": {
+        "passes": "1/5",
+        "misuse": 5
+      },
+      "registry": {
+        "passes": "1/5",
+        "misuse": 4
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 1
+      }
+    },
+    "fastmcp-mount": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 2
+      }
+    },
+    "fastmcp-openapi": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 4
+      }
+    },
+    "fastmcp-prompt": {
+      "baseline": {
+        "passes": "1/5",
+        "misuse": 4
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 6
+      },
+      "registry": {
+        "passes": "1/5",
+        "misuse": 3
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 2
+      }
+    },
+    "fastmcp-proxy": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 5
+      }
+    },
+    "flask-blueprint": {
+      "baseline": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "context7": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "registry": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 1
+      }
+    },
+    "flask-custom-response": {
+      "baseline": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 0
+      }
+    },
+    "flask-error-handler": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "flask-json-route": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "flask-redirect-endpoint": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "flask-test-client": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "griffe-api-diff": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 6
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 3
+      }
+    },
+    "griffe-docstring-sections": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 12
+      },
+      "lcp-skill": {
+        "passes": "1/5",
+        "misuse": 8
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 13
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 11
+      }
+    },
+    "griffe-extension": {
+      "baseline": {
+        "passes": "1/5",
+        "misuse": 10
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 9
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "sitepkg": {
+        "passes": "1/5",
+        "misuse": 5
+      }
+    },
+    "griffe-json-roundtrip": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp-skill": {
+        "passes": "2/5",
+        "misuse": 6
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 3
+      }
+    },
+    "griffe-load-api": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "griffe-load-from-pypi": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "1/5",
+        "misuse": 3
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 2
+      }
+    },
+    "griffe-loader-aliases": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 5
+      }
+    },
+    "griffe-nested-member": {
+      "baseline": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "3/5",
+        "misuse": 1
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "2/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 3
+      }
+    },
+    "hamana-internal-singleton": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "hamana-oracle-config": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 0
+      }
+    },
+    "hamana-query-result-dataframe": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "hamana-query-to-sqlite": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "3/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 2
+      }
+    },
+    "hamana-sqlite-batch-execute": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 1
+      }
+    },
+    "hamana-table-exists-error": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 20
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 16
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 9
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 17
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 0
+      }
+    },
+    "hamana-teradata-ping": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 2
+      }
+    },
+    "hamana-typed-column-schema": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 12
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 10
+      },
+      "lcp": {
+        "passes": "3/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-agnostic-filter": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-cast-dtypes": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "4/5",
+        "misuse": 2
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-conditional-column": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-decorator": {
+      "baseline": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 1
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 2
+      }
+    },
+    "narwhals-groupby-agg": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-lazy-parquet": {
+      "baseline": {
+        "passes": "3/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "3/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-missing-values": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "narwhals-reshape-long": {
+      "baseline": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "context7": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "pixeltable-computed-column": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "1/5",
+        "misuse": 0
+      }
+    },
+    "pixeltable-create-insert": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 3
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 3
+      }
+    },
+    "pixeltable-import-csv": {
+      "baseline": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "context7": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 1
+      }
+    },
+    "pixeltable-query": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 1
+      }
+    },
+    "pixeltable-similarity-search": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 18
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 17
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 13
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 12
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 11
+      }
+    },
+    "pixeltable-udf": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "2/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 0
+      }
+    },
+    "pixeltable-update-rows": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "pixeltable-video-frames": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "lcp": {
+        "passes": "1/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "3/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "0/5",
+        "misuse": 4
+      }
+    },
+    "pocket-coffea-builtin-cuts": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 15
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 15
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 14
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 15
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 16
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 6
+      }
+    },
+    "pocket-coffea-cartesian-categories": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "context7": {
+        "passes": "1/5",
+        "misuse": 8
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 12
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 6
+      }
+    },
+    "pocket-coffea-configurator": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 9
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 5
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "sitepkg": {
+        "passes": "1/5",
+        "misuse": 5
+      }
+    },
+    "pocket-coffea-custom-cut": {
+      "baseline": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "context7": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "2/5",
+        "misuse": 3
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 1
+      },
+      "registry": {
+        "passes": "3/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "3/5",
+        "misuse": 3
+      }
+    },
+    "pocket-coffea-custom-weight": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 1
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 2
+      },
+      "sitepkg": {
+        "passes": "1/5",
+        "misuse": 4
+      }
+    },
+    "pocket-coffea-custom-workflow": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 4
+      }
+    },
+    "pocket-coffea-histograms": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 11
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 8
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 7
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 19
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 7
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 0
+      }
+    },
+    "pocket-coffea-parameters": {
+      "baseline": {
+        "passes": "0/5",
+        "misuse": 3
+      },
+      "context7": {
+        "passes": "0/5",
+        "misuse": 6
+      },
+      "lcp": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "lcp-skill": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "registry": {
+        "passes": "0/5",
+        "misuse": 4
+      },
+      "sitepkg": {
+        "passes": "2/5",
+        "misuse": 3
+      }
+    },
+    "polars-cumsum": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "polars-join": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "polars-lazy-collect": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "polars-map-rows": {
+      "baseline": {
+        "passes": "1/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "4/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "2/5",
+        "misuse": 1
+      },
+      "sitepkg": {
+        "passes": "4/5",
+        "misuse": 0
+      }
+    },
+    "polars-parquet-roundtrip": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "polars-pivot": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "polars-sort-desc": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "polars-unique-rows": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "requests-basic-auth": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "requests-json-post": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "requests-raise-for-status": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "requests-session-auth-header": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "requests-stream-download": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    },
+    "requests-timeout": {
+      "baseline": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "context7": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "lcp-skill": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "registry": {
+        "passes": "5/5",
+        "misuse": 0
+      },
+      "sitepkg": {
+        "passes": "5/5",
+        "misuse": 0
+      }
+    }
+  }
+}

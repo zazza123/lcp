@@ -1,0 +1,177 @@
+{
+  "case_id": "cyclopts-parameter-envvar",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from typing import Annotated\nfrom cyclopts import App, Parameter\n\napp = App()\n\n@app.default\ndef deploy(\n    target: str,\n    token: Annotated[str, Parameter(help=\"API token\", env_var=\"DEPLOY_TOKEN\", show_env_var=True)]\n) -> None:\n    print(f\"Deploying to {target} with token {token}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom typing import Annotated\nfrom cyclopts import App, Parameter\n\napp = App()\n\n@app.default\ndef deploy(\n    target: str,\n    token: Annotated[str, Parameter(help=\"API token\", env_var=\"DEPLOY_TOKEN\", show_env_var=True)]\n) -> None:\n    print(f\"Deploying to {target} with token {token}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 115,
+    "output_tokens": 2328,
+    "cache_read_tokens": 376128,
+    "cache_creation_tokens": 13475,
+    "cost_usd": 0.07631779999999999,
+    "num_turns": 14,
+    "tool_calls": 13,
+    "duration_s": 40.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Annotated parameter",
+        "library": "cyclopts",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "environment variable",
+        "library": "cyclopts",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Parameter help",
+        "library": "cyclopts",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyclopts",
+        "module": "cyclopts",
+        "limit": 100
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Parameter",
+        "library": "cyclopts",
+        "module": "cyclopts.parameter",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:Parameter"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "App class",
+        "library": "cyclopts",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "app",
+        "library": "cyclopts",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:App"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_015rPwNTMgPcJb6Qja8PGoTY",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01DZCeCuJK8frUYZSkvMjbit",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01RQrMGPmACQGbxRgxwQ6sfF",
+      "content": "{\"results\":[{\"id\":\"cyclopts:env_var_split\",\"kind\":\"function\",\"summary\":\"Type-dependent environment variable value splitting.\",\"import\":\"from cyclopts import env_var_split\",\"resolved_via_alias\":\"cyclopts._env_var:env_var_split\"},{\"id\":\"cyclopts._edit:edit\",\"kind\":\"function\",\"summary\":\"Get text input from a user by launching their default text editor.\",\"import\":\"from cyclopts._edit import edit\"},{\"id\":\"cyclopts.argument:update_argument_collection\",\"kind\":\"function\",\"summary\":\"Updates an argument collection with values from a configuration dictionary.\",\"import\":\"from cyclopts.argument import update_argument_collection\",\"resolved_via_alias\":\"cyclopts.argument._collection:update_argument_collection\"},{\"id\":\"cyclopts.completion.detect:\",\"kind\":\"module\",\"summary\":\"Shell detection utilities for completion generation.\",\"import\":\"import cyclopts.completion.detect\"},{\"id\":\"cyclopts.help:DescriptionRenderer#__call__\",\"kind\":\"method\",\"summary\":\"Render parameter description with metadata annotations.\",\"import\":\"from cyclopts.help import DescriptionRenderer\",\"resolved_via_alias\":\"cyclopts.help.specs:DescriptionRenderer#__call__\"}],\"total\":5,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_016WFk4uixgk1VjvUSFP4rar",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01PPT5StS2c4TSqEa1FZvz3T",
+      "content": "{\"results\":[{\"id\":\"cyclopts:\",\"kind\":\"module\",\"summary\":\"Module cyclopts\",\"import\":\"import cyclopts\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_019RZFqRufKvNKbH5F4unzy8",
+      "content": "{\"library\":{\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"cyclopts\",\"symbols\":1},{\"module\":\"cyclopts._convert\",\"symbols\":7},{\"module\":\"cyclopts._edit\",\"symbols\":6},{\"module\":\"cyclopts._env_var\",\"symbols\":2},{\"module\":\"cyclopts._markup\",\"symbols\":6},{\"module\":\"cyclopts._path_type\",\"symbols\":11},{\"module\":\"cyclopts._result_action\",\"symbols\":3},{\"module\":\"cyclopts._run\",\"symbols\":3},{\"module\":\"cyclopts._version\",\"symbols\":1},{\"module\":\"cyclopts.annotations\",\"symbols\":23},{\"module\":\"cyclopts.app_stack\",\"symbols\":10},{\"module\":\"cyclopts.argument\",\"symbols\":1},{\"module\":\"cyclopts.argument._argument\",\"symbols\":29},{\"module\":\"cyclopts.argument._collection\",\"symbols\":12},{\"module\":\"cyclopts.argument.utils\",\"symbols\":15},{\"module\":\"cyclopts.bind\",\"symbols\":4},{\"module\":\"cyclopts.cli\",\"symbols\":1},{\"module\":\"cyclopts.cli._complete\",\"symbols\":4},{\"module\":\"cyclopts.cli.docs\",\"symbols\":2},{\"module\":\"cyclopts.cli.run\",\"symbols\":2},{\"module\":\"cyclopts.cli.tree\",\"symbols\":2},{\"module\":\"cyclopts.command_spec\",\"symbols\":10},{\"module\":\"cyclopts.completion\",\"symbols\":1},{\"module\":\"cyclopts.completion._base\",\"symbols\":14},{\"module\":\"cyclopts.completion.bash\",\"symbols\":3},{\"module\":\"cyclopts.completion.detect\",\"symbols\":3},{\"module\":\"cyclopts.completion.fish\",\"symbols\":3},{\"module\":\"cyclopts.completion.install\",\"symbols\":4},{\"module\":\"cyclopts.completion.zsh\",\"symbols\":3},{\"module\":\"cyclopts.config\",\"symbols\":1},{\"module\":\"cyclopts.config._common\",\"symbols\":29},{\"module\":\"cyclopts.config._env\",\"symbols\":8},{\"module\":\"cyclopts.config._json\",\"symbols\":9},{\"module\":\"cyclopts.config._toml\",\"symbols\":9},{\"module\":\"cyclopts.config._yaml\",\"symbols\":9},{\"module\":\"cyclopts.core\",\"symbols\":47},{\"module\":\"cyclopts.docs\",\"symbols\":1},{\"module\":\"cyclopts.docs.base\",\"symbols\":18},{\"module\":\"cyclopts.docs.html\",\"symbols\":4},{\"module\":\"cyclopts.docs.markdown\",\"symbols\":4},{\"module\":\"cyclopts.docs.rst\",\"symbols\":5},{\"module\":\"cyclo"
+    },
+    {
+      "tool_use_id": "toolu_01CvbDHCjcWQrb7Pic6XP2d1",
+      "content": "{\"results\":[{\"id\":\"cyclopts:Parameter\",\"kind\":\"class\",\"summary\":\"Cyclopts configuration for individual function parameters with :obj:`~typing.Annotated`.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter\"},{\"id\":\"cyclopts.parameter:get_parameters\",\"kind\":\"function\",\"summary\":\"At root level, checks for cyclopts.Parameter annotations.\",\"import\":\"from cyclopts.parameter import get_parameters\"},{\"id\":\"cyclopts.parameter:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.parameter\",\"import\":\"import cyclopts.parameter\"},{\"id\":\"cyclopts:Parameter#__call__\",\"kind\":\"method\",\"summary\":\"Decorator interface for annotating a function/class with a :class:`Parameter`.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter#__call__\"},{\"id\":\"cyclopts:Parameter#__eq__\",\"kind\":\"method\",\"summary\":\"Method generated by attrs for class Parameter.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter#__eq__\"},{\"id\":\"cyclopts:Parameter#__hash__\",\"kind\":\"method\",\"summary\":\"Method generated by attrs for class Parameter.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter#__hash__\"},{\"id\":\"cyclopts:Parameter#__init__\",\"kind\":\"method\",\"summary\":\"Method generated by attrs for class Parameter.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter#__init__\"},{\"id\":\"cyclopts:Parameter#combine\",\"kind\":\"method\",\"summary\":\"Returns a new Parameter with combined values of all provided ``parameters``.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter#combine\"},{\"id\":\"cyclopts:Parameter#default\",\"kind\":\"method\",\"summary\":\"Create a Parameter with all Cyclopts-default values.\",\"import\":\"from cyclopts import Parameter\",\"resolved_via_alias\":\"cyclopts.parameter:Parameter#default\"},{\"id\":\"cyclopts:Parameter#from_annotation\",\"kind\":\"method\",\"summary\":\"Resolve the immediate "
+    },
+    {
+      "tool_use_id": "toolu_01FxCzLrvbzQSDsmzHDnTjjV",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.parameter\",\"aliases\":[\"cyclopts._path_type:Parameter\",\"cyclopts.app_stack:Parameter\",\"cyclopts.argument._argument:Parameter\",\"cyclopts.argument._collection:Parameter\",\"cyclopts.argument.utils:Parameter\",\"cyclopts.cli._complete:Parameter\",\"cyclopts.cli.docs:Parameter\",\"cyclopts.cli.run:Parameter\",\"cyclopts.cli.tree:Parameter\",\"cyclopts.completion.install:Parameter\",\"cyclopts.core:Parameter\",\"cyclopts:Parameter\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"converter\",\"type\":\"UnionType[Callable[Ellipsis, Any], str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"validator\",\"type\":\"UnionType[Callable[Ellipsis, Any], str, Iterable[UnionType[Callable[Ellipsis, Any], str]], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"alias\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"negative\",\"type\":\"UnionType[bool, str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"group\",\"type\":\"UnionType[None, Group, str, Iterable[UnionType[Group, str]]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"parse\",\"type\":\"UnionType[bool, Pattern[str], str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show_default\",\"type\":\"UnionType[None, bool, str, Callable[[typing.Any], Any]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show_choices\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show_env_var\",\"type\":\"UnionType[bool, None]\",\"required\":false,\"variadic"
+    },
+    {
+      "tool_use_id": "toolu_01L14xdjp3RhWR7McXxSpq2a",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01H5KeULsXt7TBF6L4w5RMJD",
+      "content": "{\"results\":[{\"id\":\"cyclopts:App\",\"kind\":\"class\",\"summary\":\"Class App\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App\"},{\"id\":\"cyclopts.core:AppStack\",\"kind\":\"class\",\"summary\":\"Class AppStack\",\"import\":\"from cyclopts.core import AppStack\",\"resolved_via_alias\":\"cyclopts.app_stack:AppStack\"},{\"id\":\"cyclopts:Argument#append\",\"kind\":\"method\",\"summary\":\"Safely add a :class:`Token`.\",\"import\":\"from cyclopts import Argument\",\"resolved_via_alias\":\"cyclopts.argument._argument:Argument#append\"},{\"id\":\"cyclopts.docs.rst:apply_usage_name\",\"kind\":\"function\",\"summary\":\"Return a display command chain with the root replaced by ``usage_name``.\",\"import\":\"from cyclopts.docs.rst import apply_usage_name\",\"resolved_via_alias\":\"cyclopts.docs.base:apply_usage_name\"},{\"id\":\"cyclopts.help:InlineText#append\",\"kind\":\"method\",\"summary\":\"Method append\",\"import\":\"from cyclopts.help import InlineText\",\"resolved_via_alias\":\"cyclopts.help.inline_text:InlineText#append\"},{\"id\":\"cyclopts:App#subapps\",\"kind\":\"attribute\",\"summary\":\"Attribute subapps\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#subapps\"},{\"id\":\"cyclopts.docs.rst:get_app_info\",\"kind\":\"function\",\"summary\":\"Get app name, full command path, and title.\",\"import\":\"from cyclopts.docs.rst import get_app_info\",\"resolved_via_alias\":\"cyclopts.docs.base:get_app_info\"},{\"id\":\"cyclopts.core:groups_from_app\",\"kind\":\"function\",\"summary\":\"Extract Group/App association from all commands of ``app``.\",\"import\":\"from cyclopts.core import groups_from_app\",\"resolved_via_alias\":\"cyclopts.group_extractors:groups_from_app\"},{\"id\":\"cyclopts.app_stack:inverse_groups_from_app\",\"kind\":\"function\",\"summary\":\"Function inverse_groups_from_app\",\"import\":\"from cyclopts.app_stack import inverse_groups_from_app\",\"resolved_via_alias\":\"cyclopts.group_extractors:inverse_groups_from_app\"},{\"id\":\"cyclopts.cli.run:load_app_from_script\",\"kind\":\"function\",\"summary\":\"Load a Cyclopts App object from a Python script.\",\"import"
+    },
+    {
+      "tool_use_id": "toolu_01JVqJYQtA7R1eSWEXGLhvU1",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.core\",\"aliases\":[\"cyclopts:App\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"help\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"usage\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"alias\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"synonym\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"default_command\",\"type\":\"UnionType[Callable[Ellipsis, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"default_parameter\",\"type\":\"UnionType[Parameter, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"config\",\"type\":\"_ConfigCallable | Iterable[_ConfigCallable] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version\",\"type\":\"UnionType[None, str, Callable[Ellipsis, str], Callable[Ellipsis, Coroutine[Any, Any, str]]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version_flags\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"error_console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help_flags\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help_format\",\"type\":\"Optional[Literal[markdown, md, plaintext, restructuredtext, rst, rich]]\",\"required\":false,\"variadic\":false,\"kind"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nfrom hamana import Query, ImportMode\nfrom hamana.exceptions import HamanaError\n\n# Create and execute a Query\nquery = Query(\"SELECT * FROM source_data\")\nresult = query.execute()\n\n# Import result to SQLite with FAIL mode\ntry:\n    result.persist_to_sqlite(\n        database=\"internal.db\",\n        table_name=\"sales\",\n        import_mode=ImportMode.FAIL\n    )\n    print(\"Import successful\")\nexcept HamanaError as e:\n    print(f\"Import failed with error: {e}\")",
+  "result_text": "```python\nimport hamana\nfrom hamana import Query, ImportMode\nfrom hamana.exceptions import HamanaError\n\n# Create and execute a Query\nquery = Query(\"SELECT * FROM source_data\")\nresult = query.execute()\n\n# Import result to SQLite with FAIL mode\ntry:\n    result.persist_to_sqlite(\n        database=\"internal.db\",\n        table_name=\"sales\",\n        import_mode=ImportMode.FAIL\n    )\n    print(\"Import successful\")\nexcept HamanaError as e:\n    print(f\"Import failed with error: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 29,
+    "output_tokens": 1423,
+    "cache_read_tokens": 67922,
+    "cache_creation_tokens": 2231,
+    "cost_usd": 0.0183982,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 44.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 hamana",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "import mode enum FAIL behavior SQLite query persist"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01TEAm8bDzuGif6Hzki68Yai",
+      "content": "Available Libraries:\n\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL",
+      "hamana.exceptions.HamanaError"
+    ],
+    "error": null
+  }
+}

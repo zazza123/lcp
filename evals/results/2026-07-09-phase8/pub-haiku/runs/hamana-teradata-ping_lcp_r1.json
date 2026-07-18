@@ -1,0 +1,34 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom hamana import TeradataConnector\n\n# Read connection parameters\npassword = os.getenv('TERADATA_PASSWORD')\nif not password:\n    raise ValueError(\"TERADATA_PASSWORD environment variable is required\")\n\nhost = os.getenv('TERADATA_HOST', 'localhost')\nuser = os.getenv('TERADATA_USER', 'dbc')\n\n# Create connector and verify connectivity\nconnector = TeradataConnector(host=host, user=user, password=password)\nresult = connector.connectivity_check()\nprint(f\"Database connectivity check: {result}\")",
+  "result_text": "```python\nimport os\nfrom hamana import TeradataConnector\n\n# Read connection parameters\npassword = os.getenv('TERADATA_PASSWORD')\nif not password:\n    raise ValueError(\"TERADATA_PASSWORD environment variable is required\")\n\nhost = os.getenv('TERADATA_HOST', 'localhost')\nuser = os.getenv('TERADATA_USER', 'dbc')\n\n# Create connector and verify connectivity\nconnector = TeradataConnector(host=host, user=user, password=password)\nresult = connector.connectivity_check()\nprint(f\"Database connectivity check: {result}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1755,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6918,
+    "cost_usd": 0.0241392,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.db:Teradata",
+      "hamana.connector.db.teradata:TeradataConnector#ping"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.TeradataConnector"
+    ],
+    "error": null
+  }
+}

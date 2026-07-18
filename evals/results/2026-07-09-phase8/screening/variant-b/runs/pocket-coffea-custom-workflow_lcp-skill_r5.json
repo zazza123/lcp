@@ -1,0 +1,53 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.workflows.base_processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonProcessor(BaseProcessor):\n    def object_preselection(self, variation):\n        events = self.events\n        \n        # Build MuonGood collection\n        muons = events.Muon\n        muon_good = muons[(muons.pt > 15) & (ak.abs(muons.eta) < 2.4)]\n        events[\"MuonGood\"] = muon_good\n        \n        return events\n    \n    def object_counting(self, events, required_cuts):\n        events[\"nMuonGood\"] = ak.count(events.MuonGood.pt, axis=1)\n        return events",
+  "result_text": "```python\nfrom pocket_coffea.workflows.base_processor import BaseProcessor\nimport awkward as ak\n\n\nclass DimuonProcessor(BaseProcessor):\n    def object_preselection(self, variation):\n        events = self.events\n        \n        # Build MuonGood collection\n        muons = events.Muon\n        muon_good = muons[(muons.pt > 15) & (ak.abs(muons.eta) < 2.4)]\n        events[\"MuonGood\"] = muon_good\n        \n        return events\n    \n    def object_counting(self, events, required_cuts):\n        events[\"nMuonGood\"] = ak.count(events.MuonGood.pt, axis=1)\n        return events\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 27,
+    "output_tokens": 1830,
+    "cache_read_tokens": 71186,
+    "cache_creation_tokens": 1642,
+    "cost_usd": 0.0195796,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 26.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01VVnk74TJUHakJeHr9Db5Kb",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.workflows.base_processor.BaseProcessor"
+    ],
+    "error": null
+  }
+}

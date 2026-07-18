@@ -1,0 +1,33 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import logging\nfrom fastmcp import Server\nfrom starlette.middleware.base import BaseHTTPMiddleware\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nclass LoggingMiddleware(BaseHTTPMiddleware):\n    \"\"\"Middleware that logs every incoming request.\"\"\"\n    \n    async def dispatch(self, request, call_next):\n        logger.info(f\"Incoming request: {request.method} {request.url.path} - Headers: {dict(request.headers)}\")\n        response = await call_next(request)\n        logger.info(f\"Response status: {response.status_code}\")\n        return response\n\n# Create server instance\nserver = Server(\"logging-example\")\n\n# Hook middleware into the server\nserver.app.add_middleware(LoggingMiddleware)\n\n# Define example tools\n@server.call_tool()\nasync def add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@server.call_tool()\nasync def greet(name: str) -> str:\n    \"\"\"Greet someone by name.\"\"\"\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nimport logging\nfrom fastmcp import Server\nfrom starlette.middleware.base import BaseHTTPMiddleware\n\nlogging.basicConfig(level=logging.INFO)\nlogger = logging.getLogger(__name__)\n\nclass LoggingMiddleware(BaseHTTPMiddleware):\n    \"\"\"Middleware that logs every incoming request.\"\"\"\n    \n    async def dispatch(self, request, call_next):\n        logger.info(f\"Incoming request: {request.method} {request.url.path} - Headers: {dict(request.headers)}\")\n        response = await call_next(request)\n        logger.info(f\"Response status: {response.status_code}\")\n        return response\n\n# Create server instance\nserver = Server(\"logging-example\")\n\n# Hook middleware into the server\nserver.app.add_middleware(LoggingMiddleware)\n\n# Define example tools\n@server.call_tool()\nasync def add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@server.call_tool()\nasync def greet(name: str) -> str:\n    \"\"\"Greet someone by name.\"\"\"\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server.app, host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2884,
+    "cache_read_tokens": 22059,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.016634899999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp.server.middleware:Middleware"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

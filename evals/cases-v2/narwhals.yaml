@@ -1,0 +1,111 @@
+- id: narwhals-agnostic-filter
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    Using narwhals, write a function `top_sales(df)` that works unchanged
+    whether it receives a pandas DataFrame or a polars DataFrame: bring the
+    input into narwhals' dataframe-agnostic layer, keep only the rows where
+    the "amount" column is greater than 100 (expressed as a narwhals column
+    expression), sort by "amount" descending, and return the result converted
+    back to the same native type that was passed in.
+  checks:
+    required_symbols: ["narwhals:from_native", "narwhals:col"]
+    forbidden_symbols: ["narwhals:from_pandas", "narwhals:DataFrame#query"]
+
+- id: narwhals-decorator
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    You maintain a utility library and do not want conversion boilerplate in
+    every function. Using the decorator narwhals provides to make a function
+    dataframe-agnostic automatically (native frames converted on the way in
+    and converted back on the way out), write a decorated function
+    `add_total(df)` that adds a "total" column equal to "price" times
+    "quantity" - built as a narwhals column expression - and works
+    identically for pandas and polars inputs.
+  checks:
+    required_symbols: ["narwhals:narwhalify", "narwhals:col"]
+    forbidden_symbols: ["narwhals:to_narwhals", "narwhals:wrap"]
+
+- id: narwhals-groupby-agg
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    You already have a narwhals DataFrame `df` with columns "store",
+    "revenue" and "items". Using narwhals, compute per-store statistics:
+    group the rows by "store" and aggregate the sum of "revenue" and the
+    mean of "items" into a single result frame.
+  checks:
+    required_symbols:
+      - "narwhals:DataFrame#group_by"
+      - "narwhals.group_by:GroupBy#agg"
+    forbidden_symbols: ["narwhals:DataFrame#groupby"]
+
+- id: narwhals-reshape-long
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    A narwhals DataFrame `df` has columns "id", "jan", "feb" and "mar".
+    Using narwhals, reshape it from wide to long format so that the three
+    month columns become two columns "month" (the former column name) and
+    "sales" (the value), keeping "id" as the identifier column.
+  checks:
+    required_symbols: ["narwhals:DataFrame#unpivot"]
+    forbidden_symbols:
+      - "narwhals:DataFrame#melt"
+      - "narwhals:DataFrame#pivot_table"
+
+- id: narwhals-cast-dtypes
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    A narwhals DataFrame `df` has a string column "user_id" (containing
+    digits) and a 64-bit float column "score". Using narwhals and its own
+    dtype objects, convert "user_id" to a 32-bit integer column and "score"
+    to a 32-bit float column, returning the converted frame.
+  checks:
+    required_symbols: ["narwhals:Expr#cast", "narwhals:Int32"]
+    forbidden_symbols:
+      - "narwhals:Expr#astype"
+      - "narwhals:DataFrame#astype"
+
+- id: narwhals-missing-values
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    Using narwhals, clean a narwhals DataFrame `df`: replace missing values
+    in the "quantity" column with 0 and missing values in the "region"
+    column with the string "unknown", returning the cleaned frame.
+  checks:
+    required_symbols: ["narwhals:Expr#fill_null"]
+    forbidden_symbols:
+      - "narwhals:Expr#fillna"
+      - "narwhals:DataFrame#fillna"
+
+- id: narwhals-conditional-column
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    Using narwhals expressions, add a "tier" column to a narwhals DataFrame
+    `df`: the value must be "gold" where the "spend" column is at least
+    1000 and "standard" otherwise. Build it as a single conditional
+    expression evaluated by the backend, not by applying a row-wise Python
+    function.
+  checks:
+    required_symbols: ["narwhals:when", "narwhals:DataFrame#with_columns"]
+    forbidden_symbols:
+      - "narwhals:Expr#map_elements"
+      - "narwhals:DataFrame#assign"
+
+- id: narwhals-lazy-parquet
+  library: narwhals
+  version: "2.23.0"
+  prompt: >
+    Using narwhals, build a lazy pipeline over the file "events.parquet":
+    scan it lazily with the polars backend (do not read the whole file
+    eagerly), keep the rows where "status" equals "ok", select only the
+    "user" and "duration" columns, and only at the end materialize the
+    pipeline into a concrete in-memory dataframe.
+  checks:
+    required_symbols: ["narwhals:scan_parquet", "narwhals:LazyFrame#collect"]
+    forbidden_symbols: ["narwhals:LazyFrame#fetch"]

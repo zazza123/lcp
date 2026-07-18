@@ -1,0 +1,29 @@
+{
+  "case_id": "pixeltable-import-csv",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\n\n# Create the demo directory\npx.create_dir('demo')\n\n# Import CSV file directly into table using the dedicated tabular-import helper\ntable = px.io.import_csv('demo.trades', 'trades.csv')",
+  "result_text": "```python\nimport pixeltable as px\n\n# Create the demo directory\npx.create_dir('demo')\n\n# Import CSV file directly into table using the dedicated tabular-import helper\ntable = px.io.import_csv('demo.trades', 'trades.csv')\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3360,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6842,
+    "cost_usd": 0.032013400000000004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 35.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

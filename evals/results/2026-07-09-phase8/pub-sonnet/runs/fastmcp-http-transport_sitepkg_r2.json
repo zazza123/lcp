@@ -1,0 +1,106 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(\"simple-server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers together.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"simple-server\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers together.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 2161,
+    "cache_read_tokens": 348390,
+    "cache_creation_tokens": 8101,
+    "cost_usd": 0.18559799999999999,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 36.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "-A": 25
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/fastmcp/server/server.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run\\(|transport.*=.*\"stdio\"|def run_http_async|host:|port:",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run\\(|transport.*=.*\"stdio\"|def run_http_async|host:|port:|streamable-http|streamable_http",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run\\b|def run_async|async def run_http_async|def run_http|host: str|port: int",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp",
+        "output_mode": "content",
+        "-n": true,
+        "-r": "true"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def run",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp/server/mixins/transport.py",
+        "offset": 1,
+        "limit": 280
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^class FastMCP|def tool\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/.venv/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

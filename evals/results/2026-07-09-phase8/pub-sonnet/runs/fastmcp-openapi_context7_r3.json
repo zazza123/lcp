@@ -1,0 +1,29 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import httpx\nfrom fastmcp import FastMCP\n\n# Minimal OpenAPI 3.0 spec (as a Python dict) describing the API's operations.\nopenapi_spec: dict = {\n    \"openapi\": \"3.0.0\",\n    \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n    \"paths\": {\n        \"/items\": {\n            \"get\": {\n                \"operationId\": \"list_items\",\n                \"summary\": \"List all items\",\n                \"responses\": {\"200\": {\"description\": \"A list of items\"}},\n            },\n            \"post\": {\n                \"operationId\": \"create_item\",\n                \"summary\": \"Create a new item\",\n                \"requestBody\": {\n                    \"required\": True,\n                    \"content\": {\n                        \"application/json\": {\n                            \"schema\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"name\": {\"type\": \"string\"},\n                                    \"price\": {\"type\": \"number\"},\n                                },\n                                \"required\": [\"name\"],\n                            }\n                        }\n                    },\n                },\n                \"responses\": {\"201\": {\"description\": \"Item created\"}},\n            },\n        },\n        \"/items/{item_id}\": {\n            \"get\": {\n                \"operationId\": \"get_item\",\n                \"summary\": \"Get an item by ID\",\n                \"parameters\": [\n                    {\n                        \"name\": \"item_id\",\n                        \"in\": \"path\",\n                        \"required\": True,\n                        \"schema\": {\"type\": \"integer\"},\n                    }\n                ],\n                \"responses\": {\"200\": {\"description\": \"The requested item\"}},\n            }\n        },\n    },\n}\n\n# httpx.AsyncClient already configured with the API base URL.\nclient = httpx.AsyncClient(base_url=\"https://api.example.com\")\n\n# Generate an MCP server whose tools mirror the OpenAPI operations above.\nmcp = FastMCP.from_openapi(\n    openapi_spec=openapi_spec,\n    client=client,\n    name=\"Example API MCP Server\",\n)\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nimport httpx\nfrom fastmcp import FastMCP\n\n# Minimal OpenAPI 3.0 spec (as a Python dict) describing the API's operations.\nopenapi_spec: dict = {\n    \"openapi\": \"3.0.0\",\n    \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n    \"paths\": {\n        \"/items\": {\n            \"get\": {\n                \"operationId\": \"list_items\",\n                \"summary\": \"List all items\",\n                \"responses\": {\"200\": {\"description\": \"A list of items\"}},\n            },\n            \"post\": {\n                \"operationId\": \"create_item\",\n                \"summary\": \"Create a new item\",\n                \"requestBody\": {\n                    \"required\": True,\n                    \"content\": {\n                        \"application/json\": {\n                            \"schema\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"name\": {\"type\": \"string\"},\n                                    \"price\": {\"type\": \"number\"},\n                                },\n                                \"required\": [\"name\"],\n                            }\n                        }\n                    },\n                },\n                \"responses\": {\"201\": {\"description\": \"Item created\"}},\n            },\n        },\n        \"/items/{item_id}\": {\n            \"get\": {\n                \"operationId\": \"get_item\",\n                \"summary\": \"Get an item by ID\",\n                \"parameters\": [\n                    {\n                        \"name\": \"item_id\",\n                        \"in\": \"path\",\n                        \"required\": True,\n                        \"schema\": {\"type\": \"integer\"},\n                    }\n                ],\n                \"responses\": {\"200\": {\"description\": \"The requested item\"}},\n            }\n        },\n    },\n}\n\n# httpx.AsyncClient already configured with the API base URL.\nclient = httpx.AsyncClient(base_url=\"https://api.example.com\")\n\n# Generate an MCP server whose tools mirror the OpenAPI operations above.\nmcp = FastMCP.from_openapi(\n    openapi_spec=openapi_spec,\n    client=client,\n    name=\"Example API MCP Server\",\n)\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1904,
+    "cache_read_tokens": 30377,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0376791,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

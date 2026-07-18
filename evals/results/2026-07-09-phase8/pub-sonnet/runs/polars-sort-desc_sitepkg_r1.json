@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-sort-desc",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndef sort_by_revenue_desc(df: pl.DataFrame) -> pl.DataFrame:\n    return df.sort(\"revenue\", descending=True)\n\n\nif __name__ == \"__main__\":\n    df = pl.DataFrame({\n        \"product\": [\"A\", \"B\", \"C\", \"D\"],\n        \"revenue\": [250.0, 900.0, 100.0, 500.0],\n    })\n    result = sort_by_revenue_desc(df)\n    print(result)",
+  "result_text": "```python\nimport polars as pl\n\ndef sort_by_revenue_desc(df: pl.DataFrame) -> pl.DataFrame:\n    return df.sort(\"revenue\", descending=True)\n\n\nif __name__ == \"__main__\":\n    df = pl.DataFrame({\n        \"product\": [\"A\", \"B\", \"C\", \"D\"],\n        \"revenue\": [250.0, 900.0, 100.0, 500.0],\n    })\n    result = sort_by_revenue_desc(df)\n    print(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 378,
+    "cache_read_tokens": 23157,
+    "cache_creation_tokens": 9773,
+    "cost_usd": 0.07126110000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

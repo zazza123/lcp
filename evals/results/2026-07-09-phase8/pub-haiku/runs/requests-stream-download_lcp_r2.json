@@ -1,0 +1,132 @@
+{
+  "case_id": "requests-stream-download",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nurl = \"https://example.com/big.bin\"\nfilename = \"big.bin\"\nchunk_size = 8192\n\nresponse = requests.get(url, stream=True)\nresponse.raise_for_status()\n\nwith open(filename, 'wb') as f:\n    for chunk in response.iter_content(chunk_size=chunk_size):\n        if chunk:\n            f.write(chunk)",
+  "result_text": "```python\nimport requests\n\nurl = \"https://example.com/big.bin\"\nfilename = \"big.bin\"\nchunk_size = 8192\n\nresponse = requests.get(url, stream=True)\nresponse.raise_for_status()\n\nwith open(filename, 'wb') as f:\n    for chunk in response.iter_content(chunk_size=chunk_size):\n        if chunk:\n            f.write(chunk)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 85,
+    "output_tokens": 1797,
+    "cache_read_tokens": 234585,
+    "cache_creation_tokens": 11955,
+    "cost_usd": 0.056438499999999996,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 32.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get stream chunk iter download",
+        "library": "requests",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get",
+        "library": "requests",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "iter_content",
+        "library": "requests",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Response",
+        "library": "requests",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "requests",
+        "module": "requests.models",
+        "kind": "class",
+        "limit": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__get_symbol",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:get",
+          "requests:Response#iter_content"
+        ],
+        "library": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01YaJzwK8XMH8ndcsd2aQpVw",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01QteLnQu8rbgnwJmFHQgDqm",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01NKenJFeisC2nqnZCqSccDa",
+      "content": "{\"results\":[{\"id\":\"requests:get\",\"kind\":\"function\",\"summary\":\"Sends a GET request.\",\"import\":\"from requests import get\",\"resolved_via_alias\":\"requests.api:get\"},{\"id\":\"requests.sessions:RequestsCookieJar#get\",\"kind\":\"method\",\"summary\":\"Dict-like get() that also supports optional domain and path args in order to resolve naming collisions from using one cookie jar over multiple domains.\",\"import\":\"from requests.sessions import RequestsCookieJar\",\"resolved_via_alias\":\"requests.cookies:RequestsCookieJar#get\"},{\"id\":\"requests:Session#get\",\"kind\":\"method\",\"summary\":\"Sends a GET request. Returns :class:`Response` object.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session#get\"},{\"id\":\"requests.status_codes:LookupDict#get\",\"kind\":\"method\",\"summary\":\"Method get\",\"import\":\"from requests.status_codes import LookupDict\",\"resolved_via_alias\":\"requests.structures:LookupDict#get\"},{\"id\":\"requests.sessions:HTTPAdapter#get_connection\",\"kind\":\"method\",\"summary\":\"DEPRECATED: Users should move to `get_connection_with_tls_context` for all subclasses of HTTPAdapter using Requests>=2.32.2.\",\"import\":\"from requests.sessions import HTTPAdapter\",\"resolved_via_alias\":\"requests.adapters:HTTPAdapter#get_connection\"},{\"id\":\"requests.sessions:HTTPAdapter#get_connection_with_tls_context\",\"kind\":\"method\",\"summary\":\"Returns a urllib3 connection for the given request and TLS settings. This should not be called from user code, and is only exposed for use when subclassing the :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`.\",\"import\":\"from requests.sessions import HTTPAdapter\",\"resolved_via_alias\":\"requests.adapters:HTTPAdapter#get_connection_with_tls_context\"},{\"id\":\"requests.cookies:MockRequest#get_full_url\",\"kind\":\"method\",\"summary\":\"Method get_full_url\",\"import\":\"from requests.cookies import MockRequest\"},{\"id\":\"requests.cookies:MockRequest#get_header\",\"kind\":\"method\",\"summary\":\"Method get_header\",\"import\":\"from requests.cookies import MockRequest\"},{\"id\":\""
+    },
+    {
+      "tool_use_id": "toolu_01SjY8FzCPhMqDjiCQhjKrF1",
+      "content": "{\"results\":[{\"id\":\"requests:Response#iter_content\",\"kind\":\"method\",\"summary\":\"Iterates over the response data.  When stream=True is set on the request, this avoids reading the content at once into memory for large responses.  The chunk size is the number of bytes it should read into memory.  This is not necessarily the length of each item returned as decoding can take place.\",\"import\":\"from requests import Response\",\"resolved_via_alias\":\"requests.models:Response#iter_content\"},{\"id\":\"requests:Response#iter_lines\",\"kind\":\"method\",\"summary\":\"Iterates over the response data, one line at a time.  When stream=True is set on the request, this avoids reading the content at once into memory for large responses.\",\"import\":\"from requests import Response\",\"resolved_via_alias\":\"requests.models:Response#iter_lines\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01DnfN2GgEZiGKVpXEcZt8vh",
+      "content": "{\"results\":[{\"id\":\"requests:Response\",\"kind\":\"class\",\"summary\":\"The :class:`Response <Response>` object, which contains a server's response to an HTTP request.\",\"import\":\"from requests import Response\",\"resolved_via_alias\":\"requests.models:Response\"},{\"id\":\"requests.sessions:HTTPAdapter#build_response\",\"kind\":\"method\",\"summary\":\"Builds a :class:`Response <requests.Response>` object from a urllib3 response. This should not be called from user code, and is only exposed for use when subclassing the :class:`HTTPAdapter <requests.adapters.HTTPAdapter>`\",\"import\":\"from requests.sessions import HTTPAdapter\",\"resolved_via_alias\":\"requests.adapters:HTTPAdapter#build_response\"},{\"id\":\"requests.cookies:MockResponse\",\"kind\":\"class\",\"summary\":\"Wraps a `httplib.HTTPMessage` to mimic a `urllib.addinfourl`.\",\"import\":\"from requests.cookies import MockResponse\"},{\"id\":\"requests.utils:get_unicode_from_response\",\"kind\":\"function\",\"summary\":\"Returns the requested content back in unicode.\",\"import\":\"from requests.utils import get_unicode_from_response\"},{\"id\":\"requests.models:stream_decode_response_unicode\",\"kind\":\"function\",\"summary\":\"Stream decodes an iterator.\",\"import\":\"from requests.models import stream_decode_response_unicode\",\"resolved_via_alias\":\"requests.utils:stream_decode_response_unicode\"}],\"total\":72,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01NRupMJLdQNPcatNhFazrb1",
+      "content": "{\"results\":[{\"id\":\"requests:PreparedRequest\",\"kind\":\"class\",\"summary\":\"The fully mutable :class:`PreparedRequest <PreparedRequest>` object, containing the exact bytes that will be sent to the server.\",\"import\":\"from requests import PreparedRequest\",\"resolved_via_alias\":\"requests.models:PreparedRequest\"},{\"id\":\"requests:Request\",\"kind\":\"class\",\"summary\":\"A user-created :class:`Request <Request>` object.\",\"import\":\"from requests import Request\",\"resolved_via_alias\":\"requests.models:Request\"},{\"id\":\"requests.models:RequestEncodingMixin\",\"kind\":\"class\",\"summary\":\"Class RequestEncodingMixin\",\"import\":\"from requests.models import RequestEncodingMixin\"}],\"total\":5,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01GS7R3w2ofPwYz6Aa2cfrbv",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"requests.api\",\"aliases\":[\"requests:get\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"url\",\"type\":\"_t.UriType\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"URL for the new :class:`Request` object.\"},{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"(optional) Dictionary, list of tuples or bytes to send\\nin the query string for the :class:`Request`.\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\",\"returns_description\":\":class:`Response <Response>` object\"}],\"semantics\":{\"summary\":\"Sends a GET request.\",\"description\":\":param url: URL for the new :class:`Request` object.\\n    :param params: (optional) Dictionary, list of tuples or bytes to send\\n        in the query string for the :class:`Request`.\\n    :param \\\\*\\\\*kwargs: Optional arguments that ``request`` takes.\\n    :return: :class:`Response <Response>` object\\n    :rtype: requests.Response\"},\"id\":\"requests:get\",\"resolved_via_alias\":\"requests.api:get\",\"import\":\"from requests import get\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"url\",\"type\":\"_t.UriType\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\"}],\"optional_parameters\":[{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"default\":null}],\"is_async\":false,\"return_type\":\"Response\",\"returns_classes\":[\"requests:Response\"],\"next\":\"returns Response \u2192 get_symbol(ids=['requests:Response']) to see its members\"}},{\"kind\":\"method\",\"module\":\"requests.models\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"chunk_size\",\"type\":\"UnionType[int, None]\",\"required\":false,\"default\":1,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"decode_unicode\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Iterator[UnionType[str, bytes]]\"}],\"semantics\":{\"summary\":\"Iterates over the response data.  When stream=True is set on the request, this avoids reading th"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

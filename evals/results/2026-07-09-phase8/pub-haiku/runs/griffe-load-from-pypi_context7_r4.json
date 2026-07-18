@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import subprocess\nimport tempfile\nimport zipfile\nimport os\nfrom griffe.loader import GriffeLoader\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    # Download click 8.1.7 distribution\n    subprocess.run(\n        ['pip', 'download', 'click==8.1.7', '-d', tmpdir, '--no-deps'],\n        capture_output=True,\n        check=True\n    )\n    \n    # Find and extract the wheel file\n    wheel_file = [f for f in os.listdir(tmpdir) if f.endswith('.whl')][0]\n    wheel_path = os.path.join(tmpdir, wheel_file)\n    \n    extract_dir = os.path.join(tmpdir, 'extracted')\n    with zipfile.ZipFile(wheel_path) as z:\n        z.extractall(extract_dir)\n    \n    # Load with griffe\n    loader = GriffeLoader(search_paths=[extract_dir])\n    package = loader.load('click')\n    print(package.name)",
+  "result_text": "```python\nimport subprocess\nimport tempfile\nimport zipfile\nimport os\nfrom griffe.loader import GriffeLoader\n\nwith tempfile.TemporaryDirectory() as tmpdir:\n    # Download click 8.1.7 distribution\n    subprocess.run(\n        ['pip', 'download', 'click==8.1.7', '-d', tmpdir, '--no-deps'],\n        capture_output=True,\n        check=True\n    )\n    \n    # Find and extract the wheel file\n    wheel_file = [f for f in os.listdir(tmpdir) if f.endswith('.whl')][0]\n    wheel_path = os.path.join(tmpdir, wheel_file)\n    \n    extract_dir = os.path.join(tmpdir, 'extracted')\n    with zipfile.ZipFile(wheel_path) as z:\n        z.extractall(extract_dir)\n    \n    # Load with griffe\n    loader = GriffeLoader(search_paths=[extract_dir])\n    package = loader.load('click')\n    print(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3751,
+    "cache_read_tokens": 22082,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0209722,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 31.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:load_pypi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

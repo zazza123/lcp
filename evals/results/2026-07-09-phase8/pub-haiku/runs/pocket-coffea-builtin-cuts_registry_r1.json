@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_definition import Cut\nfrom pocket_coffea.lib.cut_factories import (\n    hlt_triggers,\n    object_multiplicity,\n    btag_multiplicity\n)\n\n# Configuration parameters for 2018 semileptonic ttbar analysis\nparams = {\n    \"semileptonic\": {\n        \"triggers\": [\n            \"HLT_Ele32_WPTight_Gsf_v\",\n            \"HLT_Mu50_v\",\n            \"HLT_Ele50_CaloIdVT_GsftrkId_TrkIsoVVL_PFJet165_v\",\n            \"HLT_IsoMu24_v\",\n            \"HLT_IsoTkMu24_v\"\n        ]\n    }\n}\n\n# Skim cuts (applied at the beginning)\nskim_cuts = [\n    hlt_triggers(params[\"semileptonic\"][\"triggers\"])\n]\n\n# Preselection cuts (applied after skim)\npreselection_cuts = [\n    object_multiplicity(\"JetGood\", num=4, threshold_pt=30),\n    btag_multiplicity(num=2)\n]\n\n# Configuration structure\nttbar_semileptonic_config = {\n    \"year\": 2018,\n    \"dataset\": \"semileptonic\",\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts\n}\n\nif __name__ == \"__main__\":\n    print(\"Skim cuts:\", skim_cuts)\n    print(\"Preselection cuts:\", preselection_cuts)\n    print(\"Configuration:\", ttbar_semileptonic_config)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_definition import Cut\nfrom pocket_coffea.lib.cut_factories import (\n    hlt_triggers,\n    object_multiplicity,\n    btag_multiplicity\n)\n\n# Configuration parameters for 2018 semileptonic ttbar analysis\nparams = {\n    \"semileptonic\": {\n        \"triggers\": [\n            \"HLT_Ele32_WPTight_Gsf_v\",\n            \"HLT_Mu50_v\",\n            \"HLT_Ele50_CaloIdVT_GsftrkId_TrkIsoVVL_PFJet165_v\",\n            \"HLT_IsoMu24_v\",\n            \"HLT_IsoTkMu24_v\"\n        ]\n    }\n}\n\n# Skim cuts (applied at the beginning)\nskim_cuts = [\n    hlt_triggers(params[\"semileptonic\"][\"triggers\"])\n]\n\n# Preselection cuts (applied after skim)\npreselection_cuts = [\n    object_multiplicity(\"JetGood\", num=4, threshold_pt=30),\n    btag_multiplicity(num=2)\n]\n\n# Configuration structure\nttbar_semileptonic_config = {\n    \"year\": 2018,\n    \"dataset\": \"semileptonic\",\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts\n}\n\nif __name__ == \"__main__\":\n    print(\"Skim cuts:\", skim_cuts)\n    print(\"Preselection cuts:\", preselection_cuts)\n    print(\"Configuration:\", ttbar_semileptonic_config)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3849,
+    "cache_read_tokens": 15092,
+    "cache_creation_tokens": 6989,
+    "cost_usd": 0.0347412,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 36.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_factories.btag_multiplicity",
+      "pocket_coffea.lib.cut_factories.hlt_triggers",
+      "pocket_coffea.lib.cut_factories.object_multiplicity"
+    ],
+    "error": null
+  }
+}

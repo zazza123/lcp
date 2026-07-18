@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-reshape-long",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\ndef wide_to_long(df):\n    nw_df = nw.from_native(df)\n    result = nw_df.unpivot(\n        on=[\"jan\", \"feb\", \"mar\"],\n        index=[\"id\"],\n        variable_name=\"month\",\n        value_name=\"sales\",\n    )\n    return result.to_native()\n\ndf = wide_to_long(df)",
+  "result_text": "```python\nimport narwhals as nw\n\ndef wide_to_long(df):\n    nw_df = nw.from_native(df)\n    result = nw_df.unpivot(\n        on=[\"jan\", \"feb\", \"mar\"],\n        index=[\"id\"],\n        variable_name=\"month\",\n        value_name=\"sales\",\n    )\n    return result.to_native()\n\ndf = wide_to_long(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 464,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9949,
+    "cost_usd": 0.0727707,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

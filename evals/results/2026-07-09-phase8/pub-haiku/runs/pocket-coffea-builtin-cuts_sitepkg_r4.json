@@ -1,0 +1,63 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_HLTsel,\n    get_nObj_min,\n    get_nBtagMin,\n)\n\n# Build skim cuts\nskim_cuts = [\n    get_HLTsel(primaryDatasets=[\"semileptonic\"]),\n]\n\n# Build preselection cuts\npreselection_cuts = [\n    get_nObj_min(N=4, minpt=30, coll=\"JetGood\"),\n    get_nBtagMin(N=2),\n]\n\n# Example workflow configuration (pseudo-code for context)\nconfig = {\n    \"year\": 2018,\n    \"channels\": [\"semileptonic_ttbar\"],\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}\n\nprint(\"Skim cuts:\")\nfor cut in skim_cuts:\n    print(f\"  - {cut.name}\")\n\nprint(\"\\nPreselection cuts:\")\nfor cut in preselection_cuts:\n    print(f\"  - {cut.name}\")",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_HLTsel,\n    get_nObj_min,\n    get_nBtagMin,\n)\n\n# Build skim cuts\nskim_cuts = [\n    get_HLTsel(primaryDatasets=[\"semileptonic\"]),\n]\n\n# Build preselection cuts\npreselection_cuts = [\n    get_nObj_min(N=4, minpt=30, coll=\"JetGood\"),\n    get_nBtagMin(N=2),\n]\n\n# Example workflow configuration (pseudo-code for context)\nconfig = {\n    \"year\": 2018,\n    \"channels\": [\"semileptonic_ttbar\"],\n    \"skim\": skim_cuts,\n    \"preselection\": preselection_cuts,\n}\n\nprint(\"Skim cuts:\")\nfor cut in skim_cuts:\n    print(f\"  - {cut.name}\")\n\nprint(\"\\nPreselection cuts:\")\nfor cut in preselection_cuts:\n    print(f\"  - {cut.name}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 49,
+    "output_tokens": 1404,
+    "cache_read_tokens": 151344,
+    "cache_creation_tokens": 8843,
+    "cost_usd": 0.039889400000000005,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 22.0
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "cut.*factory|Cut",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea",
+        "type": "py",
+        "head_limit": 50
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/parameters/cuts.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/*cut*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/cut_definition.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/cut_functions.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

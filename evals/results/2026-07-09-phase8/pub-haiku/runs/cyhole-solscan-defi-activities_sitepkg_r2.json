@@ -1,0 +1,55 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solscan.v2 import Solscan\n\napi_key = os.environ.get(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\nsolscan = Solscan(api_key=api_key)\n\naccount_address = \"your_account_address_here\"\nresponse = solscan.client.get_account_defi_activities(account_address)\n\nprint(response.model_dump() if hasattr(response, 'model_dump') else response)",
+  "result_text": "```python\nimport os\nfrom cyhole.solscan.v2 import Solscan\n\napi_key = os.environ.get(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\nsolscan = Solscan(api_key=api_key)\n\naccount_address = \"your_account_address_here\"\nresponse = solscan.client.get_account_defi_activities(account_address)\n\nprint(response.model_dump() if hasattr(response, 'model_dump') else response)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 2122,
+    "cache_read_tokens": 75230,
+    "cache_creation_tokens": 31441,
+    "cost_usd": 0.08104,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 28.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole",
+        "pattern": "**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solscan/v2/__init__.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

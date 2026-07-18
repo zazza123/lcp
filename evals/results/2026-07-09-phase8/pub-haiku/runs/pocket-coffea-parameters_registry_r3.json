@@ -1,0 +1,34 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from omegaconf import OmegaConf\nfrom pocket_coffea.lib.config_utils import get_default_params\n\n# Step 1: Fetch framework defaults\ndefaults = get_default_params()\n\n# Step 2: Load and overlay YAML files with defaults as base\nobject_preselection = OmegaConf.load(\"params/object_preselection.yaml\")\ntriggers = OmegaConf.load(\"params/triggers.yaml\")\n\n# Merge with file values overriding defaults (left to right)\nparams = OmegaConf.merge(defaults, object_preselection, triggers)\n\n# Final OmegaConf parameters object ready for analysis\nprint(OmegaConf.to_yaml(params))",
+  "result_text": "```python\nfrom omegaconf import OmegaConf\nfrom pocket_coffea.lib.config_utils import get_default_params\n\n# Step 1: Fetch framework defaults\ndefaults = get_default_params()\n\n# Step 2: Load and overlay YAML files with defaults as base\nobject_preselection = OmegaConf.load(\"params/object_preselection.yaml\")\ntriggers = OmegaConf.load(\"params/triggers.yaml\")\n\n# Merge with file values overriding defaults (left to right)\nparams = OmegaConf.merge(defaults, object_preselection, triggers)\n\n# Final OmegaConf parameters object ready for analysis\nprint(OmegaConf.to_yaml(params))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 987,
+    "cache_read_tokens": 22047,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007148700000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.parameters.defaults:get_default_parameters",
+      "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.config_utils.get_default_params"
+    ],
+    "error": null
+  }
+}

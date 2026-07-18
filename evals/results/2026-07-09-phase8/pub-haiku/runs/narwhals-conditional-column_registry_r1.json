@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\n\n# Example DataFrame with spend column\ndata = {\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\"],\n    \"spend\": [500, 1000, 1500, 999]\n}\n\ndf = nw.from_dict(data)\n\n# Add tier column using conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\"))\n)\n\nprint(df)",
+  "result_text": "```python\nimport narwhals as nw\n\n# Example DataFrame with spend column\ndata = {\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\"],\n    \"spend\": [500, 1000, 1500, 999]\n}\n\ndf = nw.from_dict(data)\n\n# Add tier column using conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\"))\n)\n\nprint(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 589,
+    "cache_read_tokens": 15092,
+    "cache_creation_tokens": 6939,
+    "cost_usd": 0.018341200000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

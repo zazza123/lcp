@@ -1,0 +1,107 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.server import FastMCP\n\n\nasync def main():\n    server = FastMCP(name=\"SimpleHTTPServer\")\n\n    @server.tool()\n    def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers together.\"\"\"\n        return a + b\n\n    await server.run_http_async(\n        transport=\"streamable-http\",\n        host=\"127.0.0.1\",\n        port=8000,\n    )\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.server import FastMCP\n\n\nasync def main():\n    server = FastMCP(name=\"SimpleHTTPServer\")\n\n    @server.tool()\n    def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers together.\"\"\"\n        return a + b\n\n    await server.run_http_async(\n        transport=\"streamable-http\",\n        host=\"127.0.0.1\",\n        port=8000,\n    )\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1443,
+    "cache_read_tokens": 206966,
+    "cache_creation_tokens": 13734,
+    "cost_usd": 0.0554466,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 30.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "mcp lcp resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "http server streamable",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "http",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.server:FastMCP#run_http_async",
+          "fastmcp.server:FastMCP#tool"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Eeyn7HmKeazTWnnFAFDFwM",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01ApzCD7vqYdKRt8LMTcozAx",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_0116cqLSw6WKTbvezAZ86yvP",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_017iKGVD5QNt2RXmL1WtNJRp",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Wgi4uSvX67js4PZ6mpQcgE",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#run"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "case_id": "flask-custom-response",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = Response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == \"__main__\":\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, Response\n\napp = Flask(__name__)\n\n@app.route('/')\ndef hello():\n    response = Response(\"hi\")\n    response.status_code = 201\n    response.headers[\"X-App\"] = \"demo\"\n    return response\n\nif __name__ == \"__main__\":\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1624,
+    "cache_read_tokens": 196516,
+    "cache_creation_tokens": 10506,
+    "cost_usd": 0.0488506,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 35.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-universal",
+        "args": "flask"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "flask",
+        "version": "3.1.3"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Response class",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Flask app route decorator",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Response",
+        "library": "flask",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Flask class",
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:Response",
+          "flask:Flask",
+          "flask:Flask#route"
+        ],
+        "library": "flask"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:Flask",
+          "flask:Flask#route"
+        ],
+        "library": "flask"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01SeLZE1qSRqaFmPQ9sxQiT5",
+      "content": "{\"status\":\"loaded\",\"name\":\"flask\",\"version\":\"3.1.3\",\"language\":\"python\",\"symbol_count\":513,\"module_count\":24,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='flask') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01LFxux8GGVQ1qNcBunwEpRM",
+      "content": "{\"results\":[{\"id\":\"flask:redirect\",\"kind\":\"function\",\"summary\":\"Create a redirect response object.\",\"import\":\"from flask import redirect\",\"resolved_via_alias\":\"flask.helpers:redirect\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01H1WP4txtQ5L1EyNbsWZWzU",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01V82Yej8QBKpvsSXJBhcGD7",
+      "content": "{\"results\":[{\"id\":\"flask.sansio.app:DefaultJSONProvider#response\",\"kind\":\"method\",\"summary\":\"Serialize the given arguments as JSON, and return a :class:`~flask.Response` object with it. The response mimetype will be \\\"application/json\\\" and can be changed with :attr:`mimetype`.\",\"import\":\"from flask.sansio.app import DefaultJSONProvider\",\"resolved_via_alias\":\"flask.json.provider:DefaultJSONProvider#response\"},{\"id\":\"flask.sansio.app:JSONProvider#response\",\"kind\":\"method\",\"summary\":\"Serialize the given arguments as JSON, and return a :class:`~flask.Response` object with the ``application/json`` mimetype.\",\"import\":\"from flask.sansio.app import JSONProvider\",\"resolved_via_alias\":\"flask.json.provider:JSONProvider#response\"},{\"id\":\"flask:Response\",\"kind\":\"class\",\"summary\":\"The response object that is used by default in Flask.  Works like the response object from Werkzeug but is set to have an HTML mimetype by default.  Quite often you don't have to create this object yourself because :meth:`~flask.Flask.make_response` will take care of that for you.\",\"import\":\"from flask import Response\",\"resolved_via_alias\":\"flask.wrappers:Response\"},{\"id\":\"flask:Flask#make_default_options_response\",\"kind\":\"method\",\"summary\":\"This method is called to create the default ``OPTIONS`` response. This can be changed through subclassing to change the default behavior of ``OPTIONS`` responses.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#make_default_options_response\"},{\"id\":\"flask:Flask#make_response\",\"kind\":\"method\",\"summary\":\"Convert the return value from a view function to an instance of :attr:`response_class`.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#make_response\"},{\"id\":\"flask:Flask#process_response\",\"kind\":\"method\",\"summary\":\"Can be overridden in order to modify the response object before it's sent to the WSGI server.  By default this will call all the :meth:`after_request` decorated functions.\",\"import\":\"from flask import F"
+    },
+    {
+      "tool_use_id": "toolu_01WWMTGtXYzXktBqsPecbeKh",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Y6kZLqtrWsjmwM9fTjW42P",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"flask.wrappers\",\"aliases\":[\"flask.app:Response\",\"flask:Response\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"response\",\"type\":\"Union[Iterable[bytes], bytes, Iterable[str], str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"status\",\"type\":\"UnionType[int, str, HTTPStatus, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"headers\",\"type\":\"Union[Mapping[str, Union[str, Iterable[str]]], Iterable[tuple[str, str]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"mimetype\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"content_type\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"direct_passthrough\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"The response object that is used by default in Flask.  Works like the response object from Werkzeug but is set to have an HTML mimetype by default.  Quite often you don't have to create this object yourself because :meth:`~flask.Flask.make_response` will take care of that for you.\",\"description\":\"If you want to replace the response object used you can subclass this and\\n    set :attr:`~flask.Flask.response_class` to your subclass.\\n\\n    .. versionchanged:: 1.0\\n        JSON support is added to the response, like the request. This is useful\\n        when testing to get the test client response data as JSON.\\n\\n    .. versionchanged:: 1.0\\n\\n        Added :attr:`max_cookie_size`.\"},\"id\":\"flask:Response\",\"resolved_via_alias\":\"flask.wrappers:Response\",\"import\":\"from flask import Response\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"response\",\"type\":\"Union[Iterable[bytes], bytes, Iterable[str], str, None]\",\"default\":null},{\"name\":\"status\",\"type\":\"UnionType[int, str, HTTPStatus, None]\",\"default\":null},{\"name\":\"headers\",\"type\":\""
+    },
+    {
+      "tool_use_id": "toolu_012TEvckwgWS64q5nQ4iTDe8",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"flask.app\",\"aliases\":[\"flask:Flask\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"import_name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"the name of the application package\"},{\"name\":\"static_url_path\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"can be used to specify a different path for the\\nstatic files on the web.  Defaults to the name\\nof the `static_folder` folder.\"},{\"name\":\"static_folder\",\"type\":\"UnionType[str, PathLike[str], None]\",\"required\":false,\"default\":\"static\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"The folder with static files that is served at\\n``static_url_path``. Relative to the application ``root_path``\\nor an absolute path. Defaults to ``'static'``.\"},{\"name\":\"static_host\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"the host to use when adding the static route.\\nDefaults to None. Required when using ``host_matching=True``\\nwith a ``static_folder`` configured.\"},{\"name\":\"host_matching\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"set ``url_map.host_matching`` attribute.\\nDefaults to False.\"},{\"name\":\"subdomain_matching\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"consider the subdomain relative to\\n:data:`SERVER_NAME` when matching routes. Defaults to False.\"},{\"name\":\"template_folder\",\"type\":\"UnionType[str, PathLike[str], None]\",\"required\":false,\"default\":\"templates\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"the folder that contains the templates that should\\nbe used by the application.  Defaults to\\n``'templates'`` folder in the root path of the\\napplication.\"},{\"name\":\"instance_path\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"An alternative instance path for the applicatio"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "flask:make_response"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

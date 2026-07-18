@@ -1,0 +1,34 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cfg_manager import CfgManager\nfrom omegaconf import OmegaConf\nfrom pathlib import Path\n\n# Step 1: Fetch the framework's default parameter set\ncfg_manager = CfgManager()\ndefault_params = cfg_manager.default_config\n\n# Step 2: Load and overlay the YAML files\nobject_preselection = OmegaConf.load(Path(\"params/object_preselection.yaml\"))\ntriggers = OmegaConf.load(Path(\"params/triggers.yaml\"))\n\n# Merge with YAML files overriding defaults (right-most has highest priority)\nfinal_params = OmegaConf.merge(default_params, object_preselection, triggers)",
+  "result_text": "```python\nfrom pocket_coffea.lib.cfg_manager import CfgManager\nfrom omegaconf import OmegaConf\nfrom pathlib import Path\n\n# Step 1: Fetch the framework's default parameter set\ncfg_manager = CfgManager()\ndefault_params = cfg_manager.default_config\n\n# Step 2: Load and overlay the YAML files\nobject_preselection = OmegaConf.load(Path(\"params/object_preselection.yaml\"))\ntriggers = OmegaConf.load(Path(\"params/triggers.yaml\"))\n\n# Merge with YAML files overriding defaults (right-most has highest priority)\nfinal_params = OmegaConf.merge(default_params, object_preselection, triggers)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2543,
+    "cache_read_tokens": 22047,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014928700000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.parameters.defaults:get_default_parameters",
+      "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cfg_manager.CfgManager"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-parameter-envvar",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from typing import Annotated\nimport cyclopts\n\ndef deploy(\n    target: str,\n    token: Annotated[str, cyclopts.Parameter(help=\"API token\", envvar=\"DEPLOY_TOKEN\")]\n) -> None:\n    \"\"\"Deploy to a target using an API token.\"\"\"\n    print(f\"Deploying to {target}\")\n    print(f\"Token: {token}\")\n\nif __name__ == \"__main__\":\n    app = cyclopts.App()\n    app.default = deploy\n    app.parse_args()",
+  "result_text": "```python\nfrom typing import Annotated\nimport cyclopts\n\ndef deploy(\n    target: str,\n    token: Annotated[str, cyclopts.Parameter(help=\"API token\", envvar=\"DEPLOY_TOKEN\")]\n) -> None:\n    \"\"\"Deploy to a target using an API token.\"\"\"\n    print(f\"Deploying to {target}\")\n    print(f\"Token: {token}\")\n\nif __name__ == \"__main__\":\n    app = cyclopts.App()\n    app.default = deploy\n    app.parse_args()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2094,
+    "cache_read_tokens": 22048,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0126838,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

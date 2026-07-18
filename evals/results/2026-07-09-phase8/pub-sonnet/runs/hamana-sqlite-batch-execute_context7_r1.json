@@ -1,0 +1,97 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from hamana.connector.db.sqlite import SQLiteConnector\nfrom hamana.query import Query\n\n\ndef main() -> None:\n    connector = SQLiteConnector(path=\"warehouse.db\")\n    query = Query(query=\"SELECT * FROM events\")\n\n    with connector as conn:\n        for batch in conn.stream(query, batch_size=5000):\n            for row in batch:\n                print(row)\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nfrom hamana.connector.db.sqlite import SQLiteConnector\nfrom hamana.query import Query\n\n\ndef main() -> None:\n    connector = SQLiteConnector(path=\"warehouse.db\")\n    query = Query(query=\"SELECT * FROM events\")\n\n    with connector as conn:\n        for batch in conn.stream(query, batch_size=5000):\n            for row in batch:\n                print(row)\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 6059,
+    "cache_read_tokens": 327485,
+    "cache_creation_tokens": 36491,
+    "cost_usd": 0.40813050000000006,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 79.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "stream SQLite query results in batches with SQLiteConnector",
+        "libraryName": "hamana"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/hamana/hamana",
+        "query": "SQLiteConnector stream query results in batches"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Grep,Glob,Read",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "file read search code",
+        "max_results": 15
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_012R5sQ55HcrNCDqpX9QQuAw",
+      "content": "Rate limit exceeded. Please try again in 1071 seconds. Sign up free at https://context7.com for higher limits."
+    },
+    {
+      "tool_use_id": "toolu_01F4UddcNaZYRZob4MMeDnBm",
+      "content": "Rate limit exceeded. Please try again in 1051 seconds. Sign up free at https://context7.com for higher limits."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

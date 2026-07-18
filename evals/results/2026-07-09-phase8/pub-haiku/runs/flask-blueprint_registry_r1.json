@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint, jsonify\n\ndef create_users_blueprint():\n    \"\"\"Create and configure the users blueprint\"\"\"\n    users_bp = Blueprint('users', __name__)\n    \n    @users_bp.route('/', methods=['GET'])\n    def get_users():\n        \"\"\"Get all users\"\"\"\n        return jsonify({'users': [\n            {'id': 1, 'name': 'Alice'},\n            {'id': 2, 'name': 'Bob'}\n        ]})\n    \n    @users_bp.route('/<int:user_id>', methods=['GET'])\n    def get_user(user_id):\n        \"\"\"Get a specific user\"\"\"\n        return jsonify({'id': user_id, 'name': f'User {user_id}'})\n    \n    @users_bp.route('/', methods=['POST'])\n    def create_user():\n        \"\"\"Create a new user\"\"\"\n        return jsonify({'message': 'User created'}), 201\n    \n    return users_bp\n\ndef create_app():\n    \"\"\"Create and configure the Flask application\"\"\"\n    app = Flask(__name__)\n    \n    # Create and register the users blueprint\n    users_blueprint = create_users_blueprint()\n    app.register_blueprint(users_blueprint, url_prefix='/users')\n    \n    @app.route('/')\n    def home():\n        \"\"\"Home route\"\"\"\n        return jsonify({'message': 'Welcome to the Flask application'})\n    \n    return app\n\nif __name__ == '__main__':\n    app = create_app()\n    app.run(debug=True)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint, jsonify\n\ndef create_users_blueprint():\n    \"\"\"Create and configure the users blueprint\"\"\"\n    users_bp = Blueprint('users', __name__)\n    \n    @users_bp.route('/', methods=['GET'])\n    def get_users():\n        \"\"\"Get all users\"\"\"\n        return jsonify({'users': [\n            {'id': 1, 'name': 'Alice'},\n            {'id': 2, 'name': 'Bob'}\n        ]})\n    \n    @users_bp.route('/<int:user_id>', methods=['GET'])\n    def get_user(user_id):\n        \"\"\"Get a specific user\"\"\"\n        return jsonify({'id': user_id, 'name': f'User {user_id}'})\n    \n    @users_bp.route('/', methods=['POST'])\n    def create_user():\n        \"\"\"Create a new user\"\"\"\n        return jsonify({'message': 'User created'}), 201\n    \n    return users_bp\n\ndef create_app():\n    \"\"\"Create and configure the Flask application\"\"\"\n    app = Flask(__name__)\n    \n    # Create and register the users blueprint\n    users_blueprint = create_users_blueprint()\n    app.register_blueprint(users_blueprint, url_prefix='/users')\n    \n    @app.route('/')\n    def home():\n        \"\"\"Home route\"\"\"\n        return jsonify({'message': 'Welcome to the Flask application'})\n    \n    return app\n\nif __name__ == '__main__':\n    app = create_app()\n    app.run(debug=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1856,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6902,
+    "cost_usd": 0.0246122,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "case_id": "griffe-json-roundtrip",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import json\nfrom pathlib import Path\n\nimport griffe\n\n# `mod` is an already-loaded griffe.Module, e.g.:\n# mod = griffe.load(\"some_package\")\n\njson_text = mod.as_json(indent=2, full=True)\nPath(\"api.json\").write_text(json_text, encoding=\"utf-8\")\n\nfile_text = Path(\"api.json\").read_text(encoding=\"utf-8\")\nreconstructed = json.loads(file_text, object_hook=griffe.json_decoder)\n\nassert isinstance(reconstructed, griffe.Module)\nassert reconstructed.name == mod.name",
+  "result_text": "```python\nimport json\nfrom pathlib import Path\n\nimport griffe\n\n# `mod` is an already-loaded griffe.Module, e.g.:\n# mod = griffe.load(\"some_package\")\n\njson_text = mod.as_json(indent=2, full=True)\nPath(\"api.json\").write_text(json_text, encoding=\"utf-8\")\n\nfile_text = Path(\"api.json\").read_text(encoding=\"utf-8\")\nreconstructed = json.loads(file_text, object_hook=griffe.json_decoder)\n\nassert isinstance(reconstructed, griffe.Module)\nassert reconstructed.name == mod.name\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 3951,
+    "cache_read_tokens": 86918,
+    "cache_creation_tokens": 16220,
+    "cost_usd": 0.18267840000000002,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 47.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "serialize module to JSON and load from JSON",
+        "libraryName": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01VdK7fZvsrgX3VpVjUFX1wf",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "griffe:Module#from_json"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

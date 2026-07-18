@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\n\n# Create the main server\nmain_server = Server(\"main_server\")\n\n# Create the math sub-server\nmath_server = Server(\"math_subserver\")\n\n# Register math tools on the sub-server\n@math_server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers\"\"\"\n    return a + b\n\n@math_server.tool()\ndef multiply(a: int, b: int) -> int:\n    \"\"\"Multiply two numbers\"\"\"\n    return a * b\n\n@math_server.tool()\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Register a tool on the main server\n@main_server.tool()\ndef status() -> str:\n    \"\"\"Get server status\"\"\"\n    return \"Main server running\"\n\n# Attach math server's tools to main server under \"math\" prefix\ndef attach_server_with_prefix(main: Server, sub: Server, prefix: str) -> None:\n    \"\"\"Attach all tools from a sub-server to the main server under a prefix\"\"\"\n    for tool_name, tool_func in sub._tools.items():\n        prefixed_name = f\"{prefix}_{tool_name}\"\n        main.tool(name=prefixed_name)(tool_func)\n\nattach_server_with_prefix(main_server, math_server, \"math\")\n\nif __name__ == \"__main__\":\n    main_server.run()",
+  "result_text": "```python\nfrom fastmcp import Server\n\n# Create the main server\nmain_server = Server(\"main_server\")\n\n# Create the math sub-server\nmath_server = Server(\"math_subserver\")\n\n# Register math tools on the sub-server\n@math_server.tool()\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers\"\"\"\n    return a + b\n\n@math_server.tool()\ndef multiply(a: int, b: int) -> int:\n    \"\"\"Multiply two numbers\"\"\"\n    return a * b\n\n@math_server.tool()\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Register a tool on the main server\n@main_server.tool()\ndef status() -> str:\n    \"\"\"Get server status\"\"\"\n    return \"Main server running\"\n\n# Attach math server's tools to main server under \"math\" prefix\ndef attach_server_with_prefix(main: Server, sub: Server, prefix: str) -> None:\n    \"\"\"Attach all tools from a sub-server to the main server under a prefix\"\"\"\n    for tool_name, tool_func in sub._tools.items():\n        prefixed_name = f\"{prefix}_{tool_name}\"\n        main.tool(name=prefixed_name)(tool_func)\n\nattach_server_with_prefix(main_server, math_server, \"math\")\n\nif __name__ == \"__main__\":\n    main_server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4709,
+    "cache_read_tokens": 22107,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.025764699999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 55.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#mount"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

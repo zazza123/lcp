@@ -1,0 +1,132 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"Compose two fastmcp servers: a math sub-server mounted on a main server under the 'math' prefix.\"\"\"\n\nfrom fastmcp import FastMCP\n\n\ndef main():\n    # Create the sub-server with math tools\n    math_server = FastMCP(\"math_server\", instructions=\"Math operations server\")\n\n    @math_server.tool\n    def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n\n    @math_server.tool\n    def subtract(a: int, b: int) -> int:\n        \"\"\"Subtract two numbers.\"\"\"\n        return a - b\n\n    @math_server.tool\n    def multiply(a: int, b: int) -> int:\n        \"\"\"Multiply two numbers.\"\"\"\n        return a * b\n\n    @math_server.tool\n    def divide(a: int, b: int) -> float:\n        \"\"\"Divide two numbers.\"\"\"\n        if b == 0:\n            raise ValueError(\"Cannot divide by zero\")\n        return a / b\n\n    # Create the main server\n    main_server = FastMCP(\"main_server\", instructions=\"Main server with mounted math tools\")\n\n    # Mount the math server under the \"math\" namespace\n    main_server.mount(math_server, namespace=\"math\")\n\n    # Run the main server\n    main_server.run()\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"Compose two fastmcp servers: a math sub-server mounted on a main server under the 'math' prefix.\"\"\"\n\nfrom fastmcp import FastMCP\n\n\ndef main():\n    # Create the sub-server with math tools\n    math_server = FastMCP(\"math_server\", instructions=\"Math operations server\")\n\n    @math_server.tool\n    def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n\n    @math_server.tool\n    def subtract(a: int, b: int) -> int:\n        \"\"\"Subtract two numbers.\"\"\"\n        return a - b\n\n    @math_server.tool\n    def multiply(a: int, b: int) -> int:\n        \"\"\"Multiply two numbers.\"\"\"\n        return a * b\n\n    @math_server.tool\n    def divide(a: int, b: int) -> float:\n        \"\"\"Divide two numbers.\"\"\"\n        if b == 0:\n            raise ValueError(\"Cannot divide by zero\")\n        return a / b\n\n    # Create the main server\n    main_server = FastMCP(\"main_server\", instructions=\"Main server with mounted math tools\")\n\n    # Mount the math server under the \"math\" namespace\n    main_server.mount(math_server, namespace=\"math\")\n\n    # Run the main server\n    main_server.run()\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 85,
+    "output_tokens": 1835,
+    "cache_read_tokens": 260092,
+    "cache_creation_tokens": 20163,
+    "cost_usd": 0.0755952,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 34.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server attach compose sub",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#mount",
+          "fastmcp.server:FastMCP#import_server"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#tool"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01NKEfHX8Py9bjFhBgi8qjwQ",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01V35bZPtGkkSYNWigU2UF5x",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_018KQA7BLvUQPVv4QRRj9SjF",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01J92aYZGAbpjUxua8pKk4FR",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01E6Ut9Lo7PMtFA43yxYTiSZ",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Hs7gWHscLrTSUYnj4wHLNh",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Vo8MUYCMSYDh6TiwX8zqBC",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

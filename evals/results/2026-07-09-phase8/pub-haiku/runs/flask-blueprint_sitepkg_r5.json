@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint, jsonify\n\n# Create users blueprint (modular component)\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/')\ndef list_users():\n    return jsonify({\n        'message': 'Users list',\n        'users': [\n            {'id': 1, 'name': 'Alice'},\n            {'id': 2, 'name': 'Bob'},\n            {'id': 3, 'name': 'Charlie'}\n        ]\n    })\n\n@users_bp.route('/<int:user_id>')\ndef get_user(user_id):\n    return jsonify({\n        'id': user_id,\n        'name': f'User {user_id}',\n        'email': f'user{user_id}@example.com'\n    })\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return jsonify({\n        'message': 'User created successfully',\n        'id': 4,\n        'name': 'New User'\n    }), 201\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({\n        'message': f'User {user_id} deleted successfully'\n    }), 200\n\n# Create main Flask application\napp = Flask(__name__)\n\n# Mount users blueprint under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef index():\n    return jsonify({\n        'message': 'Welcome to Flask API',\n        'endpoints': {\n            'users': '/users',\n            'user_detail': '/users/<id>'\n        }\n    })\n\n@app.route('/health')\ndef health():\n    return jsonify({'status': 'healthy'}), 200\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint, jsonify\n\n# Create users blueprint (modular component)\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/')\ndef list_users():\n    return jsonify({\n        'message': 'Users list',\n        'users': [\n            {'id': 1, 'name': 'Alice'},\n            {'id': 2, 'name': 'Bob'},\n            {'id': 3, 'name': 'Charlie'}\n        ]\n    })\n\n@users_bp.route('/<int:user_id>')\ndef get_user(user_id):\n    return jsonify({\n        'id': user_id,\n        'name': f'User {user_id}',\n        'email': f'user{user_id}@example.com'\n    })\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return jsonify({\n        'message': 'User created successfully',\n        'id': 4,\n        'name': 'New User'\n    }), 201\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({\n        'message': f'User {user_id} deleted successfully'\n    }), 200\n\n# Create main Flask application\napp = Flask(__name__)\n\n# Mount users blueprint under /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef index():\n    return jsonify({\n        'message': 'Welcome to Flask API',\n        'endpoints': {\n            'users': '/users',\n            'user_detail': '/users/<id>'\n        }\n    })\n\n@app.route('/health')\ndef health():\n    return jsonify({'status': 'healthy'}), 200\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1188,
+    "cache_read_tokens": 24073,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0083563,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Annotated\n\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n\n@app.command\ndef serve(port: Annotated[int, Parameter(validator=validators.Number(gte=1024, lte=65535))]):\n    \"\"\"Start the server.\n\n    Args:\n        port: Port to bind the server to.\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Confirmed the API: `cyclopts.validators.Number(gte=..., lte=...)` attached via `Parameter(validator=...)`.\n\n```python\nfrom typing import Annotated\n\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n\n@app.command\ndef serve(port: Annotated[int, Parameter(validator=validators.Number(gte=1024, lte=65535))]):\n    \"\"\"Start the server.\n\n    Args:\n        port: Port to bind the server to.\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 716,
+    "cache_read_tokens": 99417,
+    "cache_creation_tokens": 1613,
+    "cost_usd": 0.0502611,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 13.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Number|def Number|Number =",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/validators/_number.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

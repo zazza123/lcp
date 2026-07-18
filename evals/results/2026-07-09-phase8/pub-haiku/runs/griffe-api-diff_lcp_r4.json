@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.loader import GriffeLoader\nfrom griffe.diff import list_breakages\nimport subprocess\nimport tempfile\n\n# Get repo root\nrepo_root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode().strip()\n\ndef load_package_at_revision(revision, package_name, repo_root):\n    \"\"\"Load a package from a specific git revision.\"\"\"\n    with tempfile.TemporaryDirectory() as tmpdir:\n        # Create a git worktree at the specified revision\n        subprocess.run(\n            ['git', 'worktree', 'add', tmpdir, revision],\n            cwd=repo_root,\n            check=True,\n            capture_output=True\n        )\n        try:\n            # Load the package using GriffeLoader\n            loader = GriffeLoader(search_paths=[tmpdir])\n            return loader.load(package_name)\n        finally:\n            # Remove the worktree\n            subprocess.run(\n                ['git', 'worktree', 'remove', tmpdir],\n                cwd=repo_root,\n                check=True,\n                capture_output=True\n            )\n\n# Load at both revisions\nold = load_package_at_revision('v1.0.0', 'mypkg', repo_root)\nnew = load_package_at_revision('HEAD', 'mypkg', repo_root)\n\n# Find and print breakages\nfor breakage in list_breakages(old, new):\n    print(breakage)",
+  "result_text": "```python\nfrom griffe.loader import GriffeLoader\nfrom griffe.diff import list_breakages\nimport subprocess\nimport tempfile\n\n# Get repo root\nrepo_root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode().strip()\n\ndef load_package_at_revision(revision, package_name, repo_root):\n    \"\"\"Load a package from a specific git revision.\"\"\"\n    with tempfile.TemporaryDirectory() as tmpdir:\n        # Create a git worktree at the specified revision\n        subprocess.run(\n            ['git', 'worktree', 'add', tmpdir, revision],\n            cwd=repo_root,\n            check=True,\n            capture_output=True\n        )\n        try:\n            # Load the package using GriffeLoader\n            loader = GriffeLoader(search_paths=[tmpdir])\n            return loader.load(package_name)\n        finally:\n            # Remove the worktree\n            subprocess.run(\n                ['git', 'worktree', 'remove', tmpdir],\n                cwd=repo_root,\n                check=True,\n                capture_output=True\n            )\n\n# Load at both revisions\nold = load_package_at_revision('v1.0.0', 'mypkg', repo_root)\nnew = load_package_at_revision('HEAD', 'mypkg', repo_root)\n\n# Find and print breakages\nfor breakage in list_breakages(old, new):\n    print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4591,
+    "cache_read_tokens": 22137,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.025177699999999994,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:load_git",
+      "griffe:find_breaking_changes"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.diff.list_breakages",
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

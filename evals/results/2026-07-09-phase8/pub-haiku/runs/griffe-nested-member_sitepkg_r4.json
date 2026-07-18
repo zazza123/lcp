@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-nested-member",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import griffe\n\n# Load the package\npkg = griffe.load(\"mypkg\")\n\n# Retrieve the nested member at \"utils.parsers.parse_date\" in a single call\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\n# Print whether it is deprecated and whether it has a docstring\nprint(f\"Is deprecated: {member.deprecated}\")\nprint(f\"Has docstring: {member.docstring is not None}\")",
+  "result_text": "```python\nimport griffe\n\n# Load the package\npkg = griffe.load(\"mypkg\")\n\n# Retrieve the nested member at \"utils.parsers.parse_date\" in a single call\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\n# Print whether it is deprecated and whether it has a docstring\nprint(f\"Is deprecated: {member.deprecated}\")\nprint(f\"Has docstring: {member.docstring is not None}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 848,
+    "cache_read_tokens": 24116,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0066606,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

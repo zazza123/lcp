@@ -1,0 +1,72 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom hamana.connector.db.teradata import TeradataConnector\n\nconnector = TeradataConnector(\n    host=\"localhost\",\n    user=\"dbc\",\n    password=os.environ[\"TERADATA_PASSWORD\"],\n)\n\nconnector.ping()",
+  "result_text": "```python\nimport os\n\nfrom hamana.connector.db.teradata import TeradataConnector\n\nconnector = TeradataConnector(\n    host=\"localhost\",\n    user=\"dbc\",\n    password=os.environ[\"TERADATA_PASSWORD\"],\n)\n\nconnector.ping()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 1590,
+    "cache_read_tokens": 287286,
+    "cache_creation_tokens": 24550,
+    "cost_usd": 0.2573838,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 38.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "evals/.venv-bench/lib/python3.12/site-packages/hamana*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/site-packages/hamana*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/hamana*"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/hamana.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/teradata.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/base.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "case_id": "narwhals-lazy-parquet",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\nlf = nw.scan_parquet(\"events.parquet\", backend=\"polars\")\nlf = lf.filter(nw.col(\"status\") == \"ok\").select(\"user\", \"duration\")\ndf = lf.collect(backend=\"polars\")",
+  "result_text": "Verified all signatures against the installed narwhals 2.23.0 API.\n\n```python\nimport narwhals as nw\n\nlf = nw.scan_parquet(\"events.parquet\", backend=\"polars\")\nlf = lf.filter(nw.col(\"status\") == \"ok\").select(\"user\", \"duration\")\ndf = lf.collect(backend=\"polars\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 1204,
+    "cache_read_tokens": 238982,
+    "cache_creation_tokens": 13507,
+    "cost_usd": 0.1708386,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 28.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "scan_parquet",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "LazyFrame",
+        "library": "narwhals",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:scan_parquet",
+          "narwhals:LazyFrame#filter",
+          "narwhals:LazyFrame#select",
+          "narwhals:LazyFrame#collect",
+          "narwhals:col"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:LazyFrame#collect",
+          "narwhals:col"
+        ],
+        "library": "narwhals"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Uy7qpfQvQDtJq6Y2QFhn2F",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01QWDUVZ53u6AsYBAXJKhxFE",
+      "content": "{\"results\":[{\"id\":\"narwhals:scan_parquet\",\"kind\":\"function\",\"summary\":\"Lazily read from a parquet file.\",\"import\":\"from narwhals import scan_parquet\",\"resolved_via_alias\":\"narwhals.functions:scan_parquet\"},{\"id\":\"narwhals.stable.v1:scan_parquet\",\"kind\":\"function\",\"summary\":\"Lazily read from a parquet file.\",\"import\":\"from narwhals.stable.v1 import scan_parquet\"},{\"id\":\"narwhals.stable.v2:scan_parquet\",\"kind\":\"function\",\"summary\":\"Lazily read from a parquet file.\",\"import\":\"from narwhals.stable.v2 import scan_parquet\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01QEudHcyRTw8mNVVh2K8LkR",
+      "content": "{\"results\":[{\"id\":\"narwhals:LazyFrame\",\"kind\":\"class\",\"summary\":\"Narwhals LazyFrame, backed by a native lazyframe.\",\"import\":\"from narwhals import LazyFrame\",\"resolved_via_alias\":\"narwhals.dataframe:LazyFrame\"},{\"id\":\"narwhals.stable.v1:LazyFrame\",\"kind\":\"class\",\"summary\":\"Class LazyFrame\",\"import\":\"from narwhals.stable.v1 import LazyFrame\"},{\"id\":\"narwhals.stable.v2:LazyFrame\",\"kind\":\"class\",\"summary\":\"Class LazyFrame\",\"import\":\"from narwhals.stable.v2 import LazyFrame\"},{\"id\":\"narwhals.typing:CompliantLazyFrame\",\"kind\":\"class\",\"summary\":\"Class CompliantLazyFrame\",\"import\":\"from narwhals.typing import CompliantLazyFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantLazyFrame\"},{\"id\":\"narwhals._native:NativeLazyFrame\",\"kind\":\"class\",\"summary\":\"Class NativeLazyFrame\",\"import\":\"from narwhals._native import NativeLazyFrame\"},{\"id\":\"narwhals._polars.dataframe:PolarsLazyFrame\",\"kind\":\"class\",\"summary\":\"Class PolarsLazyFrame\",\"import\":\"from narwhals._polars.dataframe import PolarsLazyFrame\"},{\"id\":\"narwhals._spark_like.namespace:SparkLikeLazyFrame\",\"kind\":\"class\",\"summary\":\"Class SparkLikeLazyFrame\",\"import\":\"from narwhals._spark_like.namespace import SparkLikeLazyFrame\",\"resolved_via_alias\":\"narwhals._spark_like.dataframe:SparkLikeLazyFrame\"},{\"id\":\"narwhals._spark_like.dataframe:SQLLazyFrame\",\"kind\":\"class\",\"summary\":\"Class SQLLazyFrame\",\"import\":\"from narwhals._spark_like.dataframe import SQLLazyFrame\",\"resolved_via_alias\":\"narwhals._sql.dataframe:SQLLazyFrame\"},{\"id\":\"narwhals._compliant:CompliantFrame\",\"kind\":\"class\",\"summary\":\"Common parts of `DataFrame`, `LazyFrame`.\",\"import\":\"from narwhals._compliant import CompliantFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantFrame\"}],\"total\":9,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01CMZL9wcUE3R1RVmR3dnHun",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.functions\",\"aliases\":[\"narwhals:scan_parquet\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"source\",\"type\":\"FileSource\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path to a file.\"},{\"name\":\"backend\",\"type\":\"IntoBackend[Backend]\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The eager backend for DataFrame creation.\\n`backend` can be specified in various ways\\n\\n- As `Implementation.<BACKEND>` with `BACKEND` being `PANDAS`, `PYARROW`,\\n    `POLARS`, `MODIN`, `CUDF`, `PYSPARK` or `SQLFRAME`.\\n- As a string: `\\\"pandas\\\"`, `\\\"pyarrow\\\"`, `\\\"polars\\\"`, `\\\"modin\\\"`, `\\\"cudf\\\"`,\\n    `\\\"pyspark\\\"` or `\\\"sqlframe\\\"`.\\n- Directly as a module `pandas`, `pyarrow`, `polars`, `modin`, `cudf`,\\n    `pyspark.sql` or `sqlframe`.\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Extra keyword arguments which are passed to the native parquet reader.\\nFor example, you could use\\n`nw.scan_parquet('file.parquet', backend=pd, engine='pyarrow')`.\"}],\"returns\":\"LazyFrame[Any]\"}],\"semantics\":{\"summary\":\"Lazily read from a parquet file.\",\"description\":\"For the libraries that do not support lazy dataframes, the function reads\\n    a parquet file eagerly and then converts the resulting dataframe to a lazyframe.\\n\\n    Note:\\n        Spark like backends require a session object to be passed in `kwargs`.\\n\\n        For instance:\\n\\n        ```py\\n        import narwhals as nw\\n        from sqlframe.duckdb import DuckDBSession\\n\\n        nw.scan_parquet(source, backend=\\\"sqlframe\\\", session=DuckDBSession())\\n        ```\\n\\n    Arguments:\\n        source: Path to a file.\\n        backend: The eager backend for DataFrame creation.\\n            `backend` can be specified in various ways\\n\\n            - As `Implementation.<BACKEND>` with `BACKEND` being `PANDAS`, `PYARROW`,\\n                `POLARS`, `MODIN`, `CUDF`, `PYSPARK` or `SQLFRAME`.\\n            -"
+    },
+    {
+      "tool_use_id": "toolu_01L2Ho4xng7AUCVesr8GCxGY",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"narwhals.dataframe\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"backend\",\"type\":\"IntoBackend[Polars | Pandas | Arrow] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"specifies which eager backend collect to. This will be the underlying\\nbackend for the resulting Narwhals DataFrame. If None, then the following\\ndefault conversions will be applied\\n\\n- `polars.LazyFrame` -> `polars.DataFrame`\\n- `dask.DataFrame` -> `pandas.DataFrame`\\n- `duckdb.PyRelation` -> `pyarrow.Table`\\n- `pyspark.DataFrame` -> `pyarrow.Table`\\n\\n`backend` can be specified in various ways\\n\\n- As `Implementation.<BACKEND>` with `BACKEND` being `PANDAS`, `PYARROW`\\n    or `POLARS`.\\n- As a string: `\\\"pandas\\\"`, `\\\"pyarrow\\\"` or `\\\"polars\\\"`\\n- Directly as a module `pandas`, `pyarrow` or `polars`.\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"backend specific kwargs to pass along. To know more please check the\\nbackend specific documentation\\n\\n- [polars.LazyFrame.collect](https://docs.pola.rs/api/python/dev/reference/lazyframe/api/polars.LazyFrame.collect.html)\\n- [dask.dataframe.DataFrame.compute](https://docs.dask.org/en/stable/generated/dask.dataframe.DataFrame.compute.html)\"}],\"returns\":\"DataFrame[Any]\"}],\"semantics\":{\"summary\":\"Materialize this LazyFrame into a DataFrame.\",\"description\":\"As each underlying lazyframe has different arguments to set when materializing\\n        the lazyframe into a dataframe, we allow to pass them as kwargs (see examples\\n        below for how to generalize the specification).\\n\\n        Arguments:\\n            backend: specifies which eager backend collect to. This will be the underlying\\n                backend for the resulting Narwhals DataFrame. If None, then the following\\n                default conversions will be applied\\n\\n                - `polars.LazyFrame` -> `polars.DataFrame`\\n                - `dask.DataFrame` -> `pandas.DataFra"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

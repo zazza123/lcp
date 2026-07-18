@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from griffe import Docstring, Parser\n\ndocstring_text = \"\"\"Summarize the function in one line.\n\nArgs:\n    param1: The first parameter.\n    param2: The second parameter.\n\nReturns:\n    The computed result.\n\"\"\"\n\ndocstring = Docstring(docstring_text, lineno=1)\nsections = docstring.parse(Parser.google)\n\nfor section in sections:\n    print(section.kind)",
+  "result_text": "```python\nfrom griffe import Docstring, Parser\n\ndocstring_text = \"\"\"Summarize the function in one line.\n\nArgs:\n    param1: The first parameter.\n    param2: The second parameter.\n\nReturns:\n    The computed result.\n\"\"\"\n\ndocstring = Docstring(docstring_text, lineno=1)\nsections = docstring.parse(Parser.google)\n\nfor section in sections:\n    print(section.kind)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 648,
+    "cache_read_tokens": 14777,
+    "cache_creation_tokens": 15418,
+    "cost_usd": 0.10666709999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

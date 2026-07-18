@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-pivot",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"date\": [\"2024-01-01\", \"2024-01-01\", \"2024-01-02\", \"2024-01-02\"],\n    \"city\": [\"NYC\", \"LA\", \"NYC\", \"LA\"],\n    \"temperature\": [32.0, 65.0, 30.0, 68.0],\n})\n\nwide_df = df.pivot(\n    on=\"city\",\n    index=\"date\",\n    values=\"temperature\",\n)\n\nprint(wide_df)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"date\": [\"2024-01-01\", \"2024-01-01\", \"2024-01-02\", \"2024-01-02\"],\n    \"city\": [\"NYC\", \"LA\", \"NYC\", \"LA\"],\n    \"temperature\": [32.0, 65.0, 30.0, 68.0],\n})\n\nwide_df = df.pivot(\n    on=\"city\",\n    index=\"date\",\n    values=\"temperature\",\n)\n\nprint(wide_df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 342,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9780,
+    "cost_usd": 0.06992670000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

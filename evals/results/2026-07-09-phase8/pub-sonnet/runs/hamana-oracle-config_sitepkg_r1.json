@@ -1,0 +1,56 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom hamana.connector.db.oracle import OracleConnector\n\n# build a standalone configuration object (no shortcut)\nconfig = OracleConnector.create_config(\n    user=\"my_user\",\n    password=os.environ[\"ORACLE_PASSWORD\"],\n    host=\"my_host\",\n    service=\"my_service\",\n)\n\n# construct the connector from the configuration object\nconnector = OracleConnector(config)\n\n# execute the query\nresult_query = connector.execute(\"SELECT sysdate FROM dual\")\n\nprint(result_query.result)",
+  "result_text": "I have enough detail on the `hamana` 1.0.1 Oracle connector API to write the code correctly.\n\n```python\nimport os\n\nfrom hamana.connector.db.oracle import OracleConnector\n\n# build a standalone configuration object (no shortcut)\nconfig = OracleConnector.create_config(\n    user=\"my_user\",\n    password=os.environ[\"ORACLE_PASSWORD\"],\n    host=\"my_host\",\n    service=\"my_service\",\n)\n\n# construct the connector from the configuration object\nconnector = OracleConnector(config)\n\n# execute the query\nresult_query = connector.execute(\"SELECT sysdate FROM dual\")\n\nprint(result_query.result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1215,
+    "cache_read_tokens": 161951,
+    "cache_creation_tokens": 19040,
+    "cost_usd": 0.18108029999999997,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 22.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/hamana*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/connector/db/**",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/oracle.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/base.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

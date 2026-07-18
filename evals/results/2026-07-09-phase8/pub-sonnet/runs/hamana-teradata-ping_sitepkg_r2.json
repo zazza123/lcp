@@ -1,0 +1,62 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom hamana.connector.db import Teradata\n\nHOST = \"your-teradata-host\"\nUSER = \"your-teradata-user\"\n\nconnector = Teradata(\n    host=HOST,\n    user=USER,\n    password=os.environ[\"TERADATA_PASSWORD\"],\n)\n\nconnector.ping()\nprint(\"Teradata database is reachable.\")",
+  "result_text": "Confirmed the public import path and that `ping()` (inherited from `BaseConnector`) is the connectivity-check method, opening/closing the connection via the context-manager protocol.\n\n```python\nimport os\n\nfrom hamana.connector.db import Teradata\n\nHOST = \"your-teradata-host\"\nUSER = \"your-teradata-user\"\n\nconnector = Teradata(\n    host=HOST,\n    user=USER,\n    password=os.environ[\"TERADATA_PASSWORD\"],\n)\n\nconnector.ping()\nprint(\"Teradata database is reachable.\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1578,
+    "cache_read_tokens": 210659,
+    "cache_creation_tokens": 8365,
+    "cost_usd": 0.13709369999999999,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 25.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/hamana*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/teradata.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/base.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/__init__.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport json\nfrom cyhole.solscan import Solscan\n\ndef get_defi_activities(account_address: str) -> dict:\n    \"\"\"\n    Retrieve DeFi activities for a given Solana account using Solscan V2 API.\n    \n    Args:\n        account_address: The Solana account address to query\n        \n    Returns:\n        Dictionary containing DeFi activities\n    \"\"\"\n    api_key = os.getenv(\"SOLSCAN_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n    \n    client = Solscan(api_key=api_key)\n    activities = client.get_defi_activities(account_address)\n    \n    return activities\n\nif __name__ == \"__main__\":\n    account_address = \"YOUR_SOLANA_ACCOUNT_ADDRESS\"\n    result = get_defi_activities(account_address)\n    print(json.dumps(result, indent=2))",
+  "result_text": "```python\nimport os\nimport json\nfrom cyhole.solscan import Solscan\n\ndef get_defi_activities(account_address: str) -> dict:\n    \"\"\"\n    Retrieve DeFi activities for a given Solana account using Solscan V2 API.\n    \n    Args:\n        account_address: The Solana account address to query\n        \n    Returns:\n        Dictionary containing DeFi activities\n    \"\"\"\n    api_key = os.getenv(\"SOLSCAN_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n    \n    client = Solscan(api_key=api_key)\n    activities = client.get_defi_activities(account_address)\n    \n    return activities\n\nif __name__ == \"__main__\":\n    account_address = \"YOUR_SOLANA_ACCOUNT_ADDRESS\"\n    result = get_defi_activities(account_address)\n    print(json.dumps(result, indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1417,
+    "cache_read_tokens": 24084,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.009502400000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan",
+      "cyhole.solscan.v2.client:SolscanClient#get_account_defi_activities"
+    ],
+    "forbidden_used": [
+      "cyhole.solscan.v2.client:SolscanClient#get_defi_activities"
+    ],
+    "unresolved_usages": [
+      "cyhole.solscan.Solscan"
+    ],
+    "error": null
+  }
+}

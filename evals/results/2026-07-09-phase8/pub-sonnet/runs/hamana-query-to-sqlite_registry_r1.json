@@ -1,0 +1,113 @@
+{
+  "case_id": "hamana-query-to-sqlite",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "resolve_library(\"hamana\") \u2192 resolve_failed:\n\"hamana\" is not importable by the scan interpreter\n(/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12).\nIt may be installed in a different environment \u2014 point the server at it via\n.lcp-config.json ('scan_python' or 'python').",
+  "result_text": "I need to flag a problem before writing any code: the task requires me to write against `hamana`'s actual API (a `Query` object, its execution, and \"its own persistence method\" for writing to hamana's internal SQLite store), but I have no reliable prior knowledge of this library, and the tool that's supposed to verify third-party APIs for me failed:\n\n```\nresolve_library(\"hamana\") \u2192 resolve_failed:\n\"hamana\" is not importable by the scan interpreter\n(/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12).\nIt may be installed in a different environment \u2014 point the server at it via\n.lcp-config.json ('scan_python' or 'python').\n```\n\nAnd in this session I don't have Bash, Read, Write, Edit, Glob, or Grep available to either (a) check which Python environment actually has `hamana` installed, or (b) create/edit `.lcp-config.json` to repoint the scanner there.\n\nWriting the requested code anyway would mean guessing method names like `Query(...)`, `.execute()`, and whatever \"the Query object's own persistence method\" is called (`.to_sql()`? `.save()`? `.persist()`?) \u2014 exactly the failure mode (\"confidently-written, plausible-looking API calls that don't exist\") the verification tool exists to prevent. I don't have grounded knowledge of this library's actual API, so I won't fabricate it.\n\nTo unblock, one of these would help:\n1. Tell me the venv/interpreter path where `hamana` is installed, so I can ask you to add it to `.lcp-config.json` (`scan_python`), or\n2. Enable file tools (Read/Bash) for this session so I can locate it myself, or\n3. Paste the relevant `Query` class source/docs yourself so I can verify the method names before writing the code.\n\nHow would you like to proceed?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 22,
+    "output_tokens": 4897,
+    "cache_read_tokens": 476481,
+    "cache_creation_tokens": 44701,
+    "cost_usd": 0.48467129999999997,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 90.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Bash run shell command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "Bash",
+      "input": {
+        "command": "python3 -c \"import hamana; print(hamana.__file__); print(hamana.__version__ if hasattr(hamana,'__version__') else 'no version attr')\" 2>&1; which python3; python3 -c \"import sys; print(sys.executable)\"",
+        "description": "Locate hamana installation and python interpreter"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Read file contents",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/.lcp-config.json"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute terminal command file system",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01BdknbHytJanwa17ySfuQkg",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01SmKp9j957m8QWyBSV5RGa7",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_01KFdA1LbVbvsMu5sG4vTsw4",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.connector.db.query:Query#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "syntax error in generated code: invalid character '\u2192' (U+2192) (<unknown>, line 1)"
+  }
+}

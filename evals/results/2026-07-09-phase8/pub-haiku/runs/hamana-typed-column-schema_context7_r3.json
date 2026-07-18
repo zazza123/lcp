@@ -1,0 +1,82 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I cannot find \"hamana\" version 1.0.1 in the available library documentation. Could you verify the library name or provide a link to its documentation/repository? This will allow me to write accurate, runnable code using its actual API.\n\nIf you have access to the library's source or docs, sharing those details (or the PyPI page) would help me provide the correct implementation.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 53,
+    "output_tokens": 1771,
+    "cache_read_tokens": 153421,
+    "cache_creation_tokens": 7223,
+    "cost_usd": 0.038696100000000004,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 44.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 library documentation",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve_library_id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Query column schema typed columns"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Query column schema typed columns"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "query database columns schema"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_013du3dYHWbYT3ELG6p2KYSB",
+      "content": "<tool_use_error>Error: No such tool available: mcp__context7__resolve_library_id</tool_use_error>"
+    },
+    {
+      "tool_use_id": "toolu_013NPsZeXUj7aTLhpZcuPTAz",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_01N7XhPArorMz3jWgEy7KK4e",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.core.column:IntegerColumn",
+      "hamana.core.column:StringColumn"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

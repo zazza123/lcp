@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-sort-desc",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"product\": [\"A\", \"B\", \"C\"],\n    \"revenue\": [100, 300, 200],\n})\n\nresult = df.sort(\"revenue\", descending=True)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"product\": [\"A\", \"B\", \"C\"],\n    \"revenue\": [100, 300, 200],\n})\n\nresult = df.sort(\"revenue\", descending=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 270,
+    "cache_read_tokens": 30142,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.013098599999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-dexscreener-token-pairs",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.dexscreener import DexScreener\n\n# SPL token mint address (example: USDC)\ntoken_mint = \"EPjFWaLb3odcccccccccccccccccccccccccdvPrQ\"\n\ndex = DexScreener()\npairs = dex.get_token_pairs(\"solana\", token_mint)\n\nprint(f\"Number of trading pairs: {len(pairs)}\")",
+  "result_text": "```python\nfrom cyhole.dexscreener import DexScreener\n\n# SPL token mint address (example: USDC)\ntoken_mint = \"EPjFWaLb3odcccccccccccccccccccccccccdvPrQ\"\n\ndex = DexScreener()\npairs = dex.get_token_pairs(\"solana\", token_mint)\n\nprint(f\"Number of trading pairs: {len(pairs)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2162,
+    "cache_read_tokens": 22021,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0130211,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.dex_screener.interaction:DexScreener"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.dexscreener.DexScreener"
+    ],
+    "error": null
+  }
+}

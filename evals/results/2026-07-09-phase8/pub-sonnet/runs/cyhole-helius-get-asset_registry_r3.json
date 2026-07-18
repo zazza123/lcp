@@ -1,0 +1,101 @@
+{
+  "case_id": "cyhole-helius-get-asset",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.helius import Helius\n\n\ndef get_asset_metadata(asset_id: str) -> dict:\n    api_key = os.environ[\"HELIUS_API_KEY\"]\n    helius = Helius(api_key=api_key)\n    response = helius.client.get_asset(id=asset_id)\n    return response.model_dump()\n\n\nif __name__ == \"__main__\":\n    asset_id = \"F9Lw3ki3hJ7PF9HQXsBzoY8GyE6sPoEZZdXJBsTTD2rk\"\n    metadata = get_asset_metadata(asset_id)\n    print(metadata)",
+  "result_text": "```python\nimport os\n\nfrom cyhole.helius import Helius\n\n\ndef get_asset_metadata(asset_id: str) -> dict:\n    api_key = os.environ[\"HELIUS_API_KEY\"]\n    helius = Helius(api_key=api_key)\n    response = helius.client.get_asset(id=asset_id)\n    return response.model_dump()\n\n\nif __name__ == \"__main__\":\n    asset_id = \"F9Lw3ki3hJ7PF9HQXsBzoY8GyE6sPoEZZdXJBsTTD2rk\"\n    metadata = get_asset_metadata(asset_id)\n    print(metadata)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 7732,
+    "cache_read_tokens": 328688,
+    "cache_creation_tokens": 21896,
+    "cost_usd": 0.3460164,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 116.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "run command terminal execute",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01WJsJrYcqo829ryRKzmWkK6",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01B1UTuadaptaFp8trPWaLUV",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_011zUvxFATUQgQP5obY24hyJ",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.client:HeliusClient#post_get_asset"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_asset"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

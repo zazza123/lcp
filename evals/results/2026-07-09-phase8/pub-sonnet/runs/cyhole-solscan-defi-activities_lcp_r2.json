@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan.v2 import SolscanV2Interaction\n\n\ndef get_account_defi_activities(address: str):\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = SolscanV2Interaction(api_key=api_key)\n    response = solscan.client.get_account_defi_activities(address=address)\n    return response\n\n\nif __name__ == \"__main__\":\n    account_address = \"YOUR_ACCOUNT_ADDRESS\"\n    result = get_account_defi_activities(account_address)\n    print(result.model_dump_json(indent=2))",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan.v2 import SolscanV2Interaction\n\n\ndef get_account_defi_activities(address: str):\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = SolscanV2Interaction(api_key=api_key)\n    response = solscan.client.get_account_defi_activities(address=address)\n    return response\n\n\nif __name__ == \"__main__\":\n    account_address = \"YOUR_ACCOUNT_ADDRESS\"\n    result = get_account_defi_activities(account_address)\n    print(result.model_dump_json(indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 3959,
+    "cache_read_tokens": 30291,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.06847829999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 42.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.v2.SolscanV2Interaction"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from griffe import Docstring, Parser\n\ndocstring_text = \"\"\"Compute the sum of two numbers.\n\nArgs:\n    a: The first number.\n    b: The second number.\n\nReturns:\n    The sum of a and b.\n\"\"\"\n\ndocstring = Docstring(docstring_text, parser=Parser.google)\nsections = docstring.parse()\n\nfor section in sections:\n    print(section.kind)",
+  "result_text": "```python\nfrom griffe import Docstring, Parser\n\ndocstring_text = \"\"\"Compute the sum of two numbers.\n\nArgs:\n    a: The first number.\n    b: The second number.\n\nReturns:\n    The sum of a and b.\n\"\"\"\n\ndocstring = Docstring(docstring_text, parser=Parser.google)\nsections = docstring.parse()\n\nfor section in sections:\n    print(section.kind)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 1859,
+    "cache_read_tokens": 269475,
+    "cache_creation_tokens": 20229,
+    "cost_usd": 0.2301495,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 39.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Docstring",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Parser",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Docstring#__init__",
+          "griffe:Docstring#parse",
+          "griffe:Parser",
+          "griffe:DocstringSection"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "kind",
+        "library": "griffe",
+        "module": "griffe._internal.docstrings.models"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:DocstringSection#kind",
+          "griffe:DocstringSectionKind"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "DocstringSectionParameters",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "DocstringSectionReturns",
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016LCDXuLXv9aossxLbZJNmp",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"0.0.0\",\"language\":\"python\",\"symbol_count\":1709,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\",\"version_mismatch\":true,\"installed_version\":null,\"resolved_version\":\"0.0.0\"}"
+    },
+    {
+      "tool_use_id": "toolu_01JvRzGkeWDi8BqzwPYq2yMS",
+      "content": "{\"results\":[{\"id\":\"griffe:Alias#docstring\",\"kind\":\"attribute\",\"summary\":\"The target docstring.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#docstring\"},{\"id\":\"griffe:Docstring\",\"kind\":\"class\",\"summary\":\"This class represents docstrings.\",\"import\":\"from griffe import Docstring\",\"resolved_via_alias\":\"griffe._internal.models:Docstring\"},{\"id\":\"griffe:DocstringAdmonition\",\"kind\":\"class\",\"summary\":\"This class represents an admonition.\",\"import\":\"from griffe import DocstringAdmonition\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringAdmonition\"},{\"id\":\"griffe:DocstringAttribute\",\"kind\":\"class\",\"summary\":\"This class represents a documented module/class attribute.\",\"import\":\"from griffe import DocstringAttribute\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringAttribute\"},{\"id\":\"griffe:DocstringClass\",\"kind\":\"class\",\"summary\":\"This class represents a documented class.\",\"import\":\"from griffe import DocstringClass\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringClass\"},{\"id\":\"griffe:DocstringDeprecated\",\"kind\":\"class\",\"summary\":\"This class represents a documented deprecated item.\",\"import\":\"from griffe import DocstringDeprecated\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringDeprecated\"},{\"id\":\"griffe:DocstringElement\",\"kind\":\"class\",\"summary\":\"This base class represents annotated, nameless elements.\",\"import\":\"from griffe import DocstringElement\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringElement\"},{\"id\":\"griffe:DocstringFunction\",\"kind\":\"class\",\"summary\":\"This class represents a documented function.\",\"import\":\"from griffe import DocstringFunction\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringFunction\"},{\"id\":\"griffe:DocstringModule\",\"kind\":\"class\",\"summary\":\"This class represents a documented module.\",\"import\":\"from griffe import DocstringModule\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringMo"
+    },
+    {
+      "tool_use_id": "toolu_01N6TazYY177WJ6Q766pax5D",
+      "content": "{\"results\":[{\"id\":\"griffe:Parser\",\"kind\":\"class\",\"summary\":\"Enumeration of the different docstring parsers.\",\"import\":\"from griffe import Parser\",\"resolved_via_alias\":\"griffe._internal.enumerations:Parser\"},{\"id\":\"griffe:infer_docstring_style\",\"kind\":\"function\",\"summary\":\"Infer the parser to use for the docstring.\",\"import\":\"from griffe import infer_docstring_style\",\"resolved_via_alias\":\"griffe._internal.docstrings.auto:infer_docstring_style\"},{\"id\":\"griffe._internal.docstrings.parsers:\",\"kind\":\"module\",\"summary\":\"Module griffe._internal.docstrings.parsers\",\"import\":\"import griffe._internal.docstrings.parsers\"},{\"id\":\"griffe:Inspector#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the inspector.\",\"import\":\"from griffe import Inspector\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:Inspector#__init__\"},{\"id\":\"griffe:inspect\",\"kind\":\"function\",\"summary\":\"Inspect a module.\",\"import\":\"from griffe import inspect\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:inspect\"},{\"id\":\"griffe:Visitor#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the visitor.\",\"import\":\"from griffe import Visitor\",\"resolved_via_alias\":\"griffe._internal.agents.visitor:Visitor#__init__\"},{\"id\":\"griffe:visit\",\"kind\":\"function\",\"summary\":\"Parse and visit a module file.\",\"import\":\"from griffe import visit\",\"resolved_via_alias\":\"griffe._internal.agents.visitor:visit\"},{\"id\":\"griffe:parse_auto\",\"kind\":\"function\",\"summary\":\"Parse a docstring by automatically detecting the style it uses.\",\"import\":\"from griffe import parse_auto\",\"resolved_via_alias\":\"griffe._internal.docstrings.auto:parse_auto\"},{\"id\":\"griffe:parse\",\"kind\":\"function\",\"summary\":\"Parse the docstring.\",\"import\":\"from griffe import parse\",\"resolved_via_alias\":\"griffe._internal.docstrings.parsers:parse\"},{\"id\":\"griffe:temporary_inspected_module\",\"kind\":\"function\",\"summary\":\"Create and inspect a temporary module with the given code.\",\"import\":\"from griffe import temporary_inspected_module\",\"resolved_via_alias\":\"griffe._inter"
+    },
+    {
+      "tool_use_id": "toolu_01RyPf7hJUBUJoCtbd3JDfNa",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"griffe._internal.models\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"value\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The docstring value.\"},{\"name\":\"lineno\",\"type\":\"UnionType[int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The starting line number.\"},{\"name\":\"endlineno\",\"type\":\"UnionType[int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The ending line number.\"},{\"name\":\"parent\",\"type\":\"UnionType[Object, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The parent object on which this docstring is attached.\"},{\"name\":\"parser\",\"type\":\"Union[Literal[google, numpy, sphinx, auto], Parser, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The docstring parser to use. By default, no parsing is done.\"},{\"name\":\"parser_options\",\"type\":\"UnionType[GoogleOptions, NumpyOptions, SphinxOptions, AutoOptions, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Additional docstring parsing options.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Initialize the docstring.\",\"description\":\"Parameters:\\n            value: The docstring value.\\n            lineno: The starting line number.\\n            endlineno: The ending line number.\\n            parent: The parent object on which this docstring is attached.\\n            parser: The docstring parser to use. By default, no parsing is done.\\n            parser_options: Additional docstring parsing options.\"},\"id\":\"griffe:Docstring#__init__\",\"resolved_via_alias\":\"griffe._internal.models:Docstring#__init__\",\"import\":\"from griffe import Docstring\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"value\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"lineno\",\"type\":\"UnionType[int, None]\",\"default\":null},{\"name\":\"endlineno\",\"type\":\"UnionType[int, None]\",\"default\":null},{\"name\":\"parent\",\"type\":\"UnionType[Object, None]"
+    },
+    {
+      "tool_use_id": "toolu_01Mx2e18imNBymEYmysQLFhU",
+      "content": "{\"results\":[{\"id\":\"griffe:DocstringAdmonition#kind\",\"kind\":\"attribute\",\"summary\":\"The kind of this admonition.\",\"import\":\"from griffe import DocstringAdmonition\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringAdmonition#kind\"},{\"id\":\"griffe:DocstringSectionAdmonition#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the section.\",\"import\":\"from griffe import DocstringSectionAdmonition\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringSectionAdmonition#__init__\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01MDbvZXs4qPD3SorcLXC4Jz",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.enumerations\",\"aliases\":[\"griffe._internal.docstrings.google:DocstringSectionKind\",\"griffe._internal.docstrings.models:DocstringSectionKind\",\"griffe._internal.docstrings.numpy:DocstringSectionKind\",\"griffe._internal.extensions.unpack_typeddict:DocstringSectionKind\",\"griffe:DocstringSectionKind\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"args\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwds\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}]}],\"semantics\":{\"summary\":\"Enumeration of the possible docstring section kinds.\"},\"id\":\"griffe:DocstringSectionKind\",\"resolved_via_alias\":\"griffe._internal.enumerations:DocstringSectionKind\",\"import\":\"from griffe import DocstringSectionKind\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"args\",\"type\":\"Any\"},{\"name\":\"kwds\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"griffe:DocstringSectionKind#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"griffe:DocstringSectionKind#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\"}]}],\"not_found\":[\"griffe:DocstringSection#kind\"],\"hint\":\"Some ids were not found \u2014 take ids from search() results; the format is 'module:name' or 'module:Class#member'.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01MJQFia9CzeiHegzXShtQny",
+      "content": "{\"results\":[{\"id\":\"griffe:DocstringSectionParameters\",\"kind\":\"class\",\"summary\":\"This class represents a parameters section.\",\"import\":\"from griffe import DocstringSectionParameters\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringSectionParameters\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01EUi6esCPmBka3FKXXebgKp",
+      "content": "{\"results\":[{\"id\":\"griffe:DocstringSectionReturns\",\"kind\":\"class\",\"summary\":\"This class represents a returns section.\",\"import\":\"from griffe import DocstringSectionReturns\",\"resolved_via_alias\":\"griffe._internal.docstrings.models:DocstringSectionReturns\"}],\"total\":1,\"truncated\":false}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Preselection cut for dimuon events.\n    Requires: at least 2 muons with pT > threshold, opposite charge leading pair.\n    \"\"\"\n    muons = events.Muon\n    pt_threshold = params[\"pT_threshold\"]\n    \n    # Filter muons above pT threshold\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    n_muons = ak.num(muons_selected)\n    has_two_muons = n_muons >= 2\n    \n    # Sort by pT descending and get leading pair\n    muons_sorted = muons_selected[ak.argsort(muons_selected.pt, ascending=False)]\n    leading_pair = muons_sorted[:, :2]\n    \n    # Check opposite charge for leading pair\n    opposite_charge = leading_pair[:, 0].charge * leading_pair[:, 1].charge < 0\n    \n    return has_two_muons & opposite_charge\n\n# Declare the cut for use in preselections\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n)\n\n# Example configuration usage with 15 GeV threshold\nprocessor_config = {\n    \"preselections\": [\n        (\"dimuon\", {\"pT_threshold\": 15}),\n    ]\n}",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Preselection cut for dimuon events.\n    Requires: at least 2 muons with pT > threshold, opposite charge leading pair.\n    \"\"\"\n    muons = events.Muon\n    pt_threshold = params[\"pT_threshold\"]\n    \n    # Filter muons above pT threshold\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    n_muons = ak.num(muons_selected)\n    has_two_muons = n_muons >= 2\n    \n    # Sort by pT descending and get leading pair\n    muons_sorted = muons_selected[ak.argsort(muons_selected.pt, ascending=False)]\n    leading_pair = muons_sorted[:, :2]\n    \n    # Check opposite charge for leading pair\n    opposite_charge = leading_pair[:, 0].charge * leading_pair[:, 1].charge < 0\n    \n    return has_two_muons & opposite_charge\n\n# Declare the cut for use in preselections\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n)\n\n# Example configuration usage with 15 GeV threshold\nprocessor_config = {\n    \"preselections\": [\n        (\"dimuon\", {\"pT_threshold\": 15}),\n    ]\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3004,
+    "cache_read_tokens": 22073,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0172363,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

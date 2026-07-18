@@ -1,0 +1,96 @@
+- id: polars-join
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    You have two polars DataFrames built from inline data: one with columns
+    (id, name) and one with columns (id, amount). Combine them into a single
+    DataFrame that keeps only the rows whose id appears in both, pairing each
+    name with its matching amount.
+  checks:
+    required_symbols: ["polars:DataFrame#join"]
+    forbidden_symbols:
+      - "polars:DataFrame#merge"
+      - "polars:DataFrame#join_inner"
+
+- id: polars-lazy-collect
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given an in-memory polars DataFrame of transactions with columns (user,
+    amount), build a deferred query that keeps only rows where amount is
+    greater than 100 and selects just the user column, then materialize the
+    final result eagerly at the end.
+  checks:
+    required_symbols: ["polars:DataFrame#lazy", "polars:LazyFrame#collect"]
+    forbidden_symbols:
+      - "polars:LazyFrame#compute"
+      - "polars:DataFrame#to_lazy"
+
+- id: polars-cumsum
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given a polars DataFrame with an integer column "value", add a new column
+    "running_total" that holds the cumulative running total of "value" from
+    the top row down to each row.
+  checks:
+    required_symbols: ["polars:Expr#cum_sum"]
+    forbidden_symbols: ["polars:Expr#cumsum"]
+
+- id: polars-pivot
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given a long-format polars DataFrame with columns (date, city,
+    temperature), reshape it into a wide table that has one row per date, one
+    column per city, and each temperature as the cell value.
+  checks:
+    required_symbols: ["polars:DataFrame#pivot"]
+    forbidden_symbols: ["polars:DataFrame#pivot_table"]
+
+- id: polars-unique-rows
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given a polars DataFrame built from inline data that contains some
+    duplicate rows, return a new DataFrame with the duplicate rows removed,
+    keeping the first occurrence of each distinct row.
+  checks:
+    required_symbols: ["polars:DataFrame#unique"]
+    forbidden_symbols: ["polars:DataFrame#drop_duplicates"]
+
+- id: polars-sort-desc
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given a polars DataFrame with columns (product, revenue), return a new
+    DataFrame whose rows are reordered from the highest revenue down to the
+    lowest.
+  checks:
+    required_symbols: ["polars:DataFrame#sort"]
+    forbidden_symbols: ["polars:DataFrame#sort_values"]
+
+- id: polars-map-rows
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given a polars DataFrame with numeric columns "a" and "b", use a plain
+    Python callback invoked once per row (not a vectorized expression) to
+    compute, for every row, "hi" when a + b exceeds 10 and "lo" otherwise.
+  checks:
+    required_symbols: ["polars:DataFrame#map_rows"]
+    forbidden_symbols: ["polars:DataFrame#apply"]
+
+- id: polars-parquet-roundtrip
+  library: polars
+  version: "1.42.1"
+  prompt: >
+    Given an in-memory polars DataFrame, serialize it to the Parquet binary
+    format entirely in memory using a bytes buffer (no file on disk), then
+    read that binary back into a fresh polars DataFrame to confirm the round
+    trip.
+  checks:
+    required_symbols:
+      - "polars:DataFrame#write_parquet"
+      - "polars:read_parquet"
+    forbidden_symbols: ["polars:DataFrame#to_parquet"]

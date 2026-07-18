@@ -1,0 +1,43 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import logging\nfrom typing import Any, Callable\nfrom fastmcp import Server\nfrom fastmcp.server import JSONRPCMessage\nfrom contextlib import asynccontextmanager\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s - %(name)s - %(levelname)s - %(message)s\"\n)\nlogger = logging.getLogger(__name__)\n\n\nclass RequestLoggingMiddleware:\n    \"\"\"Custom middleware that logs incoming requests before handling.\"\"\"\n    \n    def __init__(self, handler: Callable):\n        self.handler = handler\n    \n    async def __call__(self, message: JSONRPCMessage) -> Any:\n        \"\"\"Log incoming request and pass to handler.\"\"\"\n        logger.info(\n            f\"Incoming request - Method: {message.get('method')}, \"\n            f\"ID: {message.get('id')}, \"\n            f\"Params: {message.get('params')}\"\n        )\n        response = await self.handler(message)\n        logger.info(f\"Response prepared for ID: {message.get('id')}\")\n        return response\n\n\n@asynccontextmanager\nasync def lifespan(server: Server):\n    \"\"\"Server lifecycle manager.\"\"\"\n    yield\n\n\nasync def main():\n    # Create server instance\n    server = Server(\n        name=\"logging-example\",\n        version=\"1.0.0\"\n    )\n    \n    # Add request logging middleware\n    original_handler = server._process_message\n    \n    async def middleware_wrapped_handler(message: JSONRPCMessage) -> Any:\n        middleware = RequestLoggingMiddleware(original_handler)\n        return await middleware(message)\n    \n    server._process_message = middleware_wrapped_handler\n    \n    # Define a sample tool\n    @server.call_tool()\n    async def hello(name: str) -> str:\n        \"\"\"Say hello to someone.\"\"\"\n        return f\"Hello, {name}!\"\n    \n    # Run server\n    print(\"Server starting with request logging middleware...\")\n    async with server:\n        await server.wait_for_shutdown()\n\n\nif __name__ == \"__main__\":\n    import asyncio\n    asyncio.run(main())",
+  "result_text": "```python\nimport logging\nfrom typing import Any, Callable\nfrom fastmcp import Server\nfrom fastmcp.server import JSONRPCMessage\nfrom contextlib import asynccontextmanager\n\nlogging.basicConfig(\n    level=logging.INFO,\n    format=\"%(asctime)s - %(name)s - %(levelname)s - %(message)s\"\n)\nlogger = logging.getLogger(__name__)\n\n\nclass RequestLoggingMiddleware:\n    \"\"\"Custom middleware that logs incoming requests before handling.\"\"\"\n    \n    def __init__(self, handler: Callable):\n        self.handler = handler\n    \n    async def __call__(self, message: JSONRPCMessage) -> Any:\n        \"\"\"Log incoming request and pass to handler.\"\"\"\n        logger.info(\n            f\"Incoming request - Method: {message.get('method')}, \"\n            f\"ID: {message.get('id')}, \"\n            f\"Params: {message.get('params')}\"\n        )\n        response = await self.handler(message)\n        logger.info(f\"Response prepared for ID: {message.get('id')}\")\n        return response\n\n\n@asynccontextmanager\nasync def lifespan(server: Server):\n    \"\"\"Server lifecycle manager.\"\"\"\n    yield\n\n\nasync def main():\n    # Create server instance\n    server = Server(\n        name=\"logging-example\",\n        version=\"1.0.0\"\n    )\n    \n    # Add request logging middleware\n    original_handler = server._process_message\n    \n    async def middleware_wrapped_handler(message: JSONRPCMessage) -> Any:\n        middleware = RequestLoggingMiddleware(original_handler)\n        return await middleware(message)\n    \n    server._process_message = middleware_wrapped_handler\n    \n    # Define a sample tool\n    @server.call_tool()\n    async def hello(name: str) -> str:\n        \"\"\"Say hello to someone.\"\"\"\n        return f\"Hello, {name}!\"\n    \n    # Run server\n    print(\"Server starting with request logging middleware...\")\n    async with server:\n        await server.wait_for_shutdown()\n\n\nif __name__ == \"__main__\":\n    import asyncio\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1729,
+    "cache_read_tokens": 44118,
+    "cache_creation_tokens": 849,
+    "cost_usd": 0.0147718,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 23.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:context7",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:FastMCP#add_middleware",
+      "fastmcp.server.middleware:Middleware"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server",
+      "fastmcp.server.JSONRPCMessage"
+    ],
+    "error": null
+  }
+}

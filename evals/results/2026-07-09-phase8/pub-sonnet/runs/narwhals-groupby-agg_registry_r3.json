@@ -1,0 +1,49 @@
+{
+  "case_id": "narwhals-groupby-agg",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\nresult = (\n    df.group_by(\"store\")\n    .agg(\n        nw.col(\"revenue\").sum().alias(\"revenue_sum\"),\n        nw.col(\"items\").mean().alias(\"items_mean\"),\n    )\n)",
+  "result_text": "```python\nimport narwhals as nw\n\nresult = (\n    df.group_by(\"store\")\n    .agg(\n        nw.col(\"revenue\").sum().alias(\"revenue_sum\"),\n        nw.col(\"items\").mean().alias(\"items_mean\"),\n    )\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 634,
+    "cache_read_tokens": 93718,
+    "cache_creation_tokens": 1844,
+    "cost_usd": 0.0487074,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 16.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_015cvdpLnRGjmDZu93zYP5Em",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

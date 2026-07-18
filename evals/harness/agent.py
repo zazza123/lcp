@@ -26,6 +26,20 @@ BUILTIN_TOOLS = [
     "WebFetch", "WebSearch", "Task", "NotebookEdit", "TodoWrite",
 ]
 
+# Arms that talk to an MCP server (each needs an --mcp-config).
+MCP_ARMS = {"lcp", "lcp-skill", "registry", "context7"}
+# Built-ins the sitepkg arm keeps: read-only source inspection.
+SITEPKG_KEEP = ("Read", "Glob", "Grep")
+# Steelman nudge for the context7 arm — the vendor's own recommended
+# always-use rule, so the competitor arm gets the same treatment class
+# as lcp-skill (a task-side instruction), not a handicapped server.
+CONTEXT7_RULE = (
+    "Use the context7 MCP tools to look up current library documentation "
+    "and code examples before writing code that uses a third-party "
+    "library. Resolve the library id first, then fetch the docs for the "
+    "APIs you are about to use."
+)
+
 
 def load_skill_text(path) -> str:
     """Return a SKILL.md body with the YAML frontmatter stripped.
@@ -54,6 +68,15 @@ def build_command(
     lcp-skill   : lcp + --append-system-prompt with the lcp-universal skill
                   body — approximates what a developer with the plugin
                   installed experiences (the skill fires task-side).
+    sitepkg     : no MCP config; keeps Read/Glob/Grep so the model can grep
+                  installed site-packages source directly (the no-tooling
+                  baseline's realistic alternative).
+    registry    : lcp + --mcp-config pointed at a registry-backed server —
+                  same flags as lcp, different server behind the config.
+    context7    : the competitor MCP server, pre-approved via
+                  --allowedTools "mcp__context7" and nudged with
+                  CONTEXT7_RULE (the vendor's own recommended always-use
+                  rule) via --append-system-prompt.
 
     Built-in tools (Bash, Read, Write, etc.) are denied via --disallowedTools
     rather than `--tools ""`: the latter also strips MCP tools from the
@@ -63,25 +86,32 @@ def build_command(
     named "lcp" (the documented server-level wildcard pattern). Headless
     `-p` runs auto-deny any tool call requiring interactive permission
     approval, so without this an actual mcp__lcp__* call by the model would
-    silently fail with a permission denial (see Task 10 smoke test). This
-    flag is a no-op in the baseline arm, which never registers a server
-    named "lcp".
+    silently fail with a permission denial (see Task 10 smoke test).
     """
+    allowed = None
+    if arm in ("lcp", "lcp-skill", "registry"):
+        allowed = "mcp__lcp"
+    elif arm == "context7":
+        allowed = "mcp__context7"
+    denied = list(BUILTIN_TOOLS)
+    if arm == "sitepkg":
+        denied = [t for t in BUILTIN_TOOLS if t not in SITEPKG_KEEP]
     cmd = [
         "claude", "-p", prompt,
         "--model", model,
         "--output-format", "stream-json", "--verbose",
         "--strict-mcp-config",
-        "--disallowedTools", *BUILTIN_TOOLS,
-        "--allowedTools", "mcp__lcp",
+        "--disallowedTools", *denied,
     ]
-    if arm in ("lcp", "lcp-skill"):
+    if allowed:
+        cmd += ["--allowedTools", allowed]
+    if arm in MCP_ARMS:
         if mcp_config is None:
             raise ValueError(f"{arm} arm requires an mcp_config path")
         cmd += ["--mcp-config", str(mcp_config)]
-    if arm == "lcp-skill":
-        if append_system is None:
-            raise ValueError("lcp-skill arm requires append_system text")
+    if arm == "lcp-skill" and append_system is None:
+        raise ValueError("lcp-skill arm requires append_system text")
+    if append_system is not None:
         cmd += ["--append-system-prompt", append_system]
     return cmd
 
@@ -101,10 +131,32 @@ def _truncate_input(value: dict, limit: int = 500) -> dict:
     return {"_truncated": snippet}
 
 
+def _tool_result_text(content) -> str:
+    """Flatten a stream-json tool_result `content` into text.
+
+    Real CLI streams deliver MCP tool results as a plain JSON string; the
+    Anthropic block form is a list of parts, of which only `type == "text"`
+    parts carry payload (others, e.g. `tool_reference`, carry none). Handle
+    both so the captured content is never silently empty.
+    """
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return " ".join(
+            p.get("text", "") for p in content
+            if isinstance(p, dict) and p.get("type") == "text"
+        )
+    return str(content)
+
+
 def parse_stream(lines: Iterable[str]) -> dict:
     """Parse stream-json lines: count tool_use blocks, read the final result."""
     tool_calls = 0
     tool_call_details: list[dict] = []
+    tool_results: list[dict] = []
+    mcp_ids: set[str] = set()
     result: dict = {}
     for line in lines:
         line = line.strip()
@@ -125,6 +177,19 @@ def parse_stream(lines: Iterable[str]) -> dict:
                             "input": _truncate_input(b.get("input") or {}),
                         }
                     )
+                    if b.get("name", "").startswith("mcp__"):
+                        mcp_ids.add(b.get("id", ""))
+        elif event.get("type") == "user":
+            for b in event.get("message", {}).get("content", []):
+                if (
+                    isinstance(b, dict)
+                    and b.get("type") == "tool_result"
+                    and b.get("tool_use_id") in mcp_ids
+                ):
+                    tool_results.append({
+                        "tool_use_id": b.get("tool_use_id"),
+                        "content": _tool_result_text(b.get("content"))[:2000],
+                    })
         elif event.get("type") == "result":
             result = event
     usage = result.get("usage", {})
@@ -132,6 +197,7 @@ def parse_stream(lines: Iterable[str]) -> dict:
         "result_text": result.get("result") or "",
         "tool_calls": tool_calls,
         "tool_call_details": tool_call_details,
+        "tool_results": tool_results,
         "input_tokens": usage.get("input_tokens", 0),
         "output_tokens": usage.get("output_tokens", 0),
         "cache_read_tokens": usage.get("cache_read_input_tokens", 0),
@@ -156,6 +222,7 @@ class AgentRun:
     num_turns: int
     duration_s: float
     tool_call_details: list = field(default_factory=list)
+    tool_results: list = field(default_factory=list)
     error: str | None = None
 
 
@@ -181,6 +248,7 @@ def run_agent(
             output_tokens=0, cache_read_tokens=0, cache_creation_tokens=0,
             cost_usd=0.0, num_turns=0, duration_s=time.monotonic() - start,
             tool_call_details=[],
+            tool_results=[],
             error=f"timeout after {timeout}s",
         )
     duration = time.monotonic() - start
@@ -203,5 +271,6 @@ def run_agent(
         num_turns=parsed["num_turns"],
         duration_s=duration,
         tool_call_details=parsed["tool_call_details"],
+        tool_results=parsed["tool_results"],
         error=error,
     )

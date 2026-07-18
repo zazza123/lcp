@@ -1,0 +1,128 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.client import AsyncClientAPISessionNotAvailable\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    address = \"So11111111111111111111111111111111111111112\"\n\n    try:\n        # NOTE: intentionally not using `async with solana_fm.async_client as client:`\n        response = await solana_fm.async_client.get_token_supply(address)\n        print(response)\n    except AsyncClientAPISessionNotAvailable as e:\n        print(f\"Async session not available: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.client import AsyncClientAPISessionNotAvailable\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    address = \"So11111111111111111111111111111111111111112\"\n\n    try:\n        # NOTE: intentionally not using `async with solana_fm.async_client as client:`\n        response = await solana_fm.async_client.get_token_supply(address)\n        print(response)\n    except AsyncClientAPISessionNotAvailable as e:\n        print(f\"Async session not available: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 1560,
+    "cache_read_tokens": 254419,
+    "cache_creation_tokens": 27020,
+    "cost_usd": 0.26188770000000006,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 255.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SolanaFM",
+        "library": "cyhole",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "async client session not available",
+        "library": "cyhole",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solana_fm:SolanaFM",
+          "cyhole.solana_fm.interaction:SolanaFMAsyncClient",
+          "cyhole.solana_fm.interaction:SolanaFMAsyncClient#get_token_supply"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "exception",
+        "library": "cyhole",
+        "module": "cyhole.core.exception",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solana_fm.interaction:SolanaFMAsyncClient#is_connected",
+          "cyhole.solana_fm.interaction:SolanaFMAsyncClient#api"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.core.client:AsyncClientAPISessionNotAvailable"
+        ],
+        "library": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01KAU18xVRp8BiipoP4hS3k5",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyhole\",\"version\":\"0.3.0\",\"language\":\"python\",\"symbol_count\":1274,\"module_count\":67,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyhole') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01DxeVJkuBKAmw5bHBxF1iD3",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm:SolanaFM\",\"kind\":\"class\",\"summary\":\"Class used to connect [SolanaFM](https://solana.fm/) API, popular site to interact and explore Solana blockchain. To have access SolanaFM API is **not** required an API key, but it is recommended to have one to increase the rate limit.\",\"import\":\"from cyhole.solana_fm import SolanaFM\",\"resolved_via_alias\":\"cyhole.solana_fm.interaction:SolanaFM\"},{\"id\":\"cyhole.solana_fm.interaction:SolanaFMAsyncClient\",\"kind\":\"class\",\"summary\":\"Client used for asynchronous API calls for `SolanaFM` interaction.\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMAsyncClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMAsyncClient\"},{\"id\":\"cyhole.solana_fm.interaction:SolanaFMClient\",\"kind\":\"class\",\"summary\":\"Client used for synchronous API calls for `SolanaFM` interaction.\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMClient\"},{\"id\":\"cyhole.solana_fm.exception:SolanaFMException\",\"kind\":\"class\",\"summary\":\"General Exception for SolanaFM API.\",\"import\":\"from cyhole.solana_fm.exception import SolanaFMException\"},{\"id\":\"cyhole.solana_fm.client:SolanaFMBlocksPaginationType\",\"kind\":\"class\",\"summary\":\"Pagination type for Solana FM blocks.\",\"import\":\"from cyhole.solana_fm.client import SolanaFMBlocksPaginationType\",\"resolved_via_alias\":\"cyhole.solana_fm.param:SolanaFMBlocksPaginationType\"},{\"id\":\"cyhole.solana_fm.schema:SolanaFMBaseResponse\",\"kind\":\"class\",\"summary\":\"Model used to identify the base response of the SolanaFM API.\",\"import\":\"from cyhole.solana_fm.schema import SolanaFMBaseResponse\"},{\"id\":\"cyhole.solana_fm.schema:SolanaFMBlockData\",\"kind\":\"class\",\"summary\":\"Model used to identify the data of the SolanaFM block.\",\"import\":\"from cyhole.solana_fm.schema import SolanaFMBlockData\"},{\"id\":\"cyhole.solana_fm.schema:SolanaFMPagination\",\"kind\":\"class\",\"summary\":\"Model used to identify the pagination of the SolanaFM API.\",\"impo"
+    },
+    {
+      "tool_use_id": "toolu_01LHXXzETfbpcgGzTjyvufiK",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_013ZNMxWuY3vuvKNfEYm8nLX",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.interaction\",\"aliases\":[\"cyhole.solana_fm:SolanaFM\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"api_key\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"specify the API key to use for the connection.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class used to connect [SolanaFM](https://solana.fm/) API, popular site to interact and explore Solana blockchain. To have access SolanaFM API is **not** required an API key, but it is recommended to have one to increase the rate limit.\",\"description\":\"Check [https://docs.solana.fm/](https://docs.solana.fm/) for all the details on the available endpoints.\\n\\n        !!! info\\n            If the API key is not provided during the object creation, then it is tried to be \\n            retrieved also from ENV variable **SOLANA_FM_API_KEY**.\\n\\n        Parameters:\\n            api_key: specify the API key to use for the connection.\\n\\n        **Example**\\n        ```python\\n        import asyncio\\n        from cyhole.solana_fm import SolanaFM\\n\\n        account = \\\"ACCOUNT_ID\\\"\\n        solana_fm = SolanaFM()\\n\\n        # Get account transactions\\n        # synchronous\\n        response = solana_fm.client.get_account_transactions(account)\\n        print(\\\"Transactions Extracted:\\\", len(response.result.data))\\n\\n        # asynchronous\\n        async def main() -> None:\\n            async with solana_fm.async_client as client:\\n                response = await client.get_account_transactions(account)\\n                print(\\\"Transactions Extracted:\\\", len(response.result.data))\\n\\n        asyncio.run(main())\\n        ```\"},\"id\":\"cyhole.solana_fm:SolanaFM\",\"resolved_via_alias\":\"cyhole.solana_fm.interaction:SolanaFM\",\"import\":\"from cyhole.solana_fm import SolanaFM\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"api_key\",\"type\":\"UnionType[str, None]\",\"default\":null}],\"is_async\":false,\"return_type\":\"No"
+    },
+    {
+      "tool_use_id": "toolu_01TjvDcfFedjVezihfsoEWPd",
+      "content": "{\"results\":[{\"id\":\"cyhole.helius.exception:CyholeException\",\"kind\":\"class\",\"summary\":\"General exception of Cyhole library\",\"import\":\"from cyhole.helius.exception import CyholeException\",\"resolved_via_alias\":\"cyhole.core.exception:CyholeException\"},{\"id\":\"cyhole.core.exception:\",\"kind\":\"module\",\"summary\":\"Module cyhole.core.exception\",\"import\":\"import cyhole.core.exception\"},{\"id\":\"cyhole.core.client:AsyncClientAPISessionNotAvailable\",\"kind\":\"class\",\"summary\":\"Exception raised when the [`AsyncAPIClient`][cyhole.core.AsyncAPIClient] has not an open session to use.\",\"import\":\"from cyhole.core.client import AsyncClientAPISessionNotAvailable\",\"resolved_via_alias\":\"cyhole.core.exception:AsyncClientAPISessionNotAvailable\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01GCyzWEnexd2TkLi4eP5het",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyhole.solana_fm.client\",\"signatures\":[{\"async_\":false,\"returns\":\"bool\"}],\"semantics\":{\"summary\":\"Check if the session is available.\"},\"id\":\"cyhole.solana_fm.interaction:SolanaFMAsyncClient#is_connected\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMAsyncClient#is_connected\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMAsyncClient\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"bool\"}},{\"kind\":\"method\",\"module\":\"cyhole.solana_fm.client\",\"signatures\":[{\"async_\":true,\"params\":[{\"name\":\"type\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"url\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"args\",\"type\":\"tuple\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"},{\"name\":\"kwargs\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\"}],\"semantics\":{\"summary\":\"Method api\"},\"id\":\"cyhole.solana_fm.interaction:SolanaFMAsyncClient#api\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMAsyncClient#api\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMAsyncClient\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"type\",\"type\":\"str\"},{\"name\":\"url\",\"type\":\"str\"},{\"name\":\"args\",\"type\":\"tuple\"},{\"name\":\"kwargs\",\"type\":\"dict[str, Any]\"}],\"optional_parameters\":[],\"is_async\":true,\"return_type\":\"Response\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01DNo9oQTAaNYCrrofJS2BF7",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.core.exception\",\"aliases\":[\"cyhole.core.client:AsyncClientAPISessionNotAvailable\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"description\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}]}],\"semantics\":{\"summary\":\"Exception raised when the [`AsyncAPIClient`][cyhole.core.AsyncAPIClient] has not an open session to use.\"},\"id\":\"cyhole.core.client:AsyncClientAPISessionNotAvailable\",\"resolved_via_alias\":\"cyhole.core.exception:AsyncClientAPISessionNotAvailable\",\"import\":\"from cyhole.core.client import AsyncClientAPISessionNotAvailable\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"description\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"cyhole.core.client:AsyncClientAPISessionNotAvailable#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"cyhole.core.client:AsyncClientAPISessionNotAvailable#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\"}]}],\"not_found\":[]}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

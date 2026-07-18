@@ -1,0 +1,37 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom sentence_transformers import SentenceTransformer\n\n# Initialize Pixeltable\nclient = pxt.Client()\n\n# Get the docs table\ndocs = client.get_table('docs')\n\n# Load the sentence-transformers model\nembedder = SentenceTransformer('all-MiniLM-L6-v2')\n\n# Define UDF for embedding\n@pxt.udf\ndef embed_text(text: str):\n    return embedder.encode(text).tolist()\n\n# Add embedding column to the table\ndocs.add_column('embedding', embed_text(docs.content))\n\n# Create index for vector similarity search\ndocs.create_index('embedding', index_type='vector')\n\n# Create query embedding\nquery = \"climate change policy\"\nquery_embedding = embedder.encode(query).tolist()\n\n# Execute similarity search - find 5 most similar documents\nresults = (\n    docs\n    .select(docs.content, distance=docs.embedding.distance(query_embedding))\n    .order_by('distance')\n    .limit(5)\n)\n\n# Print results from closest to farthest\nfor row in results:\n    print(f\"Content: {row['content']}\")\n    print(f\"Distance: {row['distance']:.4f}\\n\")",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom sentence_transformers import SentenceTransformer\n\n# Initialize Pixeltable\nclient = pxt.Client()\n\n# Get the docs table\ndocs = client.get_table('docs')\n\n# Load the sentence-transformers model\nembedder = SentenceTransformer('all-MiniLM-L6-v2')\n\n# Define UDF for embedding\n@pxt.udf\ndef embed_text(text: str):\n    return embedder.encode(text).tolist()\n\n# Add embedding column to the table\ndocs.add_column('embedding', embed_text(docs.content))\n\n# Create index for vector similarity search\ndocs.create_index('embedding', index_type='vector')\n\n# Create query embedding\nquery = \"climate change policy\"\nquery_embedding = embedder.encode(query).tolist()\n\n# Execute similarity search - find 5 most similar documents\nresults = (\n    docs\n    .select(docs.content, distance=docs.embedding.distance(query_embedding))\n    .order_by('distance')\n    .limit(5)\n)\n\n# Print results from closest to farthest\nfor row in results:\n    print(f\"Content: {row['content']}\")\n    print(f\"Distance: {row['distance']:.4f}\\n\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3428,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6974,
+    "cost_usd": 0.0326162,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.Client"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "case_id": "griffe-loader-aliases",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import GriffeLoader\n\nloader = GriffeLoader(search_paths=[\"./src\"])\nmypkg = loader.load(\"mypkg\")\nunresolved, iterations = loader.resolve_aliases()\n\nprint(f\"Loaded package: {mypkg}\")\nprint(f\"Unresolved aliases: {unresolved}\")\nprint(f\"Resolution iterations: {iterations}\")",
+  "result_text": "```python\nfrom griffe import GriffeLoader\n\nloader = GriffeLoader(search_paths=[\"./src\"])\nmypkg = loader.load(\"mypkg\")\nunresolved, iterations = loader.resolve_aliases()\n\nprint(f\"Loaded package: {mypkg}\")\nprint(f\"Unresolved aliases: {unresolved}\")\nprint(f\"Resolution iterations: {iterations}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 43,
+    "output_tokens": 1004,
+    "cache_read_tokens": 121867,
+    "cache_creation_tokens": 5189,
+    "cost_usd": 0.0276277,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 19.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "loader",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:GriffeLoader#__init__",
+          "griffe:GriffeLoader#load",
+          "griffe:GriffeLoader#resolve_aliases"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01LyHce2cCVNx9Lf5hFAXjKF",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01EpLE9wi3UYSE1ddeDJZi6x",
+      "content": "{\"results\":[{\"id\":\"griffe:GriffeLoader\",\"kind\":\"class\",\"summary\":\"The Griffe loader, allowing to load data from modules.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader\"},{\"id\":\"griffe._internal.loader:\",\"kind\":\"module\",\"summary\":\"Module griffe._internal.loader\",\"import\":\"import griffe._internal.loader\"},{\"id\":\"griffe:GriffeLoader#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the loader.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader#__init__\"},{\"id\":\"griffe:Stats\",\"kind\":\"class\",\"summary\":\"Load statistics for a Griffe loader.\",\"import\":\"from griffe import Stats\",\"resolved_via_alias\":\"griffe._internal.stats:Stats\"},{\"id\":\"griffe:inspect\",\"kind\":\"function\",\"summary\":\"Inspect a module.\",\"import\":\"from griffe import inspect\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:inspect\"},{\"id\":\"griffe:visit\",\"kind\":\"function\",\"summary\":\"Parse and visit a module file.\",\"import\":\"from griffe import visit\",\"resolved_via_alias\":\"griffe._internal.agents.visitor:visit\"},{\"id\":\"griffe:Extension#on_alias\",\"kind\":\"method\",\"summary\":\"Run on aliases once the object tree has been fully constructed.\",\"import\":\"from griffe import Extension\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extension#on_alias\"},{\"id\":\"griffe:Extension#on_attribute\",\"kind\":\"method\",\"summary\":\"Run on attributes once the object tree has been fully constructed.\",\"import\":\"from griffe import Extension\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extension#on_attribute\"},{\"id\":\"griffe:Extension#on_class\",\"kind\":\"method\",\"summary\":\"Run on classes once the object tree has been fully constructed.\",\"import\":\"from griffe import Extension\",\"resolved_via_alias\":\"griffe._internal.extensions.base:Extension#on_class\"},{\"id\":\"griffe:Extension#on_function\",\"kind\":\"method\",\"summary\":\"Run on functions once the object tree has been fully constructed.\",\"import\":\"from griffe import Extension\",\""
+    },
+    {
+      "tool_use_id": "toolu_01EMXUnUtdgmx8xL2n6kbvtG",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"griffe._internal.loader\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The extensions to use.\"},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The paths to search into.\"},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The docstring parser to use. By default, no parsing is done.\"},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Docstring parsing options.\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of source code lines.\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of modules.\"},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to allow inspecting modules when visiting them is not possible.\"},{\"name\":\"force_inspection\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"store_source\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to store code source in the lines collection.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Initialize the loader.\",\"description\":\"Parameters:\\n            extensions: The extensions to use.\\n            search_paths: The paths to search into.\\n            docstring_parser: The docstring parser to use. By default, no parsing is done.\\n            docstring_options: Docstring parsing options.\\n            lines_collection: A collection of source code lin"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

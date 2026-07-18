@@ -1,0 +1,60 @@
+{
+  "case_id": "pixeltable-create-insert",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Create the directory\npxt.create_dir('demo')\n\n# Create the table with the specified columns\nt = pxt.create_table('demo.films', {\n    'title': pxt.String,\n    'year': pxt.Int,\n    'revenue': pxt.Float\n})\n\n# Insert both rows in a single call\nt.insert([\n    {'title': 'Jaws', 'year': 1975, 'revenue': 470.7},\n    {'title': 'Alien', 'year': 1979, 'revenue': 184.7}\n])",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Create the directory\npxt.create_dir('demo')\n\n# Create the table with the specified columns\nt = pxt.create_table('demo.films', {\n    'title': pxt.String,\n    'year': pxt.Int,\n    'revenue': pxt.Float\n})\n\n# Insert both rows in a single call\nt.insert([\n    {'title': 'Jaws', 'year': 1975, 'revenue': 470.7},\n    {'title': 'Alien', 'year': 1979, 'revenue': 184.7}\n])\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1087,
+    "cache_read_tokens": 92277,
+    "cache_creation_tokens": 2966,
+    "cost_usd": 0.0206297,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 28.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "pixeltable",
+        "query": "create directory table add rows pixeltable API"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/pixeltable/pixeltable",
+        "query": "create directory create table add rows insert data"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01ET7gXK9HaeQj6BQoutEf7Y",
+      "content": "Available Libraries:\n\n- Title: Pixeltable\n- Context7-compatible library ID: /pixeltable/pixeltable\n- Description: Pixeltable is a declarative data infrastructure for multimodal AI applications, unifying storage, retrieval, and orchestration for diverse data types.\n- Code Snippets: 3585\n- Source Reputation: High\n----------\n- Title: Pixeltable\n- Context7-compatible library ID: /websites/pixeltable\n- Description: Pixeltable is a multimodal data platform that enables building and managing AI applications with support for tables, computed columns, UDFs, embeddings, and version control.\n- Code Snippets: 30\n- Source Reputation: Medium\n----------\n- Title: Pixeltable\n- Context7-compatible library ID: /llmstxt/pixeltable_llms-full_txt\n- Description: Pixeltable is a data management system and framework for AI and LLM applications, providing features like data versioning, time travel, and robust integrations with various large language models.\n- Code Snippets: 979\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01CQgrb3spWFF4KYGg7HLZGX",
+      "content": "### Create Pixeltable Directory and Table\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/overview/ten-minute-tour.ipynb\n\nCreates a directory and a table for image data. It ensures a clean environment by dropping the directory if it already exists.\n\n```python\nimport pixeltable as pxt\n\n# Create the directory `demo`, dropping it first (if it exists)\n# to ensure a clean environment.\npxt.drop_dir('demo', force=True)\npxt.create_dir('demo')\n\n# Create the table `demo/first` with a single column `input_image`\nt = pxt.create_table('demo/first', {'input_image': pxt.Image})\n```\n\n--------------------------------\n\n### Create Table and Insert Data\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/core/custom-iterators.ipynb\n\nThis snippet demonstrates how to create a Pixeltable table for image data and insert multiple image records into it.\n\n```python\nt = pxt.create_table(\n    'iterators_demo/images',\n    {'image': pxt.Image},\n    if_exists='replace_force',\n)\nt.insert({'image': image} for image in images)\n\n```\n\n--------------------------------\n\n### Insert More Data\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/core/version-control-history.ipynb\n\nInserts an additional row into the table, creating version 4.\n\n```python\n# Insert more data (version 4)\nproducts.insert(\n    [{'name': 'Thingamajig', 'price': 49.99, 'category': 'Tools'}]\n)\n```\n\n--------------------------------\n\n### Insert Initial Data\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/core/version-control-history.ipynb\n\nInserts the first set of rows into the newly created table. This operation creates version 1 of the table.\n\n```python\n# Insert data (version 1)\nproducts.insert(\n    [\n        {'name': 'Widget', 'price': 9.99, 'category': 'Tools'},\n        {'name': 'Gadget', 'price': 24.99, 'category': 'Electronics'},\n        {'name': 'Gizmo', 'price': 14.99, 'category': 'Electroni"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

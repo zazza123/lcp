@@ -1,0 +1,108 @@
+{
+  "case_id": "pixeltable-import-csv",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.io import import_csv\n\npxt.create_dir(\"demo\", if_exists=\"ignore\")\n\nt = import_csv(\"demo.trades\", \"trades.csv\")",
+  "result_text": "Verified: `import_csv(tbl_name, filepath_or_buffer, ...)` creates and fills the table directly, `create_dir` supports `if_exists='ignore'`.\n\n```python\nimport pixeltable as pxt\nfrom pixeltable.io import import_csv\n\npxt.create_dir(\"demo\", if_exists=\"ignore\")\n\nt = import_csv(\"demo.trades\", \"trades.csv\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 825,
+    "cache_read_tokens": 206206,
+    "cache_creation_tokens": 10484,
+    "cost_usd": 0.1371768,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 18.7
+  },
+  "tool_call_details": [
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "import csv",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "io module csv",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "csv",
+        "module": "pixeltable.io.csv"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "create_dir",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable.io:import_csv",
+          "pixeltable:create_dir"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011YdSsb5ehm6EkvWxQA7p83",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_0143rF4J6Rcbw1xGWC7bGJTa",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018iMSjvzmMQgXeVY98zpzbP",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012GkmnkBuqVNfLJbVczyifp",
+      "content": "{\"library\":{\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"pixeltable\",\"symbols\":1},{\"module\":\"pixeltable._query\",\"symbols\":60},{\"module\":\"pixeltable._version\",\"symbols\":1},{\"module\":\"pixeltable.catalog\",\"symbols\":1},{\"module\":\"pixeltable.catalog.catalog\",\"symbols\":43},{\"module\":\"pixeltable.catalog.catalog_base\",\"symbols\":12},{\"module\":\"pixeltable.catalog.catalog_proxy\",\"symbols\":13},{\"module\":\"pixeltable.catalog.column\",\"symbols\":43},{\"module\":\"pixeltable.catalog.dir\",\"symbols\":3},{\"module\":\"pixeltable.catalog.globals\",\"symbols\":39},{\"module\":\"pixeltable.catalog.insertable_table\",\"symbols\":49},{\"module\":\"pixeltable.catalog.insertable_table_proxy\",\"symbols\":45},{\"module\":\"pixeltable.catalog.local_table\",\"symbols\":48},{\"module\":\"pixeltable.catalog.path\",\"symbols\":23},{\"module\":\"pixeltable.catalog.schema_object\",\"symbols\":4},{\"module\":\"pixeltable.catalog.table\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_metadata\",\"symbols\":6},{\"module\":\"pixeltable.catalog.table_path\",\"symbols\":73},{\"module\":\"pixeltable.catalog.table_proxy\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_version\",\"symbols\":80},{\"module\":\"pixeltable.catalog.table_version_handle\",\"symbols\":21},{\"module\":\"pixeltable.catalog.tbl_ops\",\"symbols\":95},{\"module\":\"pixeltable.catalog.update_status\",\"symbols\":27},{\"module\":\"pixeltable.catalog.view\",\"symbols\":49},{\"module\":\"pixeltable.config\",\"symbols\":26},{\"module\":\"pixeltable.env\",\"symbols\":64},{\"module\":\"pixeltable.exceptions\",\"symbols\":50},{\"module\":\"pixeltable.exec\",\"symbols\":1},{\"module\":\"pixeltable.exec.aggregation_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.cache_prefetch_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_materialization_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_reconstruction_node\",\"symbols\":18},{\"module\":\"pixeltable.exec.component_iteration_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.data_row_batch\",\"symbols\":8},{\"module\":\"pixeltable.exec.e"
+    },
+    {
+      "tool_use_id": "toolu_01DDQcpin4koYbV32vcKPUoQ",
+      "content": "{\"results\":[{\"id\":\"pixeltable.io:export_csv\",\"kind\":\"function\",\"summary\":\"Exports a query result or table to a CSV file.\",\"import\":\"from pixeltable.io import export_csv\",\"resolved_via_alias\":\"pixeltable.io.csv:export_csv\"},{\"id\":\"pixeltable.io:import_csv\",\"kind\":\"function\",\"summary\":\"Creates a new base table from a csv file. This is a convenience method and is equivalent to calling `import_pandas(table_path, pd.read_csv(filepath_or_buffer, **kwargs), schema=schema)`. See the Pandas documentation for [`read_csv`](https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html) for more details.\",\"import\":\"from pixeltable.io import import_csv\",\"resolved_via_alias\":\"pixeltable.io.csv:import_csv\"},{\"id\":\"pixeltable.io.csv:\",\"kind\":\"module\",\"summary\":\"Module pixeltable.io.csv\",\"import\":\"import pixeltable.io.csv\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01BpmnR4HYr9f2hKWK5RbmEd",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#create_dir\",\"kind\":\"method\",\"summary\":\"Method create_dir\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#create_dir\"},{\"id\":\"pixeltable.catalog:CatalogBase#create_dir\",\"kind\":\"method\",\"summary\":\"Method create_dir\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#create_dir\"},{\"id\":\"pixeltable.catalog:CatalogProxy#create_dir\",\"kind\":\"method\",\"summary\":\"Method create_dir\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#create_dir\"},{\"id\":\"pixeltable:create_dir\",\"kind\":\"function\",\"summary\":\"Create a directory.\",\"import\":\"from pixeltable import create_dir\",\"resolved_via_alias\":\"pixeltable.globals:create_dir\"}],\"total\":4,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Bc8ZBJxcK3VThGQruav6FD",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.io.csv\",\"aliases\":[\"pixeltable.io:import_csv\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"tbl_name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"filepath_or_buffer\",\"type\":\"UnionType[str, PathLike]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"schema_overrides\",\"type\":\"UnionType[dict[str, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"primary_key\",\"type\":\"UnionType[str, list[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"comment\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Table\",\"returns_description\":\"A handle to the newly created [`Table`][pixeltable.Table].\"}],\"semantics\":{\"summary\":\"Creates a new base table from a csv file. This is a convenience method and is equivalent to calling `import_pandas(table_path, pd.read_csv(filepath_or_buffer, **kwargs), schema=schema)`. See the Pandas documentation for [`read_csv`](https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html) for more details.\",\"description\":\"Returns:\\n        A handle to the newly created [`Table`][pixeltable.Table].\"},\"id\":\"pixeltable.io:import_csv\",\"resolved_via_alias\":\"pixeltable.io.csv:import_csv\",\"import\":\"from pixeltable.io import import_csv\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"tbl_name\",\"type\":\"str\"},{\"name\":\"filepath_or_buffer\",\"type\":\"UnionType[str, PathLike]\"},{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"schema_overrides\",\"type\":\"UnionType[dict[str, Any], None]\",\"default\":null},{\"name\":\"primary_key\",\"type\":\"UnionType[str, list[str], None]\",\"default\":null},{\"name\":\"comment\",\"type\":\"UnionType[str, None]\",\"default\":null}],\"is_async\":false,\"return_type\":\"Table\",\"returns_classes\":[\"pixeltable.metadata.converters.util:Table\",\"pixeltable:Table\"],\"next\":\"returns Table \u2192 "
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

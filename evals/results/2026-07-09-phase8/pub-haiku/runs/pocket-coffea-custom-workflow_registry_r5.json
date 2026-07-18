@@ -1,0 +1,53 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom coffea.nanoevents import NanoEventsFactory\nfrom pocket_coffea.lib.analysis_tools import BaseProcessor\n\n\nclass DimuonProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor.\"\"\"\n    \n    def process_objects(self, events):\n        \"\"\"\n        Object preselection: create MuonGood collection.\n        Muons with pT > 15 GeV and |eta| < 2.4\n        \"\"\"\n        muons = events.Muon\n        \n        muon_mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        events[\"MuonGood\"] = muons[muon_mask]\n        \n        return events\n    \n    def count_objects(self, events):\n        \"\"\"\n        Object counting: store number of selected muons per event.\n        \"\"\"\n        events[\"nMuonGood\"] = ak.num(events[\"MuonGood\"])\n        \n        return events\n\n\nif __name__ == \"__main__\":\n    processor = DimuonProcessor()",
+  "result_text": "```python\nimport awkward as ak\nfrom coffea.nanoevents import NanoEventsFactory\nfrom pocket_coffea.lib.analysis_tools import BaseProcessor\n\n\nclass DimuonProcessor(BaseProcessor):\n    \"\"\"Minimal dimuon analysis processor.\"\"\"\n    \n    def process_objects(self, events):\n        \"\"\"\n        Object preselection: create MuonGood collection.\n        Muons with pT > 15 GeV and |eta| < 2.4\n        \"\"\"\n        muons = events.Muon\n        \n        muon_mask = (muons.pt > 15) & (ak.abs(muons.eta) < 2.4)\n        events[\"MuonGood\"] = muons[muon_mask]\n        \n        return events\n    \n    def count_objects(self, events):\n        \"\"\"\n        Object counting: store number of selected muons per event.\n        \"\"\"\n        events[\"nMuonGood\"] = ak.num(events[\"MuonGood\"])\n        \n        return events\n\n\nif __name__ == \"__main__\":\n    processor = DimuonProcessor()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 27,
+    "output_tokens": 1120,
+    "cache_read_tokens": 61282,
+    "cache_creation_tokens": 9016,
+    "cost_usd": 0.029787200000000003,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 18.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__get_symbol,mcp__lcp__search",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Sy6ZuJu1QJPrZgHaammMvK",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.analysis_tools.BaseProcessor"
+    ],
+    "error": null
+  }
+}

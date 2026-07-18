@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint\n\napp = Flask(__name__)\n\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return {'users': ['Alice', 'Bob', 'Charlie']}\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return {'id': user_id, 'name': f'User {user_id}'}\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return {'message': 'User created'}, 201\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return {'message': f'User {user_id} deleted'}\n\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef index():\n    return {'message': 'Welcome to the Flask app'}\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint\n\napp = Flask(__name__)\n\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return {'users': ['Alice', 'Bob', 'Charlie']}\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return {'id': user_id, 'name': f'User {user_id}'}\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return {'message': 'User created'}, 201\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return {'message': f'User {user_id} deleted'}\n\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef index():\n    return {'message': 'Welcome to the Flask app'}\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 708,
+    "cache_read_tokens": 21999,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0057488999999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

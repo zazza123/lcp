@@ -1,0 +1,67 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from hamana import Query\nfrom hamana.core.column import IntegerColumn, StringColumn, DateColumn\n\nquery = Query(\n    \"SELECT id, name, created_at FROM users\",\n    columns=[\n        IntegerColumn(name=\"id\", order=0),\n        StringColumn(name=\"name\", order=1),\n        DateColumn(name=\"created_at\", order=2),\n    ],\n)",
+  "result_text": "```python\nfrom hamana import Query\nfrom hamana.core.column import IntegerColumn, StringColumn, DateColumn\n\nquery = Query(\n    \"SELECT id, name, created_at FROM users\",\n    columns=[\n        IntegerColumn(name=\"id\", order=0),\n        StringColumn(name=\"name\", order=1),\n        DateColumn(name=\"created_at\", order=2),\n    ],\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1186,
+    "cache_read_tokens": 217830,
+    "cache_creation_tokens": 21787,
+    "cost_usd": 0.213897,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 28.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Query|class.*Column",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana",
+        "-n": true,
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/query.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/core/column.py",
+        "offset": 140,
+        "limit": 200
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/core/column.py",
+        "offset": 354,
+        "limit": 130
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/__init__.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

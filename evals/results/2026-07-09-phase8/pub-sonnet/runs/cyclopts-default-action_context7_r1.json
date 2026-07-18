@@ -1,0 +1,60 @@
+{
+  "case_id": "cyclopts-default-action",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from cyclopts import App\n\napp = App(name=\"myservice\")\n\n\n@app.command\ndef start():\n    \"\"\"Start the service.\"\"\"\n    print(\"Starting service...\")\n\n\n@app.command\ndef stop():\n    \"\"\"Stop the service.\"\"\"\n    print(\"Stopping service...\")\n\n\n@app.default\ndef status():\n    \"\"\"Show service status (runs when invoked with no subcommand).\"\"\"\n    print(\"Service status: unknown\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Confirmed the mechanism: `@app.default`.\n\n```python\nfrom cyclopts import App\n\napp = App(name=\"myservice\")\n\n\n@app.command\ndef start():\n    \"\"\"Start the service.\"\"\"\n    print(\"Starting service...\")\n\n\n@app.command\ndef stop():\n    \"\"\"Stop the service.\"\"\"\n    print(\"Stopping service...\")\n\n\n@app.default\ndef status():\n    \"\"\"Show service status (runs when invoked with no subcommand).\"\"\"\n    print(\"Service status: unknown\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1346,
+    "cache_read_tokens": 125172,
+    "cache_creation_tokens": 18115,
+    "cost_usd": 0.1664556,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 32.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "cyclopts default command fallback when no subcommand given",
+        "libraryName": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/brianpugh/cyclopts",
+        "query": "app.default decorator for default command when no subcommand invoked"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_0171WbbRKruRJAB6UFx4X4HA",
+      "content": "Available Libraries:\n\n- Title: Cyclopts\n- Context7-compatible library ID: /brianpugh/cyclopts\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework that provides an intuitive and efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 1468\n- Source Reputation: High\n- Benchmark Score: 84.67\n----------\n- Title: Cyclopts\n- Context7-compatible library ID: /websites/cyclopts_readthedocs_io_en_stable\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework providing an intuitive & efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 996\n- Source Reputation: High\n- Benchmark Score: 84.33"
+    },
+    {
+      "tool_use_id": "toolu_01Hq91B7cFZKRAyN2rUTY83L",
+      "content": "### Create a Cyclopts App with Commands\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/README.md\n\nCreate a CLI application using `cyclopts.App`. Register commands with the `@app.command` decorator and a default action with `@app.default`.\n\n```python\nfrom cyclopts import App\n\napp = App()\n\n@app.command\ndef foo(loops: int):\n    for i in range(loops):\n        print(f\"Looping! {i}\")\n\n@app.default\ndef default_action():\n    print(\"Hello world! This runs when no command is specified.\")\n\napp()\n```\n\n--------------------------------\n\n### Use DefaultFormatter with App\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/help_customization.rst\n\nExplicitly use the `DefaultFormatter` for rich terminal output. This is the default behavior if no formatter is specified.\n\n```python\nfrom cyclopts import App\n\n# Explicitly use the default formatter (same as not specifying)\napp = App(help_formatter=\"default\")\n\n@app.default\ndef main(name: str, count: int = 1):\n    \"\"\"A simple greeting application.\n\n    Parameters\n    ----------\n    name : str\n        Person to greet.\n    count : int\n        Number of times to greet.\n    \"\"\"\n    for _ in range(count):\n        print(f\"Hello, {name}!\")\n\nif __name__ == \"__main__\":\n    app()\n```\n\n### Default Command\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/vs_typer/default_command/README.rst\n\nCyclopts offers two distinct methods for registering functions to avoid confusion with Typer's default command handling. The `@app.command` method registers a function as a standard command, while the `@app.default` method designates a function to be invoked when no other registered command can be parsed from the CLI.\n\n--------------------------------\n\n### Commands\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/commands.rst\n\nCyclopts offers two primary methods for registering functions: `app.default` for actions when no command is specified, and `app.command` for registering functions or other Cycl"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

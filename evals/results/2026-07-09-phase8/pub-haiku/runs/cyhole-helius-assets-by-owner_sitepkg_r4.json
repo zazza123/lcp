@@ -1,0 +1,49 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport sys\nfrom cyhole import Client\n\ndef list_das_assets(wallet_address: str) -> list:\n    \"\"\"List all DAS assets owned by a wallet using Helius.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n    \n    client = Client(api_key=api_key)\n    \n    # Get all assets owned by the wallet\n    assets = client.helius.get_asset_by_owner(\n        owner=wallet_address,\n        display_options={\"show_collection\": True, \"show_native\": True}\n    )\n    \n    return assets\n\nif __name__ == \"__main__\":\n    if len(sys.argv) < 2:\n        print(\"Usage: python script.py <wallet_address>\")\n        sys.exit(1)\n    \n    wallet = sys.argv[1]\n    assets = list_das_assets(wallet)\n    \n    print(f\"Assets owned by {wallet}:\")\n    for asset in assets:\n        print(f\"  - {asset.get('id')}: {asset.get('content', {}).get('metadata', {}).get('name', 'Unknown')}\")",
+  "result_text": "```python\nimport os\nimport sys\nfrom cyhole import Client\n\ndef list_das_assets(wallet_address: str) -> list:\n    \"\"\"List all DAS assets owned by a wallet using Helius.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n    \n    client = Client(api_key=api_key)\n    \n    # Get all assets owned by the wallet\n    assets = client.helius.get_asset_by_owner(\n        owner=wallet_address,\n        display_options={\"show_collection\": True, \"show_native\": True}\n    )\n    \n    return assets\n\nif __name__ == \"__main__\":\n    if len(sys.argv) < 2:\n        print(\"Usage: python script.py <wallet_address>\")\n        sys.exit(1)\n    \n    wallet = sys.argv[1]\n    assets = list_das_assets(wallet)\n    \n    print(f\"Assets owned by {wallet}:\")\n    for asset in assets:\n        print(f\"  - {asset.get('id')}: {asset.get('content', {}).get('metadata', {}).get('name', 'Unknown')}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 1543,
+    "cache_read_tokens": 72826,
+    "cache_creation_tokens": 776,
+    "cost_usd": 0.0165746,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 24.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/site-packages/cyhole*",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/*cyhole*",
+        "path": "/Users/andreazanini"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.interaction:Helius",
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.Client"
+    ],
+    "error": null
+  }
+}

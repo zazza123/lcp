@@ -1,0 +1,108 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.client import Client, FastMCPTransport\n\n\nasync def main():\n    # Create a FastMCP server\n    server = FastMCP(name=\"test-server\")\n\n    # Register a resource at \"data://config\"\n    @server.resource(\"data://config\")\n    def get_config() -> str:\n        return '{\"setting\": \"value\", \"debug\": true}'\n\n    # Create a client with in-memory transport\n    client = Client(server)\n\n    # Connect and fetch the resource\n    async with client:\n        result = await client.read_resource(\"data://config\")\n        print(\"Resource content:\")\n        print(result)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.client import Client, FastMCPTransport\n\n\nasync def main():\n    # Create a FastMCP server\n    server = FastMCP(name=\"test-server\")\n\n    # Register a resource at \"data://config\"\n    @server.resource(\"data://config\")\n    def get_config() -> str:\n        return '{\"setting\": \"value\", \"debug\": true}'\n\n    # Create a client with in-memory transport\n    client = Client(server)\n\n    # Connect and fetch the resource\n    async with client:\n        result = await client.read_resource(\"data://config\")\n        print(\"Resource content:\")\n        print(result)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 97,
+    "output_tokens": 2363,
+    "cache_read_tokens": 362839,
+    "cache_creation_tokens": 20399,
+    "cost_usd": 0.0889939,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 40.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/client/transports/memory.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/client/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/client/client.py",
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/client/client.py",
+        "offset": 100,
+        "limit": 150
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "read_resource|fetch.*resource|get.*resource",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/client/mixins/resources.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/decorators.py",
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "limit": 150
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def resource",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "context": 5
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "offset": 1862,
+        "limit": 80
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(\"message-template-server\")\n\n@mcp.tool()\ndef summarize(text: str) -> dict:\n    \"\"\"Generate a message template for summarizing text.\n    \n    Args:\n        text: The text content to be summarized\n    \n    Returns:\n        A user message template requesting summarization of the text\n    \"\"\"\n    return {\n        \"role\": \"user\",\n        \"content\": f\"Please summarize the following text:\\n\\n{text}\"\n    }\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"message-template-server\")\n\n@mcp.tool()\ndef summarize(text: str) -> dict:\n    \"\"\"Generate a message template for summarizing text.\n    \n    Args:\n        text: The text content to be summarized\n    \n    Returns:\n        A user message template requesting summarization of the text\n    \"\"\"\n    return {\n        \"role\": \"user\",\n        \"content\": f\"Please summarize the following text:\\n\\n{text}\"\n    }\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2045,
+    "cache_read_tokens": 24092,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0126432,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#prompt"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

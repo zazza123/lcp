@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "class ToyReweight:\n    \"\"\"Custom MC weight with symmetric +/- 5% variations\"\"\"\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        # Normalize LHEWeight_originalXWGTUP to mean of 1\n        nominal = events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n        \n        return {\n            \"nominal\": nominal,\n            \"up\": nominal * 1.05,\n            \"down\": nominal * 0.95,\n        }\n\n\n# Usage in PocketCoffea configuration:\n# config = {\n#     \"weights_classes\": [ToyReweight],\n# }",
+  "result_text": "```python\nclass ToyReweight:\n    \"\"\"Custom MC weight with symmetric +/- 5% variations\"\"\"\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        # Normalize LHEWeight_originalXWGTUP to mean of 1\n        nominal = events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n        \n        return {\n            \"nominal\": nominal,\n            \"up\": nominal * 1.05,\n            \"down\": nominal * 0.95,\n        }\n\n\n# Usage in PocketCoffea configuration:\n# config = {\n#     \"weights_classes\": [ToyReweight],\n# }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2990,
+    "cache_read_tokens": 22078,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0171668,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

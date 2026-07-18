@@ -1,0 +1,37 @@
+# Regression profile — cheap release-monitoring subset of the Phase 8 grid.
+# The publication profile is FROZEN; see
+# evals/results/2026-07-09-phase8/PREREGISTRATION.md.
+#
+# These 16 cases were selected from the haiku publication cells by
+# discriminative power (lcp-skill pass - baseline pass), excluding
+# ceiling cases (baseline >=4/5), covering 7 niche libraries. They are the
+# cases where LCP's value shows most, so a release regression surfaces here
+# first.
+profile: regression
+model: claude-haiku-4-5-20251001
+arms: [baseline, lcp-skill]
+reps: 3
+cases_dir: evals/cases-v2
+case_ids:
+  - cyhole-solscan-defi-activities
+  - hamana-query-to-sqlite
+  - cyclopts-config-toml
+  - hamana-typed-column-schema
+  - hamana-table-exists-error
+  - hamana-query-result-dataframe
+  - hamana-teradata-ping
+  - griffe-api-diff
+  - pixeltable-computed-column
+  - cyhole-solscan-token-price
+  - cyhole-solanafm-transfers-csv-export
+  - cyhole-helius-assets-by-owner
+  - cyclopts-parse-no-execute
+  - cyhole-helius-get-asset
+  - narwhals-decorator
+  - pocket-coffea-custom-cut
+# Refresh policy (settled 2026-07-09): replace a case's library when the
+# BASELINE arm passes >=90% of its runs across 2 consecutive checks (the
+# model has absorbed it — it no longer discriminates). Version bumps of a
+# kept library require re-running `run.py validate` and re-pinning
+# bench-requirements.lock.txt.
+# Cost: 16 x 2 x 3 = 96 runs, ~$8 notional per check.

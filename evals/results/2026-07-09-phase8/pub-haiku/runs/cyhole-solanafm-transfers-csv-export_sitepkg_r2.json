@@ -1,0 +1,47 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport csv\nfrom datetime import datetime\nfrom cyhole import SolanaFM\n\ndef export_account_transfers(account_address: str, output_file: str = None) -> str:\n    \"\"\"Export account transfers as CSV using SolanaFM via cyhole.\"\"\"\n    if output_file is None:\n        output_file = f\"transfers_{account_address}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv\"\n    \n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFM(api_key=api_key)\n    transfers = client.get_account_transfers(account_address)\n    \n    if transfers:\n        with open(output_file, 'w', newline='') as f:\n            if isinstance(transfers, list) and len(transfers) > 0:\n                writer = csv.DictWriter(f, fieldnames=transfers[0].keys())\n                writer.writeheader()\n                writer.writerows(transfers)\n    \n    return output_file\n\nif __name__ == \"__main__\":\n    account = \"YOUR_SOLANA_ACCOUNT_ADDRESS\"\n    report_file = export_account_transfers(account)\n    print(f\"Transfers exported to: {report_file}\")",
+  "result_text": "```python\nimport os\nimport csv\nfrom datetime import datetime\nfrom cyhole import SolanaFM\n\ndef export_account_transfers(account_address: str, output_file: str = None) -> str:\n    \"\"\"Export account transfers as CSV using SolanaFM via cyhole.\"\"\"\n    if output_file is None:\n        output_file = f\"transfers_{account_address}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv\"\n    \n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFM(api_key=api_key)\n    transfers = client.get_account_transfers(account_address)\n    \n    if transfers:\n        with open(output_file, 'w', newline='') as f:\n            if isinstance(transfers, list) and len(transfers) > 0:\n                writer = csv.DictWriter(f, fieldnames=transfers[0].keys())\n                writer.writeheader()\n                writer.writerows(transfers)\n    \n    return output_file\n\nif __name__ == \"__main__\":\n    account = \"YOUR_SOLANA_ACCOUNT_ADDRESS\"\n    report_file = export_account_transfers(account)\n    print(f\"Transfers exported to: {report_file}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 1289,
+    "cache_read_tokens": 72976,
+    "cache_creation_tokens": 842,
+    "cost_usd": 0.015451600000000001,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 21.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.SolanaFM"
+    ],
+    "error": null
+  }
+}

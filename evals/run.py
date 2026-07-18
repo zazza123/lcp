@@ -6,6 +6,7 @@ See evals/README.md.
 
 import argparse
 import json
+import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict
@@ -27,38 +28,81 @@ def cmd_validate(args) -> int:
     return 1 if problems else 0
 
 
-def _write_mcp_config(out_dir: Path, libraries: list[str]) -> Path:
-    lcp_bin = Path(sys.executable).with_name("lcp")
-    expose = list(chain.from_iterable(("--expose", lib) for lib in libraries))
-    config = {
-        "mcpServers": {
-            "lcp": {
-                "command": str(lcp_bin),
-                "args": [
-                    "serve-all",
-                    "--cache-dir", str(EVALS_DIR / ".lcp-cache"),
-                    *expose,
-                ],
-            }
-        }
-    }
-    path = out_dir / "mcp-config.json"
-    path.write_text(json.dumps(config, indent=2))
-    return path
+def _write_arm_configs(
+    out_dir: Path, libraries: list[str], arms: list[str],
+    registry_lcp_bin: str,
+) -> dict:
+    """One MCP config per arm family; non-MCP arms map to None.
+
+    lcp / lcp-skill : this venv's lcp, scans the bench venv, --expose all.
+    registry        : the BARE venv's lcp (no targets installed) with an
+                      isolated cache — resolution can only succeed via the
+                      public registry, which is the point of the arm.
+    context7        : the vendor's server via npx; CONTEXT7_API_KEY is
+                      forwarded when set so rate limits don't bite mid-grid.
+    """
+    configs: dict = {arm: None for arm in arms}
+    if {"lcp", "lcp-skill"} & set(arms):
+        lcp_bin = Path(sys.executable).with_name("lcp")
+        expose = list(chain.from_iterable(("--expose", lib) for lib in libraries))
+        path = out_dir / "mcp-config.json"
+        path.write_text(json.dumps({"mcpServers": {"lcp": {
+            "command": str(lcp_bin),
+            "args": ["serve-all", "--cache-dir",
+                     str(EVALS_DIR / ".lcp-cache-bench"), *expose],
+        }}}, indent=2))
+        for arm in ("lcp", "lcp-skill"):
+            if arm in configs:
+                configs[arm] = path
+    if "registry" in arms:
+        path = out_dir / "mcp-config-registry.json"
+        path.write_text(json.dumps({"mcpServers": {"lcp": {
+            "command": str(registry_lcp_bin),
+            "args": ["serve-all", "--cache-dir",
+                     str(EVALS_DIR / ".lcp-registry-cache")],
+        }}}, indent=2))
+        configs["registry"] = path
+    if "context7" in arms:
+        server: dict = {"command": "npx", "args": ["-y", "@upstash/context7-mcp"]}
+        if os.environ.get("CONTEXT7_API_KEY"):
+            server["env"] = {"CONTEXT7_API_KEY": os.environ["CONTEXT7_API_KEY"]}
+        path = out_dir / "mcp-config-context7.json"
+        path.write_text(json.dumps({"mcpServers": {"context7": server}}, indent=2))
+        configs["context7"] = path
+    return configs
+
+
+def _sitepkg_note() -> str:
+    site = next(Path(sys.executable).parents[1].glob("lib/python*/site-packages"))
+    return (
+        f"All required libraries are installed under: {site}\n"
+        "You may inspect installed package source with the Read, Glob and "
+        "Grep tools to verify APIs before using them."
+    )
+
+
+def resolve_arms(arms: list | None) -> list:
+    """Normalize the argparse ``--arms`` value to its effective list.
+
+    ``--arms`` uses ``action="append"`` with ``default=None`` (mutating a
+    shared default list is an argparse footgun); this turns the None/empty
+    "no flags passed" case into the documented default.
+    """
+    return arms if arms else ["baseline", "lcp"]
 
 
 def _run_one(
-    case, arm: str, rep: int, mcp_config: Path, runs_dir: Path,
-    model: str, append_system: str | None,
+    case, arm: str, rep: int, mcp_configs: dict, runs_dir: Path,
+    model: str, append_by_arm: dict,
 ) -> str:
     out_path = runs_dir / f"{case.id}_{arm}_r{rep}.json"
     if out_path.exists():
         return f"SKIP     {out_path.name} (exists)"
     result = agent.run_agent(
         case, arm,
-        mcp_config if arm in ("lcp", "lcp-skill") else None,
+        mcp_configs.get(arm),
         model=model,
-        append_system=append_system if arm == "lcp-skill" else None,
+        append_system=append_by_arm.get(arm),
     )
     verification = verify.verify_code(result.code, case)
     record = {
@@ -80,6 +124,7 @@ def _run_one(
             "duration_s": round(result.duration_s, 1),
         },
         "tool_call_details": result.tool_call_details,
+        "tool_results": result.tool_results,
         "verification": asdict(verification),
     }
     out_path.write_text(json.dumps(record, indent=2))
@@ -109,12 +154,19 @@ def cmd_run(args) -> int:
     runs_dir = out_dir / "runs"
     runs_dir.mkdir(parents=True, exist_ok=True)
     libraries = sorted({c.library for c in loaded})
-    mcp_config = _write_mcp_config(out_dir, libraries)
 
-    arms = ["baseline", "lcp"] if args.arms == "both" else [args.arms]
-    append_system = None
+    arms = resolve_arms(args.arms)
+    mcp_configs = _write_arm_configs(
+        out_dir, libraries, arms, str(args.registry_lcp_bin)
+    )
+    append_by_arm: dict = {}
     if "lcp-skill" in arms:
-        append_system = agent.load_skill_text(args.skill_file)
+        append_by_arm["lcp-skill"] = agent.load_skill_text(args.skill_file)
+    if "sitepkg" in arms:
+        append_by_arm["sitepkg"] = _sitepkg_note()
+    if "context7" in arms:
+        append_by_arm["context7"] = agent.CONTEXT7_RULE
+
     jobs = [
         (case, arm, rep)
         for case in loaded
@@ -125,8 +177,8 @@ def cmd_run(args) -> int:
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures = [
             pool.submit(
-                _run_one, case, arm, rep, mcp_config, runs_dir,
-                args.model, append_system,
+                _run_one, case, arm, rep, mcp_configs, runs_dir,
+                args.model, append_by_arm,
             )
             for case, arm, rep in jobs
         ]
@@ -204,9 +256,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--cases", type=Path, default=EVALS_DIR / "cases")
     p_run.add_argument("--reps", type=int, default=3)
     p_run.add_argument(
-        "--arms",
-        choices=["both", "baseline", "lcp", "lcp-skill"],
-        default="both",
+        "--arms", action="append",
+        choices=["baseline", "lcp", "lcp-skill", "sitepkg", "registry",
+                 "context7"],
+        help="repeatable; default: baseline + lcp",
+    )
+    p_run.add_argument(
+        "--registry-lcp-bin", type=Path,
+        default=EVALS_DIR / ".venv-registry/bin/lcp",
+        help="lcp binary of the BARE venv used by the registry arm",
     )
     p_run.add_argument("--model", default=agent.MODEL)
     p_run.add_argument("--workers", type=int, default=2)

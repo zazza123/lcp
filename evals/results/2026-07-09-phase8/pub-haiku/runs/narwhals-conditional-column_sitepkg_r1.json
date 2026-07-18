@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport polars as pl\n\n# Create sample DataFrame\ndf_pl = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\", \"Eve\"],\n    \"spend\": [500, 1000, 1500, 999, 2000],\n})\n\n# Convert to narwhals\ndf = nw.from_native(df_pl)\n\n# Add tier column using conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\"))\n)\n\n# Display result\nprint(nw.to_native(df))",
+  "result_text": "```python\nimport narwhals as nw\nimport polars as pl\n\n# Create sample DataFrame\ndf_pl = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\", \"Eve\"],\n    \"spend\": [500, 1000, 1500, 999, 2000],\n})\n\n# Convert to narwhals\ndf = nw.from_native(df_pl)\n\n# Add tier column using conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\"))\n)\n\n# Display result\nprint(nw.to_native(df))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 583,
+    "cache_read_tokens": 17267,
+    "cache_creation_tokens": 6843,
+    "cost_usd": 0.0183367,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

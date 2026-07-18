@@ -1,0 +1,50 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole.interaction import SolanaFMInteraction\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFMInteraction(api_key=api_key)\n    \n    try:\n        # Call method without entering async context manager\n        result = await client.get_latest_block()\n    except RuntimeError as e:\n        # Catch exception when async HTTP session is not available\n        print(f\"Caught expected exception: {e}\")\n        return None\n    \n    return result\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole.interaction import SolanaFMInteraction\n\nasync def main():\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    client = SolanaFMInteraction(api_key=api_key)\n    \n    try:\n        # Call method without entering async context manager\n        result = await client.get_latest_block()\n    except RuntimeError as e:\n        # Catch exception when async HTTP session is not available\n        print(f\"Caught expected exception: {e}\")\n        return None\n    \n    return result\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 988,
+    "cache_read_tokens": 72760,
+    "cache_creation_tokens": 643,
+    "cost_usd": 0.013527,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 14.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole*"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "cyhole",
+        "path": "/Users/andreazanini",
+        "output_mode": "files_with_matches",
+        "head_limit": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.interaction.SolanaFMInteraction"
+    ],
+    "error": null
+  }
+}

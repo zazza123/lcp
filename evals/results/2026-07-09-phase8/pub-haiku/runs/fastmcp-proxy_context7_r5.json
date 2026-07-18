@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import stdio_client\nimport subprocess\nimport sys\n\napp = FastMCP(\"proxy-server\")\n_backend_session = None\n\nasync def get_backend_session():\n    global _backend_session\n    if _backend_session is None:\n        proc = subprocess.Popen(\n            [sys.executable, \"-m\", \"backend_server\"],\n            stdin=subprocess.PIPE,\n            stdout=subprocess.PIPE,\n            stderr=subprocess.DEVNULL,\n            bufsize=0\n        )\n        _backend_session = ClientSession(stdio_client(proc.stdin, proc.stdout))\n        await _backend_session.initialize()\n    return _backend_session\n\n@app.call_tool\nasync def forward_call_tool(name: str, arguments: dict):\n    session = await get_backend_session()\n    return await session.call_tool(name, arguments)\n\n@app.list_tools\nasync def forward_list_tools():\n    session = await get_backend_session()\n    return await session.list_tools()\n\n@app.read_resource\nasync def forward_read_resource(uri: str):\n    session = await get_backend_session()\n    return await session.read_resource(uri)\n\n@app.list_resources\nasync def forward_list_resources():\n    session = await get_backend_session()\n    return await session.list_resources()\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, host=\"0.0.0.0\", port=8001)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import stdio_client\nimport subprocess\nimport sys\n\napp = FastMCP(\"proxy-server\")\n_backend_session = None\n\nasync def get_backend_session():\n    global _backend_session\n    if _backend_session is None:\n        proc = subprocess.Popen(\n            [sys.executable, \"-m\", \"backend_server\"],\n            stdin=subprocess.PIPE,\n            stdout=subprocess.PIPE,\n            stderr=subprocess.DEVNULL,\n            bufsize=0\n        )\n        _backend_session = ClientSession(stdio_client(proc.stdin, proc.stdout))\n        await _backend_session.initialize()\n    return _backend_session\n\n@app.call_tool\nasync def forward_call_tool(name: str, arguments: dict):\n    session = await get_backend_session()\n    return await session.call_tool(name, arguments)\n\n@app.list_tools\nasync def forward_list_tools():\n    session = await get_backend_session()\n    return await session.list_tools()\n\n@app.read_resource\nasync def forward_read_resource(uri: str):\n    session = await get_backend_session()\n    return await session.read_resource(uri)\n\n@app.list_resources\nasync def forward_list_resources():\n    session = await get_backend_session()\n    return await session.list_resources()\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(app, host=\"0.0.0.0\", port=8001)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4587,
+    "cache_read_tokens": 22061,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.025150099999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 42.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

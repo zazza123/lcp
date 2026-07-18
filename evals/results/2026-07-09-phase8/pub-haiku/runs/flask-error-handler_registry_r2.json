@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-error-handler",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, jsonify\n\napp = Flask(__name__)\n\n@app.errorhandler(404)\ndef not_found(error):\n    return jsonify({\"error\": \"not found\"}), 404\n\nif __name__ == \"__main__\":\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, jsonify\n\napp = Flask(__name__)\n\n@app.errorhandler(404)\ndef not_found(error):\n    return jsonify({\"error\": \"not found\"}), 404\n\nif __name__ == \"__main__\":\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 477,
+    "cache_read_tokens": 22421,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0046361,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 7.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "case_id": "pixeltable-update-rows",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.update({\"distributor\": \"Warner Bros.\"}, where=films.studio == \"WB\")",
+  "result_text": "Confirmed API: `table.update(value_spec, where=...)`.\n\n```python\nimport pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.update({\"distributor\": \"Warner Bros.\"}, where=films.studio == \"WB\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1404,
+    "cache_read_tokens": 203894,
+    "cache_creation_tokens": 3344,
+    "cost_usd": 0.10232820000000001,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 24.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/table.py",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/local_table.py",
+        "-A": 50
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/local_table.py",
+        "-A": 50
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def update",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/catalog/local_table.py",
+        "output_mode": "content",
+        "-A": 60
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

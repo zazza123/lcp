@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.loader import GriffeLoader\nfrom griffe.diff import find_breakages\n\nloader = GriffeLoader()\n\nold = loader.load(\"mypkg\", git_revision=\"v1.0.0\")\nnew = loader.load(\"mypkg\", git_revision=\"HEAD\")\n\nfor breakage in find_breakages(old, new):\n    print(breakage)",
+  "result_text": "```python\nfrom griffe.loader import GriffeLoader\nfrom griffe.diff import find_breakages\n\nloader = GriffeLoader()\n\nold = loader.load(\"mypkg\", git_revision=\"v1.0.0\")\nnew = loader.load(\"mypkg\", git_revision=\"HEAD\")\n\nfor breakage in find_breakages(old, new):\n    print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5326,
+    "cache_read_tokens": 22137,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0288527,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 38.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:load_git",
+      "griffe:find_breaking_changes"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.diff.find_breakages",
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "case_id": "pocket-coffea-histograms",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hist\n\nvariables = {\n    \"muon_pt\": hist.Hist(\n        hist.axis.Regular(60, 0, 300, name=\"pt\", label=\"Muon pT [GeV]\")\n    )\n}",
+  "result_text": "```python\nimport hist\n\nvariables = {\n    \"muon_pt\": hist.Hist(\n        hist.axis.Regular(60, 0, 300, name=\"pt\", label=\"Muon pT [GeV]\")\n    )\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1896,
+    "cache_read_tokens": 22165,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.011705499999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.hist_manager:Axis",
+      "pocket_coffea.lib.hist_manager:HistConf"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

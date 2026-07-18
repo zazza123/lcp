@@ -1,0 +1,104 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf_original = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"score\": [95.5, 87.3, 92.1],\n})\n\nprint(\"Original DataFrame:\")\nprint(df_original)\nprint()\n\n# Serialize to Parquet in memory\nbuffer = BytesIO()\ndf_original.write_parquet(buffer)\n\n# Get the binary data\nparquet_bytes = buffer.getvalue()\nprint(f\"Serialized Parquet size: {len(parquet_bytes)} bytes\")\nprint()\n\n# Deserialize from the binary buffer\nbuffer.seek(0)\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"Restored DataFrame:\")\nprint(df_restored)\nprint()\n\n# Verify round trip\nprint(\"Round trip successful:\", df_original.frame_equal(df_restored))",
+  "result_text": "```python\nimport polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf_original = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"score\": [95.5, 87.3, 92.1],\n})\n\nprint(\"Original DataFrame:\")\nprint(df_original)\nprint()\n\n# Serialize to Parquet in memory\nbuffer = BytesIO()\ndf_original.write_parquet(buffer)\n\n# Get the binary data\nparquet_bytes = buffer.getvalue()\nprint(f\"Serialized Parquet size: {len(parquet_bytes)} bytes\")\nprint()\n\n# Deserialize from the binary buffer\nbuffer.seek(0)\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"Restored DataFrame:\")\nprint(df_restored)\nprint()\n\n# Verify round trip\nprint(\"Round trip successful:\", df_original.frame_equal(df_restored))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 65,
+    "output_tokens": 1699,
+    "cache_read_tokens": 197945,
+    "cache_creation_tokens": 11577,
+    "cost_usd": 0.051508500000000006,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 39.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-universal",
+        "args": "polars"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "parquet write bytes buffer",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "parquet",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#write_parquet",
+          "polars:read_parquet"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:read_parquet"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011PfURXgp6msmhk6Nm43UUW",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01RsZM9tXgTuVko3AJvT4Xz7",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01XHXXtFXVvgPJr3NBcY4wcb",
+      "content": "{\"results\":[{\"id\":\"polars.lazyframe.frame:wrap_parquet_metadata_callback\",\"kind\":\"function\",\"summary\":\"Function wrap_parquet_metadata_callback\",\"import\":\"from polars.lazyframe.frame import wrap_parquet_metadata_callback\",\"resolved_via_alias\":\"polars._utils.parquet:wrap_parquet_metadata_callback\"},{\"id\":\"polars:DataFrame#write_parquet\",\"kind\":\"method\",\"summary\":\"Write to Apache Parquet file.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#write_parquet\"},{\"id\":\"polars:read_parquet\",\"kind\":\"function\",\"summary\":\"Read into a DataFrame from a parquet file.\",\"import\":\"from polars import read_parquet\",\"resolved_via_alias\":\"polars.io.parquet.functions:read_parquet\"},{\"id\":\"polars:read_parquet_metadata\",\"kind\":\"function\",\"summary\":\"Get file-level custom metadata of a Parquet file without reading data.\",\"import\":\"from polars import read_parquet_metadata\",\"resolved_via_alias\":\"polars.io.parquet.functions:read_parquet_metadata\"},{\"id\":\"polars:read_parquet_schema\",\"kind\":\"function\",\"summary\":\"Get the schema of a Parquet file without reading data.\",\"import\":\"from polars import read_parquet_schema\",\"resolved_via_alias\":\"polars.io.parquet.functions:read_parquet_schema\"},{\"id\":\"polars:scan_parquet\",\"kind\":\"function\",\"summary\":\"Lazily read from a local or cloud-hosted parquet file (or files).\",\"import\":\"from polars import scan_parquet\",\"resolved_via_alias\":\"polars.io.parquet.functions:scan_parquet\"},{\"id\":\"polars:LazyFrame#sink_parquet\",\"kind\":\"method\",\"summary\":\"Evaluate the query in streaming mode and write to a Parquet file.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#sink_parquet\"},{\"id\":\"polars._utils.parquet:\",\"kind\":\"module\",\"summary\":\"Module polars._utils.parquet\",\"import\":\"import polars._utils.parquet\"},{\"id\":\"polars.io.parquet.functions:\",\"kind\":\"module\",\"summary\":\"Module polars.io.parquet.functions\",\"import\":\"import polars.io.parquet.functions\"},{\"id\":\"polars.io.parquet:\",\"k"
+    },
+    {
+      "tool_use_id": "toolu_014WHidGdvHVB3zDkbHoVGz6",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"file\",\"type\":\"str | Path | IO[bytes]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"File path or writable file-like object to which the result will be written.\\nThis should be a path to a directory if writing a partitioned dataset.\"},{\"name\":\"compression\",\"type\":\"ParquetCompression\",\"required\":false,\"default\":\"zstd\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Choose \\\"zstd\\\" for good compression performance.\\nChoose \\\"lz4\\\" for fast compression/decompression.\\nChoose \\\"snappy\\\" for more backwards compatibility guarantees\\nwhen you deal with older parquet readers.\"},{\"name\":\"compression_level\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The level of compression to use. Higher compression means smaller files on\\ndisk.\\n\\n- \\\"gzip\\\" : min-level: 0, max-level: 9, default: 6.\\n- \\\"brotli\\\" : min-level: 0, max-level: 11, default: 1.\\n- \\\"zstd\\\" : min-level: 1, max-level: 22, default: 3.\"},{\"name\":\"statistics\",\"type\":\"bool | str | dict[str, bool]\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Write statistics to the parquet headers. This is the default behavior.\\n\\nPossible values:\\n\\n- `True`: enable default set of statistics (default). Some\\n  statistics may be disabled.\\n- `False`: disable all statistics\\n- \\\"full\\\": calculate and write all available statistics. Cannot be\\n  combined with `use_pyarrow`.\\n- `{ \\\"statistic-key\\\": True / False, ... }`. Cannot be combined with\\n  `use_pyarrow`. Available keys:\\n\\n  - \\\"min\\\": column minimum value (default: `True`)\\n  - \\\"max\\\": column maximum value (default: `True`)\\n  - \\\"distinct_count\\\": number of unique column values (default: `False`)\\n  - \\\"null_count\\\": number of null values in column (default: `True`)\"},{\"name\":\"row_group_size\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\""
+    },
+    {
+      "tool_use_id": "toolu_01KtkHXLtgMiRPGzCn5qfQXY",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"polars.io.parquet.functions\",\"aliases\":[\"polars.io.parquet:read_parquet\",\"polars.io:read_parquet\",\"polars:read_parquet\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"source\",\"type\":\"FileSource\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path(s) to a file or directory\\nWhen needing to authenticate for scanning cloud locations, see the\\n`storage_options` parameter.\\n\\nFile-like objects are supported (by \\\"file-like object\\\" we refer to objects\\nthat have a `read()` method, such as a file handler like the builtin `open`\\nfunction, or a `BytesIO` instance). For file-like objects, the stream position\\nmay not be updated accordingly after reading.\"},{\"name\":\"columns\",\"type\":\"list[int] | list[str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Columns to select. Accepts a list of column indices (starting at zero) or a list\\nof column names.\"},{\"name\":\"n_rows\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Stop reading from parquet file after reading `n_rows`.\\nOnly valid when `use_pyarrow=False`.\"},{\"name\":\"row_index_name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Insert a row index column with the given name into the DataFrame as the first\\ncolumn. If set to `None` (default), no row index column is created.\"},{\"name\":\"row_index_offset\",\"type\":\"int\",\"required\":false,\"default\":0,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Start the row index at this offset. Cannot be negative.\\nOnly used if `row_index_name` is set.\"},{\"name\":\"parallel\",\"type\":\"ParallelStrategy\",\"required\":false,\"default\":\"auto\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"This determines the direction of parallelism. 'auto' will try to determine the\\noptimal direction.\"},{\"name\":\"use_statistics\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Use"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

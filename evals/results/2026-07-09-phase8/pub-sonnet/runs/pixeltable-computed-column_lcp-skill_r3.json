@@ -1,0 +1,81 @@
+{
+  "case_id": "pixeltable-computed-column",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.add_computed_column(profit=films.revenue - films.budget)",
+  "result_text": "Verified the API against the installed pixeltable 0.6.6 docs.\n\n```python\nimport pixeltable as pxt\n\nfilms = pxt.get_table(\"films\")\nfilms.add_computed_column(profit=films.revenue - films.budget)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 732,
+    "cache_read_tokens": 196458,
+    "cache_creation_tokens": 6771,
+    "cost_usd": 0.1105794,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 18.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library pixeltable",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "add_computed_column",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#add_computed_column",
+          "pixeltable:get_table"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01VxoZ3nNfvGSKdCSYdqW1Hk",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01D8xNcvmv3nEwszFuvYTdK5",
+      "content": "{\"results\":[{\"id\":\"pixeltable:InsertableTable#add_computed_column\",\"kind\":\"method\",\"summary\":\"Method add_computed_column\",\"import\":\"from pixeltable import InsertableTable\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table:InsertableTable#add_computed_column\"},{\"id\":\"pixeltable.catalog:InsertableTableProxy#add_computed_column\",\"kind\":\"method\",\"summary\":\"Method add_computed_column\",\"import\":\"from pixeltable.catalog import InsertableTableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table_proxy:InsertableTableProxy#add_computed_column\"},{\"id\":\"pixeltable.catalog:LocalTable#add_computed_column\",\"kind\":\"method\",\"summary\":\"Method add_computed_column\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#add_computed_column\"},{\"id\":\"pixeltable:Table#add_computed_column\",\"kind\":\"method\",\"summary\":\"Adds a computed column to the table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#add_computed_column\"},{\"id\":\"pixeltable.catalog:TableProxy#add_computed_column\",\"kind\":\"method\",\"summary\":\"Method add_computed_column\",\"import\":\"from pixeltable.catalog import TableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.table_proxy:TableProxy#add_computed_column\"},{\"id\":\"pixeltable:View#add_computed_column\",\"kind\":\"method\",\"summary\":\"Method add_computed_column\",\"import\":\"from pixeltable import View\",\"resolved_via_alias\":\"pixeltable.catalog.view:View#add_computed_column\"},{\"id\":\"pixeltable:Table#add_columns\",\"kind\":\"method\",\"summary\":\"Adds multiple columns to the table. The columns must be concrete (non-computed) columns; to add computed columns, use [`add_computed_column()`][pixeltable.catalog.Table.add_computed_column] instead.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#add_columns\"},{\"id\":\"pixeltable.functions:map\",\"kind\":\"function\",\"summary\":\"Applies a mapping function to each element of a list.\",\"import\":\"f"
+    },
+    {
+      "tool_use_id": "toolu_01FQw8nikoWnHskyhgDVVtvg",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"stored\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether the column is materialized and stored or computed on demand.\"},{\"name\":\"destination\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An object store reference for persisting computed files.\"},{\"name\":\"custom_metadata\",\"type\":\"Any\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional user-defined metadata to associate with the column. Must be a valid\\nJSON-serializable object.\"},{\"name\":\"comment\",\"type\":\"str\",\"required\":false,\"default\":\"\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional comment; its meaning is user-defined.\"},{\"name\":\"print_stats\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If `True`, print execution metrics during evaluation.\"},{\"name\":\"on_error\",\"type\":\"Literal['abort', 'ignore']\",\"required\":false,\"default\":\"abort\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if an error occurs while evaluating the column expression for at least one\\nrow.\\n\\n- `'abort'`: an exception will be raised and the column will not be added.\\n- `'ignore'`: execution will continue and the column will be added. Any rows\\n    with errors will have a `None` value for the column, with information about the error stored in the\\n    corresponding `tbl.col_name.errormsg` and `tbl.col_name.errortype` fields.\"},{\"name\":\"if_exists\",\"type\":\"Literal['error', 'ignore', 'replace']\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if the column already exists. Must be one of the following:\\n- `'error'`: an exception will be raised.\\n- `'ignore'`: do nothing and return.\\n- `'replace' or 'replace_force'`: drop the existing column a"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

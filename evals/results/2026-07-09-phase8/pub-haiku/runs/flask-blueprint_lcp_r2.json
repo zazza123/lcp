@@ -1,0 +1,31 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint, jsonify, request\n\napp = Flask(__name__)\n\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef get_users():\n    return jsonify([\n        {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},\n        {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},\n        {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com'}\n    ])\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({'id': user_id, 'name': f'User {user_id}', 'email': f'user{user_id}@example.com'})\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    data = request.get_json() or {}\n    return jsonify({\n        'id': 4,\n        'name': data.get('name', 'New User'),\n        'email': data.get('email', 'newuser@example.com')\n    }), 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    data = request.get_json() or {}\n    return jsonify({\n        'id': user_id,\n        'name': data.get('name', f'User {user_id}'),\n        'email': data.get('email', f'user{user_id}@example.com')\n    })\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({'message': f'User {user_id} deleted'}), 204\n\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef home():\n    return jsonify({'message': 'Welcome to the API', 'endpoints': {'/users': 'User management'}})\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint, jsonify, request\n\napp = Flask(__name__)\n\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef get_users():\n    return jsonify([\n        {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},\n        {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},\n        {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com'}\n    ])\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({'id': user_id, 'name': f'User {user_id}', 'email': f'user{user_id}@example.com'})\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    data = request.get_json() or {}\n    return jsonify({\n        'id': 4,\n        'name': data.get('name', 'New User'),\n        'email': data.get('email', 'newuser@example.com')\n    }), 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    data = request.get_json() or {}\n    return jsonify({\n        'id': user_id,\n        'name': data.get('name', f'User {user_id}'),\n        'email': data.get('email', f'user{user_id}@example.com')\n    })\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({'message': f'User {user_id} deleted'}), 204\n\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/')\ndef home():\n    return jsonify({'message': 'Welcome to the API', 'endpoints': {'/users': 'User management'}})\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1388,
+    "cache_read_tokens": 22094,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0091584,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "flask.request.get_json"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Server\nfrom fastmcp.client import LocalAsyncClient\n\n\nasync def main():\n    # Create server\n    server = Server(\"example-server\")\n\n    # Register a resource at data://config\n    @server.resource(\"data://config\")\n    async def get_config_resource():\n        return \"Configuration data stored here\"\n\n    # Create in-memory client connection\n    client = LocalAsyncClient(server)\n\n    # Fetch the resource contents\n    resource = await client.read_resource(\"data://config\")\n    print(f\"Resource contents: {resource.contents}\")\n\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Server\nfrom fastmcp.client import LocalAsyncClient\n\n\nasync def main():\n    # Create server\n    server = Server(\"example-server\")\n\n    # Register a resource at data://config\n    @server.resource(\"data://config\")\n    async def get_config_resource():\n        return \"Configuration data stored here\"\n\n    # Create in-memory client connection\n    client = LocalAsyncClient(server)\n\n    # Fetch the resource contents\n    resource = await client.read_resource(\"data://config\")\n    print(f\"Resource contents: {resource.contents}\")\n\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5180,
+    "cache_read_tokens": 24089,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0283179,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 51.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server",
+      "fastmcp.client.LocalAsyncClient"
+    ],
+    "error": null
+  }
+}

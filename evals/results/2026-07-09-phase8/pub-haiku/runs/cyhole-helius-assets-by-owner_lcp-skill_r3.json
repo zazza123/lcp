@@ -1,0 +1,191 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.helius import Helius\nfrom cyhole.helius.client import PostGetAssetsByOwnerBody\n\ndef list_das_assets_by_owner(wallet_address: str) -> list:\n    \"\"\"List all DAS assets owned by a wallet address.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n    \n    helius = Helius(api_key=api_key)\n    \n    request_body = PostGetAssetsByOwnerBody(owner_address=wallet_address)\n    response = helius.client.post_get_assets_by_owner(request_body)\n    \n    return response.result.items\n\n\nif __name__ == \"__main__\":\n    wallet = input(\"Enter wallet address: \")\n    assets = list_das_assets_by_owner(wallet)\n    print(f\"Found {len(assets)} assets\")\n    for asset in assets:\n        print(f\"  - {asset.id}\")",
+  "result_text": "```python\nimport os\nfrom cyhole.helius import Helius\nfrom cyhole.helius.client import PostGetAssetsByOwnerBody\n\ndef list_das_assets_by_owner(wallet_address: str) -> list:\n    \"\"\"List all DAS assets owned by a wallet address.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n    \n    helius = Helius(api_key=api_key)\n    \n    request_body = PostGetAssetsByOwnerBody(owner_address=wallet_address)\n    response = helius.client.post_get_assets_by_owner(request_body)\n    \n    return response.result.items\n\n\nif __name__ == \"__main__\":\n    wallet = input(\"Enter wallet address: \")\n    assets = list_das_assets_by_owner(wallet)\n    print(f\"Found {len(assets)} assets\")\n    for asset in assets:\n        print(f\"  - {asset.id}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 123,
+    "output_tokens": 2936,
+    "cache_read_tokens": 446911,
+    "cache_creation_tokens": 13708,
+    "cost_usd": 0.08691009999999999,
+    "num_turns": 15,
+    "tool_calls": 14,
+    "duration_s": 48.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve library cyhole",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "helius DAS digital asset",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "helius",
+        "library": "cyhole",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "getAssets owner",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.helius:Helius"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.helius.interaction:HeliusClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.helius.interaction:HeliusClient#post_get_assets_by_owner"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "PostGetAssetsByOwnerBody PostGetAssetsByOwnerResponse",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.helius.schema:PostGetAssetsByOwnerBody",
+          "cyhole.helius.schema:PostGetAssetsByOwnerResponse"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "owner_address wallet",
+        "library": "cyhole",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "PostGetAssets",
+        "library": "cyhole",
+        "limit": 20
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01TwzQTJvHecejmS6ZujLsKd",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyhole\",\"version\":\"0.3.0\",\"language\":\"python\",\"symbol_count\":1274,\"module_count\":67,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyhole') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01DcXsxKyX8QGPMV85WJhsS8",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Hhyz56UhCppijT2trEUpKx",
+      "content": "{\"results\":[{\"id\":\"cyhole.helius:Helius\",\"kind\":\"class\",\"summary\":\"Class used to connect [Helius](https://www.helius.dev) API.\",\"import\":\"from cyhole.helius import Helius\",\"resolved_via_alias\":\"cyhole.helius.interaction:Helius\"},{\"id\":\"cyhole.helius.interaction:HeliusAsyncClient\",\"kind\":\"class\",\"summary\":\"Client for asynchronous API calls for `Helius` interaction.\",\"import\":\"from cyhole.helius.interaction import HeliusAsyncClient\",\"resolved_via_alias\":\"cyhole.helius.client:HeliusAsyncClient\"},{\"id\":\"cyhole.helius.interaction:HeliusClient\",\"kind\":\"class\",\"summary\":\"Client for synchronous API calls for `Helius` interaction.\",\"import\":\"from cyhole.helius.interaction import HeliusClient\",\"resolved_via_alias\":\"cyhole.helius.client:HeliusClient\"},{\"id\":\"cyhole.helius.exception:HeliusException\",\"kind\":\"class\",\"summary\":\"Base exception for Helius interaction.\",\"import\":\"from cyhole.helius.exception import HeliusException\"},{\"id\":\"cyhole.helius.param:HeliusCommitment\",\"kind\":\"class\",\"summary\":\"Commitment level for the `getTransfersByAddress` RPC endpoint.\",\"import\":\"from cyhole.helius.param import HeliusCommitment\"},{\"id\":\"cyhole.helius.param:HeliusEncoding\",\"kind\":\"class\",\"summary\":\"Encoding format for the transaction payload, used by the `getTransactionsForAddress` RPC endpoint when `transaction_details = \\\"full\\\"`.\",\"import\":\"from cyhole.helius.param import HeliusEncoding\"},{\"id\":\"cyhole.helius.interaction:HeliusNetwork\",\"kind\":\"class\",\"summary\":\"Network environment for the Helius RPC endpoint.\",\"import\":\"from cyhole.helius.interaction import HeliusNetwork\",\"resolved_via_alias\":\"cyhole.helius.param:HeliusNetwork\"},{\"id\":\"cyhole.helius.param:HeliusSolMode\",\"kind\":\"class\",\"summary\":\"SOL/WSOL representation mode for the `getTransfersByAddress` RPC endpoint.\",\"import\":\"from cyhole.helius.param import HeliusSolMode\"},{\"id\":\"cyhole.helius.param:HeliusSortBy\",\"kind\":\"class\",\"summary\":\"Sort criteria available for DAS asset collection queries (e.g. `getAssetsByOwner`).\",\"import\":\""
+    },
+    {
+      "tool_use_id": "toolu_01X8DMFzxHmq8qu4MM5gJzaY",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FaCD3866BXX6Y82Z45PsQ1",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.helius.interaction\",\"aliases\":[\"cyhole.helius:Helius\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"api_key\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"network\",\"type\":\"HeliusNetwork\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"headers\",\"type\":\"UnionType[Any, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class used to connect [Helius](https://www.helius.dev) API.\",\"description\":\"Helius provides enhanced Solana RPC infrastructure including the\\n    **Digital Asset Standard (DAS) API** \u2014 a unified interface for querying\\n    on-chain NFTs, compressed NFTs (cNFTs), fungible tokens, and inscriptions.\\n\\n    All DAS endpoints require an API key obtained from the\\n    [Helius Dashboard](https://dashboard.helius.dev). The key is appended\\n    as a URL query parameter on every request.\\n\\n    **Example \u2014 sync**\\n\\n    ```python\\n    from cyhole.helius import Helius\\n\\n    helius = Helius(api_key=\\\"your-api-key\\\")\\n    response = helius.client.post_get_asset(\\\"4ZkS7zADmEFnkLPMHqJfPvHDN8oqfPjqDFGEQHiqPbEz\\\")\\n    print(response.result.id)\\n    ```\\n\\n    **Example \u2014 async**\\n\\n    ```python\\n    import asyncio\\n    from cyhole.helius import Helius\\n\\n    helius = Helius(api_key=\\\"your-api-key\\\")\\n\\n    async def main():\\n        async with helius.async_client as client:\\n            response = await client.post_get_asset(\\\"4ZkS7zADmEFnkLPMHqJfPvHDN8oqfPjqDFGEQHiqPbEz\\\")\\n        print(response.result.ownership.owner)\\n\\n    asyncio.run(main())\\n    ```\"},\"id\":\"cyhole.helius:Helius\",\"resolved_via_alias\":\"cyhole.helius.interaction:Helius\",\"import\":\"from cyhole.helius import Helius\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"api_key\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"network\",\"type\":\"HeliusNetwork\",\"default\":\"...\"},{\"name\":\"headers\",\"type\":\"UnionType[Any, None]\",\"default\":null}],\"is_asyn"
+    },
+    {
+      "tool_use_id": "toolu_01KM1KLFNh33RGDbQFpM52gm",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.helius.client\",\"aliases\":[\"cyhole.helius.interaction:HeliusClient\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"interaction\",\"type\":\"Helius\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"headers\",\"type\":\"Any | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Client for synchronous API calls for `Helius` interaction.\"},\"id\":\"cyhole.helius.interaction:HeliusClient\",\"resolved_via_alias\":\"cyhole.helius.client:HeliusClient\",\"import\":\"from cyhole.helius.interaction import HeliusClient\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"interaction\",\"type\":\"Helius\"}],\"optional_parameters\":[{\"name\":\"headers\",\"type\":\"Any | None\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"cyhole.helius.interaction:HeliusClient#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"cyhole.helius.interaction:HeliusClient#api\",\"kind\":\"method\",\"summary\":\"Method api\"},{\"id\":\"cyhole.helius.interaction:HeliusClient#post_get_asset\",\"kind\":\"method\",\"summary\":\"Call the Helius POST **[getAsset](https://www.helius.dev/docs/das-api)** DAS API endpoint for synchronous logic. All the API endpoint details are available on [`Helius._post_get_asset`][cyhole.helius.interaction.Helius._post_get_asset].\"},{\"id\":\"cyhole.helius.interaction:HeliusClient#post_get_asset_batch\",\"kind\":\"method\",\"summary\":\"Call the Helius POST **[getAssetBatch](https://www.helius.dev/docs/das-api)** DAS API endpoint for synchronous logic. All the API endpoint details are available on [`Helius._post_get_asset_batch`][cyhole.helius.interaction.Helius._post_get_asset_batch].\"},{\"id\":\"cyhole.helius.interaction:HeliusClient#post_get_asset_proof\",\"kind\":\"method\",\"summary\":\"Call the Helius POST **[getAssetProof](https://www.helius.dev/docs/das-api)** DAS API endpoint for synchronous logic. All the API endpoint details are available on [`Helius._post_get_asset_proof`][cyhole.helius.interacti"
+    },
+    {
+      "tool_use_id": "toolu_01NgzxeuxrFDwNvCm5rbm5ES",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyhole.helius.client\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"body\",\"type\":\"PostGetAssetsByOwnerBody\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"PostGetAssetsByOwnerResponse\"}],\"semantics\":{\"summary\":\"Call the Helius POST **[getAssetsByOwner](https://www.helius.dev/docs/das-api)** DAS API endpoint for synchronous logic. All the API endpoint details are available on [`Helius._post_get_assets_by_owner`][cyhole.helius.interaction.Helius._post_get_assets_by_owner].\"},\"id\":\"cyhole.helius.interaction:HeliusClient#post_get_assets_by_owner\",\"resolved_via_alias\":\"cyhole.helius.client:HeliusClient#post_get_assets_by_owner\",\"import\":\"from cyhole.helius.interaction import HeliusClient\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"body\",\"type\":\"PostGetAssetsByOwnerBody\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"PostGetAssetsByOwnerResponse\",\"returns_classes\":[\"cyhole.helius.client:PostGetAssetsByOwnerResponse\"],\"next\":\"returns PostGetAssetsByOwnerResponse \u2192 get_symbol(ids=['cyhole.helius.client:PostGetAssetsByOwnerResponse']) to see its members\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_018RecCVtSv7M5eZjxi5dvQL",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01U6dx8bJqJVYH4Cq3hRdy3g",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.helius.schema\",\"aliases\":[\"cyhole.helius.client:PostGetAssetsByOwnerBody\",\"cyhole.helius.interaction:PostGetAssetsByOwnerBody\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Request body for the `getAssetsByOwner` DAS endpoint.\",\"description\":\"Attributes:\\n        owner_address: wallet address of the asset owner.\\n        page: page number for pagination (default 1).\\n        limit: results per page, max 1,000 (default 1,000).\\n        display_options: optional flags controlling extra fields in the response.\\n        sort_by: optional sort configuration.\"},\"id\":\"cyhole.helius.schema:PostGetAssetsByOwnerBody\",\"import\":\"from cyhole.helius.client import PostGetAssetsByOwnerBody\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"data\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[]},{\"kind\":\"class\",\"module\":\"cyhole.helius.schema\",\"aliases\":[\"cyhole.helius.client:PostGetAssetsByOwnerResponse\",\"cyhole.helius.interaction:PostGetAssetsByOwnerResponse\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"JSON-RPC 2.0 response for the `getAssetsByOwner` DAS method.\"},\"id\":\"cyhole.helius.schema:PostGetAssetsByOwnerResponse\",\"import\":\"from cyhole.helius.client import PostGetAssetsByOwnerResponse\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"data\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[]}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_018q5Ae9WmbemaBaRdgQWaW8",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01LrFWwT6j5zM2NXKxDFgd7h",
+      "content": "{\"library\":{\"name\":\"cyhole\",\"version\":\"0.3.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"cyhole\",\"symbols\":1},{\"module\":\"cyhole.birdeye\",\"symbols\":1},{\"module\":\"cyhole.birdeye.client\",\"symbols\":75},{\"module\":\"cyhole.birdeye.exception\",\"symbols\":10},{\"module\":\"cyhole.birdeye.interaction\",\"symbols\":4},{\"module\":\"cyhole.birdeye.param\",\"symbols\":21},{\"module\":\"cyhole.birdeye.schema\",\"symbols\":1},{\"module\":\"cyhole.birdeye.schema.creation_trending\",\"symbols\":7},{\"module\":\"cyhole.birdeye.schema.holder\",\"symbols\":24},{\"module\":\"cyhole.birdeye.schema.price\",\"symbols\":16},{\"module\":\"cyhole.birdeye.schema.security\",\"symbols\":3},{\"module\":\"cyhole.birdeye.schema.token_list\",\"symbols\":23},{\"module\":\"cyhole.birdeye.schema.token_stats\",\"symbols\":19},{\"module\":\"cyhole.birdeye.schema.transactions\",\"symbols\":20},{\"module\":\"cyhole.birdeye.schema.transfer\",\"symbols\":8},{\"module\":\"cyhole.birdeye.schema.wallet\",\"symbols\":2},{\"module\":\"cyhole.core\",\"symbols\":1},{\"module\":\"cyhole.core.client\",\"symbols\":13},{\"module\":\"cyhole.core.exception\",\"symbols\":19},{\"module\":\"cyhole.core.interaction\",\"symbols\":4},{\"module\":\"cyhole.core.param\",\"symbols\":3},{\"module\":\"cyhole.core.token\",\"symbols\":5},{\"module\":\"cyhole.core.token.ethereum\",\"symbols\":5},{\"module\":\"cyhole.core.token.solana\",\"symbols\":5},{\"module\":\"cyhole.dex_screener\",\"symbols\":1},{\"module\":\"cyhole.dex_screener.client\",\"symbols\":31},{\"module\":\"cyhole.dex_screener.exception\",\"symbols\":4},{\"module\":\"cyhole.dex_screener.interaction\",\"symbols\":4},{\"module\":\"cyhole.dex_screener.param\",\"symbols\":1},{\"module\":\"cyhole.dex_screener.schema\",\"symbols\":26},{\"module\":\"cyhole.helius\",\"symbols\":1},{\"module\":\"cyhole.helius.client\",\"symbols\":39},{\"module\":\"cyhole.helius.exception\",\"symbols\":4},{\"module\":\"cyhole.helius.interaction\",\"symbols\":4},{\"module\":\"cyhole.helius.param\",\"symbols\":13},{\"module\":\"cyhole.helius.schema\",\"symbols\":59},{\"module\":\"cyhole.jupiter\",\"symbols\":1},{\"module\":\"cyhole.jupiter.client\",\"symbols\":4"
+    },
+    {
+      "tool_use_id": "toolu_01GdwoPTycoJGBwDXtrVy61T",
+      "content": "{\"results\":[{\"id\":\"cyhole.helius.client:PostGetAssetsByAuthorityBody\",\"kind\":\"class\",\"summary\":\"Request body for the `getAssetsByAuthority` DAS endpoint.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByAuthorityBody\",\"resolved_via_alias\":\"cyhole.helius.schema:PostGetAssetsByAuthorityBody\"},{\"id\":\"cyhole.helius.client:PostGetAssetsByAuthorityResponse\",\"kind\":\"class\",\"summary\":\"JSON-RPC 2.0 response for the `getAssetsByAuthority` DAS method.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByAuthorityResponse\",\"resolved_via_alias\":\"cyhole.helius.schema:PostGetAssetsByAuthorityResponse\"},{\"id\":\"cyhole.helius.client:PostGetAssetsByCreatorBody\",\"kind\":\"class\",\"summary\":\"Request body for the `getAssetsByCreator` DAS endpoint.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByCreatorBody\",\"resolved_via_alias\":\"cyhole.helius.schema:PostGetAssetsByCreatorBody\"},{\"id\":\"cyhole.helius.client:PostGetAssetsByCreatorResponse\",\"kind\":\"class\",\"summary\":\"JSON-RPC 2.0 response for the `getAssetsByCreator` DAS method.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByCreatorResponse\",\"resolved_via_alias\":\"cyhole.helius.schema:PostGetAssetsByCreatorResponse\"},{\"id\":\"cyhole.helius.client:PostGetAssetsByGroupBody\",\"kind\":\"class\",\"summary\":\"Request body for the `getAssetsByGroup` DAS endpoint.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByGroupBody\",\"resolved_via_alias\":\"cyhole.helius.schema:PostGetAssetsByGroupBody\"},{\"id\":\"cyhole.helius.client:PostGetAssetsByGroupResponse\",\"kind\":\"class\",\"summary\":\"JSON-RPC 2.0 response for the `getAssetsByGroup` DAS method.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByGroupResponse\",\"resolved_via_alias\":\"cyhole.helius.schema:PostGetAssetsByGroupResponse\"},{\"id\":\"cyhole.helius.client:PostGetAssetsByOwnerBody\",\"kind\":\"class\",\"summary\":\"Request body for the `getAssetsByOwner` DAS endpoint.\",\"import\":\"from cyhole.helius.client import PostGetAssetsByOwnerBody\",\"resolved_via_alias\":\"cyhole.helius"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-parse-no-execute",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\n\napp = App()\n\n@app.command\ndef add(x: int, y: int):\n    \"\"\"Add two numbers.\"\"\"\n    return x + y\n\ntokens = [\"add\", \"2\", \"3\"]\n\nhint = app.parse(tokens)\n\nprint(f\"Function name: {hint.func.__name__}\")\nprint(f\"Bound arguments: {hint.arguments}\")",
+  "result_text": "```python\nfrom cyclopts import App\n\napp = App()\n\n@app.command\ndef add(x: int, y: int):\n    \"\"\"Add two numbers.\"\"\"\n    return x + y\n\ntokens = [\"add\", \"2\", \"3\"]\n\nhint = app.parse(tokens)\n\nprint(f\"Function name: {hint.func.__name__}\")\nprint(f\"Bound arguments: {hint.arguments}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5297,
+    "cache_read_tokens": 22123,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.028706299999999997,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 58.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts:App#parse_args"
+    ],
+    "forbidden_used": [
+      "cyclopts:App#parse"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

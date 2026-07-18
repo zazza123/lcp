@@ -1,0 +1,31 @@
+{
+  "case_id": "narwhals-decorator",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\nimport polars as pl\nfrom functools import wraps\n\ndef narwhalify(func):\n    @wraps(func)\n    def wrapper(df):\n        return func(nw.from_native(df)).to_native()\n    return wrapper\n\n@narwhalify\ndef add_total(df):\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\n# Test with pandas\npdf = pd.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(pdf))\nprint()\n\n# Test with polars\nplf = pl.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(plf))",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\nimport polars as pl\nfrom functools import wraps\n\ndef narwhalify(func):\n    @wraps(func)\n    def wrapper(df):\n        return func(nw.from_native(df)).to_native()\n    return wrapper\n\n@narwhalify\ndef add_total(df):\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\n# Test with pandas\npdf = pd.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(pdf))\nprint()\n\n# Test with polars\nplf = pl.DataFrame({\"price\": [10, 20, 30], \"quantity\": [2, 3, 4]})\nprint(add_total(plf))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3373,
+    "cache_read_tokens": 22116,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0190856,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "narwhals:narwhalify"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

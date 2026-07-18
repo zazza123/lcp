@@ -1,0 +1,37 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query, ImportMode, SQLiteDatabase, ImportFailedError\n\n# Execute a Query\nquery = Query(sql=\"SELECT 1 as id, 'product_a' as product, 100 as amount\")\nresult = query.execute()\n\n# Create an internal SQLite database\ndb = SQLiteDatabase(\":memory:\")\n\n# First import with FAIL mode\ndb.import_data(\n    data=result,\n    table_name=\"sales\",\n    mode=ImportMode.FAIL\n)\nprint(\"First import successful\")\n\n# Attempt second import - should fail because table already exists\ntry:\n    db.import_data(\n        data=result,\n        table_name=\"sales\",\n        mode=ImportMode.FAIL\n    )\nexcept ImportFailedError as e:\n    print(f\"Caught expected exception: {e}\")",
+  "result_text": "```python\nfrom hamana import Query, ImportMode, SQLiteDatabase, ImportFailedError\n\n# Execute a Query\nquery = Query(sql=\"SELECT 1 as id, 'product_a' as product, 100 as amount\")\nresult = query.execute()\n\n# Create an internal SQLite database\ndb = SQLiteDatabase(\":memory:\")\n\n# First import with FAIL mode\ndb.import_data(\n    data=result,\n    table_name=\"sales\",\n    mode=ImportMode.FAIL\n)\nprint(\"First import successful\")\n\n# Attempt second import - should fail because table already exists\ntry:\n    db.import_data(\n        data=result,\n        table_name=\"sales\",\n        mode=ImportMode.FAIL\n    )\nexcept ImportFailedError as e:\n    print(f\"Caught expected exception: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2139,
+    "cache_read_tokens": 22027,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0129067,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.ImportFailedError",
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL",
+      "hamana.SQLiteDatabase"
+    ],
+    "error": null
+  }
+}

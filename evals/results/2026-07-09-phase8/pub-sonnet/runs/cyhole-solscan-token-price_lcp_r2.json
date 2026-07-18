@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan.v2 import SolscanV2\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111112\"\n\napi_key = os.environ[\"SOLSCAN_API_KEY\"]\nsolscan = SolscanV2(api_key=api_key)\n\nresponse = solscan.client.token_price(address=TOKEN_ADDRESS)\n\nfor entry in response.data:\n    print(entry.date, entry.price)",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan.v2 import SolscanV2\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111112\"\n\napi_key = os.environ[\"SOLSCAN_API_KEY\"]\nsolscan = SolscanV2(api_key=api_key)\n\nresponse = solscan.client.token_price(address=TOKEN_ADDRESS)\n\nfor entry in response.data:\n    print(entry.date, entry.price)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 3807,
+    "cache_read_tokens": 30298,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0662004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 41.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan",
+      "cyhole.solscan.v2.client:SolscanClient#get_token_price"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.v2.SolscanV2"
+    ],
+    "error": null
+  }
+}

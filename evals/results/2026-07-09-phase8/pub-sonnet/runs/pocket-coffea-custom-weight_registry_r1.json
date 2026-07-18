@@ -1,0 +1,104 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\n\nfrom pocket_coffea.lib.weights.weights_wrapper import WeightData, WeightLambda\n\n\ndef _toy_reweight_function(params, metadata, events, size, shape_variation):\n    nominal = events.LHEWeight_originalXWGTUP\n    nominal = nominal / ak.mean(nominal)\n    up = nominal * 1.05\n    down = nominal * 0.95\n    return WeightData(\n        name=\"toy_reweight\",\n        nominal=nominal,\n        up=up,\n        down=down,\n    )\n\n\nToyReweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=_toy_reweight_function,\n    has_variations=True,\n)\n\nweights_classes = [ToyReweight]",
+  "result_text": "```python\nimport awkward as ak\n\nfrom pocket_coffea.lib.weights.weights_wrapper import WeightData, WeightLambda\n\n\ndef _toy_reweight_function(params, metadata, events, size, shape_variation):\n    nominal = events.LHEWeight_originalXWGTUP\n    nominal = nominal / ak.mean(nominal)\n    up = nominal * 1.05\n    down = nominal * 0.95\n    return WeightData(\n        name=\"toy_reweight\",\n        nominal=nominal,\n        up=up,\n        down=down,\n    )\n\n\nToyReweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=_toy_reweight_function,\n    has_variations=True,\n)\n\nweights_classes = [ToyReweight]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 6894,
+    "cache_read_tokens": 299982,
+    "cache_creation_tokens": 20914,
+    "cost_usd": 0.3189426,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 80.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell exec powershell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Read,Write,Edit,Bash,Grep,Glob",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "pocket_coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016CaKbixjXavk5pdSPBq7eg",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01SxAdekfn212x5AjMfz6VjS",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket_coffea': 'pocket_coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01UER5N84evXNbXXNoR4dy8n",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'pocket_coffea' is not loaded.\",\"hint\":\"Call resolve_library('pocket_coffea') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.weights.weights_wrapper.WeightData",
+      "pocket_coffea.lib.weights.weights_wrapper.WeightLambda",
+      "pocket_coffea.lib.weights.weights_wrapper.WeightLambda.wrap_func"
+    ],
+    "error": null
+  }
+}

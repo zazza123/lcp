@@ -1,0 +1,102 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "resolve_library(\"hamana\", version=\"1.0.1\")\n\u2192 error: 'hamana' is not importable by the scan interpreter\n  (.../evals/.venv-registry/bin/python3.12). It may be installed in a\n  different environment \u2014 point the server at that env via\n  .lcp-config.json ('scan_python' or 'python').",
+  "result_text": "I attempted to verify `hamana`'s API through the LCP MCP server (mandatory before writing code against any third-party library), but it fails to resolve:\n\n```\nresolve_library(\"hamana\", version=\"1.0.1\")\n\u2192 error: 'hamana' is not importable by the scan interpreter\n  (.../evals/.venv-registry/bin/python3.12). It may be installed in a\n  different environment \u2014 point the server at that env via\n  .lcp-config.json ('scan_python' or 'python').\n```\n\nI don't have shell/file-system access in this session (no Bash/Read/Edit tools available) to check which environment `hamana` is actually installed in or to update `.lcp-config.json` to point at it, so I can't introspect the real singleton connector class, its accessor method, or the attribute holding the raw connection.\n\nI don't know `hamana` from training data with any confidence \u2014 it's not a library I can vouch for \u2014 so writing a code block with guessed class/method names (e.g. `DatabaseConnector.get_instance().connection`) would very likely be a fabricated API, which is exactly the failure mode the verification step exists to prevent.\n\nTo get you a correct, runnable answer, I need one of:\n- The environment/venv where `hamana` 1.0.1 is actually installed (so I can point the LCP server's `scan_python` at it), or\n- The exact class name and method/attribute names for the singleton connector (e.g. from `hamana`'s docs or `dir()` output), which I can then verify with `get_symbol` before writing the snippet.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 16,
+    "output_tokens": 4282,
+    "cache_read_tokens": 288417,
+    "cache_creation_tokens": 15227,
+    "cost_usd": 0.24216509999999997,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 70.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,BashOutput",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Bash shell command execute",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell execute command shell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Grep,Glob",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "connector",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01G3da85H67jbfXJmwasvVBH",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01LmdGBgdg1ykbifnq25eF5Y",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_01HdirZZgwpaFMj53bfQPBYK",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "syntax error in generated code: invalid character '\u2192' (U+2192) (<unknown>, line 2)"
+  }
+}

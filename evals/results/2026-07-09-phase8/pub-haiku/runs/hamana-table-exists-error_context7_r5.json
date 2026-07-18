@@ -1,0 +1,68 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nfrom hamana import ImportMode\n\n# Create a Query instance\nquery = hamana.Query(\"SELECT * FROM some_data_source\")\n\n# Execute the query to get results\nresults = query.execute()\n\n# Create database connection\ndb = hamana.Database(\"internal.db\")\n\n# Attempt to import with FAIL mode (raises exception if table exists)\ntry:\n    db.import_results(\n        results,\n        table_name=\"sales\",\n        mode=ImportMode.FAIL\n    )\n    print(\"Successfully imported results to 'sales' table\")\nexcept hamana.ImportException as e:\n    print(f\"Import failed: {e}\")\n    print(\"Table 'sales' already exists, import was not performed\")",
+  "result_text": "```python\nimport hamana\nfrom hamana import ImportMode\n\n# Create a Query instance\nquery = hamana.Query(\"SELECT * FROM some_data_source\")\n\n# Execute the query to get results\nresults = query.execute()\n\n# Create database connection\ndb = hamana.Database(\"internal.db\")\n\n# Attempt to import with FAIL mode (raises exception if table exists)\ntry:\n    db.import_results(\n        results,\n        table_name=\"sales\",\n        mode=ImportMode.FAIL\n    )\n    print(\"Successfully imported results to 'sales' table\")\nexcept hamana.ImportException as e:\n    print(f\"Import failed: {e}\")\n    print(\"Table 'sales' already exists, import was not performed\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 1668,
+    "cache_read_tokens": 97413,
+    "cache_creation_tokens": 5694,
+    "cost_usd": 0.0295063,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 101.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "hamana library documentation",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana SQLite import modes fail exception"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana python database query SQLite import"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011D4yTGZWn4iAxshyT2rEPY",
+      "content": "Available Libraries:\n\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_011oDiZ7K3oTqti9L36HBSv6",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.Database",
+      "hamana.ImportException",
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL"
+    ],
+    "error": null
+  }
+}

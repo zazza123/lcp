@@ -1,0 +1,40 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.weights.handler import WeightHandler\n\n\nclass ToyReweight(WeightHandler):\n    \"\"\"Custom toy reweight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def apply(self, events):\n        \"\"\"Apply nominal weight and variations.\"\"\"\n        # Normalize LHEWeight_originalXWGTUP to 1\n        nominal = events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n        \n        # Create variations dict\n        self.results[\"nominal\"] = nominal\n        self.results[\"toy_reweight_up\"] = nominal * 1.05\n        self.results[\"toy_reweight_down\"] = nominal * 0.95\n        \n        return self.results",
+  "result_text": "I understand. For this task, I need to write code for a PocketCoffea custom weight\u2014no other skills apply. Proceeding with the code as specified.\n\n```python\nfrom pocket_coffea.lib.weights.handler import WeightHandler\n\n\nclass ToyReweight(WeightHandler):\n    \"\"\"Custom toy reweight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def apply(self, events):\n        \"\"\"Apply nominal weight and variations.\"\"\"\n        # Normalize LHEWeight_originalXWGTUP to 1\n        nominal = events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n        \n        # Create variations dict\n        self.results[\"nominal\"] = nominal\n        self.results[\"toy_reweight_up\"] = nominal * 1.05\n        self.results[\"toy_reweight_down\"] = nominal * 0.95\n        \n        return self.results\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 2142,
+    "cache_read_tokens": 37170,
+    "cache_creation_tokens": 9377,
+    "cost_usd": 0.033199,
+    "num_turns": 3,
+    "tool_calls": 1,
+    "duration_s": 37.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.weights.handler.WeightHandler"
+    ],
+    "error": null
+  }
+}

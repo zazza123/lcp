@@ -1,0 +1,73 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Any\n\nimport httpx\nfrom fastmcp import FastMCP\n\n\ndef build_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI Server\",\n) -> FastMCP:\n    \"\"\"Build an MCP server whose tools mirror the operations in an OpenAPI spec.\n\n    Args:\n        openapi_spec: Minimal OpenAPI 3.0 specification as a dict.\n        client: httpx.AsyncClient pre-configured with the API base URL.\n        name: Name for the resulting MCP server.\n\n    Returns:\n        A FastMCP server instance with one tool per OpenAPI operation.\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n    )\n\n\nif __name__ == \"__main__\":\n    OPENAPI_SPEC: dict[str, Any] = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/items/{item_id}\": {\n                \"get\": {\n                    \"operationId\": \"get_item\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"item_id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"integer\"},\n                        }\n                    ],\n                    \"responses\": {\"200\": {\"description\": \"OK\"}},\n                }\n            }\n        },\n    }\n\n    api_client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    mcp = build_mcp_server(OPENAPI_SPEC, api_client, name=\"Example API MCP Server\")\n    mcp.run()",
+  "result_text": "I have confirmed the API. Here's the code.\n\n```python\nfrom typing import Any\n\nimport httpx\nfrom fastmcp import FastMCP\n\n\ndef build_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI Server\",\n) -> FastMCP:\n    \"\"\"Build an MCP server whose tools mirror the operations in an OpenAPI spec.\n\n    Args:\n        openapi_spec: Minimal OpenAPI 3.0 specification as a dict.\n        client: httpx.AsyncClient pre-configured with the API base URL.\n        name: Name for the resulting MCP server.\n\n    Returns:\n        A FastMCP server instance with one tool per OpenAPI operation.\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n    )\n\n\nif __name__ == \"__main__\":\n    OPENAPI_SPEC: dict[str, Any] = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/items/{item_id}\": {\n                \"get\": {\n                    \"operationId\": \"get_item\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"item_id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"integer\"},\n                        }\n                    ],\n                    \"responses\": {\"200\": {\"description\": \"OK\"}},\n                }\n            }\n        },\n    }\n\n    api_client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    mcp = build_mcp_server(OPENAPI_SPEC, api_client, name=\"Example API MCP Server\")\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 2260,
+    "cache_read_tokens": 129771,
+    "cache_creation_tokens": 16627,
+    "cost_usd": 0.17261730000000003,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 33.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/fastmcp*/openapi*/**",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/fastmcp/**/__init__.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/openapi/__init__.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def from_openapi|class FastMCP",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "offset": 2330,
+        "limit": 80
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/providers/openapi/__init__.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

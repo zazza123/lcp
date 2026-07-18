@@ -1,0 +1,88 @@
+{
+  "case_id": "pixeltable-update-rows",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\ntbl = pxt.get_table(\"films\")\ntbl.update({\"distributor\": \"Warner Bros.\"}, where=tbl.studio == \"WB\")",
+  "result_text": "Verified against the installed pixeltable 0.6.6 API \u2014 `Table.update(value_spec, where=...)` matches this exactly.\n\n```python\nimport pixeltable as pxt\n\ntbl = pxt.get_table(\"films\")\ntbl.update({\"distributor\": \"Warner Bros.\"}, where=tbl.studio == \"WB\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1308,
+    "cache_read_tokens": 168671,
+    "cache_creation_tokens": 9146,
+    "cost_usd": 0.1251273,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 21.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "update",
+        "library": "pixeltable",
+        "kind": "method",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_table",
+        "library": "pixeltable",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#update",
+          "pixeltable:get_table"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01GCtRUsqdV8tascECZ53Au9",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_0149cGq7wGaktFy3K1n8DP8q",
+      "content": "{\"results\":[{\"id\":\"pixeltable:Query#update\",\"kind\":\"method\",\"summary\":\"Update rows in the underlying table of the Query.\",\"import\":\"from pixeltable import Query\",\"resolved_via_alias\":\"pixeltable._query:Query#update\"},{\"id\":\"pixeltable:InsertableTable#update\",\"kind\":\"method\",\"summary\":\"Method update\",\"import\":\"from pixeltable import InsertableTable\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table:InsertableTable#update\"},{\"id\":\"pixeltable.catalog:InsertableTableProxy#update\",\"kind\":\"method\",\"summary\":\"Method update\",\"import\":\"from pixeltable.catalog import InsertableTableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table_proxy:InsertableTableProxy#update\"},{\"id\":\"pixeltable.catalog:LocalTable#update\",\"kind\":\"method\",\"summary\":\"Method update\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#update\"},{\"id\":\"pixeltable:Table#update\",\"kind\":\"method\",\"summary\":\"Update rows in this table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#update\"},{\"id\":\"pixeltable.catalog:TableProxy#update\",\"kind\":\"method\",\"summary\":\"Method update\",\"import\":\"from pixeltable.catalog import TableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.table_proxy:TableProxy#update\"},{\"id\":\"pixeltable.catalog:TableVersion#update\",\"kind\":\"method\",\"summary\":\"Update rows in this TableVersionPath. Args: value_spec: a list of (column, value) pairs specifying the columns to update and their new values. where: a predicate to filter rows to update. cascade: if True, also update all computed columns that transitively depend on the updated columns, including within views. return_rows: if True, capture the post-update row state in UpdateStatus.rows.\",\"import\":\"from pixeltable.catalog import TableVersion\",\"resolved_via_alias\":\"pixeltable.catalog.table_version:TableVersion#update\"},{\"id\":\"pixeltable:View#update\",\"kind\":\"method\",\"summary\":\"Method update\",\"import\":\"from pixeltable i"
+    },
+    {
+      "tool_use_id": "toolu_01Q7G26vNSghb2rFpwt7jJ97",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.catalog:Catalog#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Must be executed inside a transaction. Might raise PendingTableOpsError.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table_by_id\"},{\"id\":\"pixeltable.catalog:LocalTable#compute\",\"kind\":\"method\",\"summary\":\"Materialize the computed columns of this table for the given input rows and return the resulting rows without persisting them.\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#compute\"},{\"id\":\"pixeltabl"
+    },
+    {
+      "tool_use_id": "toolu_011tvSpVguVrVd6kdcR29hKq",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"value_spec\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"a dictionary mapping column names to literal values or Pixeltable expressions.\"},{\"name\":\"where\",\"type\":\"'exprs.Expr' | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"a predicate to filter rows to update.\"},{\"name\":\"cascade\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"if True, also update all computed columns that transitively depend on the updated columns.\"},{\"name\":\"return_rows\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"If `True`, populate `UpdateStatus.rows` with one dict per updated row, mapping column\\nnames to their new stored values.  If `False` (default), `UpdateStatus.rows` is `None`.\"}],\"returns\":\"UpdateStatus\",\"returns_description\":\"An [`UpdateStatus`][pixeltable.UpdateStatus] object containing information about the update.\"}],\"semantics\":{\"summary\":\"Update rows in this table.\",\"description\":\"Args:\\n            value_spec: a dictionary mapping column names to literal values or Pixeltable expressions.\\n            where: a predicate to filter rows to update.\\n            cascade: if True, also update all computed columns that transitively depend on the updated columns.\\n            return_rows: If `True`, populate `UpdateStatus.rows` with one dict per updated row, mapping column\\n                names to their new stored values.  If `False` (default), `UpdateStatus.rows` is `None`.\\n\\n        Returns:\\n            An [`UpdateStatus`][pixeltable.UpdateStatus] object containing information about the update.\\n\\n        Examples:\\n            Set column `int_col` to 1 for all rows:\\n\\n            >>> tbl.update({'int_col': 1})\\n\\n            Set column `int_col` to 1 for all rows where `int_col` is 0:\\n\\n     "
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

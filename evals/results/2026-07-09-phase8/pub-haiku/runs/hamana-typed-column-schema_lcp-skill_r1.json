@@ -1,0 +1,137 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query\nfrom hamana.core.identifier import IntegerColumn, StringColumn, DateColumn\n\n# Define the column schema\ncolumns = [\n    IntegerColumn(name=\"id\"),\n    StringColumn(name=\"name\"),\n    DateColumn(name=\"created_at\", format=\"%Y-%m-%d\"),\n]\n\n# Create the Query with explicit column schema\nquery = Query(\n    query=\"SELECT id, name, created_at FROM users\",\n    columns=columns,\n)\n\nprint(query)",
+  "result_text": "```python\nfrom hamana import Query\nfrom hamana.core.identifier import IntegerColumn, StringColumn, DateColumn\n\n# Define the column schema\ncolumns = [\n    IntegerColumn(name=\"id\"),\n    StringColumn(name=\"name\"),\n    DateColumn(name=\"created_at\", format=\"%Y-%m-%d\"),\n]\n\n# Create the Query with explicit column schema\nquery = Query(\n    query=\"SELECT id, name, created_at FROM users\",\n    columns=columns,\n)\n\nprint(query)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 1647,
+    "cache_read_tokens": 275918,
+    "cache_creation_tokens": 16528,
+    "cost_usd": 0.06897379999999999,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 32.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:resolve_library"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Query",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "column type integer string date",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "column",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "IntegerColumn StringColumn",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Integer String Text Numeric",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "hamana",
+        "module": "hamana.core.column"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana:Query",
+          "hamana.core.identifier:IntegerColumn",
+          "hamana.core.identifier:StringColumn",
+          "hamana.core.identifier:DateColumn"
+        ],
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_014RqLFGjrDDqTvzKueEPSch",
+      "content": "{\"status\":\"loaded\",\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"symbol_count\":245,\"module_count\":21,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='hamana') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01PAaVAf5YJk6waqtS5RRAha",
+      "content": "{\"results\":[{\"id\":\"hamana:Query\",\"kind\":\"class\",\"summary\":\"Class to represent a query object.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query\"},{\"id\":\"hamana.connector.db.query:QueryColumnsNotAvailable\",\"kind\":\"class\",\"summary\":\"Class QueryColumnsNotAvailable\",\"import\":\"from hamana.connector.db.query import QueryColumnsNotAvailable\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryColumnsNotAvailable\"},{\"id\":\"hamana.connector.db.query:QueryInitializationError\",\"kind\":\"class\",\"summary\":\"Class QueryInitializationError\",\"import\":\"from hamana.connector.db.query import QueryInitializationError\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryInitializationError\"},{\"id\":\"hamana.connector.db.query:QueryResultNotAvailable\",\"kind\":\"class\",\"summary\":\"Class QueryResultNotAvailable\",\"import\":\"from hamana.connector.db.query import QueryResultNotAvailable\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:QueryResultNotAvailable\"},{\"id\":\"hamana.connector.db.query:QueryParam\",\"kind\":\"class\",\"summary\":\"Class to represent a parameter used in a query. A parameter is represented by a name and its value.\",\"import\":\"from hamana.connector.db.query import QueryParam\"},{\"id\":\"hamana:Query#get_create_query\",\"kind\":\"method\",\"summary\":\"This function returns a query to create a table based on the query result.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query#get_create_query\"},{\"id\":\"hamana:Query#get_insert_query\",\"kind\":\"method\",\"summary\":\"This function returns a query to insert the query result into a table.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query#get_insert_query\"},{\"id\":\"hamana:execute\",\"kind\":\"function\",\"summary\":\"Execute the query on the internal database. This function is a helper function to execute a query on the `hamana` SQLite database.\",\"import\":\"from hamana import execute\",\"resolved_via_alias\":\"hamana.connector.db.hamana:exec"
+    },
+    {
+      "tool_use_id": "toolu_01Mp7hqrYWvBCRYXxwznUd3Y",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Bvifu3oKRY5VqTDmYLcGjE",
+      "content": "{\"results\":[{\"id\":\"hamana.core.identifier:Column\",\"kind\":\"class\",\"summary\":\"Class representing a column in the `hamana` library.\",\"import\":\"from hamana.core.identifier import Column\",\"resolved_via_alias\":\"hamana.core.column:Column\"},{\"id\":\"hamana.connector.db.base:ColumnDataTypeConversionError\",\"kind\":\"class\",\"summary\":\"Class ColumnDataTypeConversionError\",\"import\":\"from hamana.connector.db.base import ColumnDataTypeConversionError\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:ColumnDataTypeConversionError\"},{\"id\":\"hamana.core.column:ColumnParser\",\"kind\":\"class\",\"summary\":\"Class representing a parser for a column in the `hamana` library.\",\"import\":\"from hamana.core.column import ColumnParser\"},{\"id\":\"hamana.core.column:ColumnDateFormatterError\",\"kind\":\"class\",\"summary\":\"Exception raised when there is not admitted date format.\",\"import\":\"from hamana.core.column import ColumnDateFormatterError\",\"resolved_via_alias\":\"hamana.core.exceptions:ColumnDateFormatterError\"},{\"id\":\"hamana.core.identifier:ColumnIdentifierEmptySeriesError\",\"kind\":\"class\",\"summary\":\"Exception raised when a series is empty.\",\"import\":\"from hamana.core.identifier import ColumnIdentifierEmptySeriesError\",\"resolved_via_alias\":\"hamana.core.exceptions:ColumnIdentifierEmptySeriesError\"},{\"id\":\"hamana.core.identifier:ColumnIdentifierError\",\"kind\":\"class\",\"summary\":\"Exception raised when there is an error identifying a column.\",\"import\":\"from hamana.core.identifier import ColumnIdentifierError\",\"resolved_via_alias\":\"hamana.core.exceptions:ColumnIdentifierError\"},{\"id\":\"hamana.core.column:ColumnParserPandasDatetimeError\",\"kind\":\"class\",\"summary\":\"Exception raised when there is an error parsing a datetime column\",\"import\":\"from hamana.core.column import ColumnParserPandasDatetimeError\",\"resolved_via_alias\":\"hamana.core.exceptions:ColumnParserPandasDatetimeError\"},{\"id\":\"hamana.core.column:ColumnParserPandasNumberError\",\"kind\":\"class\",\"summary\":\"Exception raised when there is an error parsing a number"
+    },
+    {
+      "tool_use_id": "toolu_01M6b33mGqTfH2w9NcXrw3yv",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01UqCXTDxuGAuwpwuZDkqMGr",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01N5SWiwfWWXab3jHatKDXeV",
+      "content": "{\"results\":[{\"id\":\"hamana.core.identifier:BooleanColumn\",\"kind\":\"class\",\"summary\":\"Class representing `DataType.BOOLEAN` columns.\",\"import\":\"from hamana.core.identifier import BooleanColumn\",\"resolved_via_alias\":\"hamana.core.column:BooleanColumn\"},{\"id\":\"hamana.core.identifier:Column\",\"kind\":\"class\",\"summary\":\"Class representing a column in the `hamana` library.\",\"import\":\"from hamana.core.identifier import Column\",\"resolved_via_alias\":\"hamana.core.column:Column\"},{\"id\":\"hamana.core.column:ColumnParser\",\"kind\":\"class\",\"summary\":\"Class representing a parser for a column in the `hamana` library.\",\"import\":\"from hamana.core.column import ColumnParser\"},{\"id\":\"hamana.connector.db.query:DataType\",\"kind\":\"class\",\"summary\":\"Enumeration representing the datatypes of the `hamana` columns.\",\"import\":\"from hamana.connector.db.query import DataType\",\"resolved_via_alias\":\"hamana.core.column:DataType\"},{\"id\":\"hamana.core.identifier:DateColumn\",\"kind\":\"class\",\"summary\":\"Class representing `DataType.DATE` columns.\",\"import\":\"from hamana.core.identifier import DateColumn\",\"resolved_via_alias\":\"hamana.core.column:DateColumn\"},{\"id\":\"hamana.core.identifier:DatetimeColumn\",\"kind\":\"class\",\"summary\":\"Class representing `DataType.DATETIME` columns.\",\"import\":\"from hamana.core.identifier import DatetimeColumn\",\"resolved_via_alias\":\"hamana.core.column:DatetimeColumn\"},{\"id\":\"hamana.core.identifier:IntegerColumn\",\"kind\":\"class\",\"summary\":\"Class representing `DataType.INTEGER` columns. It ehrits from the `NumberColumn` class and provides a default parser that could be used to parse integer columns.\",\"import\":\"from hamana.core.identifier import IntegerColumn\",\"resolved_via_alias\":\"hamana.core.column:IntegerColumn\"},{\"id\":\"hamana.core.identifier:NumberColumn\",\"kind\":\"class\",\"summary\":\"Dedicated class representing `DataType.NUMBER` columns.\",\"import\":\"from hamana.core.identifier import NumberColumn\",\"resolved_via_alias\":\"hamana.core.column:NumberColumn\"},{\"id\":\"hamana.core.column:PandasParser\",\""
+    },
+    {
+      "tool_use_id": "toolu_017ax9t1VMRGQZC2WCUWHF6q",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"hamana.connector.db.query\",\"aliases\":[\"hamana.connector.db.base:Query\",\"hamana.connector.db.hamana:Query\",\"hamana.connector.db.oracle:Query\",\"hamana.connector.file.csv:Query\",\"hamana:Query\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"query\",\"type\":\"UnionType[str, Path]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"columns\",\"type\":\"UnionType[list[TColumn], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"params\",\"type\":\"UnionType[list[QueryParam], dict[str, UnionType[int, float, str, bool]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class to represent a query object.\"},\"id\":\"hamana:Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query\",\"import\":\"from hamana import Query\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"query\",\"type\":\"UnionType[str, Path]\"}],\"optional_parameters\":[{\"name\":\"columns\",\"type\":\"UnionType[list[TColumn], None]\",\"default\":null},{\"name\":\"params\",\"type\":\"UnionType[list[QueryParam], dict[str, UnionType[int, float, str, bool]], None]\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"hamana:Query#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"hamana:Query#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\"},{\"id\":\"hamana:Query#adjust_df\",\"kind\":\"method\",\"summary\":\"This function is used to adjust a `pandas.DataFrame` (usually the result of a query) based on the columns provided.\"},{\"id\":\"hamana:Query#get_column_names\",\"kind\":\"method\",\"summary\":\"This function returns the column names of the query.\"},{\"id\":\"hamana:Query#get_create_query\",\"kind\":\"method\",\"summary\":\"This function returns a query to create a table based on the query result.\"},{\"id\":\"hamana:Query#get_insert_query\",\"kind\":\"method\",\"summary\":\"This function returns a query to insert the query result into a table.\"},{\"id\":\"hamana:Query#get_params\",\"kind\":\"method\",\"summary\":\"Returns the query parameters"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

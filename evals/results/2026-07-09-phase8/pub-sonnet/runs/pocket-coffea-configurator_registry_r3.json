@@ -1,0 +1,92 @@
+{
+  "case_id": "pocket-coffea-configurator",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.utils.configurator import Configurator\nfrom pocket_coffea.lib.cut_functions import passthrough\n\ncfg = Configurator(\n    parameters=params,\n\n    datasets={\n        \"jsons\": [\"datasets/DYJetsToLL_2018.json\"],\n        \"filter\": {\n            \"year\": [\"2018\"],\n        },\n    },\n\n    workflow=ZmumuProcessor,\n\n    skim=[passthrough],\n\n    preselections=[],\n\n    categories={\n        \"baseline\": [passthrough],\n    },\n\n    weights={\n        \"common\": {\n            \"inclusive\": [\n                \"genWeight\",\n                \"lumi\",\n                \"XS\",\n            ],\n            \"bycategory\": {},\n        },\n        \"bysample\": {},\n    },\n\n    variations={\n        \"weights\": {\n            \"common\": {\n                \"inclusive\": [],\n                \"bycategory\": {},\n            },\n            \"bysample\": {},\n        },\n    },\n\n    variables={},\n)",
+  "result_text": "```python\nfrom pocket_coffea.utils.configurator import Configurator\nfrom pocket_coffea.lib.cut_functions import passthrough\n\ncfg = Configurator(\n    parameters=params,\n\n    datasets={\n        \"jsons\": [\"datasets/DYJetsToLL_2018.json\"],\n        \"filter\": {\n            \"year\": [\"2018\"],\n        },\n    },\n\n    workflow=ZmumuProcessor,\n\n    skim=[passthrough],\n\n    preselections=[],\n\n    categories={\n        \"baseline\": [passthrough],\n    },\n\n    weights={\n        \"common\": {\n            \"inclusive\": [\n                \"genWeight\",\n                \"lumi\",\n                \"XS\",\n            ],\n            \"bycategory\": {},\n        },\n        \"bysample\": {},\n    },\n\n    variations={\n        \"weights\": {\n            \"common\": {\n                \"inclusive\": [],\n                \"bycategory\": {},\n            },\n            \"bysample\": {},\n        },\n    },\n\n    variables={},\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 7590,
+    "cache_read_tokens": 238205,
+    "cache_creation_tokens": 22422,
+    "cost_usd": 0.31988550000000004,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 87.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocketcoffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01WxGez8vmbdK3rDTdd7vPtP",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01VDC5A8tBYv9JvK2EApaDV4",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocketcoffea': 'pocketcoffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.parameters.cuts:passthrough"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.passthrough"
+    ],
+    "error": null
+  }
+}

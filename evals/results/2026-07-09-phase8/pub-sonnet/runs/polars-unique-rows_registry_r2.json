@@ -1,0 +1,59 @@
+{
+  "case_id": "polars-unique-rows",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"a\": [1, 2, 2, 3, 1],\n        \"b\": [\"x\", \"y\", \"y\", \"z\", \"x\"],\n        \"c\": [10.0, 20.0, 20.0, 30.0, 10.0],\n    }\n)\n\ndeduped_df = df.unique(keep=\"first\", maintain_order=True)\n\nprint(deduped_df)",
+  "result_text": "Can't resolve `polars` in this environment's scan interpreter (it's installed elsewhere), so I'll rely on the well-established `DataFrame.unique(keep=\"first\", maintain_order=True)` API, which is stable in polars 1.x.\n\n```python\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"a\": [1, 2, 2, 3, 1],\n        \"b\": [\"x\", \"y\", \"y\", \"z\", \"x\"],\n        \"c\": [10.0, 20.0, 20.0, 30.0, 10.0],\n    }\n)\n\ndeduped_df = df.unique(keep=\"first\", maintain_order=True)\n\nprint(deduped_df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 949,
+    "cache_read_tokens": 116221,
+    "cache_creation_tokens": 12730,
+    "cost_usd": 0.12550530000000001,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 17.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars",
+        "version": "1.42.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Fw4Jhi1SVwou8b4rvK8qC8",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'polars': 'polars' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01EXuxiQEE9zu8jL6xLSdJd1",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'polars': 'polars' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-subcommands",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"File manager CLI using cyclopts.\"\"\"\n\nimport cyclopts\n\n\ndef upload(path: str) -> None:\n    \"\"\"Upload a file.\"\"\"\n    print(f\"Uploading: {path}\")\n\n\ndef download(url: str, *, dest: str) -> None:\n    \"\"\"Download a file.\"\"\"\n    print(f\"Downloading: {url}\")\n    print(f\"Destination: {dest}\")\n\n\nif __name__ == \"__main__\":\n    app = cyclopts.App(name=\"fileman\")\n    app.command(upload)\n    app.command(download)\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"File manager CLI using cyclopts.\"\"\"\n\nimport cyclopts\n\n\ndef upload(path: str) -> None:\n    \"\"\"Upload a file.\"\"\"\n    print(f\"Uploading: {path}\")\n\n\ndef download(url: str, *, dest: str) -> None:\n    \"\"\"Download a file.\"\"\"\n    print(f\"Downloading: {url}\")\n    print(f\"Destination: {dest}\")\n\n\nif __name__ == \"__main__\":\n    app = cyclopts.App(name=\"fileman\")\n    app.command(upload)\n    app.command(download)\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3941,
+    "cache_read_tokens": 22086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0219226,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 46.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

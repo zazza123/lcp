@@ -1,0 +1,145 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom typing import Any\n\nimport httpx\nfrom fastmcp import FastMCP\nfrom fastmcp.server.openapi import OpenAPIProvider\n\n\ndef create_openapi_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    server_name: str = \"OpenAPI Server\",\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 specification.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dict\n        client: Configured httpx.AsyncClient with base URL\n        server_name: Optional name for the MCP server\n        \n    Returns:\n        FastMCP server with tools mirroring OpenAPI operations\n    \"\"\"\n    provider = OpenAPIProvider(openapi_spec=openapi_spec, client=client)\n    server = FastMCP(server_name)\n    server.add_provider(provider)\n    return server\n\n\nasync def main():\n    # Example minimal OpenAPI 3.0 spec\n    openapi_spec = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/users\": {\n                \"get\": {\n                    \"operationId\": \"listUsers\",\n                    \"summary\": \"List all users\",\n                    \"responses\": {\"200\": {\"description\": \"Success\"}},\n                }\n            },\n            \"/users/{id}\": {\n                \"get\": {\n                    \"operationId\": \"getUser\",\n                    \"summary\": \"Get a specific user\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"string\"},\n                        }\n                    ],\n                    \"responses\": {\"200\": {\"description\": \"Success\"}},\n                }\n            },\n        },\n    }\n\n    async with httpx.AsyncClient(base_url=\"https://api.example.com\") as client:\n        server = create_openapi_mcp_server(openapi_spec, client)\n        \n        # List all available tools\n        tools = server.list_tools()\n        print(f\"Generated {len(tools)} tools from OpenAPI spec:\")\n        for tool in tools:\n            print(f\"  - {tool.name}: {tool.description}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom typing import Any\n\nimport httpx\nfrom fastmcp import FastMCP\nfrom fastmcp.server.openapi import OpenAPIProvider\n\n\ndef create_openapi_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    server_name: str = \"OpenAPI Server\",\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 specification.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dict\n        client: Configured httpx.AsyncClient with base URL\n        server_name: Optional name for the MCP server\n        \n    Returns:\n        FastMCP server with tools mirroring OpenAPI operations\n    \"\"\"\n    provider = OpenAPIProvider(openapi_spec=openapi_spec, client=client)\n    server = FastMCP(server_name)\n    server.add_provider(provider)\n    return server\n\n\nasync def main():\n    # Example minimal OpenAPI 3.0 spec\n    openapi_spec = {\n        \"openapi\": \"3.0.0\",\n        \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n        \"paths\": {\n            \"/users\": {\n                \"get\": {\n                    \"operationId\": \"listUsers\",\n                    \"summary\": \"List all users\",\n                    \"responses\": {\"200\": {\"description\": \"Success\"}},\n                }\n            },\n            \"/users/{id}\": {\n                \"get\": {\n                    \"operationId\": \"getUser\",\n                    \"summary\": \"Get a specific user\",\n                    \"parameters\": [\n                        {\n                            \"name\": \"id\",\n                            \"in\": \"path\",\n                            \"required\": True,\n                            \"schema\": {\"type\": \"string\"},\n                        }\n                    ],\n                    \"responses\": {\"200\": {\"description\": \"Success\"}},\n                }\n            },\n        },\n    }\n\n    async with httpx.AsyncClient(base_url=\"https://api.example.com\") as client:\n        server = create_openapi_mcp_server(openapi_spec, client)\n        \n        # List all available tools\n        tools = server.list_tools()\n        print(f\"Generated {len(tools)} tools from OpenAPI spec:\")\n        for tool in tools:\n            print(f\"  - {tool.name}: {tool.description}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 3080,
+    "cache_read_tokens": 298083,
+    "cache_creation_tokens": 23118,
+    "cost_usd": 0.0915353,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 48.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "+lcp resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server create tools",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.server.openapi:FastMCPOpenAPI",
+          "fastmcp.tools.function_tool:ToolMeta"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "OpenAPIProvider",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server.openapi:OpenAPIProvider"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01C5JPUJZadLDwzwZPnx2kzE",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_014cw6WND2ZrGuCKHjBCofcZ",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_011qoDhxQNKgkFyf9LhrXVmE",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01TjmsdCWZdtemVXJ5bpK6Pb",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Eyhbp1ebheHb4XTuMGPQtU",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Gaw8bUW9tRj265gHXf3u9q",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_018otFB7ZL53RVP2Fhmni2fB",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_016UcFiL89wvThgZcXtwGhQy",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#from_openapi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

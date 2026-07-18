@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Server, Client\n\nasync def main():\n    # Create server and register a resource\n    server = Server(\"config-server\")\n    \n    @server.resource(\"data://config\")\n    def get_config():\n        return \"Configuration data from the resource\"\n    \n    # Create in-memory client connected directly to the server\n    client = Client(server)\n    \n    # Fetch the resource\n    resource = await client.read_resource(\"data://config\")\n    \n    print(resource)\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Server, Client\n\nasync def main():\n    # Create server and register a resource\n    server = Server(\"config-server\")\n    \n    @server.resource(\"data://config\")\n    def get_config():\n        return \"Configuration data from the resource\"\n    \n    # Create in-memory client connected directly to the server\n    client = Client(server)\n    \n    # Fetch the resource\n    resource = await client.read_resource(\"data://config\")\n    \n    print(resource)\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4551,
+    "cache_read_tokens": 22064,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0249704,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 36.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

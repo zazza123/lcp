@@ -1,0 +1,69 @@
+{
+  "case_id": "hamana-query-to-sqlite",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\nfrom hamana.connector.db.hamana import HamanaConnector, connect\nfrom hamana.connector.db.query import Query\nimport pandas as pd\n\n# Connect to the internal hamana database\nconnect()\n\n# Create sample data\nsample_data = pd.DataFrame({\n    'id': [1, 2, 3, 4, 5],\n    'amount': [100.50, 200.75, 150.25, 300.00, 250.50]\n})\n\n# Insert sample data into the database\ndb = HamanaConnector.get_instance()\nwith db:\n    sample_data.to_sql('orders', db.connection, if_exists='replace', index=False)\n\n# Build a Query object from the SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nhamana.execute(query)\n\n# Persist the query result into hamana's internal database as a table using the Query object's persistence method\nquery.to_sqlite(table_name=\"orders\")\n\n# Close the connection\nhamana.disconnect()",
+  "result_text": "```python\nimport hamana\nfrom hamana.connector.db.hamana import HamanaConnector, connect\nfrom hamana.connector.db.query import Query\nimport pandas as pd\n\n# Connect to the internal hamana database\nconnect()\n\n# Create sample data\nsample_data = pd.DataFrame({\n    'id': [1, 2, 3, 4, 5],\n    'amount': [100.50, 200.75, 150.25, 300.00, 250.50]\n})\n\n# Insert sample data into the database\ndb = HamanaConnector.get_instance()\nwith db:\n    sample_data.to_sql('orders', db.connection, if_exists='replace', index=False)\n\n# Build a Query object from the SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nhamana.execute(query)\n\n# Persist the query result into hamana's internal database as a table using the Query object's persistence method\nquery.to_sqlite(table_name=\"orders\")\n\n# Close the connection\nhamana.disconnect()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 41,
+    "output_tokens": 3119,
+    "cache_read_tokens": 129056,
+    "cache_creation_tokens": 11229,
+    "cost_usd": 0.050999600000000006,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 43.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/site-packages/hamana*"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "hamana",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/query.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/hamana.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/base.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [
+      "hamana.connector.db.query:Query#to_sql"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

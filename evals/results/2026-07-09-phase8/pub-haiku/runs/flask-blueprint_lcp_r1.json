@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint, jsonify\n\n# Create a Blueprint for users routes\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return jsonify({'users': ['alice', 'bob', 'charlie']})\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({'user_id': user_id, 'name': f'User {user_id}'})\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return jsonify({'message': 'User created'}), 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    return jsonify({'user_id': user_id, 'message': 'User updated'})\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({'user_id': user_id, 'message': 'User deleted'})\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Register the users blueprint with /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/', methods=['GET'])\ndef index():\n    return jsonify({'message': 'Welcome to the API', 'endpoints': {\n        'users': '/users',\n        'user_detail': '/users/<id>',\n    }})\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint, jsonify\n\n# Create a Blueprint for users routes\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return jsonify({'users': ['alice', 'bob', 'charlie']})\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    return jsonify({'user_id': user_id, 'name': f'User {user_id}'})\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return jsonify({'message': 'User created'}), 201\n\n@users_bp.route('/<int:user_id>', methods=['PUT'])\ndef update_user(user_id):\n    return jsonify({'user_id': user_id, 'message': 'User updated'})\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return jsonify({'user_id': user_id, 'message': 'User deleted'})\n\n# Create the main Flask application\napp = Flask(__name__)\n\n# Register the users blueprint with /users prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/', methods=['GET'])\ndef index():\n    return jsonify({'message': 'Welcome to the API', 'endpoints': {\n        'users': '/users',\n        'user_detail': '/users/<id>',\n    }})\n\nif __name__ == '__main__':\n    app.run(debug=True, port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 614,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6902,
+    "cost_usd": 0.0184022,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

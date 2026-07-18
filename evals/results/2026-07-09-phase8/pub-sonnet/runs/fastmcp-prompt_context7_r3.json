@@ -1,0 +1,82 @@
+{
+  "case_id": "fastmcp-prompt",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(name=\"SummarizerServer\")\n\n\n@mcp.prompt(name=\"summarize\")\ndef summarize(text: str) -> str:\n    \"\"\"Generates a user message asking the model to summarize the given text.\"\"\"\n    return f\"Please summarize the following text:\\n\\n{text}\"\n\n\nif __name__ == \"__main__\":\n    mcp.run()",
+  "result_text": "Confirmed. Here's the server:\n\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(name=\"SummarizerServer\")\n\n\n@mcp.prompt(name=\"summarize\")\ndef summarize(text: str) -> str:\n    \"\"\"Generates a user message asking the model to summarize the given text.\"\"\"\n    return f\"Please summarize the following text:\\n\\n{text}\"\n\n\nif __name__ == \"__main__\":\n    mcp.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1563,
+    "cache_read_tokens": 214233,
+    "cache_creation_tokens": 10350,
+    "cost_usd": 0.14985089999999998,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 52.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "fastmcp prompt decorator user message template",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "@mcp.prompt decorator define reusable prompt template returning user message"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "naming a prompt with name parameter and running the server with mcp.run()"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "mcp.prompt decorator called with parentheses and name argument on FastMCP instance"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_014ZMsAdrqqzJNfv5Y8eeDvZ",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 88.87\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP Dishka\n- Context7-compatible library ID: /vfaddey/fastmcp-dishka\n- Description: FastMCP Dishka is an integration package for using Dishka dependency injection with FastMCP tools, resources, and prompts.\n- Code Snippets: 34\n- Source Reputation: Medium\n- Benchmark Score: 81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP TS\n- Context7-compatible library ID: /prefecthq/fastmcp-ts\n- Description: FastMCP TS is the official TypeScript library for building Model Context Protocol servers, clients, and apps, providing a fast and efficient framework for developing MCP-enabled applications.\n- Code Snippets: 899\n- Source Reputation: High\n- Benchmark Score: 78"
+    },
+    {
+      "tool_use_id": "toolu_01CSdFHh7FjRDrSdiMGtmcLz",
+      "content": "### The `@prompt` Decorator\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nExample of defining prompts using the `@mcp.prompt` decorator, showing both single string and multiple message returns.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.prompts import Message\n\nmcp = FastMCP(name=\"PromptServer\")\n\n# Basic prompt returning a string (converted to user message automatically)\n@mcp.prompt\ndef ask_about_topic(topic: str) -> str:\n    \"\"\"Generates a user message asking for an explanation of a topic.\"\"\"\n    return f\"Can you please explain the concept of '{topic}'?\"\n\n# Prompt returning multiple messages\n@mcp.prompt\ndef generate_code_request(language: str, task_description: str) -> list[Message]:\n    \"\"\"Generates a conversation for code generation.\"\"\"\n    return [\n        Message(f\"Write a {language} function that performs the following task: {task_description}\"),\n        Message(\"I'll help you write that function.\", role=\"assistant\")\n    ]\n```\n\n--------------------------------\n\n### Prompt Returning a List of Messages\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nDemonstrates a prompt function that returns a list of `Message` objects, allowing for a sequence of messages in a conversation.\n\n```python\nfrom fastmcp.prompts import Message\n\n@mcp.prompt\ndef roleplay_scenario(character: str, situation: str) -> list[Message]:\n    \"\"\"Sets up a roleplaying scenario with initial messages.\"\"\"\n    return [\n        Message(f\"Let's roleplay. You are {character}. The situation is: {situation}\"),\n        Message(\"Okay, I understand. I am ready. What happens next?\", role=\"assistant\")\n    ]\n```\n\n--------------------------------\n\n### Define a FastMCP Prompt in Python\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/server.mdx\n\nRegisters a Python function as a reusable prompt template for guiding LLM interactions.\n\n```python\n@mcp.prompt\ndef analyze_data(data_points: list[float]) -> str:\n    formatted"
+    },
+    {
+      "tool_use_id": "toolu_015DD92vYhQ4GqJhPFVkGTGR",
+      "content": "### @prompt decorator with customization\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/providers/filesystem.mdx\n\nCustomizing a prompt with name and tags.\n\n```python\nfrom fastmcp.prompts import prompt\n\n@prompt(name=\"explain-concept\", tags={\"education\"})\ndef explain(topic: str) -> str:\n    \"\"\"Generate an explanation prompt.\"\"\"\n    return f\"Explain {topic} using clear examples and analogies.\"\n```\n\n--------------------------------\n\n### Run the Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/getting-started/quickstart.mdx\n\nRun the FastMCP server using its `run()` method with different transports.\n\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"My MCP Server\")\n\n@mcp.tool\ndef greet(name: str) -> str:\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    mcp.run()\n```\n\n```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(\"My MCP Server\")\n\n@mcp.tool\ndef greet(name: str) -> str:\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"http\", port=8000)\n```"
+    },
+    {
+      "tool_use_id": "toolu_01VfnvBHFKT4nqSM9Dtn2XuK",
+      "content": "### Customizing Prompt with Decorator Arguments\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nThis example demonstrates how to use the `@mcp.prompt` decorator with custom `name`, `description`, `tags`, and `meta` arguments to override inferred values and add additional metadata.\n\n```python\n@mcp.prompt(\n    name=\"analyze_data_request\",          # Custom prompt name\n    description=\"Creates a request to analyze data with specific parameters\",  # Custom description\n    tags={\"analysis\", \"data\"},            # Optional categorization tags\n    meta={\"version\": \"1.1\", \"author\": \"data-team\"}  # Custom metadata\n)\ndef data_analysis_prompt(\n    data_uri: str = Field(description=\"The URI of the resource containing the data.\"),\n    analysis_type: str = Field(default=\"summary\", description=\"Type of analysis.\")\n) -> str:\n    \"\"\"This docstring is ignored when description is provided.\"\"\"\n    return f\"Please perform a '{analysis_type}' analysis on the data found at {data_uri}.\"\n```\n\n--------------------------------\n\n### @prompt decorator with customization\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/providers/filesystem.mdx\n\nCustomizing a prompt with name and tags.\n\n```python\nfrom fastmcp.prompts import prompt\n\n@prompt(name=\"explain-concept\", tags={\"education\"})\ndef explain(topic: str) -> str:\n    \"\"\"Generate an explanation prompt.\"\"\"\n    return f\"Explain {topic} using clear examples and analogies.\"\n```\n\n### Decorator Arguments\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nWhile FastMCP infers the name and description from your function, you can override these and add additional metadata using arguments to the `@mcp.prompt` decorator.\n\n--------------------------------\n\n### Prompts > The `@prompt` Decorator\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/prompts.mdx\n\nFunctions with `*args` or `**kwargs` are not supported as prompts. This restriction exists because Fast"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

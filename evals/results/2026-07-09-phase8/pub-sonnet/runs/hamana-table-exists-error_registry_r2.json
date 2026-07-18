@@ -1,0 +1,137 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from hamana.core.query import Query\nfrom hamana.core.enum import ImportMode\nfrom hamana.database.internal import HamanaDatabase\nfrom hamana.exception import ImportTableAlreadyExistsError\n\n\ndef main() -> None:\n    query = Query(\n        name=\"sales_query\",\n        query=\"SELECT * FROM sales_source\",\n    )\n    data = query.exec()\n\n    db = HamanaDatabase()\n    try:\n        db.import_data(\n            table_name=\"sales\",\n            data=data,\n            mode=ImportMode.FAIL,\n        )\n    except ImportTableAlreadyExistsError as exc:\n        print(f\"Import failed, table 'sales' already exists: {exc}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "Apologies \u2014 that tool call was a mistake and not relevant here. Here is the code as requested:\n\n```python\nfrom hamana.core.query import Query\nfrom hamana.core.enum import ImportMode\nfrom hamana.database.internal import HamanaDatabase\nfrom hamana.exception import ImportTableAlreadyExistsError\n\n\ndef main() -> None:\n    query = Query(\n        name=\"sales_query\",\n        query=\"SELECT * FROM sales_source\",\n    )\n    data = query.exec()\n\n    db = HamanaDatabase()\n    try:\n        db.import_data(\n            table_name=\"sales\",\n            data=data,\n            mode=ImportMode.FAIL,\n        )\n    except ImportTableAlreadyExistsError as exc:\n        print(f\"Import failed, table 'sales' already exists: {exc}\")\n\n\nif __name__ == \"__main__\":\n    main()\n```\n\nNote again: I was unable to verify this against the actual installed `hamana==1.0.1` package (no shell/filesystem tools were available to me in this session to point the LCP verification server at the right Python environment, and it could not resolve the library on its own). Please confirm the import paths (`hamana.core.query`, `hamana.core.enum`, `hamana.database.internal`, `hamana.exception`), the `Query`/`HamanaDatabase` method names, and the exception class name against the real package before running this \u2014 treat it as a best-effort draft, not verified code.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 22,
+    "output_tokens": 6213,
+    "cache_read_tokens": 491677,
+    "cache_creation_tokens": 41683,
+    "cost_usd": 0.4908621,
+    "num_turns": 13,
+    "tool_calls": 12,
+    "duration_s": 101.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Bash run command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "python interpreter venv config lcp-config",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "import mode",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Write Edit Glob Grep file editing",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ReportFindings",
+      "input": {
+        "findings": []
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01MJgJCfBPRnMmcn7eXZjeKF",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01VgPZgD1TdasFTh1YEwQs1L",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01GPAXtGa2yVoJgHmJTKzn96",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_01MPXfRXd39tkM2FvPyoSANB",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 5,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.core.enum.ImportMode",
+      "hamana.core.enum.ImportMode.FAIL",
+      "hamana.core.query.Query",
+      "hamana.database.internal.HamanaDatabase",
+      "hamana.exception.ImportTableAlreadyExistsError"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,102 @@
+- id: cyclopts-subcommands
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, build a CLI application named "fileman" with two
+    subcommands: "upload PATH" which prints the path it would upload, and
+    "download URL --dest DIR" which prints the URL and the destination
+    directory. Register both functions on the application object and make
+    the script dispatch to the right subcommand when executed.
+  checks:
+    required_symbols: ["cyclopts:App", "cyclopts:App#command"]
+    forbidden_symbols: ["cyclopts:Typer", "cyclopts:App#add_command"]
+
+- id: cyclopts-default-action
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, write a CLI that has "start" and "stop" subcommands, but
+    when the program is invoked with no subcommand at all it must run a
+    `status()` function instead of just printing the help page. Wire the
+    status function in through the mechanism cyclopts provides for exactly
+    this fallback behaviour.
+  checks:
+    required_symbols: ["cyclopts:App#default"]
+    forbidden_symbols: ["cyclopts:App#callback", "cyclopts:App#main"]
+
+- id: cyclopts-parameter-envvar
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, write a command `deploy(target: str, token: str)` where
+    `token` can also be supplied through the environment variable
+    "DEPLOY_TOKEN" when the command-line flag is omitted, and shows the help
+    text "API token" in --help. Attach this metadata via typing.Annotated
+    using cyclopts' parameter-annotation class.
+  checks:
+    required_symbols: ["cyclopts:Parameter"]
+    forbidden_symbols: ["cyclopts:Option", "cyclopts:prompt"]
+
+- id: cyclopts-config-toml
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, build a CLI whose option defaults can come from the
+    "[tool.mycli]" table of a "pyproject.toml" file in the working
+    directory: explicit command-line values win, and config-file values fill
+    in anything omitted. Use cyclopts' built-in support for TOML
+    configuration sources when constructing the application object.
+  checks:
+    required_symbols: ["cyclopts:App", "cyclopts.config:Toml"]
+    forbidden_symbols: ["cyclopts.config:ConfigFile", "cyclopts:App#add_config"]
+
+- id: cyclopts-bounds-validator
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, write a command `serve(port: int)` that rejects any port
+    outside the range 1024-65535 at argument-parsing time with a clear error
+    message. Use the ready-made numeric-bounds validator that cyclopts ships,
+    attached through the parameter annotation, instead of checking the value
+    inside the function body.
+  checks:
+    required_symbols: ["cyclopts:Parameter", "cyclopts.validators:Number"]
+    forbidden_symbols: ["cyclopts.validators:Range", "cyclopts.types:IntRange"]
+
+- id: cyclopts-existing-file
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, write a command `convert(input_file, output_name)` where
+    `input_file` must point to a file that already exists on disk, failing at
+    parse time otherwise. Use the ready-made annotated path type from
+    cyclopts' types module rather than assembling the annotation and
+    validator yourself.
+  checks:
+    required_symbols: ["cyclopts.types:ExistingFile"]
+    forbidden_symbols: ["cyclopts.types:FileExists", "cyclopts.types:ValidFile"]
+
+- id: cyclopts-single-function
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, expose the single function
+    `def greet(name: str, excited: bool = False)` (which prints a greeting)
+    as a complete command-line program in the most minimal way the library
+    supports, without explicitly constructing an application object.
+  checks:
+    required_symbols: ["cyclopts:run"]
+    forbidden_symbols: ["cyclopts:main", "cyclopts:command"]
+
+- id: cyclopts-parse-no-execute
+  library: cyclopts
+  version: "4.20.0"
+  prompt: >
+    Using cyclopts, given an application `app` that already has commands
+    registered, programmatically process the token list ["add", "2", "3"] so
+    you obtain the selected command function and its bound arguments WITHOUT
+    executing the command, then print the command function's name and the
+    bound arguments.
+  checks:
+    required_symbols: ["cyclopts:App#parse_args"]
+    forbidden_symbols: ["cyclopts:App#parse", "cyclopts:App#invoke"]

@@ -1,0 +1,56 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\n\n# Example DataFrame\ndf = nw.from_native(\n    {\"spend\": [500, 1200, 800, 1500]},\n    eager_only=True\n)\n\n# Add tier column with conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000)\n        .then(nw.lit(\"gold\"))\n        .otherwise(nw.lit(\"standard\"))\n)\n\nprint(df.to_native())",
+  "result_text": "```python\nimport narwhals as nw\n\n# Example DataFrame\ndf = nw.from_native(\n    {\"spend\": [500, 1200, 800, 1500]},\n    eager_only=True\n)\n\n# Add tier column with conditional expression\ndf = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000)\n        .then(nw.lit(\"gold\"))\n        .otherwise(nw.lit(\"standard\"))\n)\n\nprint(df.to_native())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 993,
+    "cache_read_tokens": 85139,
+    "cache_creation_tokens": 9252,
+    "cost_usd": 0.032019900000000004,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 18.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_015XHu717znxspum9wfxnTrV",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

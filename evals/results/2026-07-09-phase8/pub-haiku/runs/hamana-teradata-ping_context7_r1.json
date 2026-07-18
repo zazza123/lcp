@@ -1,0 +1,54 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom hamana import Teradata\n\n# Read password from environment variable\npassword = os.getenv(\"TERADATA_PASSWORD\")\n\nif not password:\n    raise ValueError(\"TERADATA_PASSWORD environment variable not set\")\n\n# Create Teradata connector\nconnector = Teradata(\n    host=\"your_teradata_host\",\n    user=\"your_teradata_user\",\n    password=password\n)\n\n# Verify connectivity\nresult = connector.connectivity_check()\n\nif result:\n    print(\"\u2713 Database connection verified successfully\")\nelse:\n    print(\"\u2717 Database connection failed\")",
+  "result_text": "The hamana library isn't found in Context7. Since you mentioned it's already installed, I'll write the code using standard Python patterns for database connectors with environment variables:\n\n```python\nimport os\nfrom hamana import Teradata\n\n# Read password from environment variable\npassword = os.getenv(\"TERADATA_PASSWORD\")\n\nif not password:\n    raise ValueError(\"TERADATA_PASSWORD environment variable not set\")\n\n# Create Teradata connector\nconnector = Teradata(\n    host=\"your_teradata_host\",\n    user=\"your_teradata_user\",\n    password=password\n)\n\n# Verify connectivity\nresult = connector.connectivity_check()\n\nif result:\n    print(\"\u2713 Database connection verified successfully\")\nelse:\n    print(\"\u2717 Database connection failed\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 27,
+    "output_tokens": 1138,
+    "cache_read_tokens": 61378,
+    "cache_creation_tokens": 9478,
+    "cost_usd": 0.0308108,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 31.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Teradata connector connectivity check"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01CpH8wXhbAU3TWJ6o7EAAw6",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.db:Teradata",
+      "hamana.connector.db.teradata:TeradataConnector#ping"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.Teradata"
+    ],
+    "error": null
+  }
+}

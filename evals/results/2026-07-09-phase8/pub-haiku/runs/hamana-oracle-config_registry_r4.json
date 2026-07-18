@@ -1,0 +1,33 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable information about the `hamana` library's API in my training data. To provide you with correct, working code, I'd need to verify the actual class names and method signatures for:\n\n- The configuration object class\n- The connector class initialization\n- The query execution method\n\nCould you either:\n1. Share the hamana 1.0.1 documentation or API reference, or\n2. Show me an example of how you've used hamana before?\n\nThis will let me write code that follows the actual library's conventions rather than guessing at the API.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1255,
+    "cache_read_tokens": 22036,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.008487600000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Oracle",
+      "hamana.connector.db.oracle:OracleConnector#create_config",
+      "hamana.connector.db.oracle:OracleConnector#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\n\nfrom pocket_coffea.lib.weights.weights import WeightLambda\nfrom pocket_coffea.lib.weights.common.common import common_weights\n\n\ndef _toy_reweight_func(params, metadata, events, size, shape_variations):\n    \"\"\"Nominal weight from LHEWeight_originalXWGTUP, normalized to 1, +/-5% variations.\"\"\"\n    raw = events.LHEWeight_originalXWGTUP\n    nominal = raw / ak.mean(raw)\n    up = nominal * 1.05\n    down = nominal * 0.95\n    return nominal, up, down\n\n\n# Lambda-style WeightWrapper, declared via the class-attribute schema\n# (name, has_variations, function) using WeightLambda.wrap_func\ntoy_reweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=_toy_reweight_func,\n    has_variations=True,\n)\n\n# Example: register it alongside the framework's default weights so it can\n# be referenced by name in the `weights` section of a Configurator config.\nweights_classes = common_weights + [toy_reweight]",
+  "result_text": "```python\nimport awkward as ak\n\nfrom pocket_coffea.lib.weights.weights import WeightLambda\nfrom pocket_coffea.lib.weights.common.common import common_weights\n\n\ndef _toy_reweight_func(params, metadata, events, size, shape_variations):\n    \"\"\"Nominal weight from LHEWeight_originalXWGTUP, normalized to 1, +/-5% variations.\"\"\"\n    raw = events.LHEWeight_originalXWGTUP\n    nominal = raw / ak.mean(raw)\n    up = nominal * 1.05\n    down = nominal * 0.95\n    return nominal, up, down\n\n\n# Lambda-style WeightWrapper, declared via the class-attribute schema\n# (name, has_variations, function) using WeightLambda.wrap_func\ntoy_reweight = WeightLambda.wrap_func(\n    name=\"toy_reweight\",\n    function=_toy_reweight_func,\n    has_variations=True,\n)\n\n# Example: register it alongside the framework's default weights so it can\n# be referenced by name in the `weights` section of a Configurator config.\nweights_classes = common_weights + [toy_reweight]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 28,
+    "output_tokens": 3967,
+    "cache_read_tokens": 555830,
+    "cache_creation_tokens": 19573,
+    "cost_usd": 0.34377599999999997,
+    "num_turns": 14,
+    "tool_calls": 13,
+    "duration_s": 59.0
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class WeightLambda|class WeightWrapper|has_variations",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class WeightLambda|class WeightWrapper|class WeightCustom",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/lib/weights*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "weights_classes|has_variations|class Weight",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class .*Weight",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/lib/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/*.py",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/weights/weights.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/weights/common/common.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "weights_classes",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/utils/configurator.py",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "weights_classes",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/utils/configurator.py",
+        "-n": true,
+        "-C": 3
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "weights_classes",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/utils/configurator.py",
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/utils/configurator.py",
+        "offset": 40,
+        "limit": 100
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

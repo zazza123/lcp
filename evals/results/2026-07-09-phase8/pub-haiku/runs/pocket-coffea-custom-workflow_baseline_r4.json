@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-workflow",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.workflows.base_processor import BaseProcessor\n\n\nclass DimuonAnalysis(BaseProcessor):\n    def object_preselection(self, variation):\n        \"\"\"Build MuonGood collection: pT > 15 GeV, |eta| < 2.4\"\"\"\n        muons = self.events.Muon\n        self.events[\"MuonGood\"] = muons[(muons.pt > 15) & (ak.abs(muons.eta) < 2.4)]\n    \n    def object_counting(self, variation):\n        \"\"\"Count and store number of selected muons per event\"\"\"\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood)\n\n\nif __name__ == \"__main__\":\n    processor = DimuonAnalysis()",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.workflows.base_processor import BaseProcessor\n\n\nclass DimuonAnalysis(BaseProcessor):\n    def object_preselection(self, variation):\n        \"\"\"Build MuonGood collection: pT > 15 GeV, |eta| < 2.4\"\"\"\n        muons = self.events.Muon\n        self.events[\"MuonGood\"] = muons[(muons.pt > 15) & (ak.abs(muons.eta) < 2.4)]\n    \n    def object_counting(self, variation):\n        \"\"\"Count and store number of selected muons per event\"\"\"\n        self.events[\"nMuonGood\"] = ak.num(self.events.MuonGood)\n\n\nif __name__ == \"__main__\":\n    processor = DimuonAnalysis()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3046,
+    "cache_read_tokens": 22086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0174476,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.workflows.base:BaseProcessorABC"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.workflows.base_processor.BaseProcessor"
+    ],
+    "error": null
+  }
+}

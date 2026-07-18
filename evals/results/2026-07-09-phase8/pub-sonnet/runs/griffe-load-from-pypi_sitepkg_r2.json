@@ -1,0 +1,66 @@
+{
+  "case_id": "griffe-load-from-pypi",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\npackage = griffe.load_pypi(\"click\", \"click\", \"==8.1.7\")\nprint(package.name)",
+  "result_text": "Found it: `griffe.load_pypi(package, distribution, version_spec)`.\n\n```python\nimport griffe\n\npackage = griffe.load_pypi(\"click\", \"click\", \"==8.1.7\")\nprint(package.name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1088,
+    "cache_read_tokens": 167316,
+    "cache_creation_tokens": 3121,
+    "cost_usd": 0.0852708,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 19.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def load_pypi|pypi",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "pypi",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "-i": true,
+        "-n": true,
+        "-C": 8
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "pypi",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "output_mode": "content",
+        "-i": true,
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "offset": 920,
+        "limit": 100
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import Server\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import StdioClientTransport\n\nserver = Server(\"transparent-proxy\")\nbackend_session: ClientSession | None = None\n\nasync def get_backend_session() -> ClientSession:\n    \"\"\"Get or create backend client session.\"\"\"\n    global backend_session\n    if backend_session is None:\n        transport = StdioClientTransport(\n            command=\"python\",\n            args=[\"-m\", \"backend_server\"]\n        )\n        backend_session = ClientSession(transport)\n        await backend_session.initialize()\n    return backend_session\n\ndef create_tool_handler(tool_name: str):\n    \"\"\"Factory function to create a tool handler for a specific tool.\"\"\"\n    async def handler(**kwargs):\n        backend = await get_backend_session()\n        result = await backend.call_tool(tool_name, kwargs)\n        return \"\\n\".join(\n            c.text for c in result.content \n            if hasattr(c, 'text')\n        )\n    return handler\n\ndef create_resource_handler(uri: str):\n    \"\"\"Factory function to create a resource handler for a specific URI.\"\"\"\n    async def handler():\n        backend = await get_backend_session()\n        result = await backend.read_resource(uri)\n        if result.contents and hasattr(result.contents[0], 'text'):\n            return result.contents[0].text\n        return \"\"\n    return handler\n\nasync def setup_proxy():\n    \"\"\"Dynamically register proxy handlers for all backend tools and resources.\"\"\"\n    backend = await get_backend_session()\n    \n    # Register tools from backend\n    tools_resp = await backend.list_tools()\n    for tool in tools_resp.tools:\n        handler = create_tool_handler(tool.name)\n        server.tool(\n            name=tool.name,\n            description=tool.description or \"\"\n        )(handler)\n    \n    # Register resources from backend\n    resources_resp = await backend.list_resources()\n    for resource in resources_resp.resources:\n        handler = create_resource_handler(resource.uri)\n        server.resource(\n            uri=resource.uri,\n            description=resource.description or \"\"\n        )(handler)\n\nasync def main():\n    \"\"\"Initialize and run the proxy server.\"\"\"\n    await setup_proxy()\n    async with server:\n        await asyncio.sleep(float('inf'))\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import Server\nfrom mcp.client.session import ClientSession\nfrom mcp.client.stdio import StdioClientTransport\n\nserver = Server(\"transparent-proxy\")\nbackend_session: ClientSession | None = None\n\nasync def get_backend_session() -> ClientSession:\n    \"\"\"Get or create backend client session.\"\"\"\n    global backend_session\n    if backend_session is None:\n        transport = StdioClientTransport(\n            command=\"python\",\n            args=[\"-m\", \"backend_server\"]\n        )\n        backend_session = ClientSession(transport)\n        await backend_session.initialize()\n    return backend_session\n\ndef create_tool_handler(tool_name: str):\n    \"\"\"Factory function to create a tool handler for a specific tool.\"\"\"\n    async def handler(**kwargs):\n        backend = await get_backend_session()\n        result = await backend.call_tool(tool_name, kwargs)\n        return \"\\n\".join(\n            c.text for c in result.content \n            if hasattr(c, 'text')\n        )\n    return handler\n\ndef create_resource_handler(uri: str):\n    \"\"\"Factory function to create a resource handler for a specific URI.\"\"\"\n    async def handler():\n        backend = await get_backend_session()\n        result = await backend.read_resource(uri)\n        if result.contents and hasattr(result.contents[0], 'text'):\n            return result.contents[0].text\n        return \"\"\n    return handler\n\nasync def setup_proxy():\n    \"\"\"Dynamically register proxy handlers for all backend tools and resources.\"\"\"\n    backend = await get_backend_session()\n    \n    # Register tools from backend\n    tools_resp = await backend.list_tools()\n    for tool in tools_resp.tools:\n        handler = create_tool_handler(tool.name)\n        server.tool(\n            name=tool.name,\n            description=tool.description or \"\"\n        )(handler)\n    \n    # Register resources from backend\n    resources_resp = await backend.list_resources()\n    for resource in resources_resp.resources:\n        handler = create_resource_handler(resource.uri)\n        server.resource(\n            uri=resource.uri,\n            description=resource.description or \"\"\n        )(handler)\n\nasync def main():\n    \"\"\"Initialize and run the proxy server.\"\"\"\n    await setup_proxy()\n    async with server:\n        await asyncio.sleep(float('inf'))\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 9199,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6915,
+    "cost_usd": 0.061353200000000004,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 93.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

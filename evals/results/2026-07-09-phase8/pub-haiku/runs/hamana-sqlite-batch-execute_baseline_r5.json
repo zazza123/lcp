@@ -1,0 +1,36 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import hamana\n\nconnector = hamana.SQLiteConnector('warehouse.db')\n\nbatch_size = 5000\nquery = \"SELECT * FROM events\"\n\nfor batch in connector.fetch_batches(query, batch_size=batch_size):\n    print(f\"Processing batch of {len(batch)} rows\")\n    for row in batch:\n        print(row)",
+  "result_text": "```python\nimport hamana\n\nconnector = hamana.SQLiteConnector('warehouse.db')\n\nbatch_size = 5000\nquery = \"SELECT * FROM events\"\n\nfor batch in connector.fetch_batches(query, batch_size=batch_size):\n    print(f\"Processing batch of {len(batch)} rows\")\n    for row in batch:\n        print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1576,
+    "cache_read_tokens": 22019,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0100909,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "hamana.connector.db:SQLite",
+      "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    ],
+    "forbidden_used": [
+      "hamana.connector.db.sqlite:SQLiteConnector#fetch_batches"
+    ],
+    "unresolved_usages": [
+      "hamana.SQLiteConnector"
+    ],
+    "error": null
+  }
+}

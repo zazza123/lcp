@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-solanafm-account-transfers",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.plugins.solana_fm import SolanaFM\n\ndef get_token_transfers(account_address: str) -> dict:\n    \"\"\"\n    Retrieve token transfers for a given Solana account address using SolanaFM.\n    \n    Args:\n        account_address: The Solana account address to query\n        \n    Returns:\n        Token transfer data from SolanaFM API\n    \"\"\"\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    fm = SolanaFM(api_key=api_key)\n    \n    transfers = fm.get_token_transfers(account_address)\n    \n    return transfers\n\n\nif __name__ == \"__main__\":\n    import sys\n    \n    if len(sys.argv) > 1:\n        account = sys.argv[1]\n    else:\n        account = \"TokenkegQfeZyiNwAJsyFbPVwwQQfzZy\"\n    \n    result = get_token_transfers(account)\n    print(result)",
+  "result_text": "```python\nimport os\nfrom cyhole.plugins.solana_fm import SolanaFM\n\ndef get_token_transfers(account_address: str) -> dict:\n    \"\"\"\n    Retrieve token transfers for a given Solana account address using SolanaFM.\n    \n    Args:\n        account_address: The Solana account address to query\n        \n    Returns:\n        Token transfer data from SolanaFM API\n    \"\"\"\n    api_key = os.getenv(\"SOLANA_FM_API_KEY\")\n    if not api_key:\n        raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n    \n    fm = SolanaFM(api_key=api_key)\n    \n    transfers = fm.get_token_transfers(account_address)\n    \n    return transfers\n\n\nif __name__ == \"__main__\":\n    import sys\n    \n    if len(sys.argv) > 1:\n        account = sys.argv[1]\n    else:\n        account = \"TokenkegQfeZyiNwAJsyFbPVwwQQfzZy\"\n    \n    result = get_token_transfers(account)\n    print(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 862,
+    "cache_read_tokens": 22102,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.006529200000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.plugins.solana_fm.SolanaFM"
+    ],
+    "error": null
+  }
+}

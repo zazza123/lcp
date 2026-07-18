@@ -1,0 +1,31 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\n\n# Reference the existing videos table\nvideos = px.get_table('videos')\n\n# Create a view that expands each video into frame-level rows at 1 fps\nframe_view = px.create_view(\n    'videos_frames',\n    query=videos.select(\n        *videos.columns,\n        frame=videos.video.frame(fps=1)\n    )\n)\n\nprint(f\"Created view: {frame_view.name}\")\nprint(f\"Schema: {frame_view.schema}\")",
+  "result_text": "```python\nimport pixeltable as px\n\n# Reference the existing videos table\nvideos = px.get_table('videos')\n\n# Create a view that expands each video into frame-level rows at 1 fps\nframe_view = px.create_view(\n    'videos_frames',\n    query=videos.select(\n        *videos.columns,\n        frame=videos.video.frame(fps=1)\n    )\n)\n\nprint(f\"Created view: {frame_view.name}\")\nprint(f\"Schema: {frame_view.schema}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2386,
+    "cache_read_tokens": 22124,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0141514,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable.iterators:FrameIterator"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

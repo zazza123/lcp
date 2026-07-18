@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-json-roundtrip",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import json\nfrom griffe.dataclasses import Module\n\n# Serialize mod to JSON and write to file\ndata = mod.to_dict()\nwith open(\"api.json\", \"w\") as f:\n    json.dump(data, f, indent=2)\n\n# Reconstruct module from JSON file\nwith open(\"api.json\", \"r\") as f:\n    data = json.load(f)\nmod_reconstructed = Module.from_dict(data)",
+  "result_text": "```python\nimport json\nfrom griffe.dataclasses import Module\n\n# Serialize mod to JSON and write to file\ndata = mod.to_dict()\nwith open(\"api.json\", \"w\") as f:\n    json.dump(data, f, indent=2)\n\n# Reconstruct module from JSON file\nwith open(\"api.json\", \"r\") as f:\n    data = json.load(f)\nmod_reconstructed = Module.from_dict(data)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1251,
+    "cache_read_tokens": 22018,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0084658,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:Module#as_json",
+      "griffe:Module#from_json"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.dataclasses.Module",
+      "griffe.dataclasses.Module.from_dict"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "case_id": "hamana-query-result-dataframe",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable documentation for the `hamana` library in my training data. To write correct, runnable code for executing queries with its specific API, I'd need to either:\n\n- See the library's documentation or source code\n- Inspect the installed package to understand the `Query` object and its methods\n\nCould you share the hamana documentation, or would you like me to write exploratory code that inspects the installed package to discover its API?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1321,
+    "cache_read_tokens": 22006,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0088146,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.connector.db.query:Query#result"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

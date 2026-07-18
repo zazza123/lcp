@@ -1,0 +1,77 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nfrom typing import Any\n\ndef create_proxy_server(backend_server: Server) -> Server:\n    \"\"\"Create a transparent proxy server that forwards all requests to the backend.\"\"\"\n    proxy = Server(\"proxy\")\n    \n    # Proxy tools\n    if hasattr(backend_server, '_tools'):\n        for tool_name, tool_impl in backend_server._tools.items():\n            def make_tool_handler(original_tool):\n                async def proxy_tool_handler(**kwargs):\n                    if hasattr(original_tool, 'func'):\n                        result = original_tool.func(**kwargs)\n                    else:\n                        result = original_tool(**kwargs)\n                    return result\n                return proxy_tool_handler\n            \n            handler = make_tool_handler(tool_impl)\n            proxy.add_tool(\n                handler,\n                name=tool_name,\n                description=getattr(tool_impl, 'description', ''),\n                inputSchema=getattr(tool_impl, 'inputSchema', {})\n            )\n    \n    # Proxy resources\n    if hasattr(backend_server, '_resources'):\n        for resource_uri, resource_impl in backend_server._resources.items():\n            def make_resource_handler(original_resource):\n                async def proxy_resource_handler(uri: str):\n                    if hasattr(original_resource, 'func'):\n                        result = original_resource.func(uri)\n                    else:\n                        result = original_resource(uri)\n                    return result\n                return proxy_resource_handler\n            \n            handler = make_resource_handler(resource_impl)\n            proxy.add_resource(\n                resource_uri,\n                handler,\n                description=getattr(resource_impl, 'description', '')\n            )\n    \n    return proxy",
+  "result_text": "```python\nfrom fastmcp import Server\nfrom typing import Any\n\ndef create_proxy_server(backend_server: Server) -> Server:\n    \"\"\"Create a transparent proxy server that forwards all requests to the backend.\"\"\"\n    proxy = Server(\"proxy\")\n    \n    # Proxy tools\n    if hasattr(backend_server, '_tools'):\n        for tool_name, tool_impl in backend_server._tools.items():\n            def make_tool_handler(original_tool):\n                async def proxy_tool_handler(**kwargs):\n                    if hasattr(original_tool, 'func'):\n                        result = original_tool.func(**kwargs)\n                    else:\n                        result = original_tool(**kwargs)\n                    return result\n                return proxy_tool_handler\n            \n            handler = make_tool_handler(tool_impl)\n            proxy.add_tool(\n                handler,\n                name=tool_name,\n                description=getattr(tool_impl, 'description', ''),\n                inputSchema=getattr(tool_impl, 'inputSchema', {})\n            )\n    \n    # Proxy resources\n    if hasattr(backend_server, '_resources'):\n        for resource_uri, resource_impl in backend_server._resources.items():\n            def make_resource_handler(original_resource):\n                async def proxy_resource_handler(uri: str):\n                    if hasattr(original_resource, 'func'):\n                        result = original_resource.func(uri)\n                    else:\n                        result = original_resource(uri)\n                    return result\n                return proxy_resource_handler\n            \n            handler = make_resource_handler(resource_impl)\n            proxy.add_resource(\n                resource_uri,\n                handler,\n                description=getattr(resource_impl, 'description', '')\n            )\n    \n    return proxy\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 69,
+    "output_tokens": 2000,
+    "cache_read_tokens": 175291,
+    "cache_creation_tokens": 4143,
+    "cost_usd": 0.0358841,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 34.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

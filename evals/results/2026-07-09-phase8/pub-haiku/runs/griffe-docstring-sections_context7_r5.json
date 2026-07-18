@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings import parse, DocstringStyle\n\ndocstring_text = \"\"\"Calculate the sum of two numbers.\n\nArgs:\n    a: The first number.\n    b: The second number.\n\nReturns:\n    The sum of a and b.\n\"\"\"\n\nparsed = parse(docstring_text, style=DocstringStyle.GOOGLE)\n\nfor section in parsed.sections:\n    print(f\"Section kind: {section.kind}\")",
+  "result_text": "```python\nfrom griffe.docstrings import parse, DocstringStyle\n\ndocstring_text = \"\"\"Calculate the sum of two numbers.\n\nArgs:\n    a: The first number.\n    b: The second number.\n\nReturns:\n    The sum of a and b.\n\"\"\"\n\nparsed = parse(docstring_text, style=DocstringStyle.GOOGLE)\n\nfor section in parsed.sections:\n    print(f\"Section kind: {section.kind}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 657,
+    "cache_read_tokens": 22086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0055026,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.DocstringStyle",
+      "griffe.docstrings.DocstringStyle.GOOGLE",
+      "griffe.docstrings.parse"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\n\n# Get the docs table\ndocs = px.get_table('docs')\n\n# Create a computed column for embeddings using sentence-transformers\nfrom pixeltable.ext.sentence_transformers import embedding\n\ndocs['content_embedding'] = docs.content.apply(embedding, model_id='all-MiniLM-L6-v2')\n\n# Create an index for nearest-neighbor search\ndocs.create_index('content_embedding')\n\n# Embed the query string\nquery_embedding = embedding('climate change policy', model_id='all-MiniLM-L6-v2')\n\n# Find the 5 nearest neighbors, ranked by similarity\nresults = docs.find_nearest('content_embedding', query_embedding, k=5)\n\n# Display results\nfor idx, row in enumerate(results, 1):\n    print(f\"{idx}. {row['content']}\")",
+  "result_text": "```python\nimport pixeltable as px\n\n# Get the docs table\ndocs = px.get_table('docs')\n\n# Create a computed column for embeddings using sentence-transformers\nfrom pixeltable.ext.sentence_transformers import embedding\n\ndocs['content_embedding'] = docs.content.apply(embedding, model_id='all-MiniLM-L6-v2')\n\n# Create an index for nearest-neighbor search\ndocs.create_index('content_embedding')\n\n# Embed the query string\nquery_embedding = embedding('climate change policy', model_id='all-MiniLM-L6-v2')\n\n# Find the 5 nearest neighbors, ranked by similarity\nresults = docs.find_nearest('content_embedding', query_embedding, k=5)\n\n# Display results\nfor idx, row in enumerate(results, 1):\n    print(f\"{idx}. {row['content']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2941,
+    "cache_read_tokens": 22166,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0169306,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.ext.sentence_transformers.embedding"
+    ],
+    "error": null
+  }
+}

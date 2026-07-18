@@ -1,0 +1,107 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.cuts.factory import ObjectMult, BtagMult\nfrom pocket_coffea.cuts.preselection import preselection_hlt\n\ndef get_skim_and_preselection_cuts(params):\n    \"\"\"\n    Build skim and preselection cuts for 2018 semileptonic ttbar analysis.\n    \n    Args:\n        params: Configuration dictionary containing dataset and selection parameters\n        \n    Returns:\n        tuple: (skim_cuts, preselection_cuts) as lists of cut callables\n    \"\"\"\n    \n    # Skim cuts: HLT trigger selection for semileptonic primary dataset\n    skim_cuts = [\n        preselection_hlt(params[\"semileptonic\"])\n    ]\n    \n    # Preselection cuts\n    preselection_cuts = [\n        # At least 4 jets from JetGood collection with pT > 30 GeV\n        ObjectMult(\n            collection=\"JetGood\",\n            min_mult=4,\n            pt_min=30.0,\n            eta_max=None,\n            sort_var=\"pt\"\n        ),\n        # At least 2 b-tagged jets\n        BtagMult(\n            wp=\"M\",  # Medium working point\n            min_mult=2\n        )\n    ]\n    \n    return skim_cuts, preselection_cuts\n\n\n# Example usage in a PocketCoffea configuration:\n# skim_cuts, presel_cuts = get_skim_and_preselection_cuts(params)\n# workflow_config = {\n#     \"skim\": skim_cuts,\n#     \"preselection\": presel_cuts,\n#     ...\n# }",
+  "result_text": "```python\nfrom pocket_coffea.cuts.factory import ObjectMult, BtagMult\nfrom pocket_coffea.cuts.preselection import preselection_hlt\n\ndef get_skim_and_preselection_cuts(params):\n    \"\"\"\n    Build skim and preselection cuts for 2018 semileptonic ttbar analysis.\n    \n    Args:\n        params: Configuration dictionary containing dataset and selection parameters\n        \n    Returns:\n        tuple: (skim_cuts, preselection_cuts) as lists of cut callables\n    \"\"\"\n    \n    # Skim cuts: HLT trigger selection for semileptonic primary dataset\n    skim_cuts = [\n        preselection_hlt(params[\"semileptonic\"])\n    ]\n    \n    # Preselection cuts\n    preselection_cuts = [\n        # At least 4 jets from JetGood collection with pT > 30 GeV\n        ObjectMult(\n            collection=\"JetGood\",\n            min_mult=4,\n            pt_min=30.0,\n            eta_max=None,\n            sort_var=\"pt\"\n        ),\n        # At least 2 b-tagged jets\n        BtagMult(\n            wp=\"M\",  # Medium working point\n            min_mult=2\n        )\n    ]\n    \n    return skim_cuts, preselection_cuts\n\n\n# Example usage in a PocketCoffea configuration:\n# skim_cuts, presel_cuts = get_skim_and_preselection_cuts(params)\n# workflow_config = {\n#     \"skim\": skim_cuts,\n#     \"preselection\": presel_cuts,\n#     ...\n# }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 104,
+    "output_tokens": 2456,
+    "cache_read_tokens": 308290,
+    "cache_creation_tokens": 16251,
+    "cost_usd": 0.07571499999999999,
+    "num_turns": 19,
+    "tool_calls": 10,
+    "duration_s": 59.0
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation",
+        "args": "dummy"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Smhc1WDUrQ42TDTuQhLuym",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.cuts.factory.BtagMult",
+      "pocket_coffea.cuts.factory.ObjectMult",
+      "pocket_coffea.cuts.preselection.preselection_hlt"
+    ],
+    "error": null
+  }
+}

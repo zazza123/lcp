@@ -1,0 +1,34 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\nfrom typing import Annotated\nfrom cyclopts.validators import Bounds\n\napp = App()\n\n@app.default\ndef serve(port: Annotated[int, Bounds(min=1024, max=65535)]) -> None:\n    \"\"\"Start the server on the specified port.\"\"\"\n    print(f\"Server running on port {port}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\nfrom typing import Annotated\nfrom cyclopts.validators import Bounds\n\napp = App()\n\n@app.default\ndef serve(port: Annotated[int, Bounds(min=1024, max=65535)]) -> None:\n    \"\"\"Start the server on the specified port.\"\"\"\n    print(f\"Server running on port {port}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2479,
+    "cache_read_tokens": 22135,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0146175,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts:Parameter",
+      "cyclopts.validators:Number"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.validators.Bounds"
+    ],
+    "error": null
+  }
+}

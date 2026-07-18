@@ -1,0 +1,44 @@
+{
+  "case_id": "pocket-coffea-configurator",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.config import AnalysisConfig\nfrom pocket_coffea.lib.cuts import NoCut\nfrom pocket_coffea.lib.weights import Weights\nimport json\n\n# Load and filter dataset\nwith open(\"datasets/DYJetsToLL_2018.json\") as f:\n    datasets = json.load(f)\n\nfiltered_datasets = {\n    name: dataset \n    for name, dataset in datasets.items() \n    if dataset.get(\"year\") == 2018\n}\n\n# Define cuts\ncuts = {\n    \"skim\": NoCut(),\n    \"preselection\": [],\n    \"baseline\": NoCut()\n}\n\n# Define weights\nweights = Weights()\nweights.add_weight(\"genWeight\", \"genWeight\")\nweights.add_weight(\"lumi\", \"lumi\")\nweights.add_weight(\"XS\", \"XS\")\n\n# Create analysis configuration\nconfig = AnalysisConfig(\n    processor=ZmumuProcessor,\n    datasets=filtered_datasets,\n    cuts=cuts,\n    weights=weights,\n    variables={},\n    variations={},\n    params=params\n)",
+  "result_text": "```python\nfrom pocket_coffea.config import AnalysisConfig\nfrom pocket_coffea.lib.cuts import NoCut\nfrom pocket_coffea.lib.weights import Weights\nimport json\n\n# Load and filter dataset\nwith open(\"datasets/DYJetsToLL_2018.json\") as f:\n    datasets = json.load(f)\n\nfiltered_datasets = {\n    name: dataset \n    for name, dataset in datasets.items() \n    if dataset.get(\"year\") == 2018\n}\n\n# Define cuts\ncuts = {\n    \"skim\": NoCut(),\n    \"preselection\": [],\n    \"baseline\": NoCut()\n}\n\n# Define weights\nweights = Weights()\nweights.add_weight(\"genWeight\", \"genWeight\")\nweights.add_weight(\"lumi\", \"lumi\")\nweights.add_weight(\"XS\", \"XS\")\n\n# Create analysis configuration\nconfig = AnalysisConfig(\n    processor=ZmumuProcessor,\n    datasets=filtered_datasets,\n    cuts=cuts,\n    weights=weights,\n    variables={},\n    variations={},\n    params=params\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 2378,
+    "cache_read_tokens": 37322,
+    "cache_creation_tokens": 8500,
+    "cost_usd": 0.0326392,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 28.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pocket-coffea configuration analysis",
+        "max_results": 3
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.utils.configurator:Configurator",
+      "pocket_coffea.parameters.cuts:passthrough"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.config.AnalysisConfig",
+      "pocket_coffea.lib.cuts.NoCut",
+      "pocket_coffea.lib.weights.Weights"
+    ],
+    "error": null
+  }
+}

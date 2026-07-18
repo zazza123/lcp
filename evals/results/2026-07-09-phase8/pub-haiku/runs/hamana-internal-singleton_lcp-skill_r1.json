@@ -1,0 +1,109 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana.connector.db import Hamana\n\ninstance = Hamana.get_instance()\nconnection = instance.get_connection()",
+  "result_text": "```python\nfrom hamana.connector.db import Hamana\n\ninstance = Hamana.get_instance()\nconnection = instance.get_connection()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1478,
+    "cache_read_tokens": 192776,
+    "cache_creation_tokens": 12672,
+    "cost_usd": 0.052078599999999996,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 34.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "database connector singleton",
+        "library": "hamana",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "connector",
+        "library": "hamana",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db:Hamana",
+          "hamana.connector.db:Hamana#get_instance"
+        ],
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db:Hamana#get_connection"
+        ],
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QYs4HDbYDnbdc424Qwv9kD",
+      "content": "{\"status\":\"loaded\",\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"symbol_count\":245,\"module_count\":21,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='hamana') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_017Je1DiGJv1fJSFJpSwgNpG",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01GbZTvbvmacHViFSp1SynkL",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.oracle:BaseConnector\",\"kind\":\"class\",\"summary\":\"Class representing a generic database connector that can be used to define new database connectors satisfying the Python Database API Specification v2.0.\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorAlreadyInitialised\",\"kind\":\"class\",\"summary\":\"Exception to raise when HamanaConnector is already initialised\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorAlreadyInitialised\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:HamanaConnectorAlreadyInitialised\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorNotInitialised\",\"kind\":\"class\",\"summary\":\"Exception to raise when HamanaConnector is not initialised.\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorNotInitialised\",\"resolved_via_alias\":\"hamana.connector.db.exceptions:HamanaConnectorNotInitialised\"},{\"id\":\"hamana.connector.db:Hamana\",\"kind\":\"class\",\"summary\":\"This class is responsible for handling the database connection of the library. For each execution, only one instance of this class is allowed to manage a single database connection.\",\"import\":\"from hamana.connector.db import Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector\"},{\"id\":\"hamana.connector.db.hamana:HamanaConnectorMeta\",\"kind\":\"class\",\"summary\":\"Class HamanaConnectorMeta\",\"import\":\"from hamana.connector.db.hamana import HamanaConnectorMeta\"},{\"id\":\"hamana.connector.db.base:DatabaseConnectorABC\",\"kind\":\"class\",\"summary\":\"The following abstract class defines a general database connector. A connector is used in order to connect to a database and perform operations on it.\",\"import\":\"from hamana.connector.db.base import DatabaseConnectorABC\",\"resolved_via_alias\":\"hamana.connector.db.interface:DatabaseConnectorABC\"},{\"id\":\"hamana.connector.db:Oracle\",\"kind\":\"class\",\"summary\":\"Class"
+    },
+    {
+      "tool_use_id": "toolu_01ApVqom3VTZdXCFncoqwCJq",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"hamana.connector.db.hamana\",\"aliases\":[\"hamana.connector.db:Hamana\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"UnionType[str, Path]\",\"required\":false,\"default\":\":memory:\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"path like string that define the SQLite database to load/create.  \\nBy default the database is created in memory.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"This class is responsible for handling the database connection of the library. For each execution, only one instance of this class is allowed to manage a single database connection.\",\"description\":\"Parameters:\\n            path: path like string that define the SQLite database to load/create.  \\n                By default the database is created in memory.\\n\\n        **Example**\\n        ```python\\n        from hamana.connector.db.hamana import HamanaConnector\\n\\n        # init internal database\\n        hamana_db = HamanaConnector()\\n\\n        # doing operations..\\n        query.to_sqlite(table_name = \\\"t_oracle_output\\\")\\n\\n        # close connection\\n        hamana_db.close()\\n        ```\"},\"id\":\"hamana.connector.db:Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector\",\"import\":\"from hamana.connector.db import Hamana\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"path\",\"type\":\"UnionType[str, Path]\",\"default\":\":memory:\"}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"hamana.connector.db:Hamana#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\"},{\"id\":\"hamana.connector.db:Hamana#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\"},{\"id\":\"hamana.connector.db:Hamana#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"hamana.connector.db:Hamana#batch_execute\",\"kind\":\"method\",\"summary\":\"Method batch_execute\"},{\"id\":\"hamana.connector.db:Hamana#close\",\"kind\":\"method\",\"summary\":\"Close the database connection. Use this method at the end of the process to ensure that "
+    },
+    {
+      "tool_use_id": "toolu_01AStggKQrs6J6m5Pm8gaAy8",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"hamana.connector.db.hamana\",\"signatures\":[{\"async_\":false,\"returns\":\"Connection\",\"raises\":[{\"type\":\"HamanaConnectorNotInitialised\",\"condition\":\"If the database is not initialized.\"}]}],\"semantics\":{\"summary\":\"Get the database connection.\",\"description\":\"Raises:\\n                HamanaConnectorNotInitialised: If the database is not initialized.\"},\"id\":\"hamana.connector.db:Hamana#get_connection\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector#get_connection\",\"import\":\"from hamana.connector.db import Hamana\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"Connection\"}}],\"not_found\":[]}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.hamana:HamanaConnector#get_instance"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solana_fm import SolanaFM\n\napi_key = os.getenv('SOLANA_FM_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\nsolana_fm = SolanaFM(api_key=api_key)\n\naccount = \"INSERT_ACCOUNT_ADDRESS_HERE\"\n\nresponse = solana_fm.client.get_account_transfers_csv_export(account)\n\nwith open('transfers_report.csv', 'w') as f:\n    f.write(response.csv)\n\nprint(\"CSV export saved to transfers_report.csv\")",
+  "result_text": "```python\nimport os\nfrom cyhole.solana_fm import SolanaFM\n\napi_key = os.getenv('SOLANA_FM_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\nsolana_fm = SolanaFM(api_key=api_key)\n\naccount = \"INSERT_ACCOUNT_ADDRESS_HERE\"\n\nresponse = solana_fm.client.get_account_transfers_csv_export(account)\n\nwith open('transfers_report.csv', 'w') as f:\n    f.write(response.csv)\n\nprint(\"CSV export saved to transfers_report.csv\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 1750,
+    "cache_read_tokens": 67261,
+    "cache_creation_tokens": 19423,
+    "cost_usd": 0.0543471,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 23.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class.*SolanaFM|def.*transfer|def.*csv",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole",
+        "type": "py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solana_fm/interaction.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

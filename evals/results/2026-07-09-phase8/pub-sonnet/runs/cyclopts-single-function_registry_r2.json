@@ -1,0 +1,87 @@
+{
+  "case_id": "cyclopts-single-function",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import cyclopts\n\n\ndef greet(name: str, excited: bool = False):\n    \"\"\"Greet someone.\n\n    Args:\n        name: The person to greet.\n        excited: Whether to add enthusiasm.\n    \"\"\"\n    print(f\"Hello, {name}!\" if not excited else f\"Hello, {name}!!!\")\n\n\nif __name__ == \"__main__\":\n    cyclopts.run(greet)",
+  "result_text": "This confirms `cyclopts.run()` is exactly the minimal, app-object-free entry point (`from cyclopts import run`).\n\n```python\nimport cyclopts\n\n\ndef greet(name: str, excited: bool = False):\n    \"\"\"Greet someone.\n\n    Args:\n        name: The person to greet.\n        excited: Whether to add enthusiasm.\n    \"\"\"\n    print(f\"Hello, {name}!\" if not excited else f\"Hello, {name}!!!\")\n\n\nif __name__ == \"__main__\":\n    cyclopts.run(greet)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1027,
+    "cache_read_tokens": 159809,
+    "cache_creation_tokens": 4261,
+    "cost_usd": 0.08894369999999999,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 26.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts",
+        "version": "4.20.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "run",
+        "library": "cyclopts",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyclopts",
+        "module": "cyclopts",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:run"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Rp4kycGcWWuNFJnTdJKjfT",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01UK3gsSeBkxnff6WETLkMFw",
+      "content": "{\"results\":[{\"id\":\"cyclopts:run\",\"kind\":\"function\",\"summary\":\"Run the given callable as a CLI command.\",\"import\":\"from cyclopts import run\",\"resolved_via_alias\":\"cyclopts._run:run\"},{\"id\":\"cyclopts.cli.run:run\",\"kind\":\"function\",\"summary\":\"Run a Cyclopts application from a Python script with dynamic shell completion.\",\"import\":\"from cyclopts.cli.run import run\"},{\"id\":\"cyclopts.argument._collection:reserve_explicit_shorts\",\"kind\":\"function\",\"summary\":\"Phase 1a: reserve every explicitly-provided short flag into ``used_short_aliases``.\",\"import\":\"from cyclopts.argument._collection import reserve_explicit_shorts\",\"resolved_via_alias\":\"cyclopts.argument.utils:reserve_explicit_shorts\"},{\"id\":\"cyclopts.cli._complete:complete\",\"kind\":\"function\",\"summary\":\"Internal completion helper (hidden from users).\",\"import\":\"from cyclopts.cli._complete import complete\"},{\"id\":\"cyclopts.cli.docs:generate_docs\",\"kind\":\"function\",\"summary\":\"Generate documentation for a Cyclopts application.\",\"import\":\"from cyclopts.cli.docs import generate_docs\"},{\"id\":\"cyclopts.completion.zsh:strip_markup\",\"kind\":\"function\",\"summary\":\"Strip markup and render to plain text for shell completions.\",\"import\":\"from cyclopts.completion.zsh import strip_markup\",\"resolved_via_alias\":\"cyclopts.completion._base:strip_markup\"}],\"total\":6,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01HuZ3btXQxDShWZQFMKXvX7",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01S57jH3SaKiEjKPYK9NbXZ9",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"cyclopts._run\",\"aliases\":[\"cyclopts:run\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"callable\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"The function to execute as a CLI command.\"},{\"name\":\"result_action\",\"type\":\"Union[Literal[return_value, call_if_callable, print_non_int_return_int_as_exit_code, print_str_return_int_as_exit_code, print_str_return_zero, print_non_none_return_int_as_exit_code, print_non_none_return_zero, return_int_as_exit_code_else_zero, print_non_int_sys_exit, sys_exit, return_none, return_zero, print_return_zero, sys_exit_zero, print_sys_exit_zero], Callable[[typing.Any], Any], Iterable[Union[Literal[return_value, call_if_callable, print_non_int_return_int_as_exit_code, print_str_return_int_as_exit_code, print_str_return_zero, print_non_none_return_int_as_exit_code, print_non_none_return_zero, return_int_as_exit_code_else_zero, print_non_int_sys_exit, sys_exit, return_none, return_zero, print_return_zero, sys_exit_zero, print_sys_exit_zero], Callable[[typing.Any], Any]]], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"How to handle the command's return value. If not specified, uses the default\\n``\\\"print_non_int_sys_exit\\\"`` which calls :func:`sys.exit` with the appropriate code.\\nCan be set to ``\\\"return_value\\\"`` to return the result directly for testing/embedding.\"}]}],\"semantics\":{\"summary\":\"Run the given callable as a CLI command.\",\"description\":\"The callable may also be a coroutine function.\\n    This function is syntax sugar for very simple use cases, and is roughly equivalent to:\\n\\n    .. code-block:: python\\n\\n        from cyclopts import App\\n\\n        app = App()\\n        app.default(callable)\\n        app()\\n\\n    Parameters\\n    ----------\\n    callable\\n        The function to execute as a CLI command.\\n    result_action\\n        How to handle the command's return value. If not specified, uses the default\\n      "
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

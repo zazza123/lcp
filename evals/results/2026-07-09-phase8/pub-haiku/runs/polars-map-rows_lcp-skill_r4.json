@@ -1,0 +1,39 @@
+{
+  "case_id": "polars-map-rows",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [3, 4, 8, 6, 5],\n    \"b\": [9, 5, 3, 5, 6]\n})\n\nresult = df.with_columns(\n    pl.struct(\"a\", \"b\").map_elements(\n        lambda row: \"hi\" if row[\"a\"] + row[\"b\"] > 10 else \"lo\",\n        return_dtype=pl.String\n    ).alias(\"result\")\n)\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [3, 4, 8, 6, 5],\n    \"b\": [9, 5, 3, 5, 6]\n})\n\nresult = df.with_columns(\n    pl.struct(\"a\", \"b\").map_elements(\n        lambda row: \"hi\" if row[\"a\"] + row[\"b\"] > 10 else \"lo\",\n        return_dtype=pl.String\n    ).alias(\"result\")\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1802,
+    "cache_read_tokens": 45872,
+    "cache_creation_tokens": 644,
+    "cost_usd": 0.0149022,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 23.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "polars:DataFrame#map_rows"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

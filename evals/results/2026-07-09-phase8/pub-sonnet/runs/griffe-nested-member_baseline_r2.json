@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-nested-member",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\n# Load the package (assume \"mypkg\" is importable / discoverable on the search path)\npkg = griffe.load(\"mypkg\")\n\n# Single call member-lookup using griffe's dotted-path resolution\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\nis_deprecated = bool(getattr(member, \"deprecated\", None))\nhas_docstring = member.docstring is not None\n\nprint(f\"Deprecated: {is_deprecated}\")\nprint(f\"Has docstring: {has_docstring}\")",
+  "result_text": "```python\nimport griffe\n\n# Load the package (assume \"mypkg\" is importable / discoverable on the search path)\npkg = griffe.load(\"mypkg\")\n\n# Single call member-lookup using griffe's dotted-path resolution\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\nis_deprecated = bool(getattr(member, \"deprecated\", None))\nhas_docstring = member.docstring is not None\n\nprint(f\"Deprecated: {is_deprecated}\")\nprint(f\"Has docstring: {has_docstring}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1635,
+    "cache_read_tokens": 30200,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.033590999999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 22.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

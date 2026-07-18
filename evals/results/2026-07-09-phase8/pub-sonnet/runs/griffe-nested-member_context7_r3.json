@@ -1,0 +1,67 @@
+{
+  "case_id": "griffe-nested-member",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\npkg = griffe.load(\"mypkg\")\n\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\nprint(f\"Deprecated: {bool(member.deprecated)}\")\nprint(f\"Has docstring: {member.has_docstring}\")",
+  "result_text": "Context7 is unavailable (quota exceeded), so I'm relying on the documented griffe `Object` API directly.\n\n```python\nimport griffe\n\npkg = griffe.load(\"mypkg\")\n\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\nprint(f\"Deprecated: {bool(member.deprecated)}\")\nprint(f\"Has docstring: {member.has_docstring}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 3512,
+    "cache_read_tokens": 178714,
+    "cache_creation_tokens": 9864,
+    "cost_usd": 0.1655082,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 50.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "member lookup dotted path get_member deprecated docstring Object API",
+        "libraryName": "griffe"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__query-docs",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/mkdocstrings/griffe",
+        "query": "get_member dotted path lookup and deprecated attribute on Object API"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01X3xSCmbZVLEb4wrW9yhLzF",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    },
+    {
+      "tool_use_id": "toolu_012TdKPuJY4gkfzoKeQtNkNy",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

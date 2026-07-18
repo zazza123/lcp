@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.interactions.helius import Helius\n\n\ndef list_das_assets(wallet_address: str) -> dict:\n    \"\"\"List all Digital Asset Standard assets owned by a wallet address.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n    \n    helius = Helius(api_key=api_key)\n    assets = helius.get_asset_by_owner(owner=wallet_address)\n    \n    return assets\n\n\nif __name__ == \"__main__\":\n    import json\n    \n    wallet_address = input(\"Enter wallet address: \")\n    result = list_das_assets(wallet_address)\n    print(json.dumps(result, indent=2))",
+  "result_text": "```python\nimport os\nfrom cyhole.interactions.helius import Helius\n\n\ndef list_das_assets(wallet_address: str) -> dict:\n    \"\"\"List all Digital Asset Standard assets owned by a wallet address.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n    \n    helius = Helius(api_key=api_key)\n    assets = helius.get_asset_by_owner(owner=wallet_address)\n    \n    return assets\n\n\nif __name__ == \"__main__\":\n    import json\n    \n    wallet_address = input(\"Enter wallet address: \")\n    result = list_das_assets(wallet_address)\n    print(json.dumps(result, indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1125,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6914,
+    "cost_usd": 0.0209812,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.interaction:Helius",
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.interactions.helius.Helius"
+    ],
+    "error": null
+  }
+}

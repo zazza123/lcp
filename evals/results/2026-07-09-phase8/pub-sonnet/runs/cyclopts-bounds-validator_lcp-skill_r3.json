@@ -1,0 +1,105 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Annotated\n\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n\n@app.command\ndef serve(\n    port: Annotated[\n        int,\n        Parameter(validator=validators.Number(gte=1024, lte=65535)),\n    ],\n):\n    \"\"\"Start the server on the given port.\n\n    Parameters\n    ----------\n    port: int\n        Port number to bind to (must be between 1024 and 65535).\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "Verified. Now writing the code.\n\n```python\nfrom typing import Annotated\n\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n\n@app.command\ndef serve(\n    port: Annotated[\n        int,\n        Parameter(validator=validators.Number(gte=1024, lte=65535)),\n    ],\n):\n    \"\"\"Start the server on the given port.\n\n    Parameters\n    ----------\n    port: int\n        Port number to bind to (must be between 1024 and 65535).\n    \"\"\"\n    print(f\"Serving on port {port}\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 959,
+    "cache_read_tokens": 200928,
+    "cache_creation_tokens": 9781,
+    "cost_usd": 0.1333854,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 44.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts",
+        "version": "4.20.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Number validator",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "App command",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "validators",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {}
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts.validators:Number",
+          "cyclopts:Parameter",
+          "cyclopts:App"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01RUebSRq2jdJ4k72nDaiX8m",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01CyzKVyPdd4EAi3ntKBJtwU",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01GYGpFtG8kGwGcxxfYiX4Hh",
+      "content": "{\"results\":[{\"id\":\"cyclopts.docs.rst:iterate_commands\",\"kind\":\"function\",\"summary\":\"Iterate through app commands, yielding valid resolved subapps.\",\"import\":\"from cyclopts.docs.rst import iterate_commands\",\"resolved_via_alias\":\"cyclopts.docs.base:iterate_commands\"},{\"id\":\"cyclopts:App#command\",\"kind\":\"method\",\"summary\":\"Decorator to register a function as a CLI command.\",\"import\":\"from cyclopts import App\",\"resolved_via_alias\":\"cyclopts.core:App#command\"},{\"id\":\"cyclopts.docs.rst:should_show_usage\",\"kind\":\"function\",\"summary\":\"Determine if usage should be shown for an app.\",\"import\":\"from cyclopts.docs.rst import should_show_usage\",\"resolved_via_alias\":\"cyclopts.docs.base:should_show_usage\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01TQfuxgDaCkyYMNiKpEfmdX",
+      "content": "{\"results\":[{\"id\":\"cyclopts.validators._group:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.validators._group\",\"import\":\"import cyclopts.validators._group\"},{\"id\":\"cyclopts.validators._number:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.validators._number\",\"import\":\"import cyclopts.validators._number\"},{\"id\":\"cyclopts.validators._path:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.validators._path\",\"import\":\"import cyclopts.validators._path\"},{\"id\":\"cyclopts.validators._slice:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.validators._slice\",\"import\":\"import cyclopts.validators._slice\"},{\"id\":\"cyclopts.validators:\",\"kind\":\"module\",\"summary\":\"Module cyclopts.validators\",\"import\":\"import cyclopts.validators\"},{\"id\":\"cyclopts.validators:Number\",\"kind\":\"class\",\"summary\":\"Limit input number to a value range.\",\"import\":\"from cyclopts.validators import Number\",\"resolved_via_alias\":\"cyclopts.validators._number:Number\"},{\"id\":\"cyclopts.validators:Path\",\"kind\":\"class\",\"summary\":\"Assertions on properties of :class:`pathlib.Path`.\",\"import\":\"from cyclopts.validators import Path\",\"resolved_via_alias\":\"cyclopts.validators._path:Path\"},{\"id\":\"cyclopts.validators:Slice\",\"kind\":\"class\",\"summary\":\"Assertions on properties of a :class:`slice`.\",\"import\":\"from cyclopts.validators import Slice\",\"resolved_via_alias\":\"cyclopts.validators._slice:Slice\"}],\"total\":8,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01WeokveQdHbRFWxposAb4Fz",
+      "content": "{\"library\":{\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"cyclopts\",\"symbols\":1},{\"module\":\"cyclopts._convert\",\"symbols\":7},{\"module\":\"cyclopts._edit\",\"symbols\":6},{\"module\":\"cyclopts._env_var\",\"symbols\":2},{\"module\":\"cyclopts._markup\",\"symbols\":6},{\"module\":\"cyclopts._path_type\",\"symbols\":11},{\"module\":\"cyclopts._result_action\",\"symbols\":3},{\"module\":\"cyclopts._run\",\"symbols\":3},{\"module\":\"cyclopts._version\",\"symbols\":1},{\"module\":\"cyclopts.annotations\",\"symbols\":23},{\"module\":\"cyclopts.app_stack\",\"symbols\":10},{\"module\":\"cyclopts.argument\",\"symbols\":1},{\"module\":\"cyclopts.argument._argument\",\"symbols\":29},{\"module\":\"cyclopts.argument._collection\",\"symbols\":12},{\"module\":\"cyclopts.argument.utils\",\"symbols\":15},{\"module\":\"cyclopts.bind\",\"symbols\":4},{\"module\":\"cyclopts.cli\",\"symbols\":1},{\"module\":\"cyclopts.cli._complete\",\"symbols\":4},{\"module\":\"cyclopts.cli.docs\",\"symbols\":2},{\"module\":\"cyclopts.cli.run\",\"symbols\":2},{\"module\":\"cyclopts.cli.tree\",\"symbols\":2},{\"module\":\"cyclopts.command_spec\",\"symbols\":10},{\"module\":\"cyclopts.completion\",\"symbols\":1},{\"module\":\"cyclopts.completion._base\",\"symbols\":14},{\"module\":\"cyclopts.completion.bash\",\"symbols\":3},{\"module\":\"cyclopts.completion.detect\",\"symbols\":3},{\"module\":\"cyclopts.completion.fish\",\"symbols\":3},{\"module\":\"cyclopts.completion.install\",\"symbols\":4},{\"module\":\"cyclopts.completion.zsh\",\"symbols\":3},{\"module\":\"cyclopts.config\",\"symbols\":1},{\"module\":\"cyclopts.config._common\",\"symbols\":29},{\"module\":\"cyclopts.config._env\",\"symbols\":8},{\"module\":\"cyclopts.config._json\",\"symbols\":9},{\"module\":\"cyclopts.config._toml\",\"symbols\":9},{\"module\":\"cyclopts.config._yaml\",\"symbols\":9},{\"module\":\"cyclopts.core\",\"symbols\":47},{\"module\":\"cyclopts.docs\",\"symbols\":1},{\"module\":\"cyclopts.docs.base\",\"symbols\":18},{\"module\":\"cyclopts.docs.html\",\"symbols\":4},{\"module\":\"cyclopts.docs.markdown\",\"symbols\":4},{\"module\":\"cyclopts.docs.rst\",\"symbols\":5},{\"module\":\"cyclo"
+    },
+    {
+      "tool_use_id": "toolu_01PKGmabJy5tASDuQaiJQ5ML",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.validators._number\",\"aliases\":[\"cyclopts.validators:Number\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"lt\",\"type\":\"UnionType[int, float, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lte\",\"type\":\"UnionType[int, float, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"gt\",\"type\":\"UnionType[int, float, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"gte\",\"type\":\"UnionType[int, float, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"modulo\",\"type\":\"UnionType[int, float, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Limit input number to a value range.\",\"description\":\"Example Usage:\\n\\n    .. code-block:: python\\n\\n        from cyclopts import App, Parameter, validators\\n        from typing import Annotated\\n\\n        app = App()\\n\\n\\n        @app.default\\n        def main(age: Annotated[int, Parameter(validator=validators.Number(gte=0, lte=150))]):\\n            print(f\\\"You are {age} years old.\\\")\\n\\n\\n        app()\\n\\n    .. code-block:: console\\n\\n        $ my-script 100\\n        You are 100 years old.\\n\\n        $ my-script -1\\n        \u256d\u2500 Error \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\\n        \u2502 Invalid value \\\"-1\\\" for \\\"AGE\\\". Must be >= 0.                   \u2502\\n        \u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\\n\\n        $ my-script 200\\n        \u256d\u2500 Error \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\\n        \u2502 Invalid value \\\"200\\\" for \\\"AGE\\\". Must be <= 150.                \u2502\\n        \u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\"},\"id\":\"cyclopts.validators:Number\",\"resolved_via_alias\":\"cyclopts.validators._number:Number\",\"import\":\"from cyclopts.validators import Number\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"lt\",\"type\":\"UnionType[int, float, None]\","
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

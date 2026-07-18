@@ -1,0 +1,151 @@
+{
+  "case_id": "narwhals-cast-dtypes",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\n\ndef convert_dtypes(df):\n    \"\"\"Convert user_id to Int32 and score to Float32.\"\"\"\n    return df.with_columns(\n        nw.col(\"user_id\").cast(nw.Int32),\n        nw.col(\"score\").cast(nw.Float32)\n    )",
+  "result_text": "```python\nimport narwhals as nw\n\ndef convert_dtypes(df):\n    \"\"\"Convert user_id to Int32 and score to Float32.\"\"\"\n    return df.with_columns(\n        nw.col(\"user_id\").cast(nw.Int32),\n        nw.col(\"score\").cast(nw.Float32)\n    )\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 99,
+    "output_tokens": 2247,
+    "cache_read_tokens": 300700,
+    "cache_creation_tokens": 18083,
+    "cost_usd": 0.07757000000000001,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 37.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp:resolve",
+        "args": "narwhals"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "cast dtype int32 float32",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "cast",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Int32 Int64",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "dtype dtypes",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "narwhals",
+        "module": "narwhals",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "narwhals",
+        "module": "narwhals.dtypes",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:Expr#cast",
+          "narwhals:DataFrame",
+          "narwhals:DataFrame#with_columns"
+        ],
+        "library": "narwhals"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QmmigcrLf97RqZ4ndn6c49",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01W3pAzcXCU5ozCuM56Lvytv",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Mc98UrxNvQvc9yEDHca7WC",
+      "content": "{\"results\":[{\"id\":\"narwhals._arrow.namespace:ArrowExpr#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._arrow.namespace import ArrowExpr\",\"resolved_via_alias\":\"narwhals._arrow.expr:ArrowExpr#cast\"},{\"id\":\"narwhals._arrow.selectors:ArrowSelector#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._arrow.selectors import ArrowSelector\"},{\"id\":\"narwhals._arrow.expr:ArrowSeries#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._arrow.expr import ArrowSeries\",\"resolved_via_alias\":\"narwhals._arrow.series:ArrowSeries#cast\"},{\"id\":\"narwhals._compliant.column:CompliantColumn#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._compliant.column import CompliantColumn\"},{\"id\":\"narwhals.compliant:CompliantExpr#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals.compliant import CompliantExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:CompliantExpr#cast\"},{\"id\":\"narwhals._compliant:DepthTrackingExpr#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._compliant import DepthTrackingExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:DepthTrackingExpr#cast\"},{\"id\":\"narwhals._compliant:EagerExpr#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._compliant import EagerExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:EagerExpr#cast\"},{\"id\":\"narwhals._compliant:LazyExpr#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals._compliant import LazyExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:LazyExpr#cast\"},{\"id\":\"narwhals.compliant:CompliantSelector#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals.compliant import CompliantSelector\",\"resolved_via_alias\":\"narwhals._compliant.selectors:CompliantSelector#cast\"},{\"id\":\"narwhals.typing:CompliantSeries#cast\",\"kind\":\"method\",\"summary\":\"Method cast\",\"import\":\"from narwhals.typing import CompliantSeries\",\"resolved_via_alias\":\"narwhals._compliant.series:Complia"
+    },
+    {
+      "tool_use_id": "toolu_012GrJVPYtowQgjzXt3oHGuF",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01W646mbSgeEPSDJbMKjZZNj",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01YLBZfmvEoqafVT7J11qZM9",
+      "content": "{\"results\":[{\"id\":\"narwhals:\",\"kind\":\"module\",\"summary\":\"Module narwhals\",\"import\":\"import narwhals\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01JRh47gAQwPhbud4fArVioY",
+      "content": "{\"results\":[{\"id\":\"narwhals:Enum#categories\",\"kind\":\"attribute\",\"summary\":\"The categories in the dataset.\",\"import\":\"from narwhals import Enum\",\"resolved_via_alias\":\"narwhals.dtypes:Enum#categories\"},{\"id\":\"narwhals:Array\",\"kind\":\"class\",\"summary\":\"Fixed length list type.\",\"import\":\"from narwhals import Array\",\"resolved_via_alias\":\"narwhals.dtypes:Array\"},{\"id\":\"narwhals:Binary\",\"kind\":\"class\",\"summary\":\"Binary type.\",\"import\":\"from narwhals import Binary\",\"resolved_via_alias\":\"narwhals.dtypes:Binary\"},{\"id\":\"narwhals:Boolean\",\"kind\":\"class\",\"summary\":\"Boolean type.\",\"import\":\"from narwhals import Boolean\",\"resolved_via_alias\":\"narwhals.dtypes:Boolean\"},{\"id\":\"narwhals:Categorical\",\"kind\":\"class\",\"summary\":\"A categorical encoding of a set of strings.\",\"import\":\"from narwhals import Categorical\",\"resolved_via_alias\":\"narwhals.dtypes:Categorical\"},{\"id\":\"narwhals:Date\",\"kind\":\"class\",\"summary\":\"Data type representing a calendar date.\",\"import\":\"from narwhals import Date\",\"resolved_via_alias\":\"narwhals.dtypes:Date\"},{\"id\":\"narwhals:Datetime\",\"kind\":\"class\",\"summary\":\"Data type representing a calendar date and time of day.\",\"import\":\"from narwhals import Datetime\",\"resolved_via_alias\":\"narwhals.dtypes:Datetime\"},{\"id\":\"narwhals:Decimal\",\"kind\":\"class\",\"summary\":\"Decimal 128-bit type with an optional precision and non-negative scale.\",\"import\":\"from narwhals import Decimal\",\"resolved_via_alias\":\"narwhals.dtypes:Decimal\"},{\"id\":\"narwhals._polars.namespace:DType\",\"kind\":\"class\",\"summary\":\"Base class for all Narwhals data types.\",\"import\":\"from narwhals._polars.namespace import DType\",\"resolved_via_alias\":\"narwhals.dtypes:DType\"},{\"id\":\"narwhals.stable.v2.dtypes:DTypeClass\",\"kind\":\"class\",\"summary\":\"Metaclass for DType classes.\",\"import\":\"from narwhals.stable.v2.dtypes import DTypeClass\",\"resolved_via_alias\":\"narwhals.dtypes:DTypeClass\"},{\"id\":\"narwhals:Duration\",\"kind\":\"class\",\"summary\":\"Data type representing a time duration.\",\"import\":\"from narwhals import Duration\",\"res"
+    },
+    {
+      "tool_use_id": "toolu_01Ji6eiu1fMFQVTAJaA9Pody",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"narwhals.expr\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"dtype\",\"type\":\"IntoDType\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Data type that the object will be cast into.\"}],\"returns\":\"Self\"}],\"semantics\":{\"summary\":\"Redefine an object's data type.\",\"description\":\"Arguments:\\n            dtype: Data type that the object will be cast into.\\n\\n        Examples:\\n            >>> import pandas as pd\\n            >>> import narwhals as nw\\n            >>> df_native = pd.DataFrame({\\\"foo\\\": [1, 2, 3], \\\"bar\\\": [6.0, 7.0, 8.0]})\\n            >>> df = nw.from_native(df_native)\\n            >>> df.select(nw.col(\\\"foo\\\").cast(nw.Float32), nw.col(\\\"bar\\\").cast(nw.UInt8))\\n            \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n            |Narwhals DataFrame|\\n            |------------------|\\n            |      foo  bar    |\\n            |   0  1.0    6    |\\n            |   1  2.0    7    |\\n            |   2  3.0    8    |\\n            \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\",\"examples\":[{\"code\":\">>> import pandas as pd\\n>>> import narwhals as nw\\n>>> df_native = pd.DataFrame({\\\"foo\\\": [1, 2, 3], \\\"bar\\\": [6.0, 7.0, 8.0]})\\n>>> df = nw.from_native(df_native)\\n>>> df.select(nw.col(\\\"foo\\\").cast(nw.Float32), nw.col(\\\"bar\\\").cast(nw.UInt8))\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n|Narwhals DataFrame|\\n|------------------|\\n|      foo  bar    |\\n|   0  1.0    6    |\\n|   1  2.0    7    |\\n|   2  3.0    8    |\\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\"}]},\"id\":\"narwhals:Expr#cast\",\"resolved_via_alias\":\"narwhals.expr:Expr#cast\",\"import\":\"from narwhals import Expr\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"dtype\",\"type\":\"IntoDType\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"Self\"}},{\"kind\":\"class\",\"module\":\"narwhals.dataframe\",\"aliases\":[\"narwhals.testing.asserts.frame:DataFrame\",\"narwhals:DataFrame\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"df\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"level\",\"type\":\"Literal[full, lazy, inte"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

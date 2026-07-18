@@ -1,0 +1,41 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.helius import Helius\n\ndef main() -> None:\n    api_key = os.environ[\"HELIUS_API_KEY\"]\n    wallet_address = \"PUT_WALLET_ADDRESS_HERE\"\n\n    helius = Helius(api_key=api_key)\n\n    response = helius.client.get_assets_by_owner(owner_address=wallet_address)\n\n    for asset in response.items:\n        print(asset.id, asset.interface)\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\n\nfrom cyhole.helius import Helius\n\ndef main() -> None:\n    api_key = os.environ[\"HELIUS_API_KEY\"]\n    wallet_address = \"PUT_WALLET_ADDRESS_HERE\"\n\n    helius = Helius(api_key=api_key)\n\n    response = helius.client.get_assets_by_owner(owner_address=wallet_address)\n\n    for asset in response.items:\n        print(asset.id, asset.interface)\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 4,
+    "output_tokens": 2915,
+    "cache_read_tokens": 60328,
+    "cache_creation_tokens": 6832,
+    "cost_usd": 0.10282739999999999,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 40.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Bash shell execute command",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_assets_by_owner"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

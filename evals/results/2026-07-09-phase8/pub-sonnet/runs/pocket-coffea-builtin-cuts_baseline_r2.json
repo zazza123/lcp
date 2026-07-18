@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from pocket_coffea.lib.cuts import get_HLTsel, get_nObj_min, get_nBtagMin\n\n# Skim: applied at the very first processing stage to reduce event volume\nskim = [\n    get_HLTsel(primaryDatasets=[\"semileptonic\"]),\n]\n\n# Preselection: applied after object corrections/selections, before categorization\npreselection = [\n    get_nObj_min(4, minpt=30.0, coll=\"JetGood\"),\n    get_nBtagMin(2, coll=\"BJetGood\"),\n]",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import get_HLTsel, get_nObj_min, get_nBtagMin\n\n# Skim: applied at the very first processing stage to reduce event volume\nskim = [\n    get_HLTsel(primaryDatasets=[\"semileptonic\"]),\n]\n\n# Preselection: applied after object corrections/selections, before categorization\npreselection = [\n    get_nObj_min(4, minpt=30.0, coll=\"JetGood\"),\n    get_nBtagMin(2, coll=\"BJetGood\"),\n]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 3239,
+    "cache_read_tokens": 30257,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0576681,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 40.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.get_HLTsel",
+      "pocket_coffea.lib.cuts.get_nBtagMin",
+      "pocket_coffea.lib.cuts.get_nObj_min"
+    ],
+    "error": null
+  }
+}

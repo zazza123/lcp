@@ -1,15 +1,42 @@
-# LCP Eval Harness (Phase 0)
+# LCP Eval Harness
 
 Private benchmark measuring API misuse by a coding agent with and without
 the LCP MCP server. Not part of the `lcp` package; nothing here ships.
 
-## Setup
+Two case sets and two profiles:
 
-Run from the repo root:
+- **Phase 0 set** (`cases/`, 28 cases, 7 libraries) — the original harness on
+  the legacy `evals/.venv` (fastmcp 2.14.4).
+- **Phase 8 publication set** (`cases-v2/`, 84 cases, 11 libraries) — the
+  grown-up benchmark on `evals/.venv-bench`. Frozen and pre-registered
+  (`results/2026-07-09-phase8/PREREGISTRATION.md`); results and analysis in
+  `results/2026-07-09-phase8/`. A cheap reusable regression subset lives in
+  `profiles/regression.yaml`.
+
+## Environments (three venvs)
+
+| venv | Python | Contents | Used by |
+|------|--------|----------|---------|
+| `evals/.venv` | 3.12 | lcp editable + the 7 Phase-0 targets (fastmcp **2.14.4**) | Phase-0 `cases/` runs; do NOT `pip install` into it |
+| `evals/.venv-bench` | 3.12 | lcp editable + the 11 Phase-8 targets (fastmcp 3.x) | all `cases-v2/` runs, `validate`, harness tests |
+| `evals/.venv-registry` | 3.12 | lcp editable ONLY (no targets) | the `registry` arm's server, to force registry-only resolution |
+
+Phase-0 setup (unchanged):
 
 ```bash
 python3 -m venv evals/.venv
 evals/.venv/bin/pip install -e ".[dev]" -r evals/requirements.txt
+```
+
+Phase-8 benchmark setup:
+
+```bash
+python3 -m venv evals/.venv-bench
+evals/.venv-bench/bin/pip install -e . -r evals/bench-requirements.txt
+# awkward 1.10.5 (pocket-coffea's stack) has no cp312 wheel; on CMake>=4 hosts
+# a cold cache needs: CMAKE_POLICY_VERSION_MINIMUM=3.5 ... pip wheel awkward==1.10.5
+python3 -m venv evals/.venv-registry
+evals/.venv-registry/bin/pip install -e .
 ```
 
 > **Note:** the evals venv pins `fastmcp==2.14.4` because fastmcp is one of
@@ -48,9 +75,14 @@ login` or equivalent) — the harness invokes it as a subprocess (`claude -p
   library-symbol usage (dotted paths, method names) out of code via `ast`.
 - `harness/report.py` — aggregates per-run JSON into a summary and a
   Markdown report.
-- `cases/*.yaml` — the 28 task cases, one file per library.
-- `results/` — output directory for `run`/`report` (created on demand; not
-  committed except for the recorded baseline).
+- `harness/engagement.py` — engagement-conditioned stats (runs with ≥1
+  `mcp__*__*` tool call).
+- `harness/stats.py` — seeded bootstrap confidence intervals for the analysis.
+- `cases/*.yaml` — the 28 Phase-0 cases; `cases-v2/*.yaml` — the 84 Phase-8
+  cases. A run record also carries `tool_results` (captured MCP responses,
+  truncated) for reproducibility.
+- `profiles/regression.yaml` — the cheap regression subset.
+- `results/` — output directory for `run`/`report` (created on demand).
 - `tests/` — unit tests for the harness modules themselves.
 
 ## Case format
@@ -84,48 +116,71 @@ fastmcp, cyhole, hamana.
 
 ## Commands
 
-All commands run through `evals/.venv/bin/python evals/run.py`.
+Phase-0 runs use `evals/.venv`; Phase-8 (`cases-v2`) runs use
+`evals/.venv-bench`.
 
 ```bash
-# Validate all case files against the installed (pinned) environment.
-evals/.venv/bin/python evals/run.py validate [--cases evals/cases]
+# Validate case files against the installed (pinned) environment.
+evals/.venv-bench/bin/python evals/run.py validate --cases evals/cases-v2
 
-# Run the benchmark: both arms x 28 cases x 3 reps by default.
-evals/.venv/bin/python evals/run.py run --out evals/results/<name> \
-    [--cases evals/cases] [--reps 3] [--arms both|baseline|lcp|lcp-skill] \
-    [--model MODEL] [--workers 2] [--case-id ID ...]
+# Run the benchmark. --arms is repeatable; default is baseline + lcp.
+evals/.venv-bench/bin/python evals/run.py run --out evals/results/<name> \
+    --cases evals/cases-v2 [--reps N] \
+    [--arms baseline] [--arms lcp] [--arms lcp-skill] [--arms sitepkg] \
+    [--arms registry] [--arms context7] \
+    [--model MODEL] [--workers 3] [--case-id ID ...] \
+    [--registry-lcp-bin evals/.venv-registry/bin/lcp]
 
-# Re-aggregate an existing results directory without re-running anything.
-evals/.venv/bin/python evals/run.py report --out evals/results/<name>
-
-# Re-verify an existing results dir with the current verifier (no agent runs).
-evals/.venv/bin/python evals/run.py rescore --src evals/results/<old> \
-    --out evals/results/<old>-rescored [--cases evals/cases]
+# Re-aggregate / engagement stats / rescore (no agent runs).
+evals/.venv-bench/bin/python evals/run.py report --out evals/results/<name>
+evals/.venv-bench/bin/python evals/run.py engagement --out <dir> [--out <dir> ...]
+evals/.venv-bench/bin/python evals/run.py rescore --src <old> --out <old>-rescored
 ```
 
 `run` writes one JSON file per (case, arm, rep) under `<out>/runs/`, then
-writes `<out>/summary.json` and `<out>/report.md`. It is resumable: if a
-run file already exists it is skipped (`SKIP ... (exists)`), so a failed or
-interrupted run can simply be re-invoked with the same `--out`.
+`<out>/summary.json` and `<out>/report.md`. It is **resumable**: an existing
+run file is skipped (`SKIP ... (exists)`), so a failed/interrupted/
+rate-limited run is re-invoked with the same `--out`. Each agent invocation
+has a 600s subprocess timeout, recorded as a failed run, not a harness crash.
 
-Defaults: `--reps 3`, `--arms both`, `--workers 2`. Each agent invocation
-has a 600s subprocess timeout; a timeout is recorded as a failed run
-(`error: "timeout after 600s"`), not a crash of the harness.
+### The six arms (each differs from `baseline` only by CLI flags)
 
-Besides `baseline` and `lcp` there is a third arm, `lcp-skill`: the `lcp`
-arm plus `--append-system-prompt` carrying the `lcp-universal` skill body
-(`plugin/lcp/skills/lcp-universal/SKILL.md`, frontmatter stripped, injected
-verbatim) — it approximates what a developer with the plugin installed
-experiences. It is always explicit; `--arms both` still means
-`baseline` + `lcp` only. `--model` overrides the pinned default
-(`harness/agent.py: MODEL = "claude-haiku-4-5-20251001"`); it exists for
-the Phase 2b sonnet probe — results across different models are not
-directly comparable, so keep cross-model runs in separate results dirs.
+| Arm | What it adds |
+|-----|--------------|
+| `baseline` | nothing — headless `claude -p`, all built-in tools denied, no MCP |
+| `lcp` | `--mcp-config` → `lcp serve-all` (this venv, `--expose` per library) |
+| `lcp-skill` | `lcp` + `--append-system-prompt` with the shipped `lcp-universal` skill body (frontmatter stripped) — approximates a developer with the plugin installed |
+| `sitepkg` | no MCP; re-enables Read/Glob/Grep + a note naming the site-packages path (the "agent reads the installed source" honest arm) |
+| `registry` | `lcp` config but the server runs from `--registry-lcp-bin` (the bare `.venv-registry`), so resolution can only succeed via the public registry |
+| `context7` | `--mcp-config` → `npx @upstash/context7-mcp` + the vendor's always-use rule (the competitor arm) |
 
-The first LCP-arm run for a given library is noticeably slower than the
-rest: `lcp serve-all` has to scan the package and populate
-`evals/.lcp-cache/` on first use; subsequent runs for the same library hit
-the cache.
+`--model` overrides the pinned default
+(`harness/agent.py: MODEL = "claude-haiku-4-5-20251001"`); results across
+models are not directly comparable, so keep cross-model runs in separate
+results dirs. The first `lcp`/`lcp-skill` run for a library is slower — the
+server scans it and populates the cache on first use.
+
+## Profiles
+
+- **Publication** — the frozen Phase 8 grid (84 cases × 6 arms × haiku 5 +
+  sonnet 3 reps). Methodology, metrics and decision rules are pre-registered
+  in `results/2026-07-09-phase8/PREREGISTRATION.md`; results and analysis
+  (with the reproducible aggregator `analyze_grid.py`) sit beside it.
+- **Regression** — a cheap, reusable release monitor: `profiles/regression.yaml`
+  (16 discriminative niche cases, baseline + lcp-skill, haiku, 3 reps ≈ 96
+  runs). Run it with:
+
+```bash
+evals/.venv-bench/bin/python evals/run.py run \
+  --out evals/results/<date>-regression \
+  --cases evals/cases-v2 --reps 3 --workers 3 \
+  --model claude-haiku-4-5-20251001 \
+  --arms baseline --arms lcp-skill \
+  $(evals/.venv-bench/bin/python -c "import yaml;print(' '.join('--case-id '+c for c in yaml.safe_load(open('evals/profiles/regression.yaml'))['case_ids']))")
+```
+
+The profile's header documents the case-refresh policy (retire a library
+once baseline reaches ceiling).
 
 ## Methodology and caveats
 

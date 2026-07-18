@@ -1,0 +1,47 @@
+{
+  "case_id": "cyclopts-default-action",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from cyclopts import App\n\napp = App(name=\"myapp\", help=\"Manage the service.\")\n\n\n@app.default\ndef status():\n    \"\"\"Show the current status of the service (runs when no subcommand is given).\"\"\"\n    print(\"Service status: unknown (not yet implemented)\")\n\n\n@app.command\ndef start():\n    \"\"\"Start the service.\"\"\"\n    print(\"Starting service...\")\n\n\n@app.command\ndef stop():\n    \"\"\"Stop the service.\"\"\"\n    print(\"Stopping service...\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\n\napp = App(name=\"myapp\", help=\"Manage the service.\")\n\n\n@app.default\ndef status():\n    \"\"\"Show the current status of the service (runs when no subcommand is given).\"\"\"\n    print(\"Service status: unknown (not yet implemented)\")\n\n\n@app.command\ndef start():\n    \"\"\"Start the service.\"\"\"\n    print(\"Starting service...\")\n\n\n@app.command\ndef stop():\n    \"\"\"Stop the service.\"\"\"\n    print(\"Stopping service...\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 1064,
+    "cache_read_tokens": 92942,
+    "cache_creation_tokens": 14185,
+    "cost_usd": 0.1289706,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 19.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def default\\b|default_command|def command\\b|class App",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "offset": 1460,
+        "limit": 30
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

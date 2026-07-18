@@ -1,0 +1,132 @@
+- id: hamana-oracle-config
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana's Oracle connector, first build a standalone configuration
+    object from a user, password, host and service name (read the password
+    from the ORACLE_PASSWORD environment variable), then construct the
+    connector from that configuration object (do not use any one-shot
+    shortcut that skips the separate configuration step), and finally execute
+    the query "SELECT sysdate FROM dual".
+  checks:
+    required_symbols:
+      - "hamana.connector.db:Oracle"
+      - "hamana.connector.db.oracle:OracleConnector#create_config"
+      - "hamana.connector.db.oracle:OracleConnector#execute"
+    forbidden_symbols:
+      - "hamana.connector.db.oracle:OracleConnector#from_config"
+      - "hamana.connector.db.oracle:OracleConnector#connect"
+
+- id: hamana-query-result-dataframe
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana, wrap the SQL string "SELECT id, name FROM users" in
+    hamana's Query object, execute it against the library's internal database,
+    then read the query's results back as the resulting pandas DataFrame.
+  checks:
+    required_symbols:
+      - "hamana:Query"
+      - "hamana.connector.db.query:Query#result"
+    forbidden_symbols:
+      - "hamana.connector.db.query:Query#to_dataframe"
+      - "hamana.connector.db.query:Query#fetch_all"
+
+- id: hamana-query-to-sqlite
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana, build a Query object from the SQL string
+    "SELECT id, amount FROM orders", execute it, then persist that query's
+    result into hamana's internal SQLite database as a table named "orders"
+    using the Query object's own persistence method.
+  checks:
+    required_symbols:
+      - "hamana:Query"
+      - "hamana.connector.db.query:Query#to_sqlite"
+    forbidden_symbols:
+      - "hamana.connector.db.query:Query#to_sql"
+      - "hamana.connector.db.query:Query#to_dataframe"
+
+- id: hamana-teradata-ping
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana's Teradata connector, open a connection with host, user and
+    password (read the password from the TERADATA_PASSWORD environment
+    variable) and verify the database is reachable using the connector's
+    connectivity-check method.
+  checks:
+    required_symbols:
+      - "hamana.connector.db:Teradata"
+      - "hamana.connector.db.teradata:TeradataConnector#ping"
+    forbidden_symbols:
+      - "hamana.connector.db.teradata:TeradataConnector#test_connection"
+      - "hamana.connector.db.teradata:TeradataConnector#connect"
+
+- id: hamana-internal-singleton
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana's internal database connector class (the singleton one, not
+    the top-level shortcut functions), obtain the already-initialised
+    singleton instance and then get its underlying raw database connection
+    object.
+  checks:
+    required_symbols:
+      - "hamana.connector.db:Hamana"
+      - "hamana.connector.db.hamana:HamanaConnector#get_instance"
+      - "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    forbidden_symbols:
+      - "hamana.connector.db.hamana:HamanaConnector#instance"
+      - "hamana.connector.db.hamana:HamanaConnector#get_engine"
+
+- id: hamana-typed-column-schema
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana, define a Query for "SELECT id, name, created_at FROM users"
+    and attach an explicit column schema so the id is mapped as an integer
+    column, the name as a string column, and created_at as a date column,
+    using hamana's typed column classes.
+  checks:
+    required_symbols:
+      - "hamana:Query"
+      - "hamana.core.column:IntegerColumn"
+      - "hamana.core.column:StringColumn"
+    forbidden_symbols:
+      - "hamana.core.column:IntColumn"
+      - "hamana.core.column:TextColumn"
+
+- id: hamana-table-exists-error
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana, execute a Query and persist its result into the internal
+    SQLite database as a table named "sales", but configure the import so it
+    FAILS instead of replacing when the table already exists, and catch the
+    hamana exception raised in that situation. Use hamana's import-mode enum
+    to select the fail behaviour.
+  checks:
+    required_symbols:
+      - "hamana.connector.db.schema:SQLiteDataImportMode"
+      - "hamana.connector.db.exceptions:TableAlreadyExists"
+    forbidden_symbols:
+      - "hamana.connector.db.exceptions:TableExistsError"
+      - "hamana.connector.db.exceptions:DuplicateTableError"
+
+- id: hamana-sqlite-batch-execute
+  library: hamana
+  version: "1.0.1"
+  prompt: >
+    Using hamana's SQLite connector against the database file "warehouse.db",
+    stream the result of a Query "SELECT * FROM events" in fixed-size batches
+    of 5000 rows instead of loading everything at once, iterating over each
+    batch.
+  checks:
+    required_symbols:
+      - "hamana.connector.db:SQLite"
+      - "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    forbidden_symbols:
+      - "hamana.connector.db.sqlite:SQLiteConnector#fetch_batches"
+      - "hamana.connector.db.sqlite:SQLiteConnector#iter_rows"

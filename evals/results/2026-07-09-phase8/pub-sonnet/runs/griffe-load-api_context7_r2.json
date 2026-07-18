@@ -1,0 +1,67 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\nrequests_module = griffe.load(\"requests\")\n\npublic_functions = sorted(\n    name\n    for name, member in requests_module.functions.items()\n    if member.is_public\n)\n\nfor name in public_functions:\n    print(name)",
+  "result_text": "```python\nimport griffe\n\nrequests_module = griffe.load(\"requests\")\n\npublic_functions = sorted(\n    name\n    for name, member in requests_module.functions.items()\n    if member.is_public\n)\n\nfor name in public_functions:\n    print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 1340,
+    "cache_read_tokens": 160580,
+    "cache_creation_tokens": 22056,
+    "cost_usd": 0.20064,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 24.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "griffe",
+        "query": "load package with module-level convenience function griffe.load, list top-level functions"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/mkdocstrings/griffe",
+        "query": "griffe.load function module-level API to load a package and access members functions classes"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "griffe load module top level functions public members",
+        "max_results": 3
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01UAK2NTJDsim5NR6bzqyNjx",
+      "content": "Available Libraries:\n\n- Title: Griffe\n- Context7-compatible library ID: /mkdocstrings/griffe\n- Description: Griffe extracts the structure and signatures of entire Python programs to generate API documentation and detect breaking changes in your API.\n- Code Snippets: 769\n- Source Reputation: High\n- Benchmark Score: 67.91\n----------\n- Title: griffe2md\n- Context7-compatible library ID: /mkdocstrings/griffe2md\n- Description: griffe2md is a tool that converts Python API documentation to Markdown using Griffe, enabling developers to generate comprehensive API docs in Markdown format.\n- Code Snippets: 58\n- Source Reputation: High\n- Benchmark Score: 90"
+    },
+    {
+      "tool_use_id": "toolu_01Xd49cv6UnrGaiPCwq2s7VG",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

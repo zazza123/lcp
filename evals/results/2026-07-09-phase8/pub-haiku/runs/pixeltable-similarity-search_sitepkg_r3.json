@@ -1,0 +1,36 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\n\n# Get the existing docs table\ndocs = px.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = px.udf.sentence_transformers('all-MiniLM-L6-v2')(docs['content'])\n\n# Create index for nearest-neighbor search\ndocs.create_index('content_embedding')\n\n# Embed the query text\nquery_text = 'climate change policy'\nquery_embedding = px.udf.sentence_transformers('all-MiniLM-L6-v2')(query_text)\n\n# Query for 5 most similar rows, ranked from closest to farthest\nresults = docs.select('content').where(\n    docs['content_embedding'].similarity(query_embedding) > 0\n).order_by(\n    docs['content_embedding'].similarity(query_embedding), reverse=True\n).limit(5).collect()\n\n# Display results\nfor i, row in enumerate(results, 1):\n    print(f\"{i}. {row['content']}\")",
+  "result_text": "```python\nimport pixeltable as px\n\n# Get the existing docs table\ndocs = px.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = px.udf.sentence_transformers('all-MiniLM-L6-v2')(docs['content'])\n\n# Create index for nearest-neighbor search\ndocs.create_index('content_embedding')\n\n# Embed the query text\nquery_text = 'climate change policy'\nquery_embedding = px.udf.sentence_transformers('all-MiniLM-L6-v2')(query_text)\n\n# Query for 5 most similar rows, ranked from closest to farthest\nresults = docs.select('content').where(\n    docs['content_embedding'].similarity(query_embedding) > 0\n).order_by(\n    docs['content_embedding'].similarity(query_embedding), reverse=True\n).limit(5).collect()\n\n# Display results\nfor i, row in enumerate(results, 1):\n    print(f\"{i}. {row['content']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4019,
+    "cache_read_tokens": 24145,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0225185,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 42.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.udf.sentence_transformers"
+    ],
+    "error": null
+  }
+}

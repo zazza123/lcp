@@ -1,0 +1,85 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan import Solscan\n\n# Address whose DeFi activities should be retrieved.\naccount_address = \"So11111111111111111111111111111111111111112\"\n\napi_key = os.environ[\"SOLSCAN_API_KEY\"]\nsolscan = Solscan(api_key=api_key)\n\nresponse = solscan.client.get_account_defi_activities(account_address)\n\nfor activity in response.data:\n    print(activity)",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan import Solscan\n\n# Address whose DeFi activities should be retrieved.\naccount_address = \"So11111111111111111111111111111111111111112\"\n\napi_key = os.environ[\"SOLSCAN_API_KEY\"]\nsolscan = Solscan(api_key=api_key)\n\nresponse = solscan.client.get_account_defi_activities(account_address)\n\nfor activity in response.data:\n    print(activity)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 6376,
+    "cache_read_tokens": 250434,
+    "cache_creation_tokens": 35375,
+    "cost_usd": 0.3830622,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 84.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole",
+        "query": "Solscan V2 account DeFi activities synchronous API key"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyhole solscan",
+        "query": "Solscan V2 account DeFi activities synchronous"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "run shell command file inspect package",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Le2DuYBc2CxdptwgYfuGuh",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01WaYih6KuDuQxGxe2TNk8Ex",
+      "content": "Available Libraries:\n\n- Title: Solscan\n- Context7-compatible library ID: /websites/solscan_io\n- Description: Solscan is the leading explorer for the Solana ecosystem, offering tools to analyze transactions, accounts, tokens, and investment opportunities on the blockchain.\n- Code Snippets: 91\n- Source Reputation: High\n- Benchmark Score: 85"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.Solscan"
+    ],
+    "error": null
+  }
+}

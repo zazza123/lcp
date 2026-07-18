@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import griffe\n\nmodule = griffe.load(\"requests\")\n\npublic_functions = [\n    name for name, member in module.members.items()\n    if not name.startswith(\"_\") and member.is_function\n]\n\nfor func_name in sorted(public_functions):\n    print(func_name)",
+  "result_text": "```python\nimport griffe\n\nmodule = griffe.load(\"requests\")\n\npublic_functions = [\n    name for name, member in module.members.items()\n    if not name.startswith(\"_\") and member.is_function\n]\n\nfor func_name in sorted(public_functions):\n    print(func_name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1214,
+    "cache_read_tokens": 17267,
+    "cache_creation_tokens": 6832,
+    "cost_usd": 0.0214697,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

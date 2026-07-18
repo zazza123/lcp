@@ -1,0 +1,99 @@
+- id: fastmcp-prompt
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Using fastmcp, build a server that exposes a reusable message template
+    named "summarize" which clients can fetch by name. It takes a single
+    `text` argument and returns a user message asking the model to summarize
+    that text.
+  checks:
+    required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#prompt"]
+    forbidden_symbols: ["fastmcp:FastMCP#register_prompt"]
+
+- id: fastmcp-http-transport
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Create a fastmcp server with one simple tool and serve it over streamable
+    HTTP on host 127.0.0.1 and port 8000, so remote clients can reach it over
+    the network rather than over stdio. Start it by calling the server's own
+    run entry point, not by mounting it in an external ASGI server.
+  checks:
+    required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#run"]
+    forbidden_symbols:
+      - "fastmcp:FastMCP#run_streamable_http_async"
+      - "fastmcp:FastMCP#sse_app"
+
+- id: fastmcp-proxy
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    You already have a backend FastMCP server instance in memory. Using
+    fastmcp, create a second server that acts as a transparent proxy in front
+    of it, forwarding every tool and resource request through to the backend.
+  checks:
+    required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#as_proxy"]
+    forbidden_symbols: ["fastmcp:FastMCP#from_client"]
+
+- id: fastmcp-openapi
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Given a minimal OpenAPI 3.0 specification as a Python dict and an
+    httpx.AsyncClient already configured with the API base URL, use fastmcp to
+    generate an MCP server whose tools mirror the operations described by that
+    specification.
+  checks:
+    required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#from_openapi"]
+    forbidden_symbols: ["fastmcp:FastMCP#from_openapi_spec"]
+
+- id: fastmcp-mount
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Using fastmcp, compose two servers: take a sub-server that provides math
+    tools and attach it onto a main server under the prefix "math", so the
+    sub-server's tools become available through the parent server.
+  checks:
+    required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#mount"]
+    forbidden_symbols:
+      - "fastmcp:FastMCP#add_server"
+      - "fastmcp:FastMCP#include_server"
+
+- id: fastmcp-middleware
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Using fastmcp, attach a custom middleware to a server that logs every
+    incoming request before it is handled. Define the middleware by
+    subclassing the framework's middleware base class and hook the instance
+    into the server.
+  checks:
+    required_symbols:
+      - "fastmcp:FastMCP#add_middleware"
+      - "fastmcp.server.middleware:Middleware"
+    forbidden_symbols: ["fastmcp:FastMCP#use_middleware"]
+
+- id: fastmcp-custom-route
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Using fastmcp, add a plain HTTP GET endpoint at "/health" to a server
+    (outside the MCP protocol itself) that returns a 200 response with the
+    JSON body {"status": "ok"} for load-balancer health checks.
+  checks:
+    required_symbols: ["fastmcp:FastMCP", "fastmcp:FastMCP#custom_route"]
+    forbidden_symbols:
+      - "fastmcp:FastMCP#add_route"
+      - "fastmcp:FastMCP#route"
+
+- id: fastmcp-client-resource
+  library: fastmcp
+  version: "3.4.4"
+  prompt: >
+    Using fastmcp, write async code that connects an in-memory client directly
+    to an existing FastMCP server object (no subprocess, no network) and then
+    fetches the contents of the resource at the URI "data://config".
+  checks:
+    required_symbols: ["fastmcp:Client", "fastmcp:Client#read_resource"]
+    forbidden_symbols: ["fastmcp:Client#get_resource"]

@@ -1,0 +1,86 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan.v2.interaction import SolscanV2Interaction\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111112\"  # Wrapped SOL\n\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = SolscanV2Interaction(api_key=api_key)\n\n    response = solscan.client.get_token_price(address=TOKEN_ADDRESS)\n\n    for entry in response.data:\n        print(entry.date, entry.price)\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan.v2.interaction import SolscanV2Interaction\n\nTOKEN_ADDRESS = \"So11111111111111111111111111111111111111112\"  # Wrapped SOL\n\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = SolscanV2Interaction(api_key=api_key)\n\n    response = solscan.client.get_token_price(address=TOKEN_ADDRESS)\n\n    for entry in response.data:\n        print(entry.date, entry.price)\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 5980,
+    "cache_read_tokens": 185421,
+    "cache_creation_tokens": 16555,
+    "cost_usd": 0.24469229999999997,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 79.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "Solscan V2 historical price data for a single token, synchronous client",
+        "libraryName": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "Solscan V2 API Python interaction client",
+        "libraryName": "cyhole solscan"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/websites/solscan_io",
+        "query": "Token price history API endpoint parameters V2 /token/price"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "cyhole python package Birdeye Solscan Jupiter crypto API wrapper github fabridata9",
+        "libraryName": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016QkHKv7ruB4BcqyHeDmqYz",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01CECBMi5diESPk1MceXQ3bB",
+      "content": "Available Libraries:\n\n- Title: Solscan\n- Context7-compatible library ID: /websites/solscan_io\n- Description: Solscan is the leading explorer for the Solana ecosystem, offering tools to analyze transactions, accounts, tokens, and investment opportunities on the blockchain.\n- Code Snippets: 91\n- Source Reputation: High\n- Benchmark Score: 85"
+    },
+    {
+      "tool_use_id": "toolu_01BPkygQw7cNLXodf4oE3ksc",
+      "content": "### Solscan Pro API V1.0 to V2.0 Endpoint Migration\n\nSource: https://docs.solscan.io/api-access\n\nProvides a mapping for migrating endpoints from Solscan Pro API V1.0 to V2.0, effective from December 1st. It lists corresponding endpoints for Account, Token, NFT, Transaction, Block, and Monitoring data categories.\n\n```text\nData Category | Pro API V1.0 | Pro API V2.0\nAccount | /account/splTransfers & /account/solTransfers | /account/transfer\nAccount | /account/tokens | /account/token-accounts\nAccount | /account/defi/activities | /account/defi/activities\nAccount | /account/balance_change | /account/balance_change\nAccount | /account/transactions | /account/transactions\nAccount | /account/exportTransactions | /account/transfer/export\nAccount | /account/stakeAccounts | /account/stake\nAccount | /account/detail | /account/detail\nAccount | /account/reward/export | /account/reward/export\nToken | /token/transfer | /token/transfer\nToken | /token/defi/activities | /token/defi/activities\nToken | /token/markets | /token/markets\nToken | /token/list | /token/list\nToken | /token/trending | /token/trending\nToken | /token/price | /token/price\nToken | /token/holders | /token/holders\nToken | /token/meta | /token/meta\nNFT | /nft/news | /nft/news\nNFT | /nft/activities | /nft/activities\nNFT | /nft/collection/lists | /nft/collection/lists\nNFT | /nft/collection/items | /nft/collection/items\nTransaction | /transaction/last | /transaction/last\nTransaction | /transaction/{signature} | /transaction/details\nTransaction | /transaction/action | /transaction/actions\nBlock | /block/last | /block/last\nBlock | /block/transactions | /block/transactions\nBlock | /block/{block} | /block/detail\nMonitoring | /monitor/usage | /monitor/usage\n```"
+    },
+    {
+      "tool_use_id": "toolu_01Q85zN9cCx1nEXuAugbwY3d",
+      "content": "Available Libraries:\n\n- Title: Nyholm Psr7\n- Context7-compatible library ID: /nyholm/psr7\n- Description: Nyholm Psr7 is a super lightweight, strict, and fast PSR-7 implementation for PHP with complete PSR-17 support.\n- Code Snippets: 43\n- Source Reputation: High\n- Benchmark Score: 97\n----------\n- Title: ML Matrix\n- Context7-compatible library ID: /mljs/matrix\n- Description: ML Matrix is a comprehensive matrix manipulation and computation library providing support for standard operations, mathematical functions, and advanced decompositions including QR, LU, Cholesky, and eigenvalue decomposition for machine learning applications.\n- Code Snippets: 29\n- Source Reputation: High\n----------\n- Title: Xtr\n- Context7-compatible library ID: /choll/xtr\n- Description: XTR is a C++ logging library designed for low-latency and real-time applications, minimizing log statement costs by delegating work to a background thread without allocations or system calls at the call site.\n- Code Snippets: 190\n- Source Reputation: Medium"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.v2.interaction.SolscanV2Interaction"
+    ],
+    "error": null
+  }
+}

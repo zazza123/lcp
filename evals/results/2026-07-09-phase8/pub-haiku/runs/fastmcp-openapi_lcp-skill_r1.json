@@ -1,0 +1,130 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp.server import FastMCP\nimport httpx\n\n\nasync def create_openapi_mcp_server(\n    openapi_spec: dict,\n    client: httpx.AsyncClient\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 specification.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dict\n        client: Configured httpx.AsyncClient with the API base URL\n    \n    Returns:\n        FastMCP server instance with tools mirroring the OpenAPI operations\n    \"\"\"\n    server = FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        validate_output=True\n    )\n    return server",
+  "result_text": "```python\nfrom fastmcp.server import FastMCP\nimport httpx\n\n\nasync def create_openapi_mcp_server(\n    openapi_spec: dict,\n    client: httpx.AsyncClient\n) -> FastMCP:\n    \"\"\"\n    Generate an MCP server from an OpenAPI 3.0 specification.\n    \n    Args:\n        openapi_spec: OpenAPI 3.0 specification as a Python dict\n        client: Configured httpx.AsyncClient with the API base URL\n    \n    Returns:\n        FastMCP server instance with tools mirroring the OpenAPI operations\n    \"\"\"\n    server = FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        validate_output=True\n    )\n    return server\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 1868,
+    "cache_read_tokens": 258025,
+    "cache_creation_tokens": 19290,
+    "cost_usd": 0.0738135,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 38.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.tools:tool"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#from_openapi"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01UYaRkYuJTEb6Uc67tudeUR",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01BhFGBsTzRCVjQhsVSXYn5z",
+      "content": "{\"results\":[{\"id\":\"fastmcp.cli.client:DiscoveredServer\",\"kind\":\"class\",\"summary\":\"A single MCP server found in an editor or project config.\",\"import\":\"from fastmcp.cli.client import DiscoveredServer\",\"resolved_via_alias\":\"fastmcp.cli.discovery:DiscoveredServer\"},{\"id\":\"fastmcp.cli.discovery:RemoteMCPServer\",\"kind\":\"class\",\"summary\":\"MCP server configuration for HTTP/SSE transport.\",\"import\":\"from fastmcp.cli.discovery import RemoteMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:RemoteMCPServer\"},{\"id\":\"fastmcp.cli.discovery:StdioMCPServer\",\"kind\":\"class\",\"summary\":\"MCP server configuration for stdio transport.\",\"import\":\"from fastmcp.cli.discovery import StdioMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:StdioMCPServer\"},{\"id\":\"fastmcp.client.transports.config:TransformingRemoteMCPServer\",\"kind\":\"class\",\"summary\":\"A Remote server with tool transforms.\",\"import\":\"from fastmcp.client.transports.config import TransformingRemoteMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:TransformingRemoteMCPServer\"},{\"id\":\"fastmcp.client.transports.config:TransformingStdioMCPServer\",\"kind\":\"class\",\"summary\":\"A Stdio server with tool transforms.\",\"import\":\"from fastmcp.client.transports.config import TransformingStdioMCPServer\",\"resolved_via_alias\":\"fastmcp.mcp_config:TransformingStdioMCPServer\"},{\"id\":\"fastmcp.server.server:LowLevelServer\",\"kind\":\"class\",\"summary\":\"Class LowLevelServer\",\"import\":\"from fastmcp.server.server import LowLevelServer\",\"resolved_via_alias\":\"fastmcp.server.low_level:LowLevelServer\"},{\"id\":\"fastmcp.server.context:MiddlewareServerSession\",\"kind\":\"class\",\"summary\":\"ServerSession that routes initialization requests through FastMCP middleware.\",\"import\":\"from fastmcp.server.context import MiddlewareServerSession\",\"resolved_via_alias\":\"fastmcp.server.low_level:MiddlewareServerSession\"},{\"id\":\"fastmcp.cli.cli:MCPServerConfig\",\"kind\":\"class\",\"summary\":\"Configuration for a FastMCP server.\",\"import\":\"from fastmcp.cli.cli import MCPServerConfig\",\"resolv"
+    },
+    {
+      "tool_use_id": "toolu_01AUhN6dUG8AfqKrJSHMMiJs",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.app:FastMCPApp#tool\",\"kind\":\"method\",\"summary\":\"Register a backend tool that the UI calls via CallTool.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp#tool\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#tool\"},{\"id\":\"fastmcp.server.providers:FileSystemProvider#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server.providers import FileSystemProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.filesystem:FileSystemProvider#tool\"},{\"id\":\"fastmcp.server.providers.local_provider.decorators:ToolDecoratorMixin#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server.providers.local_provider.decorators import ToolDecoratorMixin\",\"resolved_via_alias\":\"fastmcp.server.providers.local_provider.decorators.tools:ToolDecoratorMixin#tool\"},{\"id\":\"fastmcp.server.server:LocalProvider#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server.server import LocalProvider\",\"resolved_via_alias\":\"fastmcp.server.providers.local_provider.local_provider:LocalProvider#tool\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#tool\"},{\"id\":\"fastmcp.server:FastMCP#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#tool\"},{\"id\":\"fastmcp.tools:Tool\",\"kind\":\"class\",\"summary\":\"Internal tool registration info.\",\"import\":\"from fastmcp.tools import Tool\",\"resolved_via_alias\":\"fastmcp.tools.base:Tool\"},{\"id\":\"fastmcp.tools:tool\","
+    },
+    {
+      "tool_use_id": "toolu_01KBE5N5XTR5sc6xH7VByXrH",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.example:FastMCP\",\"fastmcp.contrib.component_manager.component_manager:FastMCP\",\"fastmcp.contrib.component_manager.example:FastMCP\",\"fastmcp.contrib.mcp_mixin.example:FastMCP\",\"fastmcp.server.context:FastMCP\",\"fastmcp.server.providers.proxy:FastMCP\",\"fastmcp.server:FastMCP\",\"fastmcp.utilities.inspect:FastMCP\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"instructions\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"version\",\"type\":\"str | int | float | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"website_url\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"list[mcp.types.Icon] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"AuthProvider | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"middleware\",\"type\":\"Sequence[Middleware] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"providers\",\"type\":\"Sequence[Provider] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"transforms\",\"type\":\"Sequence[Transform] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lifespan\",\"type\":\"LifespanCallable | Lifespan | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tools\",\"type\":\"Sequence[Tool | Callable[..., Any]] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"on_duplicate\",\"type\":\"DuplicateBehavior | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"mask_error_details\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dereference_schemas\",\"type\":\"bool\""
+    },
+    {
+      "tool_use_id": "toolu_01PZJwkTcmJ2hTmiYN2JWPQ2",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"openapi_spec\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"OpenAPI schema as a dictionary\"},{\"name\":\"client\",\"type\":\"httpx.AsyncClient | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional httpx AsyncClient for making HTTP requests.\\nIf not provided, a default client is created using the first\\nserver URL from the OpenAPI spec with a 30-second timeout.\"},{\"name\":\"name\",\"type\":\"str\",\"required\":false,\"default\":\"OpenAPI Server\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Name for the MCP server\"},{\"name\":\"route_maps\",\"type\":\"list[RouteMap] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional list of RouteMap objects defining route mappings\"},{\"name\":\"route_map_fn\",\"type\":\"OpenAPIRouteMapFn | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional callable for advanced route type mapping\"},{\"name\":\"mcp_component_fn\",\"type\":\"OpenAPIComponentFn | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional callable for component customization\"},{\"name\":\"mcp_names\",\"type\":\"dict[str, str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional dictionary mapping operationId to component names\"},{\"name\":\"tags\",\"type\":\"set[str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional set of tags to add to all components\"},{\"name\":\"validate_output\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"If True (default), tools use the output schema\\nextracted from the OpenAPI spec for response validation. If\\nFalse, a permissive schema is used instead, allowing any\\nresponse structure while still returning structured JSON.\"},{\"name\":\"settings\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#from_openapi"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

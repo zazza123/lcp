@@ -1,0 +1,42 @@
+{
+  "case_id": "cyhole-solscan-token-price",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole.solscan import SolscanClient\n\napi_key = os.getenv(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\nclient = SolscanClient(api_key=api_key)\ntoken_address = \"EPjFWaLb3odcccccccccccccccccccccccccccccccccc\"\n\nprice_history = client.get_price_history(token_address)\nprint(price_history)",
+  "result_text": "```python\nimport os\nfrom cyhole.solscan import SolscanClient\n\napi_key = os.getenv(\"SOLSCAN_API_KEY\")\nif not api_key:\n    raise ValueError(\"SOLSCAN_API_KEY environment variable not set\")\n\nclient = SolscanClient(api_key=api_key)\ntoken_address = \"EPjFWaLb3odcccccccccccccccccccccccccccccccccc\"\n\nprice_history = client.get_price_history(token_address)\nprint(price_history)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 1941,
+    "cache_read_tokens": 44136,
+    "cache_creation_tokens": 1397,
+    "cost_usd": 0.016929600000000003,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 32.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "cyhole solscan price history",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan",
+      "cyhole.solscan.v2.client:SolscanClient#get_token_price"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.SolscanClient"
+    ],
+    "error": null
+  }
+}

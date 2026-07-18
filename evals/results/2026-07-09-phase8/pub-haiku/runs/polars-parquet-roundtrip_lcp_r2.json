@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"salary\": [50000.0, 60000.0, 75000.0]\n})\n\nprint(\"Original DataFrame:\")\nprint(df)\n\n# Serialize to Parquet in memory (bytes buffer)\nbuffer = BytesIO()\ndf.write_parquet(buffer)\n\n# Get the binary data\nparquet_bytes = buffer.getvalue()\nprint(f\"\\nSerialized to {len(parquet_bytes)} bytes\")\n\n# Read back from the binary data\nbuffer.seek(0)  # Reset buffer position\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Confirm the round trip\nassert df.frame_equal(df_restored), \"DataFrames do not match!\"\nprint(\"\\n\u2713 Round trip successful - DataFrames match!\")",
+  "result_text": "```python\nimport polars as pl\nfrom io import BytesIO\n\n# Create a sample DataFrame\ndf = pl.DataFrame({\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"age\": [25, 30, 35],\n    \"salary\": [50000.0, 60000.0, 75000.0]\n})\n\nprint(\"Original DataFrame:\")\nprint(df)\n\n# Serialize to Parquet in memory (bytes buffer)\nbuffer = BytesIO()\ndf.write_parquet(buffer)\n\n# Get the binary data\nparquet_bytes = buffer.getvalue()\nprint(f\"\\nSerialized to {len(parquet_bytes)} bytes\")\n\n# Read back from the binary data\nbuffer.seek(0)  # Reset buffer position\ndf_restored = pl.read_parquet(buffer)\n\nprint(\"\\nRestored DataFrame:\")\nprint(df_restored)\n\n# Confirm the round trip\nassert df.frame_equal(df_restored), \"DataFrames do not match!\"\nprint(\"\\n\u2713 Round trip successful - DataFrames match!\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 782,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6917,
+    "cost_usd": 0.019272200000000003,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "case_id": "hamana-typed-column-schema",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query, IntColumn, StringColumn, DateColumn\n\nquery = Query(\n    sql=\"SELECT id, name, created_at FROM users\",\n    schema={\n        \"id\": IntColumn(),\n        \"name\": StringColumn(),\n        \"created_at\": DateColumn()\n    }\n)",
+  "result_text": "```python\nfrom hamana import Query, IntColumn, StringColumn, DateColumn\n\nquery = Query(\n    sql=\"SELECT id, name, created_at FROM users\",\n    schema={\n        \"id\": IntColumn(),\n        \"name\": StringColumn(),\n        \"created_at\": DateColumn()\n    }\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 45,
+    "output_tokens": 1404,
+    "cache_read_tokens": 124479,
+    "cache_creation_tokens": 5618,
+    "cost_usd": 0.030748900000000003,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 41.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 documentation library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Query column schema typed columns"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana Python",
+        "query": "hamana Python database query column schema"
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana Query class column"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_017yqxHJRF89KrRWfZfAEQrK",
+      "content": "Available Libraries:\n\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_01BBa1yb5z5x37P5CvyqDpRq",
+      "content": "Available Libraries:\n\n- Title: Python\n- Context7-compatible library ID: /python/cpython\n- Description: The Python programming language\n- Code Snippets: 46700\n- Source Reputation: High\n- Benchmark Score: 79.37\n- Versions: v3.9.22, v3.11.14, v3.13.9\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/python_3\n- Description: Python is a high-level, interpreted programming language emphasizing code readability and simplicity, with extensive standard library support and versatile use cases.\n- Code Snippets: 37695\n- Source Reputation: High\n- Benchmark Score: 69.75\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/devdocs_io_python_3_14\n- Description: Python is a high-level, interpreted programming language known for its simple syntax and versatile applications in web development, data science, automation, and scientific computing.\n- Code Snippets: 24206\n- Source Reputation: High\n- Benchmark Score: 70.34\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/python_3_10\n- Description: Python is a high-level, interpreted programming language that emphasizes readability and developer productivity, offering dynamic typing, a comprehensive standard library, and a broad ecosystem for web development, scripting, automation, and data science.\n- Code Snippets: 29392\n- Source Reputation: High\n- Benchmark Score: 70.12\n----------\n- Title: Python\n- Context7-compatible library ID: /websites/python_3_16\n- Description: Python is a high-level, interpreted programming language widely used for web development, data analysis, artificial intelligence, and scientific computing.\n- Code Snippets: 28483\n- Source Reputation: High\n- Benchmark Score: 68.5"
+    },
+    {
+      "tool_use_id": "toolu_01TVVjLbz2qhRgPGqoaJLWkS",
+      "content": "Available Libraries:\n\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "hamana.core.column:IntegerColumn",
+      "hamana.core.column:StringColumn"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.DateColumn",
+      "hamana.IntColumn",
+      "hamana.StringColumn"
+    ],
+    "error": null
+  }
+}

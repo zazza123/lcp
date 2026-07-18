@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\nimport cyclopts\nfrom pathlib import Path\nimport sys\n\ntry:\n    import tomllib\nexcept ImportError:\n    import tomli as tomllib\n\n\ndef load_config() -> dict:\n    \"\"\"Load [tool.mycli] from pyproject.toml in current directory.\"\"\"\n    config_file = Path.cwd() / \"pyproject.toml\"\n    if not config_file.exists():\n        return {}\n    \n    with open(config_file, \"rb\") as f:\n        data = tomllib.load(f)\n    \n    return data.get(\"tool\", {}).get(\"mycli\", {})\n\n\n# Load configuration at module initialization\n_config = load_config()\n\n# Create CLI app with TOML-based defaults\napp = cyclopts.App()\n\n\n@app.default\ndef main(\n    name: str = _config.get(\"name\", \"World\"),\n    count: int = _config.get(\"count\", 1),\n    verbose: bool = _config.get(\"verbose\", False),\n) -> None:\n    \"\"\"\n    Greet someone with configurable options.\n    \n    Configuration can be set in [tool.mycli] section of pyproject.toml:\n        [tool.mycli]\n        name = \"Alice\"\n        count = 3\n        verbose = true\n    \n    Command-line arguments override configuration file values.\n    \"\"\"\n    for _ in range(count):\n        message = f\"Hello, {name}!\"\n        if verbose:\n            print(f\"[VERBOSE] {message}\")\n        else:\n            print(message)\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\nimport cyclopts\nfrom pathlib import Path\nimport sys\n\ntry:\n    import tomllib\nexcept ImportError:\n    import tomli as tomllib\n\n\ndef load_config() -> dict:\n    \"\"\"Load [tool.mycli] from pyproject.toml in current directory.\"\"\"\n    config_file = Path.cwd() / \"pyproject.toml\"\n    if not config_file.exists():\n        return {}\n    \n    with open(config_file, \"rb\") as f:\n        data = tomllib.load(f)\n    \n    return data.get(\"tool\", {}).get(\"mycli\", {})\n\n\n# Load configuration at module initialization\n_config = load_config()\n\n# Create CLI app with TOML-based defaults\napp = cyclopts.App()\n\n\n@app.default\ndef main(\n    name: str = _config.get(\"name\", \"World\"),\n    count: int = _config.get(\"count\", 1),\n    verbose: bool = _config.get(\"verbose\", False),\n) -> None:\n    \"\"\"\n    Greet someone with configurable options.\n    \n    Configuration can be set in [tool.mycli] section of pyproject.toml:\n        [tool.mycli]\n        name = \"Alice\"\n        count = 3\n        verbose = true\n    \n    Command-line arguments override configuration file values.\n    \"\"\"\n    for _ in range(count):\n        message = f\"Hello, {name}!\"\n        if verbose:\n            print(f\"[VERBOSE] {message}\")\n        else:\n            print(message)\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3694,
+    "cache_read_tokens": 22094,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0206884,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 40.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

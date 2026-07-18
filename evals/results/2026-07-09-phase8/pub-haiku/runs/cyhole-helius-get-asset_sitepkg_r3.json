@@ -1,0 +1,55 @@
+{
+  "case_id": "cyhole-helius-get-asset",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport json\nfrom cyhole import Helius\n\n# Read API key from environment\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n\n# Initialize Helius client\nclient = Helius(api_key)\n\n# Asset ID to fetch metadata for\nasset_id = \"YOUR_ASSET_ID\"\n\n# Fetch DAS metadata\nresult = client.connection.get_asset(asset_id)\n\n# Print the result\nprint(json.dumps(result, indent=2))",
+  "result_text": "```python\nimport os\nimport json\nfrom cyhole import Helius\n\n# Read API key from environment\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n\n# Initialize Helius client\nclient = Helius(api_key)\n\n# Asset ID to fetch metadata for\nasset_id = \"YOUR_ASSET_ID\"\n\n# Fetch DAS metadata\nresult = client.connection.get_asset(asset_id)\n\n# Print the result\nprint(json.dumps(result, indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 980,
+    "cache_read_tokens": 72873,
+    "cache_creation_tokens": 778,
+    "cost_usd": 0.0137683,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 15.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole*"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/.venv*/lib/*/site-packages/cyhole*"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.helius.interaction:Helius",
+      "cyhole.helius.client:HeliusClient#post_get_asset"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_asset"
+    ],
+    "unresolved_usages": [
+      "cyhole.Helius"
+    ],
+    "error": null
+  }
+}

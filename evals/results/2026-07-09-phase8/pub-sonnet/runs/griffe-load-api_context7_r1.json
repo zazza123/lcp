@@ -1,0 +1,60 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\n# Load the full API model for the \"requests\" package using griffe's\n# module-level convenience entry point.\npackage = griffe.load(\"requests\")\n\n# Print the names of all public, top-level functions.\nfor name, member in sorted(package.functions.items()):\n    if member.is_public:\n        print(name)",
+  "result_text": "```python\nimport griffe\n\n# Load the full API model for the \"requests\" package using griffe's\n# module-level convenience entry point.\npackage = griffe.load(\"requests\")\n\n# Print the names of all public, top-level functions.\nfor name, member in sorted(package.functions.items()):\n    if member.is_public:\n        print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 935,
+    "cache_read_tokens": 123403,
+    "cache_creation_tokens": 16340,
+    "cost_usd": 0.1491099,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 25.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "griffe",
+        "query": "load package API model with module-level convenience function"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/mkdocstrings/griffe",
+        "query": "load module-level convenience function griffe.load to get functions and modules from a package"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01BV1TbVX1L2FWR7cFWxJEMX",
+      "content": "Available Libraries:\n\n- Title: Griffe\n- Context7-compatible library ID: /mkdocstrings/griffe\n- Description: Griffe extracts the structure and signatures of entire Python programs to generate API documentation and detect breaking changes in your API.\n- Code Snippets: 769\n- Source Reputation: High\n- Benchmark Score: 67.91"
+    },
+    {
+      "tool_use_id": "toolu_01RraTio3Ef8uLxoSP8e6qEL",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

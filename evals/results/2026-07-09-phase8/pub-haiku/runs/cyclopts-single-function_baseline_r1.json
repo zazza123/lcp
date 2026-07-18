@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-single-function",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\n\ndef greet(name: str, excited: bool = False):\n    if excited:\n        print(f\"Hello, {name}!\")\n    else:\n        print(f\"Hello, {name}.\")\n\nif __name__ == \"__main__\":\n    App(greet)()",
+  "result_text": "```python\nfrom cyclopts import App\n\ndef greet(name: str, excited: bool = False):\n    if excited:\n        print(f\"Hello, {name}!\")\n    else:\n        print(f\"Hello, {name}.\")\n\nif __name__ == \"__main__\":\n    App(greet)()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3004,
+    "cache_read_tokens": 15189,
+    "cache_creation_tokens": 6833,
+    "cost_usd": 0.030213900000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 37.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts:run"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

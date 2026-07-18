@@ -1,0 +1,52 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": null,
+  "result_text": "I can't verify this. I don't have reliable knowledge of a Python library called `hamana` (with a Teradata connector) \u2014 it's not something in my training data, and my usual way of checking current library APIs (context7) just returned \"quota exceeded\" rather than any actual documentation for it.\n\nGiven that, I'm not going to write a code block for it: doing so would mean guessing at class/method names (e.g. plausible-sounding things like `hamana.TeradataConnector(host=..., user=..., password=...)` and a `.test_connection()`/`.ping()` method) and presenting them as if they were real, verified API calls. If `hamana` isn't actually a package with that surface, that code would silently fail or \u2014 worse \u2014 look correct and mislead you.\n\nCould you confirm one of these so I can get you accurate code?\n- A link to `hamana`'s PyPI page or docs (or paste the relevant API section, e.g. the connector class/method signatures)\n- Whether you might mean an existing, known Teradata connector instead (`teradatasql`, `teradatasqlalchemy`, or `giraffez`) \u2014 I do know those APIs and can write the snippet immediately\n- If `hamana` is a package specific to your organization, its README or docstrings\n\nOnce I can see the actual API (or you confirm the intended library), I'll produce the single fenced code block as requested.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 2152,
+    "cache_read_tokens": 83902,
+    "cache_creation_tokens": 12622,
+    "cost_usd": 0.1332006,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 31.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "Teradata connector: open connection with host, user, password; verify connectivity",
+        "libraryName": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Fu2HaVvTHN93jaKPLpm6mQ",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Teradata",
+      "hamana.connector.db.teradata:TeradataConnector#ping"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

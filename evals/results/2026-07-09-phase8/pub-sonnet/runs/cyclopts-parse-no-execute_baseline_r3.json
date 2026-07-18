@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-parse-no-execute",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import cyclopts\n\napp = cyclopts.App()\n\n\n@app.command\ndef add(a: int, b: int):\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\n@app.command\ndef sub(a: int, b: int):\n    \"\"\"Subtract two numbers.\"\"\"\n    return a - b\n\n\ntokens = [\"add\", \"2\", \"3\"]\n\n# parse_args resolves the command and binds arguments WITHOUT executing it.\ncommand, bound, unused_tokens = app.parse_args(tokens, exit_on_error=False)\n\nprint(\"Command function name:\", command.__name__)\nprint(\"Bound arguments:\", dict(bound.arguments))",
+  "result_text": "```python\nimport cyclopts\n\napp = cyclopts.App()\n\n\n@app.command\ndef add(a: int, b: int):\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\n@app.command\ndef sub(a: int, b: int):\n    \"\"\"Subtract two numbers.\"\"\"\n    return a - b\n\n\ntokens = [\"add\", \"2\", \"3\"]\n\n# parse_args resolves the command and binds arguments WITHOUT executing it.\ncommand, bound, unused_tokens = app.parse_args(tokens, exit_on_error=False)\n\nprint(\"Command function name:\", command.__name__)\nprint(\"Bound arguments:\", dict(bound.arguments))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1317,
+    "cache_read_tokens": 30179,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0288147,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

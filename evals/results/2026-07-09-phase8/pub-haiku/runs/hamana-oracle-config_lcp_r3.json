@@ -1,0 +1,35 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom hamana.oracle import OracleConfig, OracleConnector\n\nconfig = OracleConfig(\n    user=\"user\",\n    password=os.getenv(\"ORACLE_PASSWORD\"),\n    host=\"host\",\n    service_name=\"service_name\"\n)\n\nconnector = OracleConnector(config)\nresult = connector.execute(\"SELECT sysdate FROM dual\")\nprint(result)",
+  "result_text": "```python\nimport os\nfrom hamana.oracle import OracleConfig, OracleConnector\n\nconfig = OracleConfig(\n    user=\"user\",\n    password=os.getenv(\"ORACLE_PASSWORD\"),\n    host=\"host\",\n    service_name=\"service_name\"\n)\n\nconnector = OracleConnector(config)\nresult = connector.execute(\"SELECT sysdate FROM dual\")\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2449,
+    "cache_read_tokens": 22136,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014467599999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "hamana.connector.db:Oracle",
+      "hamana.connector.db.oracle:OracleConnector#create_config"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.oracle.OracleConfig",
+      "hamana.oracle.OracleConnector"
+    ],
+    "error": null
+  }
+}

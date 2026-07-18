@@ -1,0 +1,35 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import subprocess\nimport tempfile\nfrom pathlib import Path\nfrom griffe.loader import GriffeLoader\nfrom griffe.diff import get_full_diff\n\n# Get git repository root\ngit_root = subprocess.run(\n    [\"git\", \"rev-parse\", \"--show-toplevel\"],\n    capture_output=True,\n    text=True,\n    check=True\n).stdout.strip()\n\n# Create temporary directory for checkout\nwith tempfile.TemporaryDirectory() as tmpdir:\n    repo_checkout = Path(tmpdir) / \"repo\"\n    \n    # Clone repository to temp location\n    subprocess.run(\n        [\"git\", \"clone\", git_root, str(repo_checkout)],\n        check=True,\n        capture_output=True\n    )\n    \n    # Load at v1.0.0\n    subprocess.run(\n        [\"git\", \"checkout\", \"v1.0.0\"],\n        cwd=str(repo_checkout),\n        check=True,\n        capture_output=True\n    )\n    loader_old = GriffeLoader(search_paths=[str(repo_checkout)])\n    old_pkg = loader_old.load(\"mypkg\")\n    \n    # Load at HEAD\n    subprocess.run(\n        [\"git\", \"checkout\", \"HEAD\"],\n        cwd=str(repo_checkout),\n        check=True,\n        capture_output=True\n    )\n    loader_new = GriffeLoader(search_paths=[str(repo_checkout)])\n    new_pkg = loader_new.load(\"mypkg\")\n    \n    # Get full diff and print breakages\n    diff = get_full_diff(old_pkg, new_pkg)\n    for breakage in diff.breakages:\n        print(breakage)",
+  "result_text": "```python\nimport subprocess\nimport tempfile\nfrom pathlib import Path\nfrom griffe.loader import GriffeLoader\nfrom griffe.diff import get_full_diff\n\n# Get git repository root\ngit_root = subprocess.run(\n    [\"git\", \"rev-parse\", \"--show-toplevel\"],\n    capture_output=True,\n    text=True,\n    check=True\n).stdout.strip()\n\n# Create temporary directory for checkout\nwith tempfile.TemporaryDirectory() as tmpdir:\n    repo_checkout = Path(tmpdir) / \"repo\"\n    \n    # Clone repository to temp location\n    subprocess.run(\n        [\"git\", \"clone\", git_root, str(repo_checkout)],\n        check=True,\n        capture_output=True\n    )\n    \n    # Load at v1.0.0\n    subprocess.run(\n        [\"git\", \"checkout\", \"v1.0.0\"],\n        cwd=str(repo_checkout),\n        check=True,\n        capture_output=True\n    )\n    loader_old = GriffeLoader(search_paths=[str(repo_checkout)])\n    old_pkg = loader_old.load(\"mypkg\")\n    \n    # Load at HEAD\n    subprocess.run(\n        [\"git\", \"checkout\", \"HEAD\"],\n        cwd=str(repo_checkout),\n        check=True,\n        capture_output=True\n    )\n    loader_new = GriffeLoader(search_paths=[str(repo_checkout)])\n    new_pkg = loader_new.load(\"mypkg\")\n    \n    # Get full diff and print breakages\n    diff = get_full_diff(old_pkg, new_pkg)\n    for breakage in diff.breakages:\n        print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5869,
+    "cache_read_tokens": 22042,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.031558199999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 53.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:load_git",
+      "griffe:find_breaking_changes"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.diff.get_full_diff",
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

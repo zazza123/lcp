@@ -1,0 +1,31 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import griffe\nfrom griffe.dataclasses import Function\n\n# Load the requests package using the module-level convenience entry point\nrequests_api = griffe.load(\"requests\")\n\n# Get all public top-level functions\npublic_functions = [\n    name for name, member in requests_api.members.items()\n    if not name.startswith(\"_\") and isinstance(member, Function)\n]\n\n# Print the names\nfor name in sorted(public_functions):\n    print(name)",
+  "result_text": "```python\nimport griffe\nfrom griffe.dataclasses import Function\n\n# Load the requests package using the module-level convenience entry point\nrequests_api = griffe.load(\"requests\")\n\n# Get all public top-level functions\npublic_functions = [\n    name for name, member in requests_api.members.items()\n    if not name.startswith(\"_\") and isinstance(member, Function)\n]\n\n# Print the names\nfor name in sorted(public_functions):\n    print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 871,
+    "cache_read_tokens": 22074,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.006571400000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.dataclasses.Function"
+    ],
+    "error": null
+  }
+}

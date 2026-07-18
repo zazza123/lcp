@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nfrom fastapi import FastAPI\nfrom fastapi.responses import JSONResponse\nimport uvicorn\n\napp = FastAPI()\n\nserver = Server(\"my-mcp-server\")\n\n@app.get(\"/health\")\nasync def health():\n    return JSONResponse({\"status\": \"ok\"}, status_code=200)\n\n@server.tool()\ndef example_tool(input: str) -> str:\n    \"\"\"Example MCP tool\"\"\"\n    return f\"Received: {input}\"\n\nif __name__ == \"__main__\":\n    uvicorn.run(app, host=\"0.0.0.0\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import Server\nfrom fastapi import FastAPI\nfrom fastapi.responses import JSONResponse\nimport uvicorn\n\napp = FastAPI()\n\nserver = Server(\"my-mcp-server\")\n\n@app.get(\"/health\")\nasync def health():\n    return JSONResponse({\"status\": \"ok\"}, status_code=200)\n\n@server.tool()\ndef example_tool(input: str) -> str:\n    \"\"\"Example MCP tool\"\"\"\n    return f\"Received: {input}\"\n\nif __name__ == \"__main__\":\n    uvicorn.run(app, host=\"0.0.0.0\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4279,
+    "cache_read_tokens": 24093,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.023813299999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 32.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#custom_route"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.video import frame_iterator\n\n# Get the existing videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that expands each video into one row per frame at 1 fps\nframes_view = pxt.create_view(\n    'frames_1fps',\n    videos,\n    iterator=frame_iterator(videos.video, fps=1.0)\n)\n\nprint(frames_view.collect())",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.functions.video import frame_iterator\n\n# Get the existing videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that expands each video into one row per frame at 1 fps\nframes_view = pxt.create_view(\n    'frames_1fps',\n    videos,\n    iterator=frame_iterator(videos.video, fps=1.0)\n)\n\nprint(frames_view.collect())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 41,
+    "output_tokens": 3020,
+    "cache_read_tokens": 178412,
+    "cache_creation_tokens": 32842,
+    "cost_usd": 0.09866620000000001,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 38.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "extract.*frame|frame.*extract",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable",
+        "type": "py",
+        "head_limit": 20
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/functions/video.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def extract_frames|@pxt\\.udf.*iterate|Iterator.*frame",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/functions/video.py",
+        "output_mode": "content",
+        "head_limit": 50
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pixeltable/functions/video.py",
+        "offset": 3010,
+        "limit": 300
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable.iterators:FrameIterator"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

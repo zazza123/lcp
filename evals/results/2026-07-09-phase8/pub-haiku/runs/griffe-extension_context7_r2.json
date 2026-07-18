@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe import load\nfrom griffe.extensions import Extension\n\nclass CheckedExtension(Extension):\n    \"\"\"Extension that appends [checked] to function docstrings.\"\"\"\n    \n    def on_object_collected(self, obj):\n        \"\"\"Called when an object is collected during parsing.\"\"\"\n        if obj.is_function and obj.docstring is not None:\n            obj.docstring.value += \" [checked]\"\n\n# Aggregate extensions as griffe expects (list of Extension instances)\nextensions = [CheckedExtension()]\n\n# Load package through module-level entry point with extension enabled\npackage = load(\"mypkg\", extensions=extensions)\n\n# Display results\nprint(f\"Package loaded: {package.name}\")\nfor symbol_name, symbol_obj in package.members.items():\n    if symbol_obj.is_function and symbol_obj.docstring:\n        print(f\"{symbol_name}: {symbol_obj.docstring.value}\")",
+  "result_text": "```python\nfrom griffe import load\nfrom griffe.extensions import Extension\n\nclass CheckedExtension(Extension):\n    \"\"\"Extension that appends [checked] to function docstrings.\"\"\"\n    \n    def on_object_collected(self, obj):\n        \"\"\"Called when an object is collected during parsing.\"\"\"\n        if obj.is_function and obj.docstring is not None:\n            obj.docstring.value += \" [checked]\"\n\n# Aggregate extensions as griffe expects (list of Extension instances)\nextensions = [CheckedExtension()]\n\n# Load package through module-level entry point with extension enabled\npackage = load(\"mypkg\", extensions=extensions)\n\n# Display results\nprint(f\"Package loaded: {package.name}\")\nfor symbol_name, symbol_obj in package.members.items():\n    if symbol_obj.is_function and symbol_obj.docstring:\n        print(f\"{symbol_name}: {symbol_obj.docstring.value}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4323,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6937,
+    "cost_usd": 0.0370126,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 44.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

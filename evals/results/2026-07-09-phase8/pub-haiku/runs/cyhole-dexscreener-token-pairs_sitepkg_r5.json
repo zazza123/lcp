@@ -1,0 +1,60 @@
+{
+  "case_id": "cyhole-dexscreener-token-pairs",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.dex_screener import DexScreener\n\ndex = DexScreener()\nmint_address = \"EPjFWaJy47gHeQZyFeK3KcMA1G2cMSf3mrXRm5Nx2uS\"\nresponse = dex.client.get_token_pairs(\"solana\", mint_address)\nprint(f\"Number of trading pairs: {len(response.root)}\")",
+  "result_text": "```python\nfrom cyhole.dex_screener import DexScreener\n\ndex = DexScreener()\nmint_address = \"EPjFWaJy47gHeQZyFeK3KcMA1G2cMSf3mrXRm5Nx2uS\"\nresponse = dex.client.get_token_pairs(\"solana\", mint_address)\nprint(f\"Number of trading pairs: {len(response.root)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 49,
+    "output_tokens": 1097,
+    "cache_read_tokens": 165252,
+    "cache_creation_tokens": 13275,
+    "cost_usd": 0.048609200000000005,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 20.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/schema.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

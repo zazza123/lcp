@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings.google import Google\n\nraw_docstring = \"\"\"Summary line describing what this function does.\n\nArgs:\n    param1: Description of first parameter.\n    param2: Description of second parameter.\n\nReturns:\n    Description of what is returned.\n\"\"\"\n\n# Create parser and parse the docstring\nparser = Google()\nsections = parser.parse(raw_docstring)\n\n# Print the kind of each parsed section\nfor section in sections:\n    print(f\"Section kind: {section.kind}\")",
+  "result_text": "```python\nfrom griffe.docstrings.google import Google\n\nraw_docstring = \"\"\"Summary line describing what this function does.\n\nArgs:\n    param1: Description of first parameter.\n    param2: Description of second parameter.\n\nReturns:\n    Description of what is returned.\n\"\"\"\n\n# Create parser and parse the docstring\nparser = Google()\nsections = parser.parse(raw_docstring)\n\n# Print the kind of each parsed section\nfor section in sections:\n    print(f\"Section kind: {section.kind}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3248,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6940,
+    "cost_usd": 0.0316436,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 35.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.google.Google"
+    ],
+    "error": null
+  }
+}

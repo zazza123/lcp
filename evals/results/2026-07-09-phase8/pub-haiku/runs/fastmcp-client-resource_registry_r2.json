@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.client import Client\nfrom fastmcp.transport.local import LocalTransport\n\n\nasync def main():\n    # Create server\n    server = FastMCP(\"example-server\")\n    \n    # Register resource handler\n    @server.resource(\"data://config\")\n    def get_config():\n        return \"configuration data\"\n    \n    # Create in-memory transport connecting client to server\n    transport = LocalTransport(server)\n    \n    # Create client and connect to server\n    client = Client(transport)\n    \n    # Fetch resource contents\n    resource = await client.read_resource(\"data://config\")\n    print(resource)\n\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp.server import FastMCP\nfrom fastmcp.client import Client\nfrom fastmcp.transport.local import LocalTransport\n\n\nasync def main():\n    # Create server\n    server = FastMCP(\"example-server\")\n    \n    # Register resource handler\n    @server.resource(\"data://config\")\n    def get_config():\n        return \"configuration data\"\n    \n    # Create in-memory transport connecting client to server\n    transport = LocalTransport(server)\n    \n    # Create client and connect to server\n    client = Client(transport)\n    \n    # Fetch resource contents\n    resource = await client.read_resource(\"data://config\")\n    print(resource)\n\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3804,
+    "cache_read_tokens": 22110,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.021240000000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 40.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.transport.local.LocalTransport"
+    ],
+    "error": null
+  }
+}

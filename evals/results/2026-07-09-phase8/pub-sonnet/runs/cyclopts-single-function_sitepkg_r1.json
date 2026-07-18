@@ -1,0 +1,44 @@
+{
+  "case_id": "cyclopts-single-function",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import cyclopts\n\n\ndef greet(name: str, excited: bool = False):\n    print(f\"Hello, {name}{'!' if excited else '.'}\")\n\n\nif __name__ == \"__main__\":\n    cyclopts.run(greet)",
+  "result_text": "Confirmed: `cyclopts.run()` is the minimal entry point that avoids explicitly constructing an `App`.\n\n```python\nimport cyclopts\n\n\ndef greet(name: str, excited: bool = False):\n    print(f\"Hello, {name}{'!' if excited else '.'}\")\n\n\nif __name__ == \"__main__\":\n    cyclopts.run(greet)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 636,
+    "cache_read_tokens": 89667,
+    "cache_creation_tokens": 12056,
+    "cost_usd": 0.10879409999999998,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 13.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def run|^class App|def run\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/_run.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "case_id": "narwhals-lazy-parquet",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\nlazy_frame = nw.scan_parquet(\"events.parquet\", backend=\"polars\")\nlazy_frame = lazy_frame.filter(nw.col(\"status\") == \"ok\").select(\"user\", \"duration\")\ndf = lazy_frame.collect().to_native()",
+  "result_text": "I couldn't verify via the LCP server \u2014 the scan interpreter it's using (`evals/.venv-registry`) doesn't have `narwhals` installed, and I don't have file/shell tools in this session to repoint it. Proceeding with the code based on the documented narwhals 2.x stable API.\n\n```python\nimport narwhals as nw\n\nlazy_frame = nw.scan_parquet(\"events.parquet\", backend=\"polars\")\nlazy_frame = lazy_frame.filter(nw.col(\"status\") == \"ok\").select(\"user\", \"duration\")\ndf = lazy_frame.collect().to_native()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 22,
+    "output_tokens": 4532,
+    "cache_read_tokens": 390500,
+    "cache_creation_tokens": 11490,
+    "cost_usd": 0.254136,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 63.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "PowerShell",
+      "input": {
+        "command": "which python3; python3 -c \"import narwhals; print(narwhals.__version__); print(narwhals.__file__)\" 2>&1; echo \"---\"; find / -maxdepth 6 -iname \"narwhals\" -path \"*/site-packages/*\" 2>/dev/null"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Terminal,Exec,Read,Glob,Grep",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Read",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "scan_parquet",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01KtUsmc6Pibqmv8c38F8sm2",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01CK9GQEgD6K5KbgugeYYMRq",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01Wtf7CeiLAXtgLMMwyM2xzz",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'narwhals' is not loaded.\",\"hint\":\"Call resolve_library('narwhals') first.\",\"loaded_libraries\":[]}}"
+    },
+    {
+      "tool_use_id": "toolu_01Drxg9qBCAGka8whoJxDqUo",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'narwhals': 'narwhals' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

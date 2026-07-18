@@ -1,0 +1,82 @@
+{
+  "case_id": "griffe-docstring-sections",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.docstrings.google import GoogleDocstring\nfrom griffe.docstrings.docstring import Docstring\n\ndocstring_text = \"\"\"Calculate the sum of two numbers.\n\nArgs:\n    a: The first number\n    b: The second number\n\nReturns:\n    The sum of a and b\n\"\"\"\n\ndocstring = Docstring(docstring_text, lineno=0, endlineno=None, style=\"google\")\n\nfor section in docstring.parsed:\n    print(section.kind)",
+  "result_text": "```python\nfrom griffe.docstrings.google import GoogleDocstring\nfrom griffe.docstrings.docstring import Docstring\n\ndocstring_text = \"\"\"Calculate the sum of two numbers.\n\nArgs:\n    a: The first number\n    b: The second number\n\nReturns:\n    The sum of a and b\n\"\"\"\n\ndocstring = Docstring(docstring_text, lineno=0, endlineno=None, style=\"google\")\n\nfor section in docstring.parsed:\n    print(section.kind)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 77,
+    "output_tokens": 1546,
+    "cache_read_tokens": 214557,
+    "cache_creation_tokens": 7935,
+    "cost_usd": 0.0451327,
+    "num_turns": 9,
+    "tool_calls": 7,
+    "duration_s": 34.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-writing-documentation"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__get_symbol,mcp__lcp__search",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Docstring"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.docstrings.docstring.Docstring"
+    ],
+    "error": null
+  }
+}

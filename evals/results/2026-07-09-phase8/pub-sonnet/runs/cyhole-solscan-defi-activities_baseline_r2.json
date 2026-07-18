@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan import Solscan\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = Solscan(api_key=api_key)\n\n    address = \"YOUR_ACCOUNT_ADDRESS\"\n    response = solscan.client.v2.get_account_defi_activities(address=address)\n\n    print(response)\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan import Solscan\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    solscan = Solscan(api_key=api_key)\n\n    address = \"YOUR_ACCOUNT_ADDRESS\"\n    response = solscan.client.v2.get_account_defi_activities(address=address)\n\n    print(response)\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2193,
+    "cache_read_tokens": 30158,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0419484,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.Solscan"
+    ],
+    "error": null
+  }
+}

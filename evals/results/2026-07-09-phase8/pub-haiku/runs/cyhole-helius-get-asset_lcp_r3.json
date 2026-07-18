@@ -1,0 +1,36 @@
+{
+  "case_id": "cyhole-helius-get-asset",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole import Helius\n\ndef fetch_das_metadata(asset_id: str) -> dict:\n    \"\"\"Fetch DAS metadata for a single asset using Helius API.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n    \n    helius = Helius(api_key=api_key)\n    metadata = helius.get_asset(asset_id)\n    return metadata\n\nif __name__ == \"__main__\":\n    asset_id = \"your_asset_id_here\"\n    result = fetch_das_metadata(asset_id)\n    print(result)",
+  "result_text": "```python\nimport os\nfrom cyhole import Helius\n\ndef fetch_das_metadata(asset_id: str) -> dict:\n    \"\"\"Fetch DAS metadata for a single asset using Helius API.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n    \n    helius = Helius(api_key=api_key)\n    metadata = helius.get_asset(asset_id)\n    return metadata\n\nif __name__ == \"__main__\":\n    asset_id = \"your_asset_id_here\"\n    result = fetch_das_metadata(asset_id)\n    print(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1213,
+    "cache_read_tokens": 22114,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.008285400000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "cyhole.helius.interaction:Helius",
+      "cyhole.helius.client:HeliusClient#post_get_asset"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_asset"
+    ],
+    "unresolved_usages": [
+      "cyhole.Helius"
+    ],
+    "error": null
+  }
+}

@@ -9,7 +9,7 @@ import yaml
 from harness import verify
 
 # Distribution name -> import name, where they differ.
-_IMPORT_NAMES = {"pyyaml": "yaml"}
+_IMPORT_NAMES = {"pyyaml": "yaml", "pocket-coffea": "pocket_coffea"}
 
 
 class CaseError(Exception):

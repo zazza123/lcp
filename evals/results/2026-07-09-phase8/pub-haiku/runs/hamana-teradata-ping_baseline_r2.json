@@ -1,0 +1,32 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have reliable information about the `hamana` library or its Teradata connector API in my training data. I cannot confidently write code that will work without knowing:\n\n- The correct class/function names for the connector\n- The actual parameters for the connectivity-check method\n- The proper authentication flow\n\nCould you provide documentation, a link to the library, or an example of how hamana's Teradata connector is typically used? That will help me write correct, runnable code.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1186,
+    "cache_read_tokens": 22015,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0081405,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Teradata",
+      "hamana.connector.db.teradata:TeradataConnector#ping"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "lcp",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom cyhole import SolanaFM\n\napi_key = os.environ['SOLANA_FM_API_KEY']\nclient = SolanaFM(api_key=api_key)\n\naccount_address = \"input_account_address_here\"\ncsv_data = client.get_account_transfers(account_address, format='csv')\n\nwith open('transfers_report.csv', 'w') as f:\n    f.write(csv_data)\n\nprint(f\"CSV export saved to transfers_report.csv\")",
+  "result_text": "```python\nimport os\nfrom cyhole import SolanaFM\n\napi_key = os.environ['SOLANA_FM_API_KEY']\nclient = SolanaFM(api_key=api_key)\n\naccount_address = \"input_account_address_here\"\ncsv_data = client.get_account_transfers(account_address, format='csv')\n\nwith open('transfers_report.csv', 'w') as f:\n    f.write(csv_data)\n\nprint(f\"CSV export saved to transfers_report.csv\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1853,
+    "cache_read_tokens": 22116,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.011485600000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.SolanaFM"
+    ],
+    "error": null
+  }
+}

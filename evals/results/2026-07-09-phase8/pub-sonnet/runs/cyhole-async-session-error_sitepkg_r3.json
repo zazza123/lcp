@@ -1,0 +1,88 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import AsyncClientAPISessionNotAvailable\n\n\nasync def main() -> None:\n    api_key = os.environ.get(\"SOLANA_FM_API_KEY\")\n    solana_fm = SolanaFM(api_key=api_key)\n\n    try:\n        # Calling the async client without entering its async context manager\n        # (i.e. without `async with solana_fm.async_client as client:`) means\n        # no aiohttp session has been opened yet.\n        response = await solana_fm.async_client.get_tagged_tokens_list()\n        print(\"Tagged Tokens:\", response)\n    except AsyncClientAPISessionNotAvailable as e:\n        print(f\"Async session not available: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import AsyncClientAPISessionNotAvailable\n\n\nasync def main() -> None:\n    api_key = os.environ.get(\"SOLANA_FM_API_KEY\")\n    solana_fm = SolanaFM(api_key=api_key)\n\n    try:\n        # Calling the async client without entering its async context manager\n        # (i.e. without `async with solana_fm.async_client as client:`) means\n        # no aiohttp session has been opened yet.\n        response = await solana_fm.async_client.get_tagged_tokens_list()\n        print(\"Tagged Tokens:\", response)\n    except AsyncClientAPISessionNotAvailable as e:\n        print(f\"Async session not available: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 1996,
+    "cache_read_tokens": 292195,
+    "cache_creation_tokens": 18400,
+    "cost_usd": 0.22804049999999998,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 32.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/cyhole/**/solana_fm/*.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/cyhole*/METADATA"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv/lib/python3.12/site-packages/cyhole/solana_fm/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv/lib/python3.12/site-packages/cyhole/solana_fm/exception.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv/lib/python3.12/site-packages/cyhole/core/exception.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv/lib/python3.12/site-packages/cyhole/core/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv/lib/python3.12/site-packages/cyhole/solana_fm/interaction.py",
+        "limit": 60
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv/lib/python3.12/site-packages/cyhole/solana_fm/interaction.py",
+        "offset": 60,
+        "limit": 40
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "no-op",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

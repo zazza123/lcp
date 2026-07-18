@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\napi = griffe.load(\"requests\")\n\nfor name, func in api.functions.items():\n    if func.is_public:\n        print(name)",
+  "result_text": "```python\nimport griffe\n\napi = griffe.load(\"requests\")\n\nfor name, func in api.functions.items():\n    if func.is_public:\n        print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1010,
+    "cache_read_tokens": 30301,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.024246300000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 15.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

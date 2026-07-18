@@ -1,0 +1,60 @@
+{
+  "case_id": "cyclopts-subcommands",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nfrom cyclopts import App\n\napp = App(name=\"fileman\")\n\n\ndef upload(path: Path) -> None:\n    print(f\"Would upload: {path}\")\n\n\ndef download(url: str, *, dest: Path) -> None:\n    print(f\"Would download {url} to {dest}\")\n\n\napp.command(upload)\napp.command(download)\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom pathlib import Path\n\nfrom cyclopts import App\n\napp = App(name=\"fileman\")\n\n\ndef upload(path: Path) -> None:\n    print(f\"Would upload: {path}\")\n\n\ndef download(url: str, *, dest: Path) -> None:\n    print(f\"Would download {url} to {dest}\")\n\n\napp.command(upload)\napp.command(download)\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1627,
+    "cache_read_tokens": 119859,
+    "cache_creation_tokens": 24336,
+    "cost_usd": 0.2064027,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 33.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "cyclopts",
+        "query": "building a CLI app with subcommands, app.command decorator, positional and keyword arguments"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/brianpugh/cyclopts",
+        "query": "App with subcommands using app.command decorator, positional args and --flag options"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01CMzRRStzCYz2svZEwDmiNc",
+      "content": "Available Libraries:\n\n- Title: Cyclopts\n- Context7-compatible library ID: /brianpugh/cyclopts\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework that provides an intuitive and efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 1468\n- Source Reputation: High\n- Benchmark Score: 84.67\n----------\n- Title: Cyclopts\n- Context7-compatible library ID: /websites/cyclopts_readthedocs_io_en_stable\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework providing an intuitive & efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 996\n- Source Reputation: High\n- Benchmark Score: 84.33"
+    },
+    {
+      "tool_use_id": "toolu_01YWpuQhWDCkpKg6oPt49wxq",
+      "content": "### Create a Cyclopts App with Commands\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/README.md\n\nCreate a CLI application using `cyclopts.App`. Register commands with the `@app.command` decorator and a default action with `@app.default`.\n\n```python\nfrom cyclopts import App\n\napp = App()\n\n@app.command\ndef foo(loops: int):\n    for i in range(loops):\n        print(f\"Looping! {i}\")\n\n@app.default\ndef default_action():\n    print(\"Hello world! This runs when no command is specified.\")\n\napp()\n```\n\n--------------------------------\n\n### Cyclopts Command with Variable Positional Arguments (*args)\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/args_and_kwargs.rst\n\nDefines a Cyclopts command that accepts a fixed string argument followed by a variable number of integer positional arguments. Each positional argument is converted to the annotated type. This is useful when the number of arguments is not known beforehand.\n\n```python\nfrom cyclopts import App\n\napp = App()\n\n@app.command\ndef foo(name: str, *favorite_numbers: int):\n    print(f\"{name}'s favorite numbers are: {favorite_numbers}\")\n\napp()\n```\n\n--------------------------------\n\n### Override Default Negative Flag Configuration\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/default_parameter.rst\n\nExplicitly define the negative flag for a specific command parameter, overriding the app's default configuration. This allows `--anti-flag` to be used instead of `--no-flag`.\n\n```python\nfrom cyclopts import App, Parameter\nfrom typing import Annotated\n\napp = App(default_parameter=Parameter(negative=()))\n\n@app.command\ndef foo(*, flag: Annotated[bool, Parameter(negative=\"--anti-flag\")]):\n    pass\n\napp()\n```\n\n--------------------------------\n\n### Define Subcommands with Cyclopts\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/vs_arguably/subcommands/README.rst\n\nUtilize Cyclopts' App object to build a command tree for subcommands. This example mirrors the Arguably fun"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

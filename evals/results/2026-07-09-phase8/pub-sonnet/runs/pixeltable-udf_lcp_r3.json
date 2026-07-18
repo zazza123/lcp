@@ -1,0 +1,37 @@
+{
+  "case_id": "pixeltable-udf",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\n\n\n@pxt.udf\ndef word_count(text: str) -> int:\n    return len(text.split())\n\n\ndocs = pxt.get_table(\"docs\")\ndocs.add_computed_column(n_words=word_count(docs.content))",
+  "result_text": "```python\nimport pixeltable as pxt\n\n\n@pxt.udf\ndef word_count(text: str) -> int:\n    return len(text.split())\n\n\ndocs = pxt.get_table(\"docs\")\ndocs.add_computed_column(n_words=word_count(docs.content))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 4,
+    "output_tokens": 516,
+    "cache_read_tokens": 60672,
+    "cache_creation_tokens": 424,
+    "cost_usd": 0.028497599999999998,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 8.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pixeltable",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

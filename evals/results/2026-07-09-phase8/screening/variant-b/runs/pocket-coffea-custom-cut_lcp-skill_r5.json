@@ -1,0 +1,59 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Mask for dimuon events with at least 2 muons above pT threshold \n    and opposite-charge leading pair.\n    \n    Args:\n        events: NanoEvents object\n        params: Dictionary containing 'pt_threshold' key\n        **kwargs: Additional framework arguments\n    \n    Returns:\n        Boolean array mask for events passing the cut\n    \"\"\"\n    muons = events.Muon\n    \n    # Apply pT threshold\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    muons_pass_pt = muons[muons.pt > pt_threshold]\n    \n    # Count muons passing pT cut per event\n    n_muons = ak.num(muons_pass_pt, axis=1)\n    \n    # Get leading and subleading muons (after pT cut)\n    leading = muons_pass_pt[:, 0:1]\n    subleading = muons_pass_pt[:, 1:2]\n    \n    # Opposite charge condition: leading and subleading have opposite signs\n    opposite_charge = (leading.charge[:, 0] + subleading.charge[:, 0]) == 0\n    \n    # Combine conditions: at least 2 muons AND opposite charge leading pair\n    mask = (n_muons >= 2) & opposite_charge\n    \n    return mask\n\n\n# Define the cut object for use in preselections\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Mask for dimuon events with at least 2 muons above pT threshold \n    and opposite-charge leading pair.\n    \n    Args:\n        events: NanoEvents object\n        params: Dictionary containing 'pt_threshold' key\n        **kwargs: Additional framework arguments\n    \n    Returns:\n        Boolean array mask for events passing the cut\n    \"\"\"\n    muons = events.Muon\n    \n    # Apply pT threshold\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    muons_pass_pt = muons[muons.pt > pt_threshold]\n    \n    # Count muons passing pT cut per event\n    n_muons = ak.num(muons_pass_pt, axis=1)\n    \n    # Get leading and subleading muons (after pT cut)\n    leading = muons_pass_pt[:, 0:1]\n    subleading = muons_pass_pt[:, 1:2]\n    \n    # Opposite charge condition: leading and subleading have opposite signs\n    opposite_charge = (leading.charge[:, 0] + subleading.charge[:, 0]) == 0\n    \n    # Combine conditions: at least 2 muons AND opposite charge leading pair\n    mask = (n_muons >= 2) & opposite_charge\n    \n    return mask\n\n\n# Define the cut object for use in preselections\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 35,
+    "output_tokens": 1610,
+    "cache_read_tokens": 96989,
+    "cache_creation_tokens": 4983,
+    "cost_usd": 0.0277499,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 30.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve library pocket-coffea",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_018rVYrMTEfBgB9zFtA4aSyr",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

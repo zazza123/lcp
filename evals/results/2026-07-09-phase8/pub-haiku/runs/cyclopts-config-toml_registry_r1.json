@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"Cyclopts CLI with TOML configuration support from [tool.mycli].\"\"\"\n\nfrom pathlib import Path\nfrom typing import Optional\nfrom cyclopts import App\n\ntry:\n    import tomllib\nexcept ImportError:\n    import tomli as tomllib\n\n\ndef load_config() -> dict:\n    \"\"\"Load configuration from [tool.mycli] in pyproject.toml.\"\"\"\n    pyproject_path = Path(\"pyproject.toml\")\n    if pyproject_path.exists():\n        with open(pyproject_path, \"rb\") as f:\n            data = tomllib.load(f)\n            return data.get(\"tool\", {}).get(\"mycli\", {})\n    return {}\n\n\n# Create example pyproject.toml if it doesn't exist\nif not Path(\"pyproject.toml\").exists():\n    Path(\"pyproject.toml\").write_text(\"\"\"\n[tool.mycli]\nname = \"Alice\"\nverbose = false\noutput = \"result.txt\"\ncount = 3\n\"\"\")\n\n# Load config from pyproject.toml\nconfig = load_config()\n\n# Create cyclopts app\napp = App()\n\n\n@app.default\ndef greet(\n    name: Optional[str] = None,\n    verbose: Optional[bool] = None,\n    output: Optional[str] = None,\n):\n    \"\"\"Greet someone.\n    \n    CLI arguments override [tool.mycli] defaults in pyproject.toml.\n    \"\"\"\n    # CLI values win; fall back to config; then hardcoded defaults\n    name = name if name is not None else config.get(\"name\", \"World\")\n    verbose = verbose if verbose is not None else config.get(\"verbose\", False)\n    output = output if output is not None else config.get(\"output\")\n\n    message = f\"Hello, {name}!\"\n    if verbose:\n        message += \" (verbose mode)\"\n\n    if output:\n        Path(output).write_text(message)\n        print(f\"Saved to: {output}\")\n    else:\n        print(message)\n\n\n@app.command\ndef process(\n    count: Optional[int] = None,\n    name: Optional[str] = None,\n):\n    \"\"\"Process items.\n    \n    CLI arguments override [tool.mycli] defaults.\n    \"\"\"\n    count = count if count is not None else config.get(\"count\", 1)\n    name = name if name is not None else config.get(\"name\", \"default\")\n    print(f\"Processing {count} item(s) for {name}\")\n\n\n@app.command\ndef show_config():\n    \"\"\"Show loaded configuration from [tool.mycli].\"\"\"\n    if config:\n        print(\"Configuration from [tool.mycli]:\")\n        for key, value in config.items():\n            print(f\"  {key}: {value}\")\n    else:\n        print(\"No [tool.mycli] section found in pyproject.toml\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"Cyclopts CLI with TOML configuration support from [tool.mycli].\"\"\"\n\nfrom pathlib import Path\nfrom typing import Optional\nfrom cyclopts import App\n\ntry:\n    import tomllib\nexcept ImportError:\n    import tomli as tomllib\n\n\ndef load_config() -> dict:\n    \"\"\"Load configuration from [tool.mycli] in pyproject.toml.\"\"\"\n    pyproject_path = Path(\"pyproject.toml\")\n    if pyproject_path.exists():\n        with open(pyproject_path, \"rb\") as f:\n            data = tomllib.load(f)\n            return data.get(\"tool\", {}).get(\"mycli\", {})\n    return {}\n\n\n# Create example pyproject.toml if it doesn't exist\nif not Path(\"pyproject.toml\").exists():\n    Path(\"pyproject.toml\").write_text(\"\"\"\n[tool.mycli]\nname = \"Alice\"\nverbose = false\noutput = \"result.txt\"\ncount = 3\n\"\"\")\n\n# Load config from pyproject.toml\nconfig = load_config()\n\n# Create cyclopts app\napp = App()\n\n\n@app.default\ndef greet(\n    name: Optional[str] = None,\n    verbose: Optional[bool] = None,\n    output: Optional[str] = None,\n):\n    \"\"\"Greet someone.\n    \n    CLI arguments override [tool.mycli] defaults in pyproject.toml.\n    \"\"\"\n    # CLI values win; fall back to config; then hardcoded defaults\n    name = name if name is not None else config.get(\"name\", \"World\")\n    verbose = verbose if verbose is not None else config.get(\"verbose\", False)\n    output = output if output is not None else config.get(\"output\")\n\n    message = f\"Hello, {name}!\"\n    if verbose:\n        message += \" (verbose mode)\"\n\n    if output:\n        Path(output).write_text(message)\n        print(f\"Saved to: {output}\")\n    else:\n        print(message)\n\n\n@app.command\ndef process(\n    count: Optional[int] = None,\n    name: Optional[str] = None,\n):\n    \"\"\"Process items.\n    \n    CLI arguments override [tool.mycli] defaults.\n    \"\"\"\n    count = count if count is not None else config.get(\"count\", 1)\n    name = name if name is not None else config.get(\"name\", \"default\")\n    print(f\"Processing {count} item(s) for {name}\")\n\n\n@app.command\ndef show_config():\n    \"\"\"Show loaded configuration from [tool.mycli].\"\"\"\n    if config:\n        print(\"Configuration from [tool.mycli]:\")\n        for key, value in config.items():\n            print(f\"  {key}: {value}\")\n    else:\n        print(\"No [tool.mycli] section found in pyproject.toml\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4349,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6948,
+    "cost_usd": 0.03716919999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

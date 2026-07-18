@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    muons = events.Muon\n    muons = muons[muons.pt > params[\"pt_threshold\"]]\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n\n    padded_muons = ak.pad_none(muons, 2, axis=1)\n    leading_muon = padded_muons[:, 0]\n    subleading_muon = padded_muons[:, 1]\n\n    opposite_charge = (leading_muon.charge * subleading_muon.charge) < 0\n\n    mask = has_two_muons & ak.fill_none(opposite_charge, False)\n\n    return ak.to_numpy(mask)\n\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    muons = events.Muon\n    muons = muons[muons.pt > params[\"pt_threshold\"]]\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n\n    padded_muons = ak.pad_none(muons, 2, axis=1)\n    leading_muon = padded_muons[:, 0]\n    subleading_muon = padded_muons[:, 1]\n\n    opposite_charge = (leading_muon.charge * subleading_muon.charge) < 0\n\n    mask = has_two_muons & ak.fill_none(opposite_charge, False)\n\n    return ak.to_numpy(mask)\n\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2124,
+    "cache_read_tokens": 20442,
+    "cache_creation_tokens": 10005,
+    "cost_usd": 0.0980286,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 28.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

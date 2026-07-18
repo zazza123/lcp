@@ -1,0 +1,98 @@
+{
+  "case_id": "fastmcp-client-resource",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom typing import Any\nfrom fastmcp import Server, ClientSession\nfrom fastmcp.server.stdio import stdio_server\n\n\nasync def main():\n    # Create an in-memory FastMCP server\n    server = Server(\"example-server\")\n\n    # Add a resource to the server\n    @server.resource(\"data://config\")\n    async def get_config() -> str:\n        return '{\"setting1\": \"value1\", \"setting2\": \"value2\"}'\n\n    # Create an in-memory client session connected to the server\n    async with ClientSession(server) as client:\n        # Fetch the resource at URI \"data://config\"\n        resource = await client.read_resource(\"data://config\")\n        print(f\"Resource contents: {resource}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom typing import Any\nfrom fastmcp import Server, ClientSession\nfrom fastmcp.server.stdio import stdio_server\n\n\nasync def main():\n    # Create an in-memory FastMCP server\n    server = Server(\"example-server\")\n\n    # Add a resource to the server\n    @server.resource(\"data://config\")\n    async def get_config() -> str:\n        return '{\"setting1\": \"value1\", \"setting2\": \"value2\"}'\n\n    # Create an in-memory client session connected to the server\n    async with ClientSession(server) as client:\n        # Fetch the resource at URI \"data://config\"\n        resource = await client.read_resource(\"data://config\")\n        print(f\"Resource contents: {resource}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 95,
+    "output_tokens": 1461,
+    "cache_read_tokens": 253390,
+    "cache_creation_tokens": 7871,
+    "cost_usd": 0.048481,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 32.0
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-universal",
+        "args": "fastmcp"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "fastmcp client server in-memory",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "fastmcp:Client"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.ClientSession",
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

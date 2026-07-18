@@ -1,0 +1,81 @@
+{
+  "case_id": "polars-join",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndf1 = pl.DataFrame({\n    \"id\": [1, 2, 3, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"]\n})\n\ndf2 = pl.DataFrame({\n    \"id\": [2, 3, 4, 5],\n    \"amount\": [100, 200, 300, 400]\n})\n\nresult = df1.join(df2, on=\"id\", how=\"inner\")\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndf1 = pl.DataFrame({\n    \"id\": [1, 2, 3, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"David\"]\n})\n\ndf2 = pl.DataFrame({\n    \"id\": [2, 3, 4, 5],\n    \"amount\": [100, 200, 300, 400]\n})\n\nresult = df1.join(df2, on=\"id\", how=\"inner\")\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 51,
+    "output_tokens": 1545,
+    "cache_read_tokens": 153735,
+    "cache_creation_tokens": 12340,
+    "cost_usd": 0.0478295,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 28.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,get_symbol,search",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "polars library documentation",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "join",
+        "library": "polars",
+        "kind": "method",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#join"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01HsFJFKDEjkNRt9GUDyy811",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"scan\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_018oQvsrjuTLJxaMwUzm5sst",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#join\",\"kind\":\"method\",\"summary\":\"Join in SQL-like fashion.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#join\"},{\"id\":\"polars.expr.expr:ExprArrayNameSpace#join\",\"kind\":\"method\",\"summary\":\"Join all string items in a sub-array and place a separator between them.\",\"import\":\"from polars.expr.expr import ExprArrayNameSpace\",\"resolved_via_alias\":\"polars.expr.array:ExprArrayNameSpace#join\"},{\"id\":\"polars.expr.expr:ExprListNameSpace#join\",\"kind\":\"method\",\"summary\":\"Join all string items in a sublist and place a separator between them.\",\"import\":\"from polars.expr.expr import ExprListNameSpace\",\"resolved_via_alias\":\"polars.expr.list:ExprListNameSpace#join\"},{\"id\":\"polars.expr.expr:ExprStringNameSpace#join\",\"kind\":\"method\",\"summary\":\"Vertically concatenate the string values in the column to a single string value.\",\"import\":\"from polars.expr.expr import ExprStringNameSpace\",\"resolved_via_alias\":\"polars.expr.string:ExprStringNameSpace#join\"},{\"id\":\"polars:LazyFrame#join\",\"kind\":\"method\",\"summary\":\"Add a join operation to the Logical Plan.\",\"import\":\"from polars import LazyFrame\",\"resolved_via_alias\":\"polars.lazyframe.frame:LazyFrame#join\"},{\"id\":\"polars.series.series:ArrayNameSpace#join\",\"kind\":\"method\",\"summary\":\"Join all string items in a sub-array and place a separator between them.\",\"import\":\"from polars.series.series import ArrayNameSpace\",\"resolved_via_alias\":\"polars.series.array:ArrayNameSpace#join\"},{\"id\":\"polars.series.series:ListNameSpace#join\",\"kind\":\"method\",\"summary\":\"Join all string items in a sublist and place a separator between them.\",\"import\":\"from polars.series.series import ListNameSpace\",\"resolved_via_alias\":\"polars.series.list:ListNameSpace#join\"},{\"id\":\"polars.series.series:StringNameSpace#join\",\"kind\":\"method\",\"summary\":\"Vertically concatenate the string values in the column to a single string value.\",\"import\":\"from polars.series.series import StringNameSpace\",\"resolved_"
+    },
+    {
+      "tool_use_id": "toolu_019Jit1BtzHXZEAdEgsHczEq",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"other\",\"type\":\"DataFrame\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"DataFrame to join with.\"},{\"name\":\"on\",\"type\":\"str | Expr | Sequence[str | Expr] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Name(s) of the join columns in both DataFrames. If set, `left_on` and\\n`right_on` should be None. This should not be specified if `how='cross'`.\"},{\"name\":\"how\",\"type\":\"JoinStrategy\",\"required\":false,\"default\":\"inner\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Join strategy.\\n\\n.. list-table ::\\n   :header-rows: 0\\n\\n   * - **inner**\\n     - *(Default)* Returns rows that have matching values in both tables.\\n   * - **left**\\n     - Returns all rows from the left table, and the matched rows from\\n       the right table.\\n   * - **right**\\n     - Returns all rows from the right table, and the matched rows from\\n       the left table.\\n   * - **full**\\n     - Returns all rows from both tables, joining matching rows and\\n       filling non-matches with null values.\\n   * - **cross**\\n     - Returns the Cartesian product of rows from both tables\\n   * - **semi**\\n     - Returns rows from the left table that have a match in the right\\n       table. Does not return columns from the right table.\\n   * - **anti**\\n     - Returns rows from the left table that have no match in the right\\n       table. Does not return columns from the right table.\"},{\"name\":\"left_on\",\"type\":\"str | Expr | Sequence[str | Expr] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Name(s) of the left join column(s).\"},{\"name\":\"right_on\",\"type\":\"str | Expr | Sequence[str | Expr] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Name(s) of the right join column(s).\"},{\"name\":\"suffix\",\"type\":\"str\",\"required\":false,\"default\":\"_right\",\"variadic\":false,\"kind\":\"keyword_only\",\"descripti"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

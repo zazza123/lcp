@@ -1,0 +1,45 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom sentence_transformers import SentenceTransformer\n\n# Initialize pixeltable client\npxt.create_client()\n\n# Get the docs table\ndocs = pxt.get_table('docs')\n\n# Create a UDF for embedding using sentence-transformers\n@pxt.udf\ndef embed_text(text: str) -> list:\n    model = SentenceTransformer('all-MiniLM-L6-v2')\n    return model.encode(text).tolist()\n\n# Add embedding column to the table\ndocs['content_embedding'] = docs.select(docs.content.apply(embed_text))\n\n# Create vector index on the embedding column\ndocs.create_index('content_embedding', index_type='vector')\n\n# Embed the query\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\nquery_embedding = model.encode('climate change policy')\n\n# Perform similarity search\nresults = docs.similarity_search(\n    query_vector=query_embedding,\n    column='content_embedding',\n    limit=5\n)\n\n# Display results ranked from closest to farthest\nfor row in results:\n    print(f\"Content: {row['content']}\")",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom sentence_transformers import SentenceTransformer\n\n# Initialize pixeltable client\npxt.create_client()\n\n# Get the docs table\ndocs = pxt.get_table('docs')\n\n# Create a UDF for embedding using sentence-transformers\n@pxt.udf\ndef embed_text(text: str) -> list:\n    model = SentenceTransformer('all-MiniLM-L6-v2')\n    return model.encode(text).tolist()\n\n# Add embedding column to the table\ndocs['content_embedding'] = docs.select(docs.content.apply(embed_text))\n\n# Create vector index on the embedding column\ndocs.create_index('content_embedding', index_type='vector')\n\n# Embed the query\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\nquery_embedding = model.encode('climate change policy')\n\n# Perform similarity search\nresults = docs.similarity_search(\n    query_vector=query_embedding,\n    column='content_embedding',\n    limit=5\n)\n\n# Display results ranked from closest to farthest\nfor row in results:\n    print(f\"Content: {row['content']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 19,
+    "output_tokens": 3957,
+    "cache_read_tokens": 44240,
+    "cache_creation_tokens": 5002,
+    "cost_usd": 0.034232,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 45.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pixeltable semantic search embedding vector index",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.create_client"
+    ],
+    "error": null
+  }
+}

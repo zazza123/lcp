@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom pocket_coffea.lib.cut_functions import get_HLTsel, get_nObj_min, get_nBtagMin\nfrom pocket_coffea.parameters.cuts import passthrough\nfrom pocket_coffea.parameters import defaults\nfrom pocket_coffea.utils.configurator import Configurator\nfrom pocket_coffea.workflows.base import BaseProcessorABC\n\nlocaldir = os.path.dirname(os.path.abspath(__file__))\n\ndefault_parameters = defaults.get_default_parameters()\nparameters = defaults.merge_parameters_from_files(\n    default_parameters,\n    f\"{localdir}/params/object_preselection.yaml\",\n    f\"{localdir}/params/triggers.yaml\",\n    update=True,\n)\n\nskim = [\n    get_HLTsel(primaryDatasets=[\"semileptonic\"]),\n]\n\npreselections = [\n    get_nObj_min(4, 30.0, \"JetGood\"),\n    get_nBtagMin(2, coll=\"BJetGood\"),\n]\n\ncfg = Configurator(\n    parameters=parameters,\n    datasets={\n        \"jsons\": [f\"{localdir}/datasets/signal_ttbar_2018.json\"],\n        \"filter\": {\n            \"samples\": [\"ttbar_semileptonic\"],\n            \"samples_exclude\": [],\n            \"year\": [\"2018\"],\n        },\n    },\n    workflow=BaseProcessorABC,\n    skim=skim,\n    preselections=preselections,\n    categories={\n        \"baseline\": [passthrough],\n    },\n    weights={\n        \"common\": {\n            \"inclusive\": [\"genWeight\", \"lumi\", \"XS\"],\n            \"bycategory\": {},\n        },\n    },\n    variations={\n        \"weights\": {\n            \"common\": {\n                \"inclusive\": [],\n                \"bycategory\": {},\n            },\n        },\n    },\n    variables={},\n)",
+  "result_text": "```python\nimport os\n\nfrom pocket_coffea.lib.cut_functions import get_HLTsel, get_nObj_min, get_nBtagMin\nfrom pocket_coffea.parameters.cuts import passthrough\nfrom pocket_coffea.parameters import defaults\nfrom pocket_coffea.utils.configurator import Configurator\nfrom pocket_coffea.workflows.base import BaseProcessorABC\n\nlocaldir = os.path.dirname(os.path.abspath(__file__))\n\ndefault_parameters = defaults.get_default_parameters()\nparameters = defaults.merge_parameters_from_files(\n    default_parameters,\n    f\"{localdir}/params/object_preselection.yaml\",\n    f\"{localdir}/params/triggers.yaml\",\n    update=True,\n)\n\nskim = [\n    get_HLTsel(primaryDatasets=[\"semileptonic\"]),\n]\n\npreselections = [\n    get_nObj_min(4, 30.0, \"JetGood\"),\n    get_nBtagMin(2, coll=\"BJetGood\"),\n]\n\ncfg = Configurator(\n    parameters=parameters,\n    datasets={\n        \"jsons\": [f\"{localdir}/datasets/signal_ttbar_2018.json\"],\n        \"filter\": {\n            \"samples\": [\"ttbar_semileptonic\"],\n            \"samples_exclude\": [],\n            \"year\": [\"2018\"],\n        },\n    },\n    workflow=BaseProcessorABC,\n    skim=skim,\n    preselections=preselections,\n    categories={\n        \"baseline\": [passthrough],\n    },\n    weights={\n        \"common\": {\n            \"inclusive\": [\"genWeight\", \"lumi\", \"XS\"],\n            \"bycategory\": {},\n        },\n    },\n    variations={\n        \"weights\": {\n            \"common\": {\n                \"inclusive\": [],\n                \"bycategory\": {},\n            },\n        },\n    },\n    variables={},\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2806,
+    "cache_read_tokens": 30390,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.051212999999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

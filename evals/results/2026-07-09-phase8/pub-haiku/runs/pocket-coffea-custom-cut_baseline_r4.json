@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least two muons with pT > threshold,\n    with opposite-charge leading pair.\n    \"\"\"\n    muons = events.Muon\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Select muons by pT threshold\n    selected = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    n_check = ak.num(selected) >= 2\n    \n    # Opposite charge for leading pair\n    charge_check = ak.fill_none(\n        selected[:, 0].charge * selected[:, 1].charge < 0,\n        False\n    )\n    \n    return n_check & charge_check\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15.0}\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Dimuon preselection: at least two muons with pT > threshold,\n    with opposite-charge leading pair.\n    \"\"\"\n    muons = events.Muon\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Select muons by pT threshold\n    selected = muons[muons.pt > pt_threshold]\n    \n    # Require at least 2 muons\n    n_check = ak.num(selected) >= 2\n    \n    # Opposite charge for leading pair\n    charge_check = ak.fill_none(\n        selected[:, 0].charge * selected[:, 1].charge < 0,\n        False\n    )\n    \n    return n_check & charge_check\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15.0}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4741,
+    "cache_read_tokens": 22093,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.025923300000000003,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 43.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

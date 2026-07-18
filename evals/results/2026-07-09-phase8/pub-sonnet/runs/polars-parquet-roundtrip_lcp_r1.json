@@ -1,0 +1,98 @@
+{
+  "case_id": "polars-parquet-roundtrip",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import io\n\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"id\": [1, 2, 3, 4],\n        \"name\": [\"alice\", \"bob\", \"carol\", \"dave\"],\n        \"score\": [91.5, 82.0, 77.25, 99.9],\n    }\n)\n\nbuffer = io.BytesIO()\ndf.write_parquet(buffer)\n\nbuffer.seek(0)\ndf_roundtrip = pl.read_parquet(buffer)\n\nassert df.equals(df_roundtrip), \"Round-trip DataFrame does not match the original\"\nprint(df_roundtrip)\nprint(\"Round-trip successful:\", df.equals(df_roundtrip))",
+  "result_text": "Both signatures confirmed \u2014 `write_parquet` accepts `IO[bytes]` and `read_parquet`'s `source` accepts file-like objects like `BytesIO`.\n\n```python\nimport io\n\nimport polars as pl\n\ndf = pl.DataFrame(\n    {\n        \"id\": [1, 2, 3, 4],\n        \"name\": [\"alice\", \"bob\", \"carol\", \"dave\"],\n        \"score\": [91.5, 82.0, 77.25, 99.9],\n    }\n)\n\nbuffer = io.BytesIO()\ndf.write_parquet(buffer)\n\nbuffer.seek(0)\ndf_roundtrip = pl.read_parquet(buffer)\n\nassert df.equals(df_roundtrip), \"Round-trip DataFrame does not match the original\"\nprint(df_roundtrip)\nprint(\"Round-trip successful:\", df.equals(df_roundtrip))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1083,
+    "cache_read_tokens": 188061,
+    "cache_creation_tokens": 24623,
+    "cost_usd": 0.2204373,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 67.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars",
+        "version": "1.42.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "write_parquet",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "read_parquet",
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#write_parquet",
+          "polars:read_parquet"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:read_parquet"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01SJ95So1vugazQf8r8V52xm",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01XXh8oGmfPZx1KbWxfPLdXb",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame#write_parquet\",\"kind\":\"method\",\"summary\":\"Write to Apache Parquet file.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#write_parquet\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01EMxbLA92XpcHi2CyKXK6YR",
+      "content": "{\"results\":[{\"id\":\"polars:read_parquet\",\"kind\":\"function\",\"summary\":\"Read into a DataFrame from a parquet file.\",\"import\":\"from polars import read_parquet\",\"resolved_via_alias\":\"polars.io.parquet.functions:read_parquet\"},{\"id\":\"polars:read_parquet_metadata\",\"kind\":\"function\",\"summary\":\"Get file-level custom metadata of a Parquet file without reading data.\",\"import\":\"from polars import read_parquet_metadata\",\"resolved_via_alias\":\"polars.io.parquet.functions:read_parquet_metadata\"},{\"id\":\"polars:read_parquet_schema\",\"kind\":\"function\",\"summary\":\"Get the schema of a Parquet file without reading data.\",\"import\":\"from polars import read_parquet_schema\",\"resolved_via_alias\":\"polars.io.parquet.functions:read_parquet_schema\"},{\"id\":\"polars:scan_parquet\",\"kind\":\"function\",\"summary\":\"Lazily read from a local or cloud-hosted parquet file (or files).\",\"import\":\"from polars import scan_parquet\",\"resolved_via_alias\":\"polars.io.parquet.functions:scan_parquet\"}],\"total\":4,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FrWkYFfuVtxLFY32EAdu99",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"file\",\"type\":\"str | Path | IO[bytes]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"File path or writable file-like object to which the result will be written.\\nThis should be a path to a directory if writing a partitioned dataset.\"},{\"name\":\"compression\",\"type\":\"ParquetCompression\",\"required\":false,\"default\":\"zstd\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Choose \\\"zstd\\\" for good compression performance.\\nChoose \\\"lz4\\\" for fast compression/decompression.\\nChoose \\\"snappy\\\" for more backwards compatibility guarantees\\nwhen you deal with older parquet readers.\"},{\"name\":\"compression_level\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The level of compression to use. Higher compression means smaller files on\\ndisk.\\n\\n- \\\"gzip\\\" : min-level: 0, max-level: 9, default: 6.\\n- \\\"brotli\\\" : min-level: 0, max-level: 11, default: 1.\\n- \\\"zstd\\\" : min-level: 1, max-level: 22, default: 3.\"},{\"name\":\"statistics\",\"type\":\"bool | str | dict[str, bool]\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Write statistics to the parquet headers. This is the default behavior.\\n\\nPossible values:\\n\\n- `True`: enable default set of statistics (default). Some\\n  statistics may be disabled.\\n- `False`: disable all statistics\\n- \\\"full\\\": calculate and write all available statistics. Cannot be\\n  combined with `use_pyarrow`.\\n- `{ \\\"statistic-key\\\": True / False, ... }`. Cannot be combined with\\n  `use_pyarrow`. Available keys:\\n\\n  - \\\"min\\\": column minimum value (default: `True`)\\n  - \\\"max\\\": column maximum value (default: `True`)\\n  - \\\"distinct_count\\\": number of unique column values (default: `False`)\\n  - \\\"null_count\\\": number of null values in column (default: `True`)\"},{\"name\":\"row_group_size\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\""
+    },
+    {
+      "tool_use_id": "toolu_01NVVY1R81pwdusCbaJfJEwi",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"polars.io.parquet.functions\",\"aliases\":[\"polars.io.parquet:read_parquet\",\"polars.io:read_parquet\",\"polars:read_parquet\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"source\",\"type\":\"FileSource\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path(s) to a file or directory\\nWhen needing to authenticate for scanning cloud locations, see the\\n`storage_options` parameter.\\n\\nFile-like objects are supported (by \\\"file-like object\\\" we refer to objects\\nthat have a `read()` method, such as a file handler like the builtin `open`\\nfunction, or a `BytesIO` instance). For file-like objects, the stream position\\nmay not be updated accordingly after reading.\"},{\"name\":\"columns\",\"type\":\"list[int] | list[str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Columns to select. Accepts a list of column indices (starting at zero) or a list\\nof column names.\"},{\"name\":\"n_rows\",\"type\":\"int | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Stop reading from parquet file after reading `n_rows`.\\nOnly valid when `use_pyarrow=False`.\"},{\"name\":\"row_index_name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Insert a row index column with the given name into the DataFrame as the first\\ncolumn. If set to `None` (default), no row index column is created.\"},{\"name\":\"row_index_offset\",\"type\":\"int\",\"required\":false,\"default\":0,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Start the row index at this offset. Cannot be negative.\\nOnly used if `row_index_name` is set.\"},{\"name\":\"parallel\",\"type\":\"ParallelStrategy\",\"required\":false,\"default\":\"auto\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"This determines the direction of parallelism. 'auto' will try to determine the\\noptimal direction.\"},{\"name\":\"use_statistics\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Use"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-unique-rows",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create a DataFrame with duplicate rows\ndf = pl.DataFrame({\n    \"id\": [1, 2, 3, 2, 1, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Bob\", \"Alice\", \"David\"]\n})\n\n# Remove duplicates, keeping the first occurrence\ndf_unique = df.unique()\n\nprint(df_unique)",
+  "result_text": "```python\nimport polars as pl\n\n# Create a DataFrame with duplicate rows\ndf = pl.DataFrame({\n    \"id\": [1, 2, 3, 2, 1, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Bob\", \"Alice\", \"David\"]\n})\n\n# Remove duplicates, keeping the first occurrence\ndf_unique = df.unique()\n\nprint(df_unique)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 907,
+    "cache_read_tokens": 22049,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0067489,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

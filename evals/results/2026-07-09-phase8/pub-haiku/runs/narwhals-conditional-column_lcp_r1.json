@@ -1,0 +1,199 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create sample DataFrame\ndata = {\"spend\": [500, 1000, 1500, 800, 2000]}\ndf_native = pd.DataFrame(data)\n\n# Convert to narwhals\ndf = nw.from_native(df_native)\n\n# Add tier column using when-then-otherwise expression\ndf_with_tier = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000)\n    .then(nw.lit(\"gold\"))\n    .otherwise(nw.lit(\"standard\"))\n)\n\n# Convert back to native to display\nresult = df_with_tier.to_native()\nprint(result)",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create sample DataFrame\ndata = {\"spend\": [500, 1000, 1500, 800, 2000]}\ndf_native = pd.DataFrame(data)\n\n# Convert to narwhals\ndf = nw.from_native(df_native)\n\n# Add tier column using when-then-otherwise expression\ndf_with_tier = df.with_columns(\n    tier=nw.when(nw.col(\"spend\") >= 1000)\n    .then(nw.lit(\"gold\"))\n    .otherwise(nw.lit(\"standard\"))\n)\n\n# Convert back to native to display\nresult = df_with_tier.to_native()\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 149,
+    "output_tokens": 3120,
+    "cache_read_tokens": 479488,
+    "cache_creation_tokens": 23068,
+    "cost_usd": 0.10983380000000002,
+    "num_turns": 17,
+    "tool_calls": 16,
+    "duration_s": 46.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "when then otherwise conditional",
+        "library": "narwhals",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "when",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:when",
+          "narwhals.functions:When"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals.functions:When#then"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals.functions:Then"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals.functions:Then#otherwise"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "with_columns",
+        "library": "narwhals",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:DataFrame"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:DataFrame#with_columns"
+        ],
+        "library": "narwhals"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01DHVm3HUL6v7wrVJqhunBsD",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_015kw2rxhHmSfkZnosLDVsJu",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_016QWyMPW134vSeYvay3Vb76",
+      "content": "{\"results\":[{\"id\":\"narwhals.functions:Then#when\",\"kind\":\"method\",\"summary\":\"Method when\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals.functions:When\",\"kind\":\"class\",\"summary\":\"Class When\",\"import\":\"from narwhals.functions import When\"},{\"id\":\"narwhals:when\",\"kind\":\"function\",\"summary\":\"Start a `when-then-otherwise` expression.\",\"import\":\"from narwhals import when\",\"resolved_via_alias\":\"narwhals.functions:when\"},{\"id\":\"narwhals.stable.v1:when\",\"kind\":\"function\",\"summary\":\"Function when\",\"import\":\"from narwhals.stable.v1 import when\"},{\"id\":\"narwhals.stable.v2:when\",\"kind\":\"function\",\"summary\":\"Start a `when-then-otherwise` expression.\",\"import\":\"from narwhals.stable.v2 import when\"},{\"id\":\"narwhals._arrow.namespace:ArrowNamespace#when_then\",\"kind\":\"method\",\"summary\":\"Method when_then\",\"import\":\"from narwhals._arrow.namespace import ArrowNamespace\"},{\"id\":\"narwhals._compliant:EagerNamespace#when_then\",\"kind\":\"method\",\"summary\":\"Method when_then\",\"import\":\"from narwhals._compliant import EagerNamespace\",\"resolved_via_alias\":\"narwhals._compliant.namespace:EagerNamespace#when_then\"},{\"id\":\"narwhals._pandas_like.namespace:PandasLikeNamespace#when_then\",\"kind\":\"method\",\"summary\":\"Method when_then\",\"import\":\"from narwhals._pandas_like.namespace import PandasLikeNamespace\"},{\"id\":\"narwhals._polars.dataframe:PolarsNamespace#when_then\",\"kind\":\"method\",\"summary\":\"Method when_then\",\"import\":\"from narwhals._polars.dataframe import PolarsNamespace\",\"resolved_via_alias\":\"narwhals._polars.namespace:PolarsNamespace#when_then\"},{\"id\":\"narwhals._spark_like.namespace:SparkLikeNamespace#when_then\",\"kind\":\"method\",\"summary\":\"Method when_then\",\"import\":\"from narwhals._spark_like.namespace import SparkLikeNamespace\"},{\"id\":\"narwhals._spark_like.namespace:SQLNamespace#when_then\",\"kind\":\"method\",\"summary\":\"Method when_then\",\"import\":\"from narwhals._spark_like.namespace import SQLNamespace\",\"resolved_via_alias\":\"narwhals._sql.namespace:SQLNamespace#when_then\"},{\"id\":\"narwhal"
+    },
+    {
+      "tool_use_id": "toolu_01UMkTpz1xL34PueiESesShh",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.functions\",\"aliases\":[\"narwhals:when\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"predicates\",\"type\":\"IntoExpr | Iterable[IntoExpr]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Condition(s) that must be met in order to apply the subsequent\\nstatement. Accepts one or more boolean expressions, which are implicitly\\ncombined with `&`. String input is parsed as a column name.\"}],\"returns\":\"When\",\"returns_description\":\"A \\\"When\\\" object, which `.then` can be called on.\"}],\"semantics\":{\"summary\":\"Start a `when-then-otherwise` expression.\",\"description\":\"Expression similar to an `if-else` statement in Python. Always initiated by a\\n    `nw.when(<condition>).then(<value if condition>)`, and optionally followed by\\n    chained `.when(<condition>).then(<value>)` calls.\\n    An `.otherwise(<value if condition is false>)` can be appended at the end.\\n    If not appended, and the condition is not `True`, `None` will be returned.\\n\\n    Arguments:\\n        predicates: Condition(s) that must be met in order to apply the subsequent\\n            statement. Accepts one or more boolean expressions, which are implicitly\\n            combined with `&`. String input is parsed as a column name.\\n\\n    Returns:\\n        A \\\"When\\\" object, which `.then` can be called on.\\n\\n    Examples:\\n        >>> import pandas as pd\\n        >>> import narwhals as nw\\n        >>>\\n        >>> data = {\\\"a\\\": [1, 2, 3], \\\"b\\\": [5, 10, 15]}\\n        >>> df_native = pd.DataFrame(data)\\n        >>> nw.from_native(df_native).with_columns(\\n        ...     nw.when(nw.col(\\\"a\\\") < 2)\\n        ...     .then(5)\\n        ...     .when(nw.col(\\\"a\\\") < 3)\\n        ...     .then(6)\\n        ...     .otherwise(6)\\n        ...     .alias(\\\"a_when\\\")\\n        ... )\\n        \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n        |Narwhals DataFrame|\\n        |------------------|\\n        |    a   b  a_when |\\n        | 0  1   5       5 |\\n        | 1  2  10       6 |\\n     "
+    },
+    {
+      "tool_use_id": "toolu_01YDpscb25jbyfyAAMS5zvA8",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"narwhals.functions\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"value\",\"type\":\"IntoExpr | NonNestedLiteral\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Then\"}],\"semantics\":{\"summary\":\"Method then\"},\"id\":\"narwhals.functions:When#then\",\"import\":\"from narwhals.functions import When\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"value\",\"type\":\"IntoExpr | NonNestedLiteral\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"Then\",\"returns_classes\":[\"narwhals.functions:Then\"],\"next\":\"returns Then \u2192 get_symbol(ids=['narwhals.functions:Then']) to see its members\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_018fMxDwe9vNuFr2DAHZBrWv",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"narwhals.functions\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"nodes\",\"type\":\"ExprNode\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class Then\"},\"id\":\"narwhals.functions:Then\",\"import\":\"from narwhals.functions import Then\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"nodes\",\"type\":\"ExprNode\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"narwhals.functions:Then#__add__\",\"kind\":\"method\",\"summary\":\"Method __add__\"},{\"id\":\"narwhals.functions:Then#__and__\",\"kind\":\"method\",\"summary\":\"Method __and__\"},{\"id\":\"narwhals.functions:Then#__bool__\",\"kind\":\"method\",\"summary\":\"Method __bool__\"},{\"id\":\"narwhals.functions:Then#__eq__\",\"kind\":\"method\",\"summary\":\"Method __eq__\"},{\"id\":\"narwhals.functions:Then#__floordiv__\",\"kind\":\"method\",\"summary\":\"Method __floordiv__\"},{\"id\":\"narwhals.functions:Then#__ge__\",\"kind\":\"method\",\"summary\":\"Method __ge__\"},{\"id\":\"narwhals.functions:Then#__gt__\",\"kind\":\"method\",\"summary\":\"Method __gt__\"},{\"id\":\"narwhals.functions:Then#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"narwhals.functions:Then#__le__\",\"kind\":\"method\",\"summary\":\"Method __le__\"},{\"id\":\"narwhals.functions:Then#__lt__\",\"kind\":\"method\",\"summary\":\"Method __lt__\"},{\"id\":\"narwhals.functions:Then#__mod__\",\"kind\":\"method\",\"summary\":\"Method __mod__\"},{\"id\":\"narwhals.functions:Then#__mul__\",\"kind\":\"method\",\"summary\":\"Method __mul__\"},{\"id\":\"narwhals.functions:Then#__ne__\",\"kind\":\"method\",\"summary\":\"Method __ne__\"},{\"id\":\"narwhals.functions:Then#__or__\",\"kind\":\"method\",\"summary\":\"Method __or__\"},{\"id\":\"narwhals.functions:Then#__pow__\",\"kind\":\"method\",\"summary\":\"Method __pow__\"},{\"id\":\"narwhals.functions:Then#__repr__\",\"kind\":\"method\",\"summary\":\"Pretty-print the expression by combining all nodes in the metadata.\"},{\"id\":\"narwhals.functions:Then#__sub__\",\"kind\":\"method\",\"summary\":\"Method __sub__\"},{\"id\":\"narwhals.functions:Then#__truediv__\",\"kind\":\"met"
+    },
+    {
+      "tool_use_id": "toolu_014W47Dq7V4UguPsVQaUzz1t",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"narwhals.functions\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"otherwise_value\",\"type\":\"IntoExpr | NonNestedLiteral\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"Expr\"}],\"semantics\":{\"summary\":\"Method otherwise\"},\"id\":\"narwhals.functions:Then#otherwise\",\"import\":\"from narwhals.functions import Then\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"otherwise_value\",\"type\":\"IntoExpr | NonNestedLiteral\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"Expr\",\"returns_classes\":[\"narwhals.stable.v1:Expr\",\"narwhals.stable.v2:Expr\",\"narwhals:Expr\"],\"next\":\"returns Expr \u2192 get_symbol(ids=['narwhals.stable.v1:Expr']) to see its members\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01Meqm8LtXTuKfSRGKv7GNKX",
+      "content": "{\"results\":[{\"id\":\"narwhals._arrow.namespace:ArrowDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._arrow.namespace import ArrowDataFrame\",\"resolved_via_alias\":\"narwhals._arrow.dataframe:ArrowDataFrame#with_columns\"},{\"id\":\"narwhals.typing:CompliantDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals.typing import CompliantDataFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantDataFrame#with_columns\"},{\"id\":\"narwhals._compliant:CompliantFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._compliant import CompliantFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantFrame#with_columns\"},{\"id\":\"narwhals.typing:CompliantLazyFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals.typing import CompliantLazyFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantLazyFrame#with_columns\"},{\"id\":\"narwhals._compliant:EagerDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._compliant import EagerDataFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:EagerDataFrame#with_columns\"}],\"total\":224,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_018opp7LuktL1NMu2g7cemWi",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"narwhals.dataframe\",\"aliases\":[\"narwhals.testing.asserts.frame:DataFrame\",\"narwhals:DataFrame\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"df\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"level\",\"type\":\"Literal[full, lazy, interchange]\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Narwhals DataFrame, backed by a native eager dataframe.\",\"description\":\"Warning:\\n        This class is not meant to be instantiated directly - instead:\\n\\n        - If the native object is a eager dataframe from one of the supported\\n            backend (e.g. pandas.DataFrame, polars.DataFrame, pyarrow.Table),\\n            you can use [`narwhals.from_native`][]:\\n            ```py\\n            narwhals.from_native(native_dataframe)\\n            narwhals.from_native(native_dataframe, eager_only=True)\\n            ```\\n\\n        - If the object is a dictionary of column names and generic sequences mapping\\n            (e.g. `dict[str, list]`), you can create a DataFrame via\\n            [`narwhals.from_dict`][]:\\n            ```py\\n            narwhals.from_dict(\\n                data={\\\"a\\\": [1, 2, 3]},\\n                backend=narwhals.get_native_namespace(another_object),\\n            )\\n            ```\"},\"id\":\"narwhals:DataFrame\",\"resolved_via_alias\":\"narwhals.dataframe:DataFrame\",\"import\":\"from narwhals import DataFrame\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"df\",\"type\":\"Any\"},{\"name\":\"level\",\"type\":\"Literal[full, lazy, interchange]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"narwhals:DataFrame#__contains__\",\"kind\":\"method\",\"summary\":\"Method __contains__\"},{\"id\":\"narwhals:DataFrame#__eq__\",\"kind\":\"method\",\"summary\":\"Method __eq__\"},{\"id\":\"narwhals:DataFrame#__getitem__\",\"kind\":\"method\",\"summary\":\"Extract column or slice of DataFrame.\"},{\"id\":\"narwhals:DataFrame#__init__\",\"kind\":\"method\",\"summary\":\"Method __ini"
+    },
+    {
+      "tool_use_id": "toolu_0164KUiqZLW6HEF8Z5jAad2h",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"narwhals.dataframe\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"exprs\",\"type\":\"IntoExpr | Iterable[IntoExpr]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Column(s) to add, specified as positional arguments.\\nAccepts expression input. Strings are parsed as column names, other\\nnon-expression inputs are parsed as literals.\"},{\"name\":\"named_exprs\",\"type\":\"IntoExpr\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional columns to add, specified as keyword arguments.\\nThe columns will be renamed to the keyword used.\"}],\"returns\":\"Self\"}],\"semantics\":{\"summary\":\"Add columns to this DataFrame.\",\"description\":\"Added columns will replace existing columns with the same name.\\n\\n        Arguments:\\n            *exprs: Column(s) to add, specified as positional arguments.\\n                     Accepts expression input. Strings are parsed as column names, other\\n                     non-expression inputs are parsed as literals.\\n\\n            **named_exprs: Additional columns to add, specified as keyword arguments.\\n                            The columns will be renamed to the keyword used.\\n\\n        Note:\\n            Creating a new DataFrame using this method does not create a new copy of\\n            existing data.\\n\\n        Examples:\\n            >>> import pandas as pd\\n            >>> import narwhals as nw\\n            >>> df_native = pd.DataFrame({\\\"a\\\": [1, 2], \\\"b\\\": [0.5, 4.0]})\\n            >>> (\\n            ...     nw.from_native(df_native)\\n            ...     .with_columns((nw.col(\\\"a\\\") * 2).alias(\\\"a*2\\\"))\\n            ...     .to_native()\\n            ... )\\n               a    b  a*2\\n            0  1  0.5    2\\n            1  2  4.0    4\",\"examples\":[{\"code\":\">>> import pandas as pd\\n>>> import narwhals as nw\\n>>> df_native = pd.DataFrame({\\\"a\\\": [1, 2], \\\"b\\\": [0.5, 4.0]})\\n>>> (\\n...     nw.from_native(df_native)\\n...     .with_columns((nw.col(\\\"a\\\") * 2).alias(\\\"a*2\\\"))\\n...  "
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

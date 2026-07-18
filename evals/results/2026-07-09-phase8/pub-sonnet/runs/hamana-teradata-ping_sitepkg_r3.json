@@ -1,0 +1,55 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom hamana.connector.db.teradata import TeradataConnector\n\nconnector = TeradataConnector(\n    host=\"your-teradata-host\",\n    user=\"your-teradata-user\",\n    password=os.environ[\"TERADATA_PASSWORD\"],\n)\n\nconnector.ping()\nprint(\"Teradata database is reachable.\")",
+  "result_text": "I have everything needed to write correct code using `TeradataConnector` and its `ping()` connectivity check.\n\n```python\nimport os\n\nfrom hamana.connector.db.teradata import TeradataConnector\n\nconnector = TeradataConnector(\n    host=\"your-teradata-host\",\n    user=\"your-teradata-user\",\n    password=os.environ[\"TERADATA_PASSWORD\"],\n)\n\nconnector.ping()\nprint(\"Teradata database is reachable.\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 899,
+    "cache_read_tokens": 179851,
+    "cache_creation_tokens": 12297,
+    "cost_usd": 0.1412523,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 19.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/hamana*/**",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/teradata.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/base.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/hamana/connector/db/interface.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

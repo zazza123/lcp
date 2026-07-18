@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-timeout",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\ntry:\n    response = requests.get(\"https://api.example.com/slow\", timeout=3)\n    print(response.text)\nexcept requests.exceptions.Timeout:\n    print(\"timed out\")",
+  "result_text": "```python\nimport requests\n\ntry:\n    response = requests.get(\"https://api.example.com/slow\", timeout=3)\n    print(response.text)\nexcept requests.exceptions.Timeout:\n    print(\"timed out\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 297,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6916,
+    "cost_usd": 0.0168452,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

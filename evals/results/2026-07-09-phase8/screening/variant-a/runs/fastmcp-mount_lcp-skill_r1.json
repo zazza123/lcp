@@ -1,0 +1,118 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nfrom fastmcp import FastMCP\n\n\nasync def main():\n    # Create math sub-server with tools\n    math_server = FastMCP(\"math_service\")\n\n    @math_server.call_tool\n    def add(a: float, b: float) -> float:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n\n    @math_server.call_tool\n    def subtract(a: float, b: float) -> float:\n        \"\"\"Subtract two numbers.\"\"\"\n        return a - b\n\n    @math_server.call_tool\n    def multiply(a: float, b: float) -> float:\n        \"\"\"Multiply two numbers.\"\"\"\n        return a * b\n\n    @math_server.call_tool\n    def divide(a: float, b: float) -> float:\n        \"\"\"Divide two numbers.\"\"\"\n        if b == 0:\n            raise ValueError(\"Cannot divide by zero\")\n        return a / b\n\n    # Create main server\n    main_server = FastMCP(\"main_server\")\n\n    # Mount math sub-server under \"math\" namespace\n    main_server.mount(math_server, namespace=\"math\")\n\n    # Run the main server\n    await main_server.run()\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nfrom fastmcp import FastMCP\n\n\nasync def main():\n    # Create math sub-server with tools\n    math_server = FastMCP(\"math_service\")\n\n    @math_server.call_tool\n    def add(a: float, b: float) -> float:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n\n    @math_server.call_tool\n    def subtract(a: float, b: float) -> float:\n        \"\"\"Subtract two numbers.\"\"\"\n        return a - b\n\n    @math_server.call_tool\n    def multiply(a: float, b: float) -> float:\n        \"\"\"Multiply two numbers.\"\"\"\n        return a * b\n\n    @math_server.call_tool\n    def divide(a: float, b: float) -> float:\n        \"\"\"Divide two numbers.\"\"\"\n        if b == 0:\n            raise ValueError(\"Cannot divide by zero\")\n        return a / b\n\n    # Create main server\n    main_server = FastMCP(\"main_server\")\n\n    # Mount math sub-server under \"math\" namespace\n    main_server.mount(math_server, namespace=\"math\")\n\n    # Run the main server\n    await main_server.run()\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 4047,
+    "cache_read_tokens": 243726,
+    "cache_creation_tokens": 19114,
+    "cost_usd": 0.0829106,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 59.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server attach mount compose prefix sub",
+        "library": "fastmcp",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Server",
+        "library": "fastmcp",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#import_server"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "mount",
+        "library": "fastmcp",
+        "kind": "method",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#mount"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01LXf9egdaYsCRhSukpAhneg",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Y4mazde72J3YMT8mCbT4oR",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_018QdgCVAMyhxmW6KVPJKbui",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01S58fjQiTqYGhAtHL9p25Sf",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_019PD1PTipXkDfJTZgUewFnG",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01SE5HrAxjuhUdPHvJtwc191",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

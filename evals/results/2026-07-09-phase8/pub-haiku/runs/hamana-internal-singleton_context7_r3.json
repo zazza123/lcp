@@ -1,0 +1,44 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana.db import DatabaseConnector\n\n# Get the singleton instance\nconnector = DatabaseConnector.instance()\n\n# Get the underlying raw database connection\nraw_connection = connector.connection",
+  "result_text": "```python\nfrom hamana.db import DatabaseConnector\n\n# Get the singleton instance\nconnector = DatabaseConnector.instance()\n\n# Get the underlying raw database connection\nraw_connection = connector.connection\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 17,
+    "output_tokens": 628,
+    "cache_read_tokens": 44110,
+    "cache_creation_tokens": 286,
+    "cost_usd": 0.008140000000000001,
+    "num_turns": 2,
+    "tool_calls": 1,
+    "duration_s": 14.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:context7",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.db.DatabaseConnector",
+      "hamana.db.DatabaseConnector.instance"
+    ],
+    "error": null
+  }
+}

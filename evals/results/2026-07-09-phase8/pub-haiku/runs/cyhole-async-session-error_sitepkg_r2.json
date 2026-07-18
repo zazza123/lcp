@@ -1,0 +1,82 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import asyncio\nimport os\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import AsyncClientAPISessionNotAvailable\n\n\nasync def main() -> None:\n    api_key = os.environ.get(\"SOLANA_FM_API_KEY\")\n    solana_fm = SolanaFM(api_key)\n    \n    try:\n        await solana_fm.async_client.get_tagged_tokens_list()\n    except AsyncClientAPISessionNotAvailable as e:\n        print(f\"Caught expected exception: {e}\")\n\n\nasyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import AsyncClientAPISessionNotAvailable\n\n\nasync def main() -> None:\n    api_key = os.environ.get(\"SOLANA_FM_API_KEY\")\n    solana_fm = SolanaFM(api_key)\n    \n    try:\n        await solana_fm.async_client.get_tagged_tokens_list()\n    except AsyncClientAPISessionNotAvailable as e:\n        print(f\"Caught expected exception: {e}\")\n\n\nasyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 49,
+    "output_tokens": 1952,
+    "cache_read_tokens": 193489,
+    "cache_creation_tokens": 24995,
+    "cost_usd": 0.07914790000000001,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 31.8
+  },
+  "tool_call_details": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole",
+        "pattern": "**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solana_fm/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solana_fm/exception.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/solana_fm/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/core/exception.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/core/client.py",
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/core/client.py",
+        "limit": 200,
+        "offset": 99
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

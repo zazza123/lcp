@@ -1,0 +1,108 @@
+{
+  "case_id": "cyhole-solscan-defi-activities",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solscan import SolscanInteraction\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    account_address = \"YOUR_ACCOUNT_ADDRESS\"\n\n    solscan = SolscanInteraction(api_v2_key=api_key)\n    response = solscan.client.v2.get_account_defi_activities(address=account_address)\n\n    print(response)\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solscan import SolscanInteraction\n\ndef main() -> None:\n    api_key = os.environ[\"SOLSCAN_API_KEY\"]\n    account_address = \"YOUR_ACCOUNT_ADDRESS\"\n\n    solscan = SolscanInteraction(api_v2_key=api_key)\n    response = solscan.client.v2.get_account_defi_activities(address=account_address)\n\n    print(response)\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 7894,
+    "cache_read_tokens": 404550,
+    "cache_creation_tokens": 36860,
+    "cost_usd": 0.46099499999999993,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 115.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell shell execute command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read write edit grep glob file search",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute shell command terminal",
+        "max_results": 15
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Write,Edit,Read,Bash,Grep,Glob,WebFetch,WebSearch",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QxSx75yPDhAEJq7g94vpxd",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01U6Km4cqhwAUaY5id6NF4AE",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01QX2EwVCn2izpXbSWrYLRkT",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solscan.v2.interaction:Solscan"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solscan.SolscanInteraction"
+    ],
+    "error": null
+  }
+}

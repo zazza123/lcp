@@ -1,0 +1,105 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\nimport sys\n\nfrom cyhole.helius import Helius\nfrom cyhole.helius.schema import PostGetAssetsByOwnerBody\n\n\ndef main() -> None:\n    api_key = os.environ.get(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise RuntimeError(\"HELIUS_API_KEY environment variable is not set\")\n\n    if len(sys.argv) < 2:\n        raise SystemExit(f\"Usage: {sys.argv[0]} <wallet_address>\")\n    wallet_address = sys.argv[1]\n\n    helius = Helius(api_key=api_key)\n\n    body = PostGetAssetsByOwnerBody(owner_address=wallet_address)\n    response = helius.client.post_get_assets_by_owner(body)\n\n    assets = response.result.items\n    print(f\"Found {len(assets)} DAS asset(s) for wallet {wallet_address}:\")\n    for asset in assets:\n        print(f\"- {asset.id} ({asset.interface})\")\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\nimport sys\n\nfrom cyhole.helius import Helius\nfrom cyhole.helius.schema import PostGetAssetsByOwnerBody\n\n\ndef main() -> None:\n    api_key = os.environ.get(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise RuntimeError(\"HELIUS_API_KEY environment variable is not set\")\n\n    if len(sys.argv) < 2:\n        raise SystemExit(f\"Usage: {sys.argv[0]} <wallet_address>\")\n    wallet_address = sys.argv[1]\n\n    helius = Helius(api_key=api_key)\n\n    body = PostGetAssetsByOwnerBody(owner_address=wallet_address)\n    response = helius.client.post_get_assets_by_owner(body)\n\n    assets = response.result.items\n    print(f\"Found {len(assets)} DAS asset(s) for wallet {wallet_address}:\")\n    for asset in assets:\n        print(f\"- {asset.id} ({asset.interface})\")\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 18,
+    "output_tokens": 2381,
+    "cache_read_tokens": 368755,
+    "cache_creation_tokens": 18974,
+    "cost_usd": 0.2602395,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 37.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/cyhole/**/helius/**"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Helius",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def .*[Aa]sset|DAS|das\"",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/interaction.py",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def .*[Aa]sset|DAS|das\"",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/interaction.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/interaction.py",
+        "offset": 1,
+        "limit": 230
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/client.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class PostGetAssetsByOwnerBody|class PostGetAssetsByOwnerResponse",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/schema.py",
+        "output_mode": "content",
+        "-n": true,
+        "-A": 20
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class AssetList",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/schema.py",
+        "output_mode": "content",
+        "-n": true,
+        "-A": 15
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class Asset\\(BaseModel\\)",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/helius/schema.py",
+        "output_mode": "content",
+        "-n": true,
+        "-A": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

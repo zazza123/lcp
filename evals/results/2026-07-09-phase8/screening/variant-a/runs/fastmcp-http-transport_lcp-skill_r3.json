@@ -1,0 +1,203 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp.server import FastMCP\nfrom fastmcp.tools import tool\n\n\nserver = FastMCP(\"SimpleServer\")\n\n\n@tool\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\n    \n    Args:\n        name: The name to greet\n        \n    Returns:\n        A greeting message\n    \"\"\"\n    return f\"Hello, {name}!\"\n\n\nserver.add_tool(greet)\n\nif __name__ == \"__main__\":\n    server.run(\"streamable-http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp.server import FastMCP\nfrom fastmcp.tools import tool\n\n\nserver = FastMCP(\"SimpleServer\")\n\n\n@tool\ndef greet(name: str) -> str:\n    \"\"\"Greet someone by name.\n    \n    Args:\n        name: The name to greet\n        \n    Returns:\n        A greeting message\n    \"\"\"\n    return f\"Hello, {name}!\"\n\n\nserver.add_tool(greet)\n\nif __name__ == \"__main__\":\n    server.run(\"streamable-http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 123,
+    "output_tokens": 3169,
+    "cache_read_tokens": 429846,
+    "cache_creation_tokens": 14145,
+    "cost_usd": 0.0872426,
+    "num_turns": 15,
+    "tool_calls": 14,
+    "duration_s": 57.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server run http streamable",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "server",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "class Server",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "fastmcp",
+        "module": "fastmcp.server",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#run",
+          "fastmcp.server:FastMCP#run_http_async",
+          "fastmcp.server:FastMCP#add_tool"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool decorator",
+        "library": "fastmcp",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool",
+        "library": "fastmcp",
+        "module": "fastmcp.tools",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "def tool",
+        "library": "fastmcp",
+        "kind": "function",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.tools.function_tool:tool"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01FFi3KCuy8vKiLZpyrmUP3w",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01AsDt7A9LygSrCa73mhimf9",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01XYC1SXfvq8rFM8GmrAyNHk",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01SWG8xBCfGcFR9RBmhTdYyM",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01XD2Hpc6z4RUeFvN9F6HLWr",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01J44LEmxqi7iea2NPCUrgt2",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01BgwbKBmiZGUBk6ojNM3jyo",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_014PKS9MC53gBdnDFArPbBdV",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01G99pqUkUozMF38yNfXbnuh",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01PY5rKZK1BnD5YSC5FfBtds",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_012ppgJNkJpX4KL7JzM4ZctE",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01B2uPVnD9xyQG972p3tuoPi",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01X9jgsvRzYFEWhAQ9PrAXN9",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

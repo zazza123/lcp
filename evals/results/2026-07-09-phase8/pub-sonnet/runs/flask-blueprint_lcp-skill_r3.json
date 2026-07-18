@@ -1,0 +1,98 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "# ---------------------------------------------------------------------------\n# File: users.py\n# The \"users\" modular component: a Flask Blueprint containing all user-\n# related routes. It knows nothing about the main application other than\n# that it will be mounted somewhere by the caller.\n# ---------------------------------------------------------------------------\nfrom flask import Blueprint, jsonify, request\n\nusers_bp = Blueprint(\"users\", __name__)\n\n_USERS = {\n    1: {\"id\": 1, \"name\": \"Alice\"},\n    2: {\"id\": 2, \"name\": \"Bob\"},\n}\n_NEXT_ID = 3\n\n\n@users_bp.get(\"/\")\ndef list_users():\n    return jsonify(list(_USERS.values()))\n\n\n@users_bp.get(\"/<int:user_id>\")\ndef get_user(user_id):\n    user = _USERS.get(user_id)\n    if user is None:\n        return jsonify({\"error\": \"user not found\"}), 404\n    return jsonify(user)\n\n\n@users_bp.post(\"/\")\ndef create_user():\n    global _NEXT_ID\n    payload = request.get_json(silent=True) or {}\n    name = payload.get(\"name\")\n    if not name:\n        return jsonify({\"error\": \"'name' is required\"}), 400\n\n    user = {\"id\": _NEXT_ID, \"name\": name}\n    _USERS[_NEXT_ID] = user\n    _NEXT_ID += 1\n    return jsonify(user), 201\n\n\n@users_bp.delete(\"/<int:user_id>\")\ndef delete_user(user_id):\n    if user_id not in _USERS:\n        return jsonify({\"error\": \"user not found\"}), 404\n    del _USERS[user_id]\n    return \"\", 204\n\n\n# ---------------------------------------------------------------------------\n# File: app.py\n# Main application: creates the Flask app and attaches the \"users\"\n# component under the \"/users\" URL prefix.\n# ---------------------------------------------------------------------------\nfrom flask import Flask\n\nfrom users import users_bp\n\n\ndef create_app():\n    app = Flask(__name__)\n    app.register_blueprint(users_bp, url_prefix=\"/users\")\n\n    @app.get(\"/\")\n    def index():\n        return {\"message\": \"Welcome to the LCP demo API\"}\n\n    return app\n\n\napp = create_app()\n\nif __name__ == \"__main__\":\n    app.run(debug=True)",
+  "result_text": "```python\n# ---------------------------------------------------------------------------\n# File: users.py\n# The \"users\" modular component: a Flask Blueprint containing all user-\n# related routes. It knows nothing about the main application other than\n# that it will be mounted somewhere by the caller.\n# ---------------------------------------------------------------------------\nfrom flask import Blueprint, jsonify, request\n\nusers_bp = Blueprint(\"users\", __name__)\n\n_USERS = {\n    1: {\"id\": 1, \"name\": \"Alice\"},\n    2: {\"id\": 2, \"name\": \"Bob\"},\n}\n_NEXT_ID = 3\n\n\n@users_bp.get(\"/\")\ndef list_users():\n    return jsonify(list(_USERS.values()))\n\n\n@users_bp.get(\"/<int:user_id>\")\ndef get_user(user_id):\n    user = _USERS.get(user_id)\n    if user is None:\n        return jsonify({\"error\": \"user not found\"}), 404\n    return jsonify(user)\n\n\n@users_bp.post(\"/\")\ndef create_user():\n    global _NEXT_ID\n    payload = request.get_json(silent=True) or {}\n    name = payload.get(\"name\")\n    if not name:\n        return jsonify({\"error\": \"'name' is required\"}), 400\n\n    user = {\"id\": _NEXT_ID, \"name\": name}\n    _USERS[_NEXT_ID] = user\n    _NEXT_ID += 1\n    return jsonify(user), 201\n\n\n@users_bp.delete(\"/<int:user_id>\")\ndef delete_user(user_id):\n    if user_id not in _USERS:\n        return jsonify({\"error\": \"user not found\"}), 404\n    del _USERS[user_id]\n    return \"\", 204\n\n\n# ---------------------------------------------------------------------------\n# File: app.py\n# Main application: creates the Flask app and attaches the \"users\"\n# component under the \"/users\" URL prefix.\n# ---------------------------------------------------------------------------\nfrom flask import Flask\n\nfrom users import users_bp\n\n\ndef create_app():\n    app = Flask(__name__)\n    app.register_blueprint(users_bp, url_prefix=\"/users\")\n\n    @app.get(\"/\")\n    def index():\n        return {\"message\": \"Welcome to the LCP demo API\"}\n\n    return app\n\n\napp = create_app()\n\nif __name__ == \"__main__\":\n    app.run(debug=True)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 2079,
+    "cache_read_tokens": 197858,
+    "cache_creation_tokens": 10364,
+    "cost_usd": 0.15276240000000002,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 37.1
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "flask",
+        "version": "3.1.3"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Blueprint",
+        "library": "flask",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Flask register_blueprint",
+        "library": "flask",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "flask:Blueprint",
+          "flask:Flask#register_blueprint",
+          "flask:Blueprint#route",
+          "flask:Flask#route"
+        ],
+        "library": "flask"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_0131nVNdxMys3wYab6Vn18Rx",
+      "content": "{\"status\":\"loaded\",\"name\":\"flask\",\"version\":\"3.1.3\",\"language\":\"python\",\"symbol_count\":513,\"module_count\":24,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='flask') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_019gpPxV7AHSEtoHUcpknpwV",
+      "content": "{\"results\":[{\"id\":\"flask:Blueprint\",\"kind\":\"class\",\"summary\":\"Class Blueprint\",\"import\":\"from flask import Blueprint\",\"resolved_via_alias\":\"flask.blueprints:Blueprint\"},{\"id\":\"flask.blueprints:SansioBlueprint\",\"kind\":\"class\",\"summary\":\"Represents a blueprint, a collection of routes and other app-related functions that can be registered on a real application later.\",\"import\":\"from flask.blueprints import SansioBlueprint\",\"resolved_via_alias\":\"flask.sansio.blueprints:Blueprint\"},{\"id\":\"flask:Request#blueprint\",\"kind\":\"attribute\",\"summary\":\"The registered name of the current blueprint.\",\"import\":\"from flask import Request\",\"resolved_via_alias\":\"flask.wrappers:Request#blueprint\"},{\"id\":\"flask.blueprints:BlueprintSetupState\",\"kind\":\"class\",\"summary\":\"Temporary holder object for registering a blueprint with the application.  An instance of this class is created by the :meth:`~flask.Blueprint.make_setup_state` method and later passed to all register callback functions.\",\"import\":\"from flask.blueprints import BlueprintSetupState\",\"resolved_via_alias\":\"flask.sansio.blueprints:BlueprintSetupState\"},{\"id\":\"flask:Request#blueprints\",\"kind\":\"attribute\",\"summary\":\"The registered names of the current blueprint upwards through parent blueprints.\",\"import\":\"from flask import Request\",\"resolved_via_alias\":\"flask.wrappers:Request#blueprints\"},{\"id\":\"flask:Flask#iter_blueprints\",\"kind\":\"method\",\"summary\":\"Iterates over all blueprints by the order they were registered.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#iter_blueprints\"},{\"id\":\"flask:Flask#register_blueprint\",\"kind\":\"method\",\"summary\":\"Register a :class:`~flask.Blueprint` on the application. Keyword arguments passed to this method will override the defaults set on the blueprint.\",\"import\":\"from flask import Flask\",\"resolved_via_alias\":\"flask.app:Flask#register_blueprint\"},{\"id\":\"flask:Blueprint#register_blueprint\",\"kind\":\"method\",\"summary\":\"Register a :class:`~flask.Blueprint` on this blueprint. Ke"
+    },
+    {
+      "tool_use_id": "toolu_01DpsFvWPKPEtQmikLCVM6nm",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01ChTrbQqs2t2TzooNGhv2sY",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"flask.blueprints\",\"aliases\":[\"flask.debughelpers:Blueprint\",\"flask:Blueprint\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"import_name\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"static_folder\",\"type\":\"UnionType[str, PathLike[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"static_url_path\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"template_folder\",\"type\":\"UnionType[str, PathLike[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"url_prefix\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"subdomain\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"url_defaults\",\"type\":\"UnionType[dict[str, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"root_path\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"cli_group\",\"type\":\"UnionType[str, None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class Blueprint\"},\"id\":\"flask:Blueprint\",\"resolved_via_alias\":\"flask.blueprints:Blueprint\",\"import\":\"from flask import Blueprint\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"name\",\"type\":\"str\"},{\"name\":\"import_name\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"static_folder\",\"type\":\"UnionType[str, PathLike[str], None]\",\"default\":null},{\"name\":\"static_url_path\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"template_folder\",\"type\":\"UnionType[str, PathLike[str], None]\",\"default\":null},{\"name\":\"url_prefix\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"subdomain\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"url_defaults\",\"type\":\"UnionType[dict[str, Any], None]\",\"default\":nul"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "flask.request.get_json"
+    ],
+    "error": null
+  }
+}

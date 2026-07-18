@@ -1,0 +1,71 @@
+{
+  "case_id": "cyclopts-parse-no-execute",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import cyclopts\n\napp = cyclopts.App(name=\"calc\")\n\n\n@app.command\ndef add(a: int, b: int) -> int:\n    return a + b\n\n\n@app.command\ndef sub(a: int, b: int) -> int:\n    return a - b\n\n\ncommand, bound, ignored = app.parse_args([\"add\", \"2\", \"3\"])\n\nprint(command.__name__)\nprint(dict(bound.arguments))",
+  "result_text": "Both `parse_args` (raises on unused tokens, doesn't execute) and `parse_known_args` work without executing. I'll use `parse_args` since it validates full consumption of `[\"add\", \"2\", \"3\"]`.\n\n```python\nimport cyclopts\n\napp = cyclopts.App(name=\"calc\")\n\n\n@app.command\ndef add(a: int, b: int) -> int:\n    return a + b\n\n\n@app.command\ndef sub(a: int, b: int) -> int:\n    return a - b\n\n\ncommand, bound, ignored = app.parse_args([\"add\", \"2\", \"3\"])\n\nprint(command.__name__)\nprint(dict(bound.arguments))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1356,
+    "cache_read_tokens": 205053,
+    "cache_creation_tokens": 5934,
+    "cost_usd": 0.1174959,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 27.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def parse_args|def parse_known_args|def _parse",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def parse_args\\(|def parse_known_args\\(|def parse_commands\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "-A": 40
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def parse_args|def parse_known_args",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "offset": 1561,
+        "limit": 200
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "offset": 1750,
+        "limit": 40
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "case_id": "griffe-loader-aliases",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from griffe import GriffeLoader\n\nloader = GriffeLoader(search_paths=[\"./src\"])\nmypkg = loader.load(\"mypkg\")\nunresolved, iterations = loader.resolve_aliases()\n\nprint(f\"Loaded package: {mypkg.name}\")\nprint(f\"Unresolved aliases: {unresolved}\")\nprint(f\"Iterations: {iterations}\")",
+  "result_text": "Verified the API against the installed griffe 2.1.0. Here's the code:\n\n```python\nfrom griffe import GriffeLoader\n\nloader = GriffeLoader(search_paths=[\"./src\"])\nmypkg = loader.load(\"mypkg\")\nunresolved, iterations = loader.resolve_aliases()\n\nprint(f\"Loaded package: {mypkg.name}\")\nprint(f\"Unresolved aliases: {unresolved}\")\nprint(f\"Iterations: {iterations}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 1112,
+    "cache_read_tokens": 234389,
+    "cache_creation_tokens": 7248,
+    "cost_usd": 0.1305267,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 21.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe",
+        "version": "2.1.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GriffeLoader",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "resolve_aliases",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:GriffeLoader",
+          "griffe:GriffeLoader#resolve_aliases"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:GriffeLoader#load"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01PgUeU1czJSkHsd67dvk7AP",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_019NXwEdAmcj1SgQtXfnBPWy",
+      "content": "{\"results\":[{\"id\":\"griffe:GriffeLoader\",\"kind\":\"class\",\"summary\":\"The Griffe loader, allowing to load data from modules.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader\"},{\"id\":\"griffe:inspect\",\"kind\":\"function\",\"summary\":\"Inspect a module.\",\"import\":\"from griffe import inspect\",\"resolved_via_alias\":\"griffe._internal.agents.inspector:inspect\"},{\"id\":\"griffe:visit\",\"kind\":\"function\",\"summary\":\"Parse and visit a module file.\",\"import\":\"from griffe import visit\",\"resolved_via_alias\":\"griffe._internal.agents.visitor:visit\"},{\"id\":\"griffe:ModuleFinder\",\"kind\":\"class\",\"summary\":\"The Griffe finder, allowing to find modules on the file system.\",\"import\":\"from griffe import ModuleFinder\",\"resolved_via_alias\":\"griffe._internal.finder:ModuleFinder\"},{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:Alias#exports\",\"kind\":\"attribute\",\"summary\":\"The names of the objects exported by this (module) object through the `__all__` variable.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#exports\"},{\"id\":\"griffe:Alias#wildcard\",\"kind\":\"attribute\",\"summary\":\"The module on which the wildcard import is performed (if any).\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#wildcard\"}],\"total\":7,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01NtG492E9bU24pBT8yamACw",
+      "content": "{\"results\":[{\"id\":\"griffe:GriffeLoader#resolve_aliases\",\"kind\":\"method\",\"summary\":\"Resolve aliases.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader#resolve_aliases\"},{\"id\":\"griffe:temporary_inspected_package\",\"kind\":\"function\",\"summary\":\"Create and inspect a temporary package.\",\"import\":\"from griffe import temporary_inspected_package\",\"resolved_via_alias\":\"griffe._internal.helpers:temporary_inspected_package\"},{\"id\":\"griffe:temporary_visited_package\",\"kind\":\"function\",\"summary\":\"Create and visit a temporary package.\",\"import\":\"from griffe import temporary_visited_package\",\"resolved_via_alias\":\"griffe._internal.helpers:temporary_visited_package\"},{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\"from griffe import load_git\",\"resolved_via_alias\":\"griffe._internal.loader:load_git\"},{\"id\":\"griffe:load_pypi\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific package version downloaded using pip.\",\"import\":\"from griffe import load_pypi\",\"resolved_via_alias\":\"griffe._internal.loader:load_pypi\"}],\"total\":6,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018NkLLo3DrxWhYURZ9ZrCsH",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.loader\",\"aliases\":[\"griffe:GriffeLoader\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"force_inspection\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"store_source\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"The Griffe loader, allowing to load data from modules.\"},\"id\":\"griffe:GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader\",\"import\":\"from griffe import GriffeLoader\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"default\":null},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"default\":null},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"default\":null},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"default\":null},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"default\":null},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"default\":null},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"default\":true},{\"name\":\"force_inspect"
+    },
+    {
+      "tool_use_id": "toolu_01GcijkqkzUcXpuMhbdcQ7To",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"griffe._internal.loader\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"objspec\",\"type\":\"UnionType[str, Path, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"The Python path of an object, or file path to a module.\"},{\"name\":\"submodules\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to recurse on the submodules.\\nThis parameter only makes sense when loading a package (top-level module).\"},{\"name\":\"try_relative_path\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to try finding the module as a relative path.\"},{\"name\":\"find_stubs_package\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to search for stubs-only package.\\nIf both the package and its stubs are found, they'll be merged together.\\nIf only the stubs are found, they'll be used as the package itself.\"}],\"returns\":\"UnionType[Object, Alias]\",\"returns_description\":\"A Griffe object.\",\"raises\":[{\"type\":\"LoadingError\",\"condition\":\"When loading a module failed for various reasons.\"},{\"type\":\"ModuleNotFoundError\",\"condition\":\"When a module was not found and inspection is disallowed.\"}]}],\"semantics\":{\"summary\":\"Load an object as a Griffe object, given its Python or file path.\",\"description\":\"Note that this will load the whole object's package,\\n        and return only the specified object.\\n        The rest of the package can be accessed from the returned object\\n        with regular methods and properties (`parent`, `members`, etc.).\\n\\n        Examples:\\n            >>> loader.load(\\\"griffe.Module\\\")\\n            Alias(\\\"Module\\\", \\\"griffe._internal.models.Module\\\")\\n\\n        Parameters:\\n            objspec: The Python path of an object, or file path to a module.\\n            submodules: Whether to recurse on the submodules.\\n                This parameter onl"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

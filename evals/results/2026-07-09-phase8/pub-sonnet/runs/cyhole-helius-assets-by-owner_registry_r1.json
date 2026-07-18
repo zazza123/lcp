@@ -1,0 +1,119 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.helius.interaction import Helius\n\nWALLET_ADDRESS = \"REPLACE_WITH_WALLET_ADDRESS\"\n\n\ndef main() -> None:\n    api_key = os.environ[\"HELIUS_API_KEY\"]\n\n    with Helius(api_key=api_key) as helius:\n        response = helius.client.get_assets_by_owner(owner_address=WALLET_ADDRESS)\n\n    for asset in response.result.items:\n        print(asset.id)\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "Apologies \u2014 that last tool call was irrelevant to this task and should be disregarded. Here is the code:\n\n```python\nimport os\n\nfrom cyhole.helius.interaction import Helius\n\nWALLET_ADDRESS = \"REPLACE_WITH_WALLET_ADDRESS\"\n\n\ndef main() -> None:\n    api_key = os.environ[\"HELIUS_API_KEY\"]\n\n    with Helius(api_key=api_key) as helius:\n        response = helius.client.get_assets_by_owner(owner_address=WALLET_ADDRESS)\n\n    for asset in response.result.items:\n        print(asset.id)\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 7328,
+    "cache_read_tokens": 388460,
+    "cache_creation_tokens": 45107,
+    "cost_usd": 0.49716,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 105.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell command execution",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "run terminal command powershell execute script",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Write,Edit,Glob,Grep",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Helius",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "edit file view directory list",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute python code interpreter",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ReportFindings",
+      "input": {
+        "findings": []
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01HFFMfkchfCqjhV6B7XEuG9",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'cyhole': 'cyhole' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01VWFUK5fNCYGCcAcNFzPvZv",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'cyhole' is not loaded.\",\"hint\":\"Call resolve_library('cyhole') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_assets_by_owner"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

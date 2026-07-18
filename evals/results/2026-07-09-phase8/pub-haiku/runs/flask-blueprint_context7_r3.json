@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-blueprint",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from flask import Flask, Blueprint\n\n# Create users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return {\n        'users': [\n            {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},\n            {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},\n            {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com'}\n        ]\n    }\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    users = {\n        1: {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},\n        2: {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},\n        3: {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com'}\n    }\n    if user_id in users:\n        return users[user_id]\n    return {'error': 'User not found'}, 404\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return {\n        'id': 4,\n        'name': 'David',\n        'email': 'david@example.com'\n    }, 201\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return {'message': f'User {user_id} deleted'}, 204\n\n# Create Flask application\napp = Flask(__name__)\n\n# Register users blueprint with URL prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/', methods=['GET'])\ndef home():\n    return {\n        'message': 'Welcome to Flask App',\n        'endpoints': {\n            'home': '/',\n            'users': '/users',\n            'user': '/users/<id>'\n        }\n    }\n\nif __name__ == '__main__':\n    app.run(debug=True, host='127.0.0.1', port=5000)",
+  "result_text": "```python\nfrom flask import Flask, Blueprint\n\n# Create users blueprint\nusers_bp = Blueprint('users', __name__)\n\n@users_bp.route('/', methods=['GET'])\ndef list_users():\n    return {\n        'users': [\n            {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},\n            {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},\n            {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com'}\n        ]\n    }\n\n@users_bp.route('/<int:user_id>', methods=['GET'])\ndef get_user(user_id):\n    users = {\n        1: {'id': 1, 'name': 'Alice', 'email': 'alice@example.com'},\n        2: {'id': 2, 'name': 'Bob', 'email': 'bob@example.com'},\n        3: {'id': 3, 'name': 'Charlie', 'email': 'charlie@example.com'}\n    }\n    if user_id in users:\n        return users[user_id]\n    return {'error': 'User not found'}, 404\n\n@users_bp.route('/', methods=['POST'])\ndef create_user():\n    return {\n        'id': 4,\n        'name': 'David',\n        'email': 'david@example.com'\n    }, 201\n\n@users_bp.route('/<int:user_id>', methods=['DELETE'])\ndef delete_user(user_id):\n    return {'message': f'User {user_id} deleted'}, 204\n\n# Create Flask application\napp = Flask(__name__)\n\n# Register users blueprint with URL prefix\napp.register_blueprint(users_bp, url_prefix='/users')\n\n@app.route('/', methods=['GET'])\ndef home():\n    return {\n        'message': 'Welcome to Flask App',\n        'endpoints': {\n            'home': '/',\n            'users': '/users',\n            'user': '/users/<id>'\n        }\n    }\n\nif __name__ == '__main__':\n    app.run(debug=True, host='127.0.0.1', port=5000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1414,
+    "cache_read_tokens": 22048,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0092838,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 25.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "case_id": "hamana-query-to-sqlite",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query\n\n# Build a Query object from the SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nquery.execute()\n\n# Persist the result to SQLite database as a table named \"orders\"\nquery.persist(\"orders\")",
+  "result_text": "```python\nfrom hamana import Query\n\n# Build a Query object from the SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nquery.execute()\n\n# Persist the result to SQLite database as a table named \"orders\"\nquery.persist(\"orders\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4444,
+    "cache_read_tokens": 22019,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0244309,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 45.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.query:Query#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

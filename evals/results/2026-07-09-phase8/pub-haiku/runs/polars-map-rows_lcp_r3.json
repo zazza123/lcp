@@ -1,0 +1,79 @@
+{
+  "case_id": "polars-map-rows",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [3, 7, 5, 12],\n    \"b\": [8, 4, 6, 2]\n})\n\ndef callback(row):\n    if row[\"a\"] + row[\"b\"] > 10:\n        return \"hi\"\n    else:\n        return \"lo\"\n\nresult = df.map_rows(callback)\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [3, 7, 5, 12],\n    \"b\": [8, 4, 6, 2]\n})\n\ndef callback(row):\n    if row[\"a\"] + row[\"b\"] > 10:\n        return \"hi\"\n    else:\n        return \"lo\"\n\nresult = df.map_rows(callback)\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 79,
+    "output_tokens": 2040,
+    "cache_read_tokens": 191482,
+    "cache_creation_tokens": 12953,
+    "cost_usd": 0.05533319999999999,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 37.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

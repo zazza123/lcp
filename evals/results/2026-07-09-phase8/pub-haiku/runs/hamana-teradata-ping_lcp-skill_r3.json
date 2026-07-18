@@ -1,0 +1,106 @@
+{
+  "case_id": "hamana-teradata-ping",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom hamana.connector.db import Teradata\n\n# Read configuration\nhost = \"your_teradata_host\"\nuser = \"your_teradata_user\"\npassword = os.getenv(\"TERADATA_PASSWORD\")\n\nif not password:\n    raise ValueError(\"TERADATA_PASSWORD environment variable not set\")\n\n# Create Teradata connector\nconnector = Teradata(host=host, user=user, password=password)\n\n# Verify database connectivity using ping\nconnector.ping()\n\nprint(\"Database connectivity verified successfully\")",
+  "result_text": "```python\nimport os\nfrom hamana.connector.db import Teradata\n\n# Read configuration\nhost = \"your_teradata_host\"\nuser = \"your_teradata_user\"\npassword = os.getenv(\"TERADATA_PASSWORD\")\n\nif not password:\n    raise ValueError(\"TERADATA_PASSWORD environment variable not set\")\n\n# Create Teradata connector\nconnector = Teradata(host=host, user=user, password=password)\n\n# Verify database connectivity using ping\nconnector.ping()\n\nprint(\"Database connectivity verified successfully\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1302,
+    "cache_read_tokens": 209022,
+    "cache_creation_tokens": 6958,
+    "cost_usd": 0.0413952,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 27.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Teradata connector",
+        "library": "hamana",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "connectivity check",
+        "library": "hamana",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "check",
+        "library": "hamana",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db:Teradata",
+          "hamana.connector.db.base:DatabaseConnectorABC#ping"
+        ],
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01C2icqMeunTYpZDcvQVUdzX",
+      "content": "{\"status\":\"loaded\",\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"symbol_count\":245,\"module_count\":21,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='hamana') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01NVtSsHXHUG9kiDPMMTDWu6",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db:Teradata#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the Teradata connector with the given parameters. Teradata provides a whole range of options to configure the connection with the database, see `teradatasql` [Documentation](https://github.com/Teradata/python-driver). For this reasons, the most common parameters can be passed directly to the constructor, while all others can be specified directly as keyword arguments.\",\"import\":\"from hamana.connector.db import Teradata\",\"resolved_via_alias\":\"hamana.connector.db.teradata:TeradataConnector#__init__\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01NtLCabZTSAyoZjthXDjFfE",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018DE4K5qDvgdhuiXYexiAUK",
+      "content": "{\"results\":[{\"id\":\"hamana.core.identifier:DateColumn#check_format\",\"kind\":\"method\",\"summary\":\"Function to check if the date format contains a time part.\",\"import\":\"from hamana.core.identifier import DateColumn\",\"resolved_via_alias\":\"hamana.core.column:DateColumn#check_format\"},{\"id\":\"hamana.connector.db.interface:TYPE_CHECKING\",\"kind\":\"constant\",\"summary\":\"Constant TYPE_CHECKING\",\"import\":\"from hamana.connector.db.interface import TYPE_CHECKING\"},{\"id\":\"hamana.connector.db.base:DatabaseConnectorABC#ping\",\"kind\":\"method\",\"summary\":\"Function used to check the database connection.\",\"import\":\"from hamana.connector.db.base import DatabaseConnectorABC\",\"resolved_via_alias\":\"hamana.connector.db.interface:DatabaseConnectorABC#ping\"},{\"id\":\"hamana.core:ColumnIdentifier#is_empty\",\"kind\":\"method\",\"summary\":\"Check if the series is empty.\",\"import\":\"from hamana.core import ColumnIdentifier\",\"resolved_via_alias\":\"hamana.core.identifier:ColumnIdentifier#is_empty\"},{\"id\":\"hamana:Query#adjust_df\",\"kind\":\"method\",\"summary\":\"This function is used to adjust a `pandas.DataFrame` (usually the result of a query) based on the columns provided.\",\"import\":\"from hamana import Query\",\"resolved_via_alias\":\"hamana.connector.db.query:Query#adjust_df\"},{\"id\":\"hamana.connector.file:CSV\",\"kind\":\"class\",\"summary\":\"Class representing the connector to a CSV file.\",\"import\":\"from hamana.connector.file import CSV\",\"resolved_via_alias\":\"hamana.connector.file.csv:CSVConnector\"},{\"id\":\"hamana.core:ColumnIdentifier\",\"kind\":\"class\",\"summary\":\"Class representing an identifier for a column in the `hamana` library.\",\"import\":\"from hamana.core import ColumnIdentifier\",\"resolved_via_alias\":\"hamana.core.identifier:ColumnIdentifier\"}],\"total\":7,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012KJ5vwvZPJA3Y9BKWhtdE3",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"hamana.connector.db.teradata\",\"aliases\":[\"hamana.connector.db:Teradata\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"user\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"password\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"host\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"database\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"port\",\"type\":\"int\",\"required\":false,\"default\":1025,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"logmech\",\"type\":\"str\",\"required\":false,\"default\":\"LDAP\",\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class representing a connector to a Teradata database.\"},\"id\":\"hamana.connector.db:Teradata\",\"resolved_via_alias\":\"hamana.connector.db.teradata:TeradataConnector\",\"import\":\"from hamana.connector.db import Teradata\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"user\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"password\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"host\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"database\",\"type\":\"UnionType[str, None]\",\"default\":null},{\"name\":\"port\",\"type\":\"int\",\"default\":1025},{\"name\":\"logmech\",\"type\":\"str\",\"default\":\"LDAP\"}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"hamana.connector.db:Teradata#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\"},{\"id\":\"hamana.connector.db:Teradata#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\"},{\"id\":\"hamana.connector.db:Teradata#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the Teradata connector with the given parameters. Teradata provides a whole range of options to configure the connection with the database, see `te"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

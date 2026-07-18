@@ -1,0 +1,33 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": null,
+  "result_text": "I don't have access to the `hamana` library's source code or documentation to provide the correct implementation. To write accurate code that accesses the internal singleton database connector class and its raw connection object, I would need:\n\n1. The library's source code or API documentation\n2. The name of the singleton class\n3. The method/attribute to access the raw database connection\n\nCould you provide documentation for the `hamana` library, or share the relevant class names and methods?",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 610,
+    "cache_read_tokens": 22001,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.005259099999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 11.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

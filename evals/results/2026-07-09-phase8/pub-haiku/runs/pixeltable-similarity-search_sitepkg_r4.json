@@ -1,0 +1,36 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Access the existing docs table\ndocs = pxt.get_table('docs')\n\n# Add an embedding column using the sentence-transformers UDF\ndocs['content_embedding'] = pxt.functions.sentence_transformers(\n    docs['content'],\n    model='all-MiniLM-L6-v2'\n)\n\n# Create a vector index for efficient nearest-neighbor lookups\ndocs.create_index('content_embedding', type='vector')\n\n# Generate embedding for the query\nquery_embedding = pxt.functions.sentence_transformers(\n    'climate change policy',\n    model='all-MiniLM-L6-v2'\n)\n\n# Execute semantic similarity search\nresults = docs.select(\n    docs['content'],\n    docs['content_embedding'].similarity(query_embedding).alias('similarity')\n).order_by('similarity', desc=True).limit(5)\n\n# Display results ranked from closest to farthest\nfor row in results.collect():\n    print(f\"Similarity: {row['similarity']:.4f}\")\n    print(f\"Content: {row['content']}\\n\")",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Access the existing docs table\ndocs = pxt.get_table('docs')\n\n# Add an embedding column using the sentence-transformers UDF\ndocs['content_embedding'] = pxt.functions.sentence_transformers(\n    docs['content'],\n    model='all-MiniLM-L6-v2'\n)\n\n# Create a vector index for efficient nearest-neighbor lookups\ndocs.create_index('content_embedding', type='vector')\n\n# Generate embedding for the query\nquery_embedding = pxt.functions.sentence_transformers(\n    'climate change policy',\n    model='all-MiniLM-L6-v2'\n)\n\n# Execute semantic similarity search\nresults = docs.select(\n    docs['content'],\n    docs['content_embedding'].similarity(query_embedding).alias('similarity')\n).order_by('similarity', desc=True).limit(5)\n\n# Display results ranked from closest to farthest\nfor row in results.collect():\n    print(f\"Similarity: {row['similarity']:.4f}\")\n    print(f\"Content: {row['content']}\\n\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4463,
+    "cache_read_tokens": 24145,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0247385,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 41.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.functions.sentence_transformers"
+    ],
+    "error": null
+  }
+}

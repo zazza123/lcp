@@ -1,0 +1,66 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"Event-level mask: >=2 muons above pT threshold with an opposite-charge leading pair.\"\"\"\n    muons = events.Muon\n    good_muons = muons[muons.pt > params[\"pt_threshold\"]]\n\n    at_least_two_muons = ak.num(good_muons, axis=1) >= 2\n\n    padded_muons = ak.pad_none(good_muons, 2, axis=1)\n    leading_muon = padded_muons[:, 0]\n    subleading_muon = padded_muons[:, 1]\n    opposite_charge = (leading_muon.charge * subleading_muon.charge) < 0\n\n    mask = at_least_two_muons & opposite_charge\n    return ak.fill_none(mask, False)\n\n\ndimuon = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n\n# Usage in a configuration:\n# from workflow_config import dimuon\n# preselections = [dimuon]",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"Event-level mask: >=2 muons above pT threshold with an opposite-charge leading pair.\"\"\"\n    muons = events.Muon\n    good_muons = muons[muons.pt > params[\"pt_threshold\"]]\n\n    at_least_two_muons = ak.num(good_muons, axis=1) >= 2\n\n    padded_muons = ak.pad_none(good_muons, 2, axis=1)\n    leading_muon = padded_muons[:, 0]\n    subleading_muon = padded_muons[:, 1]\n    opposite_charge = (leading_muon.charge * subleading_muon.charge) < 0\n\n    mask = at_least_two_muons & opposite_charge\n    return ak.fill_none(mask, False)\n\n\ndimuon = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n\n# Usage in a configuration:\n# from workflow_config import dimuon\n# preselections = [dimuon]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 831,
+    "output_tokens": 3078,
+    "cache_read_tokens": 173097,
+    "cache_creation_tokens": 11718,
+    "cost_usd": 0.1709001,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 48.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pocket_coffea/lib/cut_definition.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pocket_coffea/lib/cuts.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/cut_definition.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pocket_coffea/lib/cut_functions.py"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "**/pocket_coffea/lib/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/pocket_coffea/lib/cut_functions.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

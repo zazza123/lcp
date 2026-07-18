@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "registry",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"CLI with TOML configuration support using cyclopts.\"\"\"\nimport cyclopts\nfrom pathlib import Path\n\n# Create App with TOML config source\napp = cyclopts.App(\n    config_search_paths=[Path(\"pyproject.toml\")],\n    config_section=\"tool.mycli\",\n)\n\n@app.default\ndef main(\n    name: str = \"\",\n    count: int = 1,\n    verbose: bool = False,\n    output: str = \"\",\n):\n    \"\"\"\n    CLI application with TOML config support.\n    \n    Reads defaults from [tool.mycli] in pyproject.toml.\n    Command-line arguments override config file values.\n    \n    Args:\n        name: Name to greet\n        count: Number of greetings\n        verbose: Enable verbose output\n        output: Output file path (optional)\n    \"\"\"\n    for i in range(count):\n        message = f\"{i + 1}. Hello, {name or 'World'}!\"\n        print(message)\n    \n    if verbose:\n        print(\"Verbose mode is enabled\")\n    \n    if output:\n        print(f\"Output file: {output}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"CLI with TOML configuration support using cyclopts.\"\"\"\nimport cyclopts\nfrom pathlib import Path\n\n# Create App with TOML config source\napp = cyclopts.App(\n    config_search_paths=[Path(\"pyproject.toml\")],\n    config_section=\"tool.mycli\",\n)\n\n@app.default\ndef main(\n    name: str = \"\",\n    count: int = 1,\n    verbose: bool = False,\n    output: str = \"\",\n):\n    \"\"\"\n    CLI application with TOML config support.\n    \n    Reads defaults from [tool.mycli] in pyproject.toml.\n    Command-line arguments override config file values.\n    \n    Args:\n        name: Name to greet\n        count: Number of greetings\n        verbose: Enable verbose output\n        output: Output file path (optional)\n    \"\"\"\n    for i in range(count):\n        message = f\"{i + 1}. Hello, {name or 'World'}!\"\n        print(message)\n    \n    if verbose:\n        print(\"Verbose mode is enabled\")\n    \n    if output:\n        print(f\"Output file: {output}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4893,
+    "cache_read_tokens": 22140,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.026688,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 55.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

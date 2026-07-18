@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-redirect-endpoint",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from flask import Flask, redirect, url_for\n\napp = Flask(__name__)\n\n\n@app.route(\"/new\")\ndef new():\n    return \"Welcome to the new page!\"\n\n\n@app.route(\"/old\")\ndef old():\n    return redirect(url_for(\"new\"))\n\n\nif __name__ == \"__main__\":\n    app.run()",
+  "result_text": "```python\nfrom flask import Flask, redirect, url_for\n\napp = Flask(__name__)\n\n\n@app.route(\"/new\")\ndef new():\n    return \"Welcome to the new page!\"\n\n\n@app.route(\"/old\")\ndef old():\n    return redirect(url_for(\"new\"))\n\n\nif __name__ == \"__main__\":\n    app.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 712,
+    "cache_read_tokens": 32939,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0205677,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

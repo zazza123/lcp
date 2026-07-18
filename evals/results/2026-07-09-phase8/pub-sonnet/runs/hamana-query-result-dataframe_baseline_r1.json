@@ -1,0 +1,75 @@
+{
+  "case_id": "hamana-query-result-dataframe",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": null,
+  "result_text": "I don't have tool access in this session to inspect the actual `hamana` package (no Bash/Read/file tools are available to me here, and I don't have verified, reliable knowledge of `hamana`'s real API \u2014 including whether `Query`, its execution method, and its result-to-DataFrame method are actually named what I'd be guessing). Writing \"complete, runnable code\" against a specific pinned version (1.0.1) without confirming the real API would mean presenting a guess as fact, which is the exact failure mode this project's `lcp scan` exists to prevent.\n\nTo get you correct code, one of these would help:\n1. Run `lcp scan hamana -o hamana.lcp.json` yourself and paste me the output (or the relevant symbol entries for `Query` and DataFrame-reading), or\n2. Paste `python -c \"import hamana; help(hamana)\"` output / the relevant class signatures, or\n3. Confirm you'd like me to retry with shell/file tools enabled so I can scan it myself.\n\nI don't want to hand you a code block that looks confident but may call methods that don't exist.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 14,
+    "output_tokens": 3870,
+    "cache_read_tokens": 246901,
+    "cache_creation_tokens": 38358,
+    "cost_usd": 0.3623103,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 55.8
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve library scan hamana",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library_id get_library_docs mcp",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Write,Glob,Grep",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "PowerShell run command",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "execute shell command file read write",
+        "max_results": 15
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.connector.db.query:Query#result"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

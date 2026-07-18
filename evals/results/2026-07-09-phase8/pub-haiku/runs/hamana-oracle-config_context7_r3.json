@@ -1,0 +1,55 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom hamana.connectors.oracle import OracleConfig, OracleConnector\n\n# Read password from environment variable\npassword = os.getenv(\"ORACLE_PASSWORD\")\n\n# Build configuration object\nconfig = OracleConfig(\n    user=\"system\",\n    password=password,\n    host=\"localhost\",\n    service_name=\"XE\"\n)\n\n# Construct connector from configuration\nconnector = OracleConnector(config)\n\n# Execute query\nresult = connector.execute(\"SELECT sysdate FROM dual\")\nprint(result)",
+  "result_text": "```python\nimport os\nfrom hamana.connectors.oracle import OracleConfig, OracleConnector\n\n# Read password from environment variable\npassword = os.getenv(\"ORACLE_PASSWORD\")\n\n# Build configuration object\nconfig = OracleConfig(\n    user=\"system\",\n    password=password,\n    host=\"localhost\",\n    service_name=\"XE\"\n)\n\n# Construct connector from configuration\nconnector = OracleConnector(config)\n\n# Execute query\nresult = connector.execute(\"SELECT sysdate FROM dual\")\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 29,
+    "output_tokens": 1132,
+    "cache_read_tokens": 68028,
+    "cache_creation_tokens": 2635,
+    "cost_usd": 0.0177618,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 34.4
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "hamana oracle connector documentation",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "Oracle connector configuration and query execution"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_015GKWwukSAwn4dWeYgrSRh2",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "hamana.connector.db:Oracle",
+      "hamana.connector.db.oracle:OracleConnector#create_config"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.connectors.oracle.OracleConfig",
+      "hamana.connectors.oracle.OracleConnector"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-custom-route",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nfrom starlette.responses import JSONResponse\nfrom starlette.routing import Route\n\nasync def health_check(request):\n    return JSONResponse({\"status\": \"ok\"})\n\nserver = Server(\"health-check-server\")\n\n# Insert health check route before MCP routes\nhealth_route = Route(\"/health\", endpoint=health_check, methods=[\"GET\"])\nserver.app.routes.insert(0, health_route)\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server.app, host=\"0.0.0.0\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import Server\nfrom starlette.responses import JSONResponse\nfrom starlette.routing import Route\n\nasync def health_check(request):\n    return JSONResponse({\"status\": \"ok\"})\n\nserver = Server(\"health-check-server\")\n\n# Insert health check route before MCP routes\nhealth_route = Route(\"/health\", endpoint=health_check, methods=[\"GET\"])\nserver.app.routes.insert(0, health_route)\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(server.app, host=\"0.0.0.0\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1407,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 7048,
+    "cost_usd": 0.0226546,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 18.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#custom_route"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

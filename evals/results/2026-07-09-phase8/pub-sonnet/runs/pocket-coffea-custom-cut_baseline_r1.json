@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    muons = events.Muon\n    pt_threshold = params[\"pt_threshold\"]\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n\n    padded_muons = ak.pad_none(muons, 2, axis=1)\n    leading = padded_muons[:, 0]\n    subleading = padded_muons[:, 1]\n\n    leading_pt_ok = ak.fill_none(leading.pt > pt_threshold, False)\n    subleading_pt_ok = ak.fill_none(subleading.pt > pt_threshold, False)\n    opposite_charge = ak.fill_none(leading.charge * subleading.charge < 0, False)\n\n    mask = has_two_muons & leading_pt_ok & subleading_pt_ok & opposite_charge\n\n    return ak.where(has_two_muons, mask, False)\n\n\ndef get_dimuon_cut(pt_threshold):\n    return Cut(\n        name=\"dimuon\",\n        params={\"pt_threshold\": pt_threshold},\n        function=dimuon_mask,\n    )\n\n\ndimuon_15 = get_dimuon_cut(pt_threshold=15)\n\npreselections = [dimuon_15]",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cuts import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    muons = events.Muon\n    pt_threshold = params[\"pt_threshold\"]\n\n    has_two_muons = ak.num(muons, axis=1) >= 2\n\n    padded_muons = ak.pad_none(muons, 2, axis=1)\n    leading = padded_muons[:, 0]\n    subleading = padded_muons[:, 1]\n\n    leading_pt_ok = ak.fill_none(leading.pt > pt_threshold, False)\n    subleading_pt_ok = ak.fill_none(subleading.pt > pt_threshold, False)\n    opposite_charge = ak.fill_none(leading.charge * subleading.charge < 0, False)\n\n    mask = has_two_muons & leading_pt_ok & subleading_pt_ok & opposite_charge\n\n    return ak.where(has_two_muons, mask, False)\n\n\ndef get_dimuon_cut(pt_threshold):\n    return Cut(\n        name=\"dimuon\",\n        params={\"pt_threshold\": pt_threshold},\n        function=dimuon_mask,\n    )\n\n\ndimuon_15 = get_dimuon_cut(pt_threshold=15)\n\npreselections = [dimuon_15]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1608,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9873,
+    "cost_usd": 0.0894747,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.Cut"
+    ],
+    "error": null
+  }
+}

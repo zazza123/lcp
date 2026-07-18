@@ -1,0 +1,31 @@
+{
+  "case_id": "pixeltable-query",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Open the existing films table\nfilms = pxt.open_table('films')\n\n# Create a lazy query: filter by year > 1990 and project title and revenue columns\nquery = films.where(films.year > 1990)[['title', 'revenue']]\n\n# Materialize the results locally\nresults = query.collect()\n\n# Display the results\nprint(results)",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Open the existing films table\nfilms = pxt.open_table('films')\n\n# Create a lazy query: filter by year > 1990 and project title and revenue columns\nquery = films.where(films.year > 1990)[['title', 'revenue']]\n\n# Materialize the results locally\nresults = query.collect()\n\n# Display the results\nprint(results)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1325,
+    "cache_read_tokens": 22122,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0088462,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pixeltable.open_table"
+    ],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import cyclopts\nfrom cyclopts.types import ExistingFilePath\n\napp = cyclopts.App()\n\n@app.command\ndef convert(input_file: ExistingFilePath, output_name: str):\n    \"\"\"Convert an existing file.\"\"\"\n    content = input_file.read_text()\n    output_file = input_file.parent / output_name\n    output_file.write_text(content)\n    print(f\"Converted {input_file} to {output_file}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nimport cyclopts\nfrom cyclopts.types import ExistingFilePath\n\napp = cyclopts.App()\n\n@app.command\ndef convert(input_file: ExistingFilePath, output_name: str):\n    \"\"\"Convert an existing file.\"\"\"\n    content = input_file.read_text()\n    output_file = input_file.parent / output_name\n    output_file.write_text(content)\n    print(f\"Converted {input_file} to {output_file}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4702,
+    "cache_read_tokens": 22085,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.025727499999999993,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 49.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts.types:ExistingFile"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.types.ExistingFilePath"
+    ],
+    "error": null
+  }
+}

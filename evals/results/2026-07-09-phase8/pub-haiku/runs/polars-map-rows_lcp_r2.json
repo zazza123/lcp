@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-map-rows",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [3, 5, 8, 12, 6],\n    \"b\": [4, 6, 3, 2, 5]\n})\n\ndef check_sum(row):\n    a, b = row\n    return \"hi\" if a + b > 10 else \"lo\"\n\nresult = df.with_columns(\n    pl.struct([\"a\", \"b\"]).map_rows(check_sum).alias(\"result\")\n)\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndf = pl.DataFrame({\n    \"a\": [3, 5, 8, 12, 6],\n    \"b\": [4, 6, 3, 2, 5]\n})\n\ndef check_sum(row):\n    a, b = row\n    return \"hi\" if a + b > 10 else \"lo\"\n\nresult = df.with_columns(\n    pl.struct([\"a\", \"b\"]).map_rows(check_sum).alias(\"result\")\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3767,
+    "cache_read_tokens": 22118,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0210558,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 29.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

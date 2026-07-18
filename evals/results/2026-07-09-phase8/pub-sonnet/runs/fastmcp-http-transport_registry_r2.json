@@ -1,0 +1,121 @@
+{
+  "case_id": "fastmcp-http-transport",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\nmcp = FastMCP(name=\"SimpleServer\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers and return the result.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\nmcp = FastMCP(name=\"SimpleServer\")\n\n\n@mcp.tool\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers and return the result.\"\"\"\n    return a + b\n\n\nif __name__ == \"__main__\":\n    mcp.run(transport=\"streamable-http\", host=\"127.0.0.1\", port=8000)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 13,
+    "output_tokens": 1777,
+    "cache_read_tokens": 255416,
+    "cache_creation_tokens": 19077,
+    "cost_usd": 0.2177808,
+    "num_turns": 10,
+    "tool_calls": 8,
+    "duration_s": 34.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "FastMCP",
+        "library": "fastmcp",
+        "kind": "class",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "run",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP",
+          "fastmcp.server:FastMCP#run",
+          "fastmcp.server:FastMCP#run_async",
+          "fastmcp.server:FastMCP#run_http_async"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "tool",
+        "library": "fastmcp",
+        "module": "fastmcp.server.server"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#tool"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "using-superpowers"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01FdmiH7M97mPtLjFyvtGVbK",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01GTuvZnAFMZHEwrpy33qcE1",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP\",\"kind\":\"class\",\"summary\":\"Class FastMCP\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP\"},{\"id\":\"fastmcp.server.app:FastMCPApp\",\"kind\":\"class\",\"summary\":\"A Provider that represents an MCP application.\",\"import\":\"from fastmcp.server.app import FastMCPApp\",\"resolved_via_alias\":\"fastmcp.apps.app:FastMCPApp\"},{\"id\":\"fastmcp.client:FastMCPTransport\",\"kind\":\"class\",\"summary\":\"In-memory transport for FastMCP servers.\",\"import\":\"from fastmcp.client import FastMCPTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.memory:FastMCPTransport\"},{\"id\":\"fastmcp.client.transports:FastMCPStdioTransport\",\"kind\":\"class\",\"summary\":\"Transport for running FastMCP servers using the FastMCP CLI.\",\"import\":\"from fastmcp.client.transports import FastMCPStdioTransport\",\"resolved_via_alias\":\"fastmcp.client.transports.stdio:FastMCPStdioTransport\"},{\"id\":\"fastmcp:FastMCPDeprecationWarning\",\"kind\":\"class\",\"summary\":\"Deprecation warning for FastMCP APIs.\",\"import\":\"from fastmcp import FastMCPDeprecationWarning\",\"resolved_via_alias\":\"fastmcp.exceptions:FastMCPDeprecationWarning\"},{\"id\":\"fastmcp.server.server:FastMCPError\",\"kind\":\"class\",\"summary\":\"Base error for FastMCP.\",\"import\":\"from fastmcp.server.server import FastMCPError\",\"resolved_via_alias\":\"fastmcp.exceptions:FastMCPError\"},{\"id\":\"fastmcp.server.http:FastMCPStreamableHTTPSessionManager\",\"kind\":\"class\",\"summary\":\"Session manager that scopes resumability storage per transport session.\",\"import\":\"from fastmcp.server.http import FastMCPStreamableHTTPSessionManager\"},{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI\",\"kind\":\"class\",\"summary\":\"FastMCP server implementation that creates components from an OpenAPI schema.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI\"},{\"id\":\"fastmcp.server.providers:FastMCPProvider\",\"kind\":\"class\",\"summary\":\"Provider that wraps a FastMCP"
+    },
+    {
+      "tool_use_id": "toolu_01413xWoLuT3zN9xbEFe7vt5",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP#run\",\"kind\":\"method\",\"summary\":\"Run the FastMCP server. Note this is a synchronous function.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run\"},{\"id\":\"fastmcp.server:FastMCP#run_async\",\"kind\":\"method\",\"summary\":\"Run the FastMCP server asynchronously.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run_async\"},{\"id\":\"fastmcp.server:FastMCP#run_http_async\",\"kind\":\"method\",\"summary\":\"Run the server using HTTP transport.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run_http_async\"},{\"id\":\"fastmcp.server:FastMCP#run_stdio_async\",\"kind\":\"method\",\"summary\":\"Run the server using stdio transport.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run_stdio_async\"},{\"id\":\"fastmcp.server:FastMCP#call_tool\",\"kind\":\"method\",\"summary\":\"Call a tool by name.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#call_tool\"},{\"id\":\"fastmcp.server:FastMCP#docket\",\"kind\":\"attribute\",\"summary\":\"The Docket instance owned by this server.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#docket\"},{\"id\":\"fastmcp.server:FastMCP#read_resource\",\"kind\":\"method\",\"summary\":\"Read a resource by URI.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#read_resource\"},{\"id\":\"fastmcp.server:FastMCP#render_prompt\",\"kind\":\"method\",\"summary\":\"Render a prompt by name.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#render_prompt\"}],\"total\":8,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01NmkFyvHw8vf21gWxdDxxZK",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"fastmcp.server.server\",\"aliases\":[\"fastmcp.cli.run:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.bulk_tool_caller:FastMCP\",\"fastmcp.contrib.bulk_tool_caller.example:FastMCP\",\"fastmcp.contrib.component_manager.component_manager:FastMCP\",\"fastmcp.contrib.component_manager.example:FastMCP\",\"fastmcp.contrib.mcp_mixin.example:FastMCP\",\"fastmcp.server.context:FastMCP\",\"fastmcp.server.providers.proxy:FastMCP\",\"fastmcp.server:FastMCP\",\"fastmcp.utilities.inspect:FastMCP\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"instructions\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"version\",\"type\":\"str | int | float | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"website_url\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"icons\",\"type\":\"list[mcp.types.Icon] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"auth\",\"type\":\"AuthProvider | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"middleware\",\"type\":\"Sequence[Middleware] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"providers\",\"type\":\"Sequence[Provider] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"transforms\",\"type\":\"Sequence[Transform] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"lifespan\",\"type\":\"LifespanCallable | Lifespan | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tools\",\"type\":\"Sequence[Tool | Callable[..., Any]] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"on_duplicate\",\"type\":\"DuplicateBehavior | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"mask_error_details\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"dereference_schemas\",\"type\":\"bool\""
+    },
+    {
+      "tool_use_id": "toolu_01TQktCthXJsbPgzdZCawRrY",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server:FastMCP#tool\",\"kind\":\"method\",\"summary\":\"Decorator to register a tool.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#tool\"},{\"id\":\"fastmcp.server:FastMCP#add_tool\",\"kind\":\"method\",\"summary\":\"Add a tool to the server.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_tool\"},{\"id\":\"fastmcp.server:FastMCP#add_tool_transformation\",\"kind\":\"method\",\"summary\":\"Add a tool transformation.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#add_tool_transformation\"},{\"id\":\"fastmcp.server:FastMCP#call_tool\",\"kind\":\"method\",\"summary\":\"Call a tool by name.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#call_tool\"},{\"id\":\"fastmcp.server:FastMCP#get_app_tool\",\"kind\":\"method\",\"summary\":\"Query all child providers for an app tool.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#get_app_tool\"},{\"id\":\"fastmcp.server:FastMCP#get_tool\",\"kind\":\"method\",\"summary\":\"Get a tool by name, filtering disabled tools.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#get_tool\"},{\"id\":\"fastmcp.server:FastMCP#get_tool_by_hash\",\"kind\":\"method\",\"summary\":\"Query all child providers for a tool matching a hash.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#get_tool_by_hash\"},{\"id\":\"fastmcp.server:FastMCP#list_tools\",\"kind\":\"method\",\"summary\":\"List all enabled tools from providers.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#list_tools\"},{\"id\":\"fastmcp.server:FastMCP#remove_tool\",\"kind\":\"method\",\"summary\":\"Remove tool(s) from the server.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#remove_tool\"},{\"id\":\"fastmcp.serv"
+    },
+    {
+      "tool_use_id": "toolu_01LUsqRjn7RDbmZWvjjTBnhT",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name_or_fn\",\"type\":\"UnionType[str, Callable[Ellipsis, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Either a function (when used as @tool), a string name, or None\"},{\"name\":\"name\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional name for the tool (keyword-only, alternative to name_or_fn)\"},{\"name\":\"version\",\"type\":\"UnionType[str, int, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"title\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"description\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional description of what the tool does\"},{\"name\":\"icons\",\"type\":\"UnionType[list[Icon], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"tags\",\"type\":\"UnionType[set[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional set of tags for categorizing the tool\"},{\"name\":\"output_schema\",\"type\":\"UnionType[dict[str, Any], ellipsis, None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional JSON schema for the tool's output\"},{\"name\":\"annotations\",\"type\":\"UnionType[ToolAnnotations, dict[str, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional annotations about the tool's behavior\"},{\"name\":\"exclude_args\",\"type\":\"UnionType[list[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional list of argument names to exclude from the tool schema.\\nDeprecated: Use `Depends()` for dependency injection instead.\"},{\"name\":\"meta\",\"type\":\"UnionType[dict[str, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional meta information about the tool\"},{\"n"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

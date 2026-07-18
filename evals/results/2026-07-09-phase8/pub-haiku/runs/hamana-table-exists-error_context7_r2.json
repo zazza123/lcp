@@ -1,0 +1,66 @@
+{
+  "case_id": "hamana-table-exists-error",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query, ImportMode\nimport sqlite3\n\ntry:\n    # Execute a query\n    query = Query(\n        source=\"data_source\",\n        sql=\"SELECT * FROM source_table\"\n    )\n    result = query.execute()\n    \n    # Persist result to SQLite with fail mode (raises exception if table exists)\n    db_path = \"internal.db\"\n    with sqlite3.connect(db_path) as conn:\n        result.import_to_sqlite(\n            connection=conn,\n            table_name=\"sales\",\n            import_mode=ImportMode.FAIL\n        )\n    \n    print(\"Data successfully imported to 'sales' table\")\n\nexcept Exception as e:\n    print(f\"Import failed: {type(e).__name__}: {e}\")",
+  "result_text": "```python\nfrom hamana import Query, ImportMode\nimport sqlite3\n\ntry:\n    # Execute a query\n    query = Query(\n        source=\"data_source\",\n        sql=\"SELECT * FROM source_table\"\n    )\n    result = query.execute()\n    \n    # Persist result to SQLite with fail mode (raises exception if table exists)\n    db_path = \"internal.db\"\n    with sqlite3.connect(db_path) as conn:\n        result.import_to_sqlite(\n            connection=conn,\n            table_name=\"sales\",\n            import_mode=ImportMode.FAIL\n        )\n    \n    print(\"Data successfully imported to 'sales' table\")\n\nexcept Exception as e:\n    print(f\"Import failed: {type(e).__name__}: {e}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 37,
+    "output_tokens": 1801,
+    "cache_read_tokens": 92686,
+    "cache_creation_tokens": 3424,
+    "cost_usd": 0.025158599999999996,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 45.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 hamana",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "hamana",
+        "query": "hamana import mode enum fail when table exists SQLite database"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/hamana/hamana",
+        "query": "import mode enum fail SQLite database table query execution"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01DbpFXvQKHFp3QiUE8YR2JW",
+      "content": "Available Libraries:\n\n- Title: Intel Gaudi\n- Context7-compatible library ID: /websites/habana_ai_en_v1_23_0\n- Description: Intel Gaudi is an AI accelerator platform designed for high-performance deep learning training and inference, featuring optimized software, PyTorch integration, and scalable distributed training capabilities.\n- Code Snippets: 8708\n- Source Reputation: High\n- Benchmark Score: 60\n----------\n- Title: OpenSlide\n- Context7-compatible library ID: /openslide/openslide\n- Description: OpenSlide is a C library for reading whole slide image files, also known as virtual slides. It offers a consistent API for accessing files from various vendors, including Aperio, Hamamatsu, and Philips.\n- Code Snippets: 444\n- Source Reputation: High\n----------\n- Title: Robot Framework Browser POM\n- Context7-compatible library ID: /hasanalpzengin/robotframework-browserpom\n- Description: A Page Object Model extension for Robot Framework Browser that simplifies browser test automation by enabling clean, maintainable Python-based page objects.\n- Code Snippets: 69\n- Source Reputation: High\n----------\n- Title: Sileo Vanilla\n- Context7-compatible library ID: /hamada147/sileo-vanilla\n- Description: A physics-based toast notification library with zero dependencies featuring spring animations, gooey SVG morphing, multiple states and positions, dark mode support, and full TypeScript support.\n- Code Snippets: 86\n- Source Reputation: High\n----------\n- Title: Animate Anyone\n- Context7-compatible library ID: /humanaigc/animateanyone\n- Description: A deep learning system for consistent and controllable image-to-video synthesis that animates characters from static images based on motion sequences.\n- Code Snippets: 5\n- Source Reputation: High"
+    },
+    {
+      "tool_use_id": "toolu_017NfLnhwcgSSvLvkJ3JdyCT",
+      "content": "Library \"/hamana/hamana\" not found. Please check the library ID or your access permissions."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "hamana.connector.db.schema:SQLiteDataImportMode",
+      "hamana.connector.db.exceptions:TableAlreadyExists"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.ImportMode",
+      "hamana.ImportMode.FAIL"
+    ],
+    "error": null
+  }
+}

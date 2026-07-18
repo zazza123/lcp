@@ -1,0 +1,34 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport csv\nfrom cyhole.solana_fm import SolanaFMInteraction\n\napi_key = os.getenv('SOLANA_FM_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\ninteraction = SolanaFMInteraction(api_key=api_key)\n\naccount_address = \"YOUR_SOLANA_ACCOUNT_ADDRESS\"\ntransfers = interaction.get_account_transfers(account_address, format='csv')\n\nreport_file = 'transfers_report.csv'\nwith open(report_file, 'w', newline='', encoding='utf-8') as f:\n    f.write(transfers)\n\nprint(f\"Account transfers exported to {report_file}\")",
+  "result_text": "```python\nimport os\nimport csv\nfrom cyhole.solana_fm import SolanaFMInteraction\n\napi_key = os.getenv('SOLANA_FM_API_KEY')\nif not api_key:\n    raise ValueError(\"SOLANA_FM_API_KEY environment variable not set\")\n\ninteraction = SolanaFMInteraction(api_key=api_key)\n\naccount_address = \"YOUR_SOLANA_ACCOUNT_ADDRESS\"\ntransfers = interaction.get_account_transfers(account_address, format='csv')\n\nreport_file = 'transfers_report.csv'\nwith open(report_file, 'w', newline='', encoding='utf-8') as f:\n    f.write(transfers)\n\nprint(f\"Account transfers exported to {report_file}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1830,
+    "cache_read_tokens": 22116,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.011370600000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.solana_fm.interaction:SolanaFM",
+      "cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.solana_fm.SolanaFMInteraction"
+    ],
+    "error": null
+  }
+}

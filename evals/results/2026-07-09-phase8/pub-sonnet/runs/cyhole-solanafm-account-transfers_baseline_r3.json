@@ -1,0 +1,29 @@
+{
+  "case_id": "cyhole-solanafm-account-transfers",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.solana_fm.schema import GetAccountTransfersParam\n\napi_key = os.environ[\"SOLANA_FM_API_KEY\"]\nclient = SolanaFM(api_key=api_key)\n\naccount_address = \"9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM\"\n\nresponse = client.client.get_account_transfers(\n    account=account_address,\n    params=GetAccountTransfersParam()\n)\n\nprint(response.model_dump_json(indent=2))",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.solana_fm.schema import GetAccountTransfersParam\n\napi_key = os.environ[\"SOLANA_FM_API_KEY\"]\nclient = SolanaFM(api_key=api_key)\n\naccount_address = \"9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM\"\n\nresponse = client.client.get_account_transfers(\n    account=account_address,\n    params=GetAccountTransfersParam()\n)\n\nprint(response.model_dump_json(indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 5265,
+    "cache_read_tokens": 30156,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.08802779999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 57.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

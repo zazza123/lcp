@@ -1,0 +1,116 @@
+{
+  "case_id": "hamana-sqlite-batch-execute",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from hamana.connector.db.sqlite import SQLiteConnector\nfrom hamana.connector.db.query import Query\n\n# NOTE: API unverified \u2014 hamana 1.0.1 was not importable by the available\n# introspection tool in this session, so class/method names below are a\n# best-effort guess. Confirm against `dir(connector)` / installed docs\n# before relying on this.\n\nconnector = SQLiteConnector(database=\"warehouse.db\")\nquery = Query(sql=\"SELECT * FROM events\")\n\nwith connector:\n    for batch in connector.stream(query, batch_size=5000):\n        for row in batch:\n            print(row)",
+  "result_text": "I attempted to verify hamana's API through the mandatory LCP introspection tool, but the scan interpreter available in this session doesn't have `hamana` installed and I have no shell/file access here to repoint it at your environment \u2014 so the following is **unverified** against the actual v1.0.1 API; treat it as a best-effort draft to check against `help()`/source before running.\n\n```python\nfrom hamana.connector.db.sqlite import SQLiteConnector\nfrom hamana.connector.db.query import Query\n\n# NOTE: API unverified \u2014 hamana 1.0.1 was not importable by the available\n# introspection tool in this session, so class/method names below are a\n# best-effort guess. Confirm against `dir(connector)` / installed docs\n# before relying on this.\n\nconnector = SQLiteConnector(database=\"warehouse.db\")\nquery = Query(sql=\"SELECT * FROM events\")\n\nwith connector:\n    for batch in connector.stream(query, batch_size=5000):\n        for row in batch:\n            print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 7716,
+    "cache_read_tokens": 395477,
+    "cache_creation_tokens": 38229,
+    "cost_usd": 0.46381710000000004,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 113.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "find python executable environment site-packages",
+        "max_results": 8
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file contents",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana-lib"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Gr8EFYT68Rn1KShUs6oHbr",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01DzNrHe7Ps5whQyEdv7oyRV",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana': 'hamana' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_015jwvRBiebcNS8yrHX2T5Pn",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'hamana-lib': 'hamana-lib' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01CsznQwFfV9rnzyejooJLjo",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'hamana' is not loaded.\",\"hint\":\"Call resolve_library('hamana') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.sqlite:SQLiteConnector#batch_execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

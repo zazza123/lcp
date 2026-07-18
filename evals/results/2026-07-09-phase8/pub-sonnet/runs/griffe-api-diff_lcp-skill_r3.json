@@ -1,0 +1,109 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\nold_api = griffe.load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\nnew_api = griffe.load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\nfor breakage in griffe.find_breaking_changes(old_api, new_api):\n    print(breakage.explain())",
+  "result_text": "All API surfaces confirmed. Here's the code:\n\n```python\nimport griffe\n\nold_api = griffe.load_git(\"mypkg\", ref=\"v1.0.0\", repo=\".\")\nnew_api = griffe.load_git(\"mypkg\", ref=\"HEAD\", repo=\".\")\n\nfor breakage in griffe.find_breaking_changes(old_api, new_api):\n    print(breakage.explain())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1053,
+    "cache_read_tokens": 208703,
+    "cache_creation_tokens": 9655,
+    "cost_usd": 0.1363719,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 23.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "griffe",
+        "version": "2.1.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "git",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "find_breaking_changes",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "load",
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:load_git",
+          "griffe:find_breaking_changes"
+        ],
+        "library": "griffe"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "griffe:Breakage"
+        ],
+        "library": "griffe"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QeWisU8xuvRmPb4tS3ykni",
+      "content": "{\"status\":\"loaded\",\"name\":\"griffe\",\"version\":\"2.1.0\",\"language\":\"python\",\"symbol_count\":1710,\"module_count\":44,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='griffe') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01HaPRLzPVtKmsrMzB61g5dj",
+      "content": "{\"results\":[{\"id\":\"griffe:GitError\",\"kind\":\"class\",\"summary\":\"Exception raised for errors related to Git.\",\"import\":\"from griffe import GitError\",\"resolved_via_alias\":\"griffe._internal.exceptions:GitError\"},{\"id\":\"griffe:GitInfo\",\"kind\":\"class\",\"summary\":\"Information about a Git repository.\",\"import\":\"from griffe import GitInfo\",\"resolved_via_alias\":\"griffe._internal.git:GitInfo\"},{\"id\":\"griffe:Alias#git_info\",\"kind\":\"attribute\",\"summary\":\"Get the Git information for this object, if available.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#git_info\"},{\"id\":\"griffe:Attribute#git_info\",\"kind\":\"attribute\",\"summary\":\"Git information for this object, if available.\",\"import\":\"from griffe import Attribute\",\"resolved_via_alias\":\"griffe._internal.models:Attribute#git_info\"},{\"id\":\"griffe:Class#git_info\",\"kind\":\"attribute\",\"summary\":\"Git information for this object, if available.\",\"import\":\"from griffe import Class\",\"resolved_via_alias\":\"griffe._internal.models:Class#git_info\"},{\"id\":\"griffe:Function#git_info\",\"kind\":\"attribute\",\"summary\":\"Git information for this object, if available.\",\"import\":\"from griffe import Function\",\"resolved_via_alias\":\"griffe._internal.models:Function#git_info\"},{\"id\":\"griffe:Module#git_info\",\"kind\":\"attribute\",\"summary\":\"Git information for this object, if available.\",\"import\":\"from griffe import Module\",\"resolved_via_alias\":\"griffe._internal.models:Module#git_info\"},{\"id\":\"griffe:Object#git_info\",\"kind\":\"attribute\",\"summary\":\"Git information for this object, if available.\",\"import\":\"from griffe import Object\",\"resolved_via_alias\":\"griffe._internal.models:Object#git_info\"},{\"id\":\"griffe:TypeAlias#git_info\",\"kind\":\"attribute\",\"summary\":\"Git information for this object, if available.\",\"import\":\"from griffe import TypeAlias\",\"resolved_via_alias\":\"griffe._internal.models:TypeAlias#git_info\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\""
+    },
+    {
+      "tool_use_id": "toolu_01MtYNtSYv12SW4G27BphJuy",
+      "content": "{\"results\":[{\"id\":\"griffe:find_breaking_changes\",\"kind\":\"function\",\"summary\":\"Find breaking changes between two versions of the same API.\",\"import\":\"from griffe import find_breaking_changes\",\"resolved_via_alias\":\"griffe._internal.diff:find_breaking_changes\"},{\"id\":\"griffe:\",\"kind\":\"module\",\"summary\":\"Griffe library package.\",\"import\":\"import griffe\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_017kt3cFPjrbeGCUznfv4uYX",
+      "content": "{\"results\":[{\"id\":\"griffe:GriffeLoader#load\",\"kind\":\"method\",\"summary\":\"Load an object as a Griffe object, given its Python or file path.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader#load\"},{\"id\":\"griffe:load\",\"kind\":\"function\",\"summary\":\"Load and return a Griffe object.\",\"import\":\"from griffe import load\",\"resolved_via_alias\":\"griffe._internal.loader:load\"},{\"id\":\"griffe:LoadingError\",\"kind\":\"class\",\"summary\":\"The base exception for all Griffe errors.\",\"import\":\"from griffe import LoadingError\",\"resolved_via_alias\":\"griffe._internal.exceptions:LoadingError\"},{\"id\":\"griffe:load_extensions\",\"kind\":\"function\",\"summary\":\"Load configured extensions.\",\"import\":\"from griffe import load_extensions\",\"resolved_via_alias\":\"griffe._internal.extensions.base:load_extensions\"},{\"id\":\"griffe:load_git\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific Git reference.\",\"import\":\"from griffe import load_git\",\"resolved_via_alias\":\"griffe._internal.loader:load_git\"},{\"id\":\"griffe:load_pypi\",\"kind\":\"function\",\"summary\":\"Load and return a module from a specific package version downloaded using pip.\",\"import\":\"from griffe import load_pypi\",\"resolved_via_alias\":\"griffe._internal.loader:load_pypi\"},{\"id\":\"griffe:ExtensionNotLoadedError\",\"kind\":\"class\",\"summary\":\"Exception raised when an extension could not be loaded.\",\"import\":\"from griffe import ExtensionNotLoadedError\",\"resolved_via_alias\":\"griffe._internal.exceptions:ExtensionNotLoadedError\"},{\"id\":\"griffe:GriffeLoader\",\"kind\":\"class\",\"summary\":\"The Griffe loader, allowing to load data from modules.\",\"import\":\"from griffe import GriffeLoader\",\"resolved_via_alias\":\"griffe._internal.loader:GriffeLoader\"},{\"id\":\"griffe:Alias#overloads\",\"kind\":\"attribute\",\"summary\":\"The overloaded signatures declared in this class/module or for this function.\",\"import\":\"from griffe import Alias\",\"resolved_via_alias\":\"griffe._internal.models:Alias#overloads\"},{\"id\":\"griffe:Extension#"
+    },
+    {
+      "tool_use_id": "toolu_018SduZViGi4fVUZMxxiyFdv",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"griffe._internal.loader\",\"aliases\":[\"griffe:load_git\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"objspec\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional_only\",\"description\":\"The Python path of an object, or file path to a module.\"},{\"name\":\"ref\",\"type\":\"str\",\"required\":false,\"default\":\"HEAD\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A Git reference such as a commit, tag or branch.\"},{\"name\":\"repo\",\"type\":\"str | Path\",\"required\":false,\"default\":\".\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Path to the repository (i.e. the directory *containing* the `.git` directory)\"},{\"name\":\"submodules\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to recurse on the submodules.\\nThis parameter only makes sense when loading a package (top-level module).\"},{\"name\":\"extensions\",\"type\":\"Extensions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The extensions to use.\"},{\"name\":\"search_paths\",\"type\":\"Sequence[str | Path] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The paths to search into (relative to the repository root).\"},{\"name\":\"docstring_parser\",\"type\":\"DocstringStyle | Parser | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The docstring parser to use. By default, no parsing is done.\"},{\"name\":\"docstring_options\",\"type\":\"DocstringOptions | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Docstring parsing options.\"},{\"name\":\"lines_collection\",\"type\":\"LinesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of source code lines.\"},{\"name\":\"modules_collection\",\"type\":\"ModulesCollection | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"A collection of modules.\"},{\"name\":\"allow_inspection\",\"type\":\"bool\",\"required\":false"
+    },
+    {
+      "tool_use_id": "toolu_01A6ontoZBhkEzGrTDzwjL25",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"griffe._internal.diff\",\"aliases\":[\"griffe:Breakage\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"obj\",\"type\":\"Object\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"old_value\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"new_value\",\"type\":\"Any\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"details\",\"type\":\"str\",\"required\":false,\"default\":\"\",\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Breakages can explain what broke from a version to another.\"},\"id\":\"griffe:Breakage\",\"resolved_via_alias\":\"griffe._internal.diff:Breakage\",\"import\":\"from griffe import Breakage\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"obj\",\"type\":\"Object\"},{\"name\":\"old_value\",\"type\":\"Any\"},{\"name\":\"new_value\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"details\",\"type\":\"str\",\"default\":\"\"}],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"griffe:Breakage#__init__\",\"kind\":\"method\",\"summary\":\"Initialize the breakage.\"},{\"id\":\"griffe:Breakage#__repr__\",\"kind\":\"method\",\"summary\":\"Method __repr__\"},{\"id\":\"griffe:Breakage#__str__\",\"kind\":\"method\",\"summary\":\"Method __str__\"},{\"id\":\"griffe:Breakage#as_dict\",\"kind\":\"method\",\"summary\":\"Return this object's data as a dictionary.\"},{\"id\":\"griffe:Breakage#explain\",\"kind\":\"method\",\"summary\":\"Explain the breakage by showing old and new value.\"}]}],\"not_found\":[]}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

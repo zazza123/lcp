@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\nfrom typing import Any, Callable\nfrom datetime import datetime\nimport json\n\nclass LoggingMiddleware:\n    \"\"\"Middleware that logs all incoming requests before handling.\"\"\"\n    \n    def __init__(self, handler: Callable):\n        self.handler = handler\n    \n    async def __call__(self, request: dict) -> Any:\n        timestamp = datetime.now().isoformat()\n        print(f\"\\n[{timestamp}] === INCOMING REQUEST ===\")\n        print(json.dumps(request, indent=2))\n        print(f\"[{timestamp}] === REQUEST FORWARDED ===\\n\")\n        \n        result = await self.handler(request)\n        return result\n\n# Create server instance\nserver = Server(\"logging-server\")\n\n# Define sample tools\n@server.tool(\"add\")\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@server.tool(\"greet\")\ndef greet(name: str) -> str:\n    \"\"\"Greet a user.\"\"\"\n    return f\"Hello, {name}!\"\n\n# Attach logging middleware by wrapping the handler\nserver._handler = LoggingMiddleware(server._handler)\n\nif __name__ == \"__main__\":\n    server.run()",
+  "result_text": "```python\nfrom fastmcp import Server\nfrom typing import Any, Callable\nfrom datetime import datetime\nimport json\n\nclass LoggingMiddleware:\n    \"\"\"Middleware that logs all incoming requests before handling.\"\"\"\n    \n    def __init__(self, handler: Callable):\n        self.handler = handler\n    \n    async def __call__(self, request: dict) -> Any:\n        timestamp = datetime.now().isoformat()\n        print(f\"\\n[{timestamp}] === INCOMING REQUEST ===\")\n        print(json.dumps(request, indent=2))\n        print(f\"[{timestamp}] === REQUEST FORWARDED ===\\n\")\n        \n        result = await self.handler(request)\n        return result\n\n# Create server instance\nserver = Server(\"logging-server\")\n\n# Define sample tools\n@server.tool(\"add\")\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@server.tool(\"greet\")\ndef greet(name: str) -> str:\n    \"\"\"Greet a user.\"\"\"\n    return f\"Hello, {name}!\"\n\n# Attach logging middleware by wrapping the handler\nserver._handler = LoggingMiddleware(server._handler)\n\nif __name__ == \"__main__\":\n    server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3820,
+    "cache_read_tokens": 22105,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.021319499999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 38.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP#add_middleware",
+      "fastmcp.server.middleware:Middleware"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

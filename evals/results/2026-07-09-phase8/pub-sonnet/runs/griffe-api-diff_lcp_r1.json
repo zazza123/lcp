@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import sys\n\nimport griffe\n\n\ndef main() -> int:\n    package_name = \"mypkg\"\n    repo = \".\"\n\n    old_package = griffe.load_git(package_name, ref=\"v1.0.0\", repo=repo)\n    new_package = griffe.load_git(package_name, ref=\"HEAD\", repo=repo)\n\n    breakages = list(griffe.find_breaking_changes(old_package, new_package))\n\n    for breakage in breakages:\n        print(breakage.as_str())\n\n    return 1 if breakages else 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())",
+  "result_text": "```python\nimport sys\n\nimport griffe\n\n\ndef main() -> int:\n    package_name = \"mypkg\"\n    repo = \".\"\n\n    old_package = griffe.load_git(package_name, ref=\"v1.0.0\", repo=repo)\n    new_package = griffe.load_git(package_name, ref=\"HEAD\", repo=repo)\n\n    breakages = list(griffe.find_breaking_changes(old_package, new_package))\n\n    for breakage in breakages:\n        print(breakage.as_str())\n\n    return 1 if breakages else 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2079,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9955,
+    "cost_usd": 0.0970317,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

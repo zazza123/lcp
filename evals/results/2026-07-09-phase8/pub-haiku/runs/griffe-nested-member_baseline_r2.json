@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-nested-member",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "# Retrieve the nested member at \"utils.parsers.parse_date\" using member-lookup method\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\n# Check if it is deprecated and whether it has a docstring\nis_deprecated = member.is_deprecated\nhas_docstring = member.docstring is not None\n\nprint(f\"Is deprecated: {is_deprecated}\")\nprint(f\"Has docstring: {has_docstring}\")",
+  "result_text": "```python\n# Retrieve the nested member at \"utils.parsers.parse_date\" using member-lookup method\nmember = pkg.get_member(\"utils.parsers.parse_date\")\n\n# Check if it is deprecated and whether it has a docstring\nis_deprecated = member.is_deprecated\nhas_docstring = member.docstring is not None\n\nprint(f\"Is deprecated: {is_deprecated}\")\nprint(f\"Has docstring: {has_docstring}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 999,
+    "cache_read_tokens": 22042,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0072082000000000005,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

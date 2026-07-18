@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-decorator",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\nimport polars as pl\n\n@nw.narwhalify\ndef add_total(df):\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\n# Test with pandas\npdf = pd.DataFrame({\n    \"price\": [10, 20, 30],\n    \"quantity\": [2, 3, 4]\n})\nprint(\"Pandas result:\")\nprint(add_total(pdf))\n\n# Test with polars\npf = pl.DataFrame({\n    \"price\": [10, 20, 30],\n    \"quantity\": [2, 3, 4]\n})\nprint(\"\\nPolars result:\")\nprint(add_total(pf))",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\nimport polars as pl\n\n@nw.narwhalify\ndef add_total(df):\n    return df.with_columns(\n        total=nw.col(\"price\") * nw.col(\"quantity\")\n    )\n\n# Test with pandas\npdf = pd.DataFrame({\n    \"price\": [10, 20, 30],\n    \"quantity\": [2, 3, 4]\n})\nprint(\"Pandas result:\")\nprint(add_total(pdf))\n\n# Test with polars\npf = pl.DataFrame({\n    \"price\": [10, 20, 30],\n    \"quantity\": [2, 3, 4]\n})\nprint(\"\\nPolars result:\")\nprint(add_total(pf))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4178,
+    "cache_read_tokens": 22067,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0231057,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 47.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

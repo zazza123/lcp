@@ -1,0 +1,40 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as px\nfrom pixeltable.functions import sentence_transformers\n\n# Initialize pixeltable client\npx.create_client()\n\n# Open the docs table\ndocs = px.open_table('docs')\n\n# Add a computed column with sentence-transformers embeddings\nembedding_model = 'all-MiniLM-L6-v2'\ndocs.add_column(\n    'embeddings',\n    sentence_transformers.embedding(docs['content'], model=embedding_model)\n)\n\n# Create a vector index on the embeddings column for nearest-neighbor search\ndocs.create_index('embeddings', index_type='vector')\n\n# Generate embedding for the query\nquery_text = 'climate change policy'\nquery_embedding = sentence_transformers.embedding(query_text, model=embedding_model)\n\n# Query to find 5 rows semantically closest to the query, ranked by similarity\nresults = (\n    docs\n    .select(['content'])\n    .order_by(docs['embeddings'].cosine_similarity(query_embedding), ascending=False)\n    .limit(5)\n    .collect()\n)\n\nfor i, row in enumerate(results, 1):\n    print(f\"{i}. {row['content']}\")",
+  "result_text": "```python\nimport pixeltable as px\nfrom pixeltable.functions import sentence_transformers\n\n# Initialize pixeltable client\npx.create_client()\n\n# Open the docs table\ndocs = px.open_table('docs')\n\n# Add a computed column with sentence-transformers embeddings\nembedding_model = 'all-MiniLM-L6-v2'\ndocs.add_column(\n    'embeddings',\n    sentence_transformers.embedding(docs['content'], model=embedding_model)\n)\n\n# Create a vector index on the embeddings column for nearest-neighbor search\ndocs.create_index('embeddings', index_type='vector')\n\n# Generate embedding for the query\nquery_text = 'climate change policy'\nquery_embedding = sentence_transformers.embedding(query_text, model=embedding_model)\n\n# Query to find 5 rows semantically closest to the query, ranked by similarity\nresults = (\n    docs\n    .select(['content'])\n    .order_by(docs['embeddings'].cosine_similarity(query_embedding), ascending=False)\n    .limit(5)\n    .collect()\n)\n\nfor i, row in enumerate(results, 1):\n    print(f\"{i}. {row['content']}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3206,
+    "cache_read_tokens": 22086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0182476,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 31.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 5,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.create_client",
+      "pixeltable.functions.sentence_transformers",
+      "pixeltable.functions.sentence_transformers.embedding",
+      "pixeltable.open_table"
+    ],
+    "error": null
+  }
+}

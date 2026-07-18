@@ -1,0 +1,46 @@
+{
+  "case_id": "hamana-query-to-sqlite",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from hamana import Query\n\n# Create a Query object from the SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nresult = query.execute()\n\n# Persist the result to hamana's internal SQLite database as \"orders\" table\nquery.persist(result, table_name=\"orders\")",
+  "result_text": "```python\nfrom hamana import Query\n\n# Create a Query object from the SQL string\nquery = Query(\"SELECT id, amount FROM orders\")\n\n# Execute the query\nresult = query.execute()\n\n# Persist the result to hamana's internal SQLite database as \"orders\" table\nquery.persist(result, table_name=\"orders\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 25,
+    "output_tokens": 2169,
+    "cache_read_tokens": 60934,
+    "cache_creation_tokens": 8677,
+    "cost_usd": 0.0343174,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 29.6
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "ToolSearch",
+        "query": "select:Grep"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Grep",
+        "max_results": 1
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.query:Query#to_sqlite"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

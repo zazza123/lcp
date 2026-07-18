@@ -1,0 +1,118 @@
+{
+  "case_id": "requests-basic-auth",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nresponse = requests.get(\n    \"https://api.example.com/private\",\n    auth=(\"user\", \"pass\")\n)\n\nprint(response.status_code)\nprint(response.text)",
+  "result_text": "```python\nimport requests\n\nresponse = requests.get(\n    \"https://api.example.com/private\",\n    auth=(\"user\", \"pass\")\n)\n\nprint(response.status_code)\nprint(response.text)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 1526,
+    "cache_read_tokens": 218536,
+    "cache_creation_tokens": 3301,
+    "cost_usd": 0.0361606,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 29.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-universal:resolve_library",
+        "args": "requests"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests",
+        "version": "2.34.2"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "basic auth authentication",
+        "library": "requests",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get request",
+        "library": "requests",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:get"
+        ],
+        "library": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "HTTPBasicAuth",
+        "library": "requests",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests.models:HTTPBasicAuth"
+        ],
+        "library": "requests"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01CLFsBhiLixDRy4PCMUpXjo",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012SD71BYrUTWGsT3Fbu4NQW",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01PZ6yATVDmprPrEPUeUdk1n",
+      "content": "{\"results\":[{\"id\":\"requests:get\",\"kind\":\"function\",\"summary\":\"Sends a GET request.\",\"import\":\"from requests import get\",\"resolved_via_alias\":\"requests.api:get\"},{\"id\":\"requests:Session#get\",\"kind\":\"method\",\"summary\":\"Sends a GET request. Returns :class:`Response` object.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session#get\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01TW1oxtKhRjPWdwwXYXBjjw",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"requests.api\",\"aliases\":[\"requests:get\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"url\",\"type\":\"_t.UriType\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"URL for the new :class:`Request` object.\"},{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"(optional) Dictionary, list of tuples or bytes to send\\nin the query string for the :class:`Request`.\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Response\",\"returns_description\":\":class:`Response <Response>` object\"}],\"semantics\":{\"summary\":\"Sends a GET request.\",\"description\":\":param url: URL for the new :class:`Request` object.\\n    :param params: (optional) Dictionary, list of tuples or bytes to send\\n        in the query string for the :class:`Request`.\\n    :param \\\\*\\\\*kwargs: Optional arguments that ``request`` takes.\\n    :return: :class:`Response <Response>` object\\n    :rtype: requests.Response\"},\"id\":\"requests:get\",\"resolved_via_alias\":\"requests.api:get\",\"import\":\"from requests import get\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"url\",\"type\":\"_t.UriType\"},{\"name\":\"kwargs\",\"type\":\"Unpack[_t.GetKwargs]\"}],\"optional_parameters\":[{\"name\":\"params\",\"type\":\"_t.ParamsType\",\"default\":null}],\"is_async\":false,\"return_type\":\"Response\",\"returns_classes\":[\"requests:Response\"],\"next\":\"returns Response \u2192 get_symbol(ids=['requests:Response']) to see its members\"}}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01KPQKqLsQGbTNAgqHqHRHb8",
+      "content": "{\"results\":[{\"id\":\"requests.models:HTTPBasicAuth\",\"kind\":\"class\",\"summary\":\"Attaches HTTP Basic Authentication to the given Request object.\",\"import\":\"from requests.models import HTTPBasicAuth\",\"resolved_via_alias\":\"requests.auth:HTTPBasicAuth\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01EEiGRrESNAYckwFTjyis3r",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"requests.auth\",\"aliases\":[\"requests.models:HTTPBasicAuth\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"username\",\"type\":\"UnionType[bytes, str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"password\",\"type\":\"UnionType[bytes, str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Attaches HTTP Basic Authentication to the given Request object.\"},\"id\":\"requests.models:HTTPBasicAuth\",\"resolved_via_alias\":\"requests.auth:HTTPBasicAuth\",\"import\":\"from requests.models import HTTPBasicAuth\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"username\",\"type\":\"UnionType[bytes, str]\"},{\"name\":\"password\",\"type\":\"UnionType[bytes, str]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"requests.models:HTTPBasicAuth#__call__\",\"kind\":\"method\",\"summary\":\"Method __call__\"},{\"id\":\"requests.models:HTTPBasicAuth#__eq__\",\"kind\":\"method\",\"summary\":\"Method __eq__\"},{\"id\":\"requests.models:HTTPBasicAuth#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"requests.models:HTTPBasicAuth#__ne__\",\"kind\":\"method\",\"summary\":\"Method __ne__\"}]}],\"not_found\":[]}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-cartesian-categories",
+  "arm": "registry",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.categorization import Bin, MultiCut\n\n# Jet multiplicity binning (exactly 4, exactly 5, at least 6 jets)\njet_multiplicity = MultiCut(\n    name=\"njets\",\n    cuts=[\n        Bin(\"4j\", lambda events: events.JetGood.pt.count() == 4),\n        Bin(\"5j\", lambda events: events.JetGood.pt.count() == 5),\n        Bin(\"6j+\", lambda events: events.JetGood.pt.count() >= 6),\n    ]\n)\n\n# B-tag multiplicity binning (exactly 2, at least 3 b-jets)\nbtag_multiplicity = MultiCut(\n    name=\"nbtags\",\n    cuts=[\n        Bin(\"2b\", lambda events: (events.JetGood.btagDeepB > 0.2712).sum() == 2),\n        Bin(\"3b+\", lambda events: (events.JetGood.btagDeepB > 0.2712).sum() >= 3),\n    ]\n)\n\n# Cartesian product of the two binnings\nanalysis_categories = jet_multiplicity & btag_multiplicity",
+  "result_text": "```python\nfrom pocket_coffea.lib.categorization import Bin, MultiCut\n\n# Jet multiplicity binning (exactly 4, exactly 5, at least 6 jets)\njet_multiplicity = MultiCut(\n    name=\"njets\",\n    cuts=[\n        Bin(\"4j\", lambda events: events.JetGood.pt.count() == 4),\n        Bin(\"5j\", lambda events: events.JetGood.pt.count() == 5),\n        Bin(\"6j+\", lambda events: events.JetGood.pt.count() >= 6),\n    ]\n)\n\n# B-tag multiplicity binning (exactly 2, at least 3 b-jets)\nbtag_multiplicity = MultiCut(\n    name=\"nbtags\",\n    cuts=[\n        Bin(\"2b\", lambda events: (events.JetGood.btagDeepB > 0.2712).sum() == 2),\n        Bin(\"3b+\", lambda events: (events.JetGood.btagDeepB > 0.2712).sum() >= 3),\n    ]\n)\n\n# Cartesian product of the two binnings\nanalysis_categories = jet_multiplicity & btag_multiplicity\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1958,
+    "cache_read_tokens": 22070,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.012006000000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.categorization:CartesianSelection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.categorization.Bin"
+    ],
+    "error": null
+  }
+}

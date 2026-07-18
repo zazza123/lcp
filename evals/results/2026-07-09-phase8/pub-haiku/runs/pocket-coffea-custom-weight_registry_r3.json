@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.weights import WeightsBase\n\nclass toy_reweight(WeightsBase):\n    \"\"\"Custom per-event MC weight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def weight(self, events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / nominal.mean()\n    \n    def weight_up(self, events):\n        \"\"\"Nominal weight with +5% variation.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 1.05\n    \n    def weight_down(self, events):\n        \"\"\"Nominal weight with -5% variation.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 0.95\n\n\n# Usage in PocketCoffea configuration:\n# weights_classes = [toy_reweight()]",
+  "result_text": "```python\nfrom pocket_coffea.lib.weights import WeightsBase\n\nclass toy_reweight(WeightsBase):\n    \"\"\"Custom per-event MC weight with symmetric \u00b15% variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    def weight(self, events):\n        \"\"\"Nominal weight: LHEWeight_originalXWGTUP normalized to 1.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        return nominal / nominal.mean()\n    \n    def weight_up(self, events):\n        \"\"\"Nominal weight with +5% variation.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 1.05\n    \n    def weight_down(self, events):\n        \"\"\"Nominal weight with -5% variation.\"\"\"\n        nominal = events.LHEWeight_originalXWGTUP\n        normalized = nominal / nominal.mean()\n        return normalized * 0.95\n\n\n# Usage in PocketCoffea configuration:\n# weights_classes = [toy_reweight()]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2427,
+    "cache_read_tokens": 22078,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014351800000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 30.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.weights.WeightsBase"
+    ],
+    "error": null
+  }
+}

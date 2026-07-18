@@ -1,0 +1,29 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    def on_function_instance(\n        self,\n        *,\n        node: griffe.ObjectNode | object,\n        func: griffe.Function,\n        agent: griffe.Visitor | griffe.Inspector,\n        **kwargs,\n    ) -> None:\n        if func.docstring is not None:\n            func.docstring.value += \" [checked]\"\n\n\nextensions = griffe.load_extensions(AppendCheckedExtension())\nmodule = griffe.load(\"mypkg\", extensions=extensions)",
+  "result_text": "```python\nimport griffe\n\n\nclass AppendCheckedExtension(griffe.Extension):\n    def on_function_instance(\n        self,\n        *,\n        node: griffe.ObjectNode | object,\n        func: griffe.Function,\n        agent: griffe.Visitor | griffe.Inspector,\n        **kwargs,\n    ) -> None:\n        if func.docstring is not None:\n            func.docstring.value += \" [checked]\"\n\n\nextensions = griffe.load_extensions(AppendCheckedExtension())\nmodule = griffe.load(\"mypkg\", extensions=extensions)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 2091,
+    "cache_read_tokens": 30315,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.040465499999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

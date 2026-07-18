@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_hlt_triggers,\n    object_multiplicity,\n    btag_multiplicity,\n)\n\n# Skim cuts (loose prefiltering with HLT triggers)\nskim = {\n    \"hlt_semileptonic\": get_hlt_triggers(\n        primary_dataset=\"semileptonic\",\n        year=2018,\n    ),\n}\n\n# Preselection cuts (basic event selection)\npreselection = {\n    \"jetgood_pt30\": object_multiplicity(\n        collection=\"JetGood\",\n        min_count=4,\n        min_pt=30,\n    ),\n    \"btag_count\": btag_multiplicity(\n        min_count=2,\n    ),\n}\n\n# Configuration dictionary for 2018 semileptonic ttbar analysis\nconfig = {\n    \"skim\": skim,\n    \"preselection\": preselection,\n    \"datasets\": {\n        \"ttbar_semileptonic_2018\": {\n            \"year\": 2018,\n            \"primary_dataset\": \"semileptonic\",\n        }\n    },\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_hlt_triggers,\n    object_multiplicity,\n    btag_multiplicity,\n)\n\n# Skim cuts (loose prefiltering with HLT triggers)\nskim = {\n    \"hlt_semileptonic\": get_hlt_triggers(\n        primary_dataset=\"semileptonic\",\n        year=2018,\n    ),\n}\n\n# Preselection cuts (basic event selection)\npreselection = {\n    \"jetgood_pt30\": object_multiplicity(\n        collection=\"JetGood\",\n        min_count=4,\n        min_pt=30,\n    ),\n    \"btag_count\": btag_multiplicity(\n        min_count=2,\n    ),\n}\n\n# Configuration dictionary for 2018 semileptonic ttbar analysis\nconfig = {\n    \"skim\": skim,\n    \"preselection\": preselection,\n    \"datasets\": {\n        \"ttbar_semileptonic_2018\": {\n            \"year\": 2018,\n            \"primary_dataset\": \"semileptonic\",\n        }\n    },\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4333,
+    "cache_read_tokens": 24160,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.02409,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 41.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.btag_multiplicity",
+      "pocket_coffea.lib.cut_functions.get_hlt_triggers",
+      "pocket_coffea.lib.cut_functions.object_multiplicity"
+    ],
+    "error": null
+  }
+}

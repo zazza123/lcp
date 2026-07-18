@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_definition import Cut\nimport awkward as ak\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    Selects events with at least 2 muons above pT threshold\n    and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get('pt', 15)\n    \n    # Apply pT selection on muons\n    muons = events.Muon\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # Requirement: at least 2 muons\n    has_two_muons = ak.num(muons_selected) >= 2\n    \n    # Requirement: opposite charge for leading pair\n    pair = muons_selected[:, :2]\n    opposite_charge = (\n        (ak.num(pair) >= 2) & \n        (pair[:, 0].charge * pair[:, 1].charge < 0)\n    )\n    \n    return has_two_muons & opposite_charge\n\n\n# Define reusable cut with 15 GeV threshold\ndimuon = Cut(\n    name='dimuon',\n    function=dimuon_mask,\n    params={'pt': 15}\n)\n\n# Usage in configuration:\n# cfg = {\n#     'preselections': [dimuon]\n# }",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_definition import Cut\nimport awkward as ak\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    Selects events with at least 2 muons above pT threshold\n    and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get('pt', 15)\n    \n    # Apply pT selection on muons\n    muons = events.Muon\n    muons_selected = muons[muons.pt > pt_threshold]\n    \n    # Requirement: at least 2 muons\n    has_two_muons = ak.num(muons_selected) >= 2\n    \n    # Requirement: opposite charge for leading pair\n    pair = muons_selected[:, :2]\n    opposite_charge = (\n        (ak.num(pair) >= 2) & \n        (pair[:, 0].charge * pair[:, 1].charge < 0)\n    )\n    \n    return has_two_muons & opposite_charge\n\n\n# Define reusable cut with 15 GeV threshold\ndimuon = Cut(\n    name='dimuon',\n    function=dimuon_mask,\n    params={'pt': 15}\n)\n\n# Usage in configuration:\n# cfg = {\n#     'preselections': [dimuon]\n# }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4465,
+    "cache_read_tokens": 15204,
+    "cache_creation_tokens": 6889,
+    "cost_usd": 0.0376324,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 41.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

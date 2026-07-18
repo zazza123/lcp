@@ -1,0 +1,31 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Create or get reference to videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that expands each video into one row per frame at 1 fps\npxt.create_view(\n    'video_frames',\n    select=\"\"\"\n    SELECT\n        v.id,\n        v.video,\n        frame.image AS frame,\n        frame.frame_number,\n        frame.timestamp\n    FROM videos v\n    CROSS JOIN pxt.extract_frames(v.video, fps=1) AS frame\n    \"\"\"\n)\n\n# Access the view\nframes_view = pxt.get_table('video_frames')\n\n# Example: iterate through frames\nfor row in frames_view.scan():\n    print(f\"Video ID: {row['id']}, Frame: {row['frame_number']}, Timestamp: {row['timestamp']:.2f}s\")",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Create or get reference to videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that expands each video into one row per frame at 1 fps\npxt.create_view(\n    'video_frames',\n    select=\"\"\"\n    SELECT\n        v.id,\n        v.video,\n        frame.image AS frame,\n        frame.frame_number,\n        frame.timestamp\n    FROM videos v\n    CROSS JOIN pxt.extract_frames(v.video, fps=1) AS frame\n    \"\"\"\n)\n\n# Access the view\nframes_view = pxt.get_table('video_frames')\n\n# Example: iterate through frames\nfor row in frames_view.scan():\n    print(f\"Video ID: {row['id']}, Frame: {row['frame_number']}, Timestamp: {row['timestamp']:.2f}s\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3039,
+    "cache_read_tokens": 24103,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0176143,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable.iterators:FrameIterator"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

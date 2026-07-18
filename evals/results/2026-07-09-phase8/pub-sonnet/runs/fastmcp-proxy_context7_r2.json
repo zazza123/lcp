@@ -1,0 +1,82 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\n\n# `backend` is the existing in-memory FastMCP server instance.\n# FastMCP.as_proxy() creates a transparent proxy that forwards every\n# tool, resource, resource template, and prompt request to it.\nproxy = FastMCP.as_proxy(backend, name=\"Proxy Server\")\n\nif __name__ == \"__main__\":\n    proxy.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\n\n# `backend` is the existing in-memory FastMCP server instance.\n# FastMCP.as_proxy() creates a transparent proxy that forwards every\n# tool, resource, resource template, and prompt request to it.\nproxy = FastMCP.as_proxy(backend, name=\"Proxy Server\")\n\nif __name__ == \"__main__\":\n    proxy.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1914,
+    "cache_read_tokens": 215896,
+    "cache_creation_tokens": 13043,
+    "cost_usd": 0.1717728,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 41.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "creating a proxy server that forwards tool and resource requests to a backend FastMCP server",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "FastMCP.as_proxy create proxy server from an in-memory FastMCP server instance"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "FastMCP.as_proxy example passing an existing FastMCP server instance as backend in version 3"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "proxy server in-memory transparent proxy pass existing server object not URL"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01XA1yVPQZ66iXYDb41sbi3H",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 88.92\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms-full_txt\n- Description: FastMCP is a Python framework for building MCP servers, featuring an experimental OpenAPI parser, JWT claims, and optimized payload handling.\n- Code Snippets: 25492\n- Source Reputation: High\n- Benchmark Score: 73.06\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /punkpeye/fastmcp\n- Description: FastMCP is a TypeScript framework for building MCP servers, simplifying the process of handling client sessions, tools, and resources with built-in features like authentication, streaming, and logging.\n- Code Snippets: 732\n- Source Reputation: High\n- Benchmark Score: 80.8"
+    },
+    {
+      "tool_use_id": "toolu_011qwNKXgWfiuo3up9EeP2ve",
+      "content": "### Migrate from `FastMCP.as_proxy()` to `create_proxy()`\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/getting-started/upgrading/from-fastmcp-2.mdx\n\nReplace `FastMCP.as_proxy()` with `create_proxy()` for creating proxy instances. Note that the `backend` keyword argument was renamed to `target` in the new API.\n\n```python\n# Removed in v4\nproxy = FastMCP.as_proxy(\"http://example.com/mcp\")\nproxy = FastMCP.as_proxy(backend=\"http://example.com/mcp\")  # keyword form\n```\n\n```python\n# New\nfrom fastmcp.server import create_proxy\nproxy = create_proxy(\"http://example.com/mcp\")\nproxy = create_proxy(target=\"http://example.com/mcp\")  # as_proxy(backend=X) \"u2192\" create_proxy(target=X)\n```\n\n--------------------------------\n\n### Adding Middleware to a Proxy Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/server.py\n\nShows how to add custom middleware to a proxy using add_middleware().\n\n```python\nfrom fastmcp.server import create_proxy\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNext\nfrom fastmcp import FastMCP\n\nclass MetricsMiddleware(Middleware):\n    async def on_call_tool(self, context: MiddlewareContext, call_next: CallNext):\n        tool_name = context.params.name\n        return await call_next(context)\n\noriginal_server = FastMCP(\"MyServer\")\nproxy = create_proxy(original_server)\nproxy.add_middleware(MetricsMiddleware())\n```\n\n--------------------------------\n\n### Adding Proxied Components to Existing Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/providers/proxy.mdx\n\nDemonstrates how to mount proxied tools from an external FastMCP server onto an existing local FastMCP server, combining local and proxied functionalities.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.server import create_proxy\n\nserver = FastMCP(\"My Server\")\n\n# Add local tools\n@server.tool\ndef local_tool() -> str:\n    return \"Local result\"\n\n# Mount proxied tools from another server\nexternal = cr"
+    },
+    {
+      "tool_use_id": "toolu_016DWZ4Q9cNbPSGLWbJxuLs7",
+      "content": "### Migrate from `FastMCP.as_proxy()` to `create_proxy()`\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/getting-started/upgrading/from-fastmcp-2.mdx\n\nReplace `FastMCP.as_proxy()` with `create_proxy()` for creating proxy instances. Note that the `backend` keyword argument was renamed to `target` in the new API.\n\n```python\n# Removed in v4\nproxy = FastMCP.as_proxy(\"http://example.com/mcp\")\nproxy = FastMCP.as_proxy(backend=\"http://example.com/mcp\")  # keyword form\n```\n\n```python\n# New\nfrom fastmcp.server import create_proxy\nproxy = create_proxy(\"http://example.com/mcp\")\nproxy = create_proxy(target=\"http://example.com/mcp\")  # as_proxy(backend=X) \"u2192\" create_proxy(target=X)\n```\n\n--------------------------------\n\n### Running a Proxy Server over Streamable-HTTP on Host/Port\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/mixins/transport.py\n\nShows how to run a proxy server over streamable-http transport using run_http_async() with custom middleware.\n\n```python\nimport asyncio\nfrom fastmcp.server import create_proxy\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNext\nfrom fastmcp.mcp_config import MCPConfig\nfrom pathlib import Path\n\nclass LoggingMiddleware(Middleware):\n    async def on_call_tool(self, context: MiddlewareContext, call_next: CallNext):\n        result = await call_next(context)\n        return result\n\nconfig = MCPConfig.from_file(Path(\"mcp_config.json\"))\nproxy_server = create_proxy(config)\nproxy_server.add_middleware(LoggingMiddleware())\n\nawait proxy_server.run_http_async(\n    transport=\"streamable-http\",\n    host=\"0.0.0.0\",\n    port=8080,\n    path=\"/mcp\"\n)\n```\n\n### Upgrading from FastMCP 2 > Deprecated Features\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/getting-started/upgrading/from-fastmcp-2.mdx\n\n`FastMCP.as_proxy()` has been replaced by `create_proxy()` and was removed in FastMCP 4.0. When passing the target by keyword, the parameter was renamed from `backend` t"
+    },
+    {
+      "tool_use_id": "toolu_01XG8hNBUuQQc6vycYE2bgNM",
+      "content": "### Adding Proxied Components to Existing Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/providers/proxy.mdx\n\nDemonstrates how to mount proxied tools from an external FastMCP server onto an existing local FastMCP server, combining local and proxied functionalities.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.server import create_proxy\n\nserver = FastMCP(\"My Server\")\n\n# Add local tools\n@server.tool\ndef local_tool() -> str:\n    return \"Local result\"\n\n# Mount proxied tools from another server\nexternal = create_proxy(\"http://external-server/mcp\")\nserver.mount(external)\n\n# Now server has both local and proxied tools\n```\n\n--------------------------------\n\n### Authenticated Proxy Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/integrations/claude-desktop.mdx\n\nThis Python script shows how to create an authenticated proxy server using FastMCP. It uses a BearerAuth client to connect to a remote server with an access token, then passes this client to the proxy.\n\n```python\nfrom fastmcp import Client\nfrom fastmcp.client.auth import BearerAuth\nfrom fastmcp.server import create_proxy\n\n# Create authenticated client\nclient = Client(\n    \"https://api.example.com/mcp/sse\",\n    auth=BearerAuth(token=\"your-access-token\")\n)\n\n# Create proxy using the authenticated client\nproxy = create_proxy(client, name=\"Authenticated Proxy\")\n\nif __name__ == \"__main__\":\n    proxy.run()\n```\n\n--------------------------------\n\n### Adding Middleware to a Proxy Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/server.py\n\nShows how to add custom middleware to a proxy using add_middleware().\n\n```python\nfrom fastmcp.server import create_proxy\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNext\nfrom fastmcp import FastMCP\n\nclass MetricsMiddleware(Middleware):\n    async def on_call_tool(self, context: MiddlewareContext, call_next: CallNext):\n        tool_name = context.params.name\n        retu"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

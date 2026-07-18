@@ -1,0 +1,31 @@
+{
+  "case_id": "cyhole-helius-assets-by-owner",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport sys\nfrom cyhole.helius import Helius\n\ndef list_das_assets(wallet_address: str) -> list:\n    \"\"\"List all Digital Asset Standard assets owned by a wallet address.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n    \n    helius = Helius(api_key=api_key)\n    assets = helius.get_asset_by_owner(owner=wallet_address, sort_by=\"recent\")\n    return assets\n\nif __name__ == \"__main__\":\n    if len(sys.argv) < 2:\n        print(\"Usage: python script.py <wallet_address>\", file=sys.stderr)\n        sys.exit(1)\n    \n    wallet_address = sys.argv[1]\n    \n    try:\n        assets = list_das_assets(wallet_address)\n        print(f\"Found {len(assets)} assets for wallet {wallet_address}\\n\")\n        for asset in assets:\n            print(f\"Asset: {asset.get('id', 'Unknown')}\")\n            print(f\"  Name: {asset.get('content', {}).get('metadata', {}).get('name', 'N/A')}\")\n            print(f\"  Symbol: {asset.get('content', {}).get('metadata', {}).get('symbol', 'N/A')}\")\n            print()\n    except Exception as e:\n        print(f\"Error: {e}\", file=sys.stderr)\n        sys.exit(1)",
+  "result_text": "```python\nimport os\nimport sys\nfrom cyhole.helius import Helius\n\ndef list_das_assets(wallet_address: str) -> list:\n    \"\"\"List all Digital Asset Standard assets owned by a wallet address.\"\"\"\n    api_key = os.getenv(\"HELIUS_API_KEY\")\n    if not api_key:\n        raise ValueError(\"HELIUS_API_KEY environment variable not set\")\n    \n    helius = Helius(api_key=api_key)\n    assets = helius.get_asset_by_owner(owner=wallet_address, sort_by=\"recent\")\n    return assets\n\nif __name__ == \"__main__\":\n    if len(sys.argv) < 2:\n        print(\"Usage: python script.py <wallet_address>\", file=sys.stderr)\n        sys.exit(1)\n    \n    wallet_address = sys.argv[1]\n    \n    try:\n        assets = list_das_assets(wallet_address)\n        print(f\"Found {len(assets)} assets for wallet {wallet_address}\\n\")\n        for asset in assets:\n            print(f\"Asset: {asset.get('id', 'Unknown')}\")\n            print(f\"  Name: {asset.get('content', {}).get('metadata', {}).get('name', 'N/A')}\")\n            print(f\"  Symbol: {asset.get('content', {}).get('metadata', {}).get('symbol', 'N/A')}\")\n            print()\n    except Exception as e:\n        print(f\"Error: {e}\", file=sys.stderr)\n        sys.exit(1)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1712,
+    "cache_read_tokens": 22060,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.010775,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 20.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyhole.helius.client:HeliusClient#post_get_assets_by_owner"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

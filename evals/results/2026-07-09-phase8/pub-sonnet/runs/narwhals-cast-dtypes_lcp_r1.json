@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-cast-dtypes",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\n\ndef convert_columns(df: nw.DataFrame) -> nw.DataFrame:\n    return df.with_columns(\n        nw.col(\"user_id\").cast(nw.Int32),\n        nw.col(\"score\").cast(nw.Float32),\n    )",
+  "result_text": "```python\nimport narwhals as nw\n\n\ndef convert_columns(df: nw.DataFrame) -> nw.DataFrame:\n    return df.with_columns(\n        nw.col(\"user_id\").cast(nw.Int32),\n        nw.col(\"score\").cast(nw.Float32),\n    )\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 509,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9952,
+    "cost_usd": 0.0734637,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "case_id": "cyhole-dexscreener-token-pairs",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyhole.dex_screener import DexScreener\n\n# Example SPL token mint address (SOL token)\nmint_address = \"So11111111111111111111111111111111111111112\"\n\ndex = DexScreener()\nresponse = dex.client.get_token_pairs(\"solana\", mint_address)\n\nprint(f\"Number of trading pairs: {len(response.root)}\")",
+  "result_text": "```python\nfrom cyhole.dex_screener import DexScreener\n\n# Example SPL token mint address (SOL token)\nmint_address = \"So11111111111111111111111111111111111111112\"\n\ndex = DexScreener()\nresponse = dex.client.get_token_pairs(\"solana\", mint_address)\n\nprint(f\"Number of trading pairs: {len(response.root)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 57,
+    "output_tokens": 1798,
+    "cache_read_tokens": 180373,
+    "cache_creation_tokens": 20876,
+    "cost_usd": 0.0688363,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 31.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages",
+        "pattern": "cyhole*"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "cyhole",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages",
+        "type": "py",
+        "head_limit": 5
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole",
+        "pattern": "**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/client.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/interaction.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyhole/dex_screener/schema.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

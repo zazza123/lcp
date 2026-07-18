@@ -1,0 +1,143 @@
+{
+  "case_id": "narwhals-decorator",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from narwhals import narwhalify, col\n\n\n@narwhalify\ndef add_total(df):\n    return df.with_columns(total=col(\"price\") * col(\"quantity\"))",
+  "result_text": "```python\nfrom narwhals import narwhalify, col\n\n\n@narwhalify\ndef add_total(df):\n    return df.with_columns(total=col(\"price\") * col(\"quantity\"))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 97,
+    "output_tokens": 1430,
+    "cache_read_tokens": 294892,
+    "cache_creation_tokens": 6420,
+    "cost_usd": 0.04957620000000001,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 29.3
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "resolve_library",
+        "args": "narwhals"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "dataframe_agnostic decorator",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "decorator narwhals function",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "narwhals main module functions",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "narwhals",
+        "module": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "agnostic",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:narwhalify"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016Y9tBaLAutBmnsN6dbip9j",
+      "content": "2 validation errors for call[resolve_library]\nname\n  Missing required argument [type=missing_argument, input_value={'library': 'narwhals'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing_argument\nlibrary\n  Unexpected keyword argument [type=unexpected_keyword_argument, input_value='narwhals', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/unexpected_keyword_argument"
+    },
+    {
+      "tool_use_id": "toolu_01WWYF3f8YW6r8cejD1cRZ66",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01Pr6JAywQmvRZHNSFdXi7g6",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_015L3R7jiw4PwxZu87DJVUK4",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01DtS4JSyw4YUYCncxGuUNTF",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01WRn8JbaW7uJ2D5fUDsDRuC",
+      "content": "{\"results\":[{\"id\":\"narwhals:\",\"kind\":\"module\",\"summary\":\"Module narwhals\",\"import\":\"import narwhals\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01BTay5MMdnRpJbjBZeuCju4",
+      "content": "{\"library\":{\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"narwhals\",\"symbols\":1},{\"module\":\"narwhals._arrow\",\"symbols\":1},{\"module\":\"narwhals._arrow.dataframe\",\"symbols\":56},{\"module\":\"narwhals._arrow.expr\",\"symbols\":100},{\"module\":\"narwhals._arrow.group_by\",\"symbols\":8},{\"module\":\"narwhals._arrow.namespace\",\"symbols\":28},{\"module\":\"narwhals._arrow.selectors\",\"symbols\":114},{\"module\":\"narwhals._arrow.series\",\"symbols\":120},{\"module\":\"narwhals._arrow.series_cat\",\"symbols\":11},{\"module\":\"narwhals._arrow.series_dt\",\"symbols\":45},{\"module\":\"narwhals._arrow.series_list\",\"symbols\":18},{\"module\":\"narwhals._arrow.series_str\",\"symbols\":28},{\"module\":\"narwhals._arrow.series_struct\",\"symbols\":11},{\"module\":\"narwhals._arrow.typing\",\"symbols\":2},{\"module\":\"narwhals._arrow.utils\",\"symbols\":45},{\"module\":\"narwhals._compliant\",\"symbols\":1},{\"module\":\"narwhals._compliant.any_namespace\",\"symbols\":81},{\"module\":\"narwhals._compliant.column\",\"symbols\":65},{\"module\":\"narwhals._compliant.dataframe\",\"symbols\":155},{\"module\":\"narwhals._compliant.expr\",\"symbols\":376},{\"module\":\"narwhals._compliant.group_by\",\"symbols\":14},{\"module\":\"narwhals._compliant.namespace\",\"symbols\":95},{\"module\":\"narwhals._compliant.selectors\",\"symbols\":129},{\"module\":\"narwhals._compliant.series\",\"symbols\":348},{\"module\":\"narwhals._compliant.typing\",\"symbols\":1},{\"module\":\"narwhals._compliant.window\",\"symbols\":3},{\"module\":\"narwhals._constants\",\"symbols\":12},{\"module\":\"narwhals._dask\",\"symbols\":1},{\"module\":\"narwhals._dask.expr_dt\",\"symbols\":31},{\"module\":\"narwhals._duckdb\",\"symbols\":1},{\"module\":\"narwhals._duckdb.typing\",\"symbols\":3},{\"module\":\"narwhals._duration\",\"symbols\":1},{\"module\":\"narwhals._enum\",\"symbols\":2},{\"module\":\"narwhals._exceptions\",\"symbols\":4},{\"module\":\"narwhals._expression_parsing\",\"symbols\":49},{\"module\":\"narwhals._ibis\",\"symbols\":1},{\"module\":\"narwhals._ibis.expr_struct\",\"symbols\":6},{\"module\":\"narwhals._ibis.group_by\",\"sy"
+    },
+    {
+      "tool_use_id": "toolu_016YhXox9QCNMs3fCNoTdxu9",
+      "content": "{\"results\":[{\"id\":\"narwhals.stable.v1:narwhalify\",\"kind\":\"function\",\"summary\":\"Decorate function so it becomes dataframe-agnostic.\",\"import\":\"from narwhals.stable.v1 import narwhalify\"},{\"id\":\"narwhals.stable.v2:narwhalify\",\"kind\":\"function\",\"summary\":\"Decorate function so it becomes dataframe-agnostic.\",\"import\":\"from narwhals.stable.v2 import narwhalify\"},{\"id\":\"narwhals:narwhalify\",\"kind\":\"function\",\"summary\":\"Decorate function so it becomes dataframe-agnostic.\",\"import\":\"from narwhals import narwhalify\",\"resolved_via_alias\":\"narwhals.translate:narwhalify\"},{\"id\":\"narwhals:DataFrame#lazy\",\"kind\":\"method\",\"summary\":\"Restrict available API methods to lazy-only ones.\",\"import\":\"from narwhals import DataFrame\",\"resolved_via_alias\":\"narwhals.dataframe:DataFrame#lazy\"},{\"id\":\"narwhals:Expr#ewm_mean\",\"kind\":\"method\",\"summary\":\"Compute exponentially-weighted moving average.\",\"import\":\"from narwhals import Expr\",\"resolved_via_alias\":\"narwhals.expr:Expr#ewm_mean\"},{\"id\":\"narwhals.functions:Then#ewm_mean\",\"kind\":\"method\",\"summary\":\"Compute exponentially-weighted moving average.\",\"import\":\"from narwhals.functions import Then\"},{\"id\":\"narwhals:mean_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the mean of all values horizontally across columns.\",\"import\":\"from narwhals import mean_horizontal\",\"resolved_via_alias\":\"narwhals.functions:mean_horizontal\"},{\"id\":\"narwhals.stable.v1:Expr#ewm_mean\",\"kind\":\"method\",\"summary\":\"Compute exponentially-weighted moving average.\",\"import\":\"from narwhals.stable.v1 import Expr\"},{\"id\":\"narwhals.stable.v2:Expr#ewm_mean\",\"kind\":\"method\",\"summary\":\"Compute exponentially-weighted moving average.\",\"import\":\"from narwhals.stable.v2 import Expr\"}],\"total\":9,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01BZpGqf82ER5wJVcgLopfJL",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.translate\",\"aliases\":[\"narwhals:narwhalify\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"func\",\"type\":\"Callable[..., Any] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Function to wrap in a `from_native`-`to_native` block.\"},{\"name\":\"pass_through\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determine what happens if the object can't be converted to Narwhals\\n- `False`: raise an error\\n- `True` (default): pass object through as-is\"},{\"name\":\"eager_only\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to only allow eager objects\\n- `False` (default): don't require `native_object` to be eager\\n- `True`: only convert to Narwhals if `native_object` is eager\"},{\"name\":\"series_only\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to only allow Series\\n- `False` (default): don't require `native_object` to be a Series\\n- `True`: only convert to Narwhals if `native_object` is a Series\"},{\"name\":\"allow_series\",\"type\":\"bool | None\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether to allow Series (default is only Dataframe / Lazyframe)\\n- `False` or `None`: don't convert to Narwhals if `native_object` is a Series\\n- `True` (default): allow `native_object` to be a Series\"}],\"returns\":\"Callable[..., Any]\",\"returns_description\":\"Decorated function.\"}],\"semantics\":{\"summary\":\"Decorate function so it becomes dataframe-agnostic.\",\"description\":\"This will try to convert any dataframe/series-like object into the Narwhals\\n    respective DataFrame/Series, while leaving the other parameters as they are.\\n    Similarly, if the output of the function is a Narwhals DataFrame or Series, it will be\\n    converted back to the original dataframe/series type, while if the output is another\\n  "
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

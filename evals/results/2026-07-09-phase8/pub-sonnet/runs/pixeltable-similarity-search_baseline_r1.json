@@ -1,0 +1,29 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "baseline",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\n# Connect to the existing table\ndocs = pxt.get_table('docs')\n\n# Create an embedding index on the \"content\" column using the\n# sentence-transformers UDF pixeltable ships, with the all-MiniLM-L6-v2 model\ndocs.add_embedding_index(\n    'content',\n    string_embed=sentence_transformer.using(model_id='all-MiniLM-L6-v2')\n)\n\n# Query: 5 rows whose content is semantically closest to the query string,\n# ranked from closest to farthest\nquery = \"climate change policy\"\nsim = docs.content.similarity(query)\n\nresults = (\n    docs.order_by(sim, asc=False)\n    .limit(5)\n    .select(docs.content, similarity=sim)\n    .collect()\n)\n\nprint(results)",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\n# Connect to the existing table\ndocs = pxt.get_table('docs')\n\n# Create an embedding index on the \"content\" column using the\n# sentence-transformers UDF pixeltable ships, with the all-MiniLM-L6-v2 model\ndocs.add_embedding_index(\n    'content',\n    string_embed=sentence_transformer.using(model_id='all-MiniLM-L6-v2')\n)\n\n# Query: 5 rows whose content is semantically closest to the query string,\n# ranked from closest to farthest\nquery = \"climate change policy\"\nsim = docs.content.similarity(query)\n\nresults = (\n    docs.order_by(sim, asc=False)\n    .limit(5)\n    .select(docs.content, similarity=sim)\n    .collect()\n)\n\nprint(results)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 763,
+    "cache_read_tokens": 20369,
+    "cache_creation_tokens": 9869,
+    "cost_usd": 0.0767757,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 12.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

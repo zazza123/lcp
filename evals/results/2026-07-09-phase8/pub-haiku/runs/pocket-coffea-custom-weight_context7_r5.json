@@ -1,0 +1,31 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "class ToyReweight:\n    \"\"\"Custom MC weight with symmetric \u00b15% variations normalized to 1\"\"\"\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    nominal = staticmethod(\n        lambda events: events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n    )\n    up = staticmethod(\n        lambda events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 1.05\n    )\n    down = staticmethod(\n        lambda events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 0.95\n    )\n\n\n# Usage in PocketCoffea analysis:\n# cfg.weights_classes = [ToyReweight]",
+  "result_text": "```python\nclass ToyReweight:\n    \"\"\"Custom MC weight with symmetric \u00b15% variations normalized to 1\"\"\"\n    name = \"toy_reweight\"\n    has_variations = True\n    \n    nominal = staticmethod(\n        lambda events: events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n    )\n    up = staticmethod(\n        lambda events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 1.05\n    )\n    down = staticmethod(\n        lambda events: (events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()) * 0.95\n    )\n\n\n# Usage in PocketCoffea analysis:\n# cfg.weights_classes = [ToyReweight]\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4034,
+    "cache_read_tokens": 22132,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.022392199999999998,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 37.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

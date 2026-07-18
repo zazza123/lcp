@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "#!/usr/bin/env python3\n\"\"\"CLI with TOML config support using cyclopts.\"\"\"\n\nimport cyclopts\nfrom pathlib import Path\n\nconfig_file = Path(\"pyproject.toml\")\nif not config_file.exists():\n    config_file.write_text(\"\"\"[tool.mycli]\nname = \"Alice\"\ngreeting = \"Hi\"\ncount = 3\n\"\"\")\n\napp = cyclopts.App(\n    config_file=\"pyproject.toml\",\n    config_section=\"tool.mycli\",\n)\n\n@app.default\ndef greet(\n    name: str = \"World\",\n    greeting: str = \"Hello\",\n    count: int = 1,\n):\n    \"\"\"Greet someone.\n    \n    Args:\n        name: Person to greet.\n        greeting: Greeting word to use.\n        count: Number of times to greet.\n    \"\"\"\n    for _ in range(count):\n        print(f\"{greeting}, {name}!\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\n#!/usr/bin/env python3\n\"\"\"CLI with TOML config support using cyclopts.\"\"\"\n\nimport cyclopts\nfrom pathlib import Path\n\nconfig_file = Path(\"pyproject.toml\")\nif not config_file.exists():\n    config_file.write_text(\"\"\"[tool.mycli]\nname = \"Alice\"\ngreeting = \"Hi\"\ncount = 3\n\"\"\")\n\napp = cyclopts.App(\n    config_file=\"pyproject.toml\",\n    config_section=\"tool.mycli\",\n)\n\n@app.default\ndef greet(\n    name: str = \"World\",\n    greeting: str = \"Hello\",\n    count: int = 1,\n):\n    \"\"\"Greet someone.\n    \n    Args:\n        name: Person to greet.\n        greeting: Greeting word to use.\n        count: Number of times to greet.\n    \"\"\"\n    for _ in range(count):\n        print(f\"{greeting}, {name}!\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6610,
+    "cache_read_tokens": 22094,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.035268400000000005,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 68.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp-skill",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import cut\n\n@cut(name=\"dimuon\", params={\"pt_threshold\": 15.0})\ndef dimuon(events, params, **kwargs):\n    \"\"\"\n    Select events with at least two muons with opposite charge.\n    \n    Args:\n        events: NanoEvents object\n        params: Dict containing pt_threshold (float)\n        **kwargs: Additional framework arguments\n    \n    Returns:\n        Boolean mask for events passing the cut\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Get muons passing pT threshold\n    muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Count muons per event\n    n_muons = ak.count(muons.pt, axis=1)\n    \n    # Require at least 2 muons\n    has_two_muons = n_muons >= 2\n    \n    # Check opposite charge for leading pair\n    muon_pairs = ak.combinations(muons, 2, axis=1)\n    leading_pairs = muon_pairs[..., 0:2]  # Take first pair\n    \n    opposite_charge = (\n        leading_pairs[..., 0].charge * leading_pairs[..., 1].charge < 0\n    )\n    \n    # Ensure opposite_charge has same shape as has_two_muons\n    opposite_charge_mask = ak.fill_none(ak.any(opposite_charge, axis=2), False)\n    \n    return has_two_muons & opposite_charge_mask",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import cut\n\n@cut(name=\"dimuon\", params={\"pt_threshold\": 15.0})\ndef dimuon(events, params, **kwargs):\n    \"\"\"\n    Select events with at least two muons with opposite charge.\n    \n    Args:\n        events: NanoEvents object\n        params: Dict containing pt_threshold (float)\n        **kwargs: Additional framework arguments\n    \n    Returns:\n        Boolean mask for events passing the cut\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15.0)\n    \n    # Get muons passing pT threshold\n    muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Count muons per event\n    n_muons = ak.count(muons.pt, axis=1)\n    \n    # Require at least 2 muons\n    has_two_muons = n_muons >= 2\n    \n    # Check opposite charge for leading pair\n    muon_pairs = ak.combinations(muons, 2, axis=1)\n    leading_pairs = muon_pairs[..., 0:2]  # Take first pair\n    \n    opposite_charge = (\n        leading_pairs[..., 0].charge * leading_pairs[..., 1].charge < 0\n    )\n    \n    # Ensure opposite_charge has same shape as has_two_muons\n    opposite_charge_mask = ak.fill_none(ak.any(opposite_charge, axis=2), False)\n    \n    return has_two_muons & opposite_charge_mask\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 69,
+    "output_tokens": 1882,
+    "cache_read_tokens": 194978,
+    "cache_creation_tokens": 3199,
+    "cost_usd": 0.035374800000000005,
+    "num_turns": 8,
+    "tool_calls": 7,
+    "duration_s": 36.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library pocket-coffea",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__get_overview,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "cut",
+        "library": "pocket-coffea"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "pocket-coffea"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_017CgvWkwk3dndqWTSB8G7a7",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_016b2do9Tyvf4Jmd2L8Rfgga",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_0143ZXg1SsLRXEosGCJGT9hp",
+      "content": ""
+    },
+    {
+      "tool_use_id": "toolu_01Q9pCxvXtvKi32ytX3gHrq9",
+      "content": ""
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.cut_definition:Cut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.cut"
+    ],
+    "error": null
+  }
+}

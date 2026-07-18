@@ -1,0 +1,219 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\n# Get the existing \"docs\" table\nt = pxt.get_table(\"docs\")\n\n# Create the embedding UDF bound to the desired model\nembed_fn = sentence_transformer.using(model_id=\"all-MiniLM-L6-v2\")\n\n# Add the embedding index needed for nearest-neighbor lookups on \"content\"\nt.add_embedding_index(\"content\", embedding=embed_fn)\n\n# Query: 5 rows whose \"content\" is semantically closest to the query string\nsim = t.content.similarity(string=\"climate change policy\")\nresults = (\n    t.select(t.content, similarity=sim)\n    .order_by(sim, asc=False)\n    .limit(5)\n    .collect()\n)\n\nprint(results)",
+  "result_text": "Confirmed `pxt.get_table` and the `add_embedding_index`/`similarity` API. The `sentence_transformer` UDF itself isn't captured by the scanner (it's a dynamically-built `Function` object, not a plain Python function), so I'm relying on its well-known documented usage pattern (`.using(model_id=...)`) consistent with the `clip.using(...)` example the tool did verify.\n\n```python\nimport pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\n# Get the existing \"docs\" table\nt = pxt.get_table(\"docs\")\n\n# Create the embedding UDF bound to the desired model\nembed_fn = sentence_transformer.using(model_id=\"all-MiniLM-L6-v2\")\n\n# Add the embedding index needed for nearest-neighbor lookups on \"content\"\nt.add_embedding_index(\"content\", embedding=embed_fn)\n\n# Query: 5 rows whose \"content\" is semantically closest to the query string\nsim = t.content.similarity(string=\"climate change policy\")\nresults = (\n    t.select(t.content, similarity=sim)\n    .order_by(sim, asc=False)\n    .limit(5)\n    .collect()\n)\n\nprint(results)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 22,
+    "output_tokens": 3913,
+    "cache_read_tokens": 422433,
+    "cache_creation_tokens": 33602,
+    "cost_usd": 0.3871029,
+    "num_turns": 18,
+    "tool_calls": 17,
+    "duration_s": 111.2
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "add_embedding_index",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "all-MiniLM-L6-v2 sentence_transformer",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "similarity",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "sentence_transformer",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#add_embedding_index",
+          "pixeltable.exprs:ColumnRef#similarity"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "sentence_transformer",
+        "library": "pixeltable",
+        "module": "pixeltable.functions"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable.functions.huggingface"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__get_overview",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "sentence_transformer",
+        "library": "pixeltable",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "embed",
+        "library": "pixeltable",
+        "module": "pixeltable.functions.huggingface"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "\"\"",
+        "library": "pixeltable",
+        "module": "pixeltable.functions.huggingface",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "model_id",
+        "library": "pixeltable",
+        "module": "pixeltable.functions.huggingface"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "clip",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_table",
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016deGU6Q3tgeM47Twf698k6",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_013ZidSkjyWniXxSC2dYkBnB",
+      "content": "{\"results\":[{\"id\":\"pixeltable:InsertableTable#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Method add_embedding_index\",\"import\":\"from pixeltable import InsertableTable\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table:InsertableTable#add_embedding_index\"},{\"id\":\"pixeltable.catalog:InsertableTableProxy#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Method add_embedding_index\",\"import\":\"from pixeltable.catalog import InsertableTableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.insertable_table_proxy:InsertableTableProxy#add_embedding_index\"},{\"id\":\"pixeltable.catalog:LocalTable#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Method add_embedding_index\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#add_embedding_index\"},{\"id\":\"pixeltable:Table#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Add an embedding index to the table. Once the index is created, it will be automatically kept up-to-date as new rows are inserted into the table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#add_embedding_index\"},{\"id\":\"pixeltable.catalog:TableProxy#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Method add_embedding_index\",\"import\":\"from pixeltable.catalog import TableProxy\",\"resolved_via_alias\":\"pixeltable.catalog.table_proxy:TableProxy#add_embedding_index\"},{\"id\":\"pixeltable:View#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Method add_embedding_index\",\"import\":\"from pixeltable import View\",\"resolved_via_alias\":\"pixeltable.catalog.view:View#add_embedding_index\"},{\"id\":\"pixeltable.exprs:ColumnRef#embedding\",\"kind\":\"method\",\"summary\":\"Return a reference to the values of an embedding index on this column.\",\"import\":\"from pixeltable.exprs import ColumnRef\",\"resolved_via_alias\":\"pixeltable.exprs.column_ref:ColumnRef#embedding\"},{\"id\":\"pixeltable.exprs:ColumnRef#similarity\",\"kind\":\"method\",\"summary\":\"Return a new expression representing the similarity"
+    },
+    {
+      "tool_use_id": "toolu_01Xb1Eapw6LzZDJvzzT6WzRU",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012f14jRyC7HJtAQjNHao8nj",
+      "content": "{\"results\":[{\"id\":\"pixeltable.exprs:ColumnRef#similarity\",\"kind\":\"method\",\"summary\":\"Return a new expression representing the similarity score between the values of this column and the given (constant) item. In order for this to work, there must be an embedding index defined on this column that supports the modality of the given item (string, image, audio, video, document). Similarity will be scored according to the metric defined by the embedding index.\",\"import\":\"from pixeltable.exprs import ColumnRef\",\"resolved_via_alias\":\"pixeltable.exprs.column_ref:ColumnRef#similarity\"},{\"id\":\"pixeltable.exprs:SimilarityExpr\",\"kind\":\"class\",\"summary\":\"A similarity expression against an embedding index.\",\"import\":\"from pixeltable.exprs import SimilarityExpr\",\"resolved_via_alias\":\"pixeltable.exprs.similarity_expr:SimilarityExpr\"},{\"id\":\"pixeltable.index:EmbeddingIndex#similarity_clause\",\"kind\":\"method\",\"summary\":\"Create a ColumnElement that represents '<val_column> <op> <query>'.\",\"import\":\"from pixeltable.index import EmbeddingIndex\",\"resolved_via_alias\":\"pixeltable.index.embedding_index:EmbeddingIndex#similarity_clause\"},{\"id\":\"pixeltable.exprs.similarity_expr:\",\"kind\":\"module\",\"summary\":\"Module pixeltable.exprs.similarity_expr\",\"import\":\"import pixeltable.exprs.similarity_expr\"},{\"id\":\"pixeltable.index:EmbeddingIndex\",\"kind\":\"class\",\"summary\":\"Interface to the pgvector access method in Postgres. - pgvector converts the cosine metric to '1 - metric' and the inner product metric to '-metric', in order to satisfy the Postgres requirement that an index scan requires an ORDER BY ... ASC clause - similarity_clause() converts those metrics back to their original form; it is used in expressions outside the Order By clause - order_by_clause() is used exclusively in the ORDER BY clause - embedding function parameters are named '<type-name>_embed', where type-name is ColumnType.Type.name\",\"import\":\"from pixeltable.index import EmbeddingIndex\",\"resolved_via_alias\":\"pixeltable.index.embed"
+    },
+    {
+      "tool_use_id": "toolu_01NKXjsz138SpH69GmvJTQy5",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018C1eqvF1KMGnUS6JeM5PYD",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"column\",\"type\":\"str | ColumnRef\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The name of, or reference to, the column to be indexed; must be a `String`, `Image` or\\n`Array` column.\"},{\"name\":\"idx_name\",\"type\":\"str | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional name for the index. If not specified, a name such as `'idx0'` will be generated\\nautomatically. If specified, the name must be unique for this table and a valid pixeltable column name.\"},{\"name\":\"embedding\",\"type\":\"Function | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"The UDF to use for the embedding. Must be a UDF that accepts a single argument of type `String`\\nor `Image` (as appropriate for the column being indexed) and returns a fixed-size 1-dimensional\\narray of floats.\"},{\"name\":\"string_embed\",\"type\":\"Function | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional UDF to use for the string embedding component of this index.\\nCan be used in conjunction with `image_embed` to construct multimodal embeddings manually, by\\nspecifying different embedding functions for different data types.\"},{\"name\":\"image_embed\",\"type\":\"Function | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional UDF to use for the image embedding component of this index.\\nCan be used in conjunction with `string_embed` to construct multimodal embeddings manually, by\\nspecifying different embedding functions for different data types.\"},{\"name\":\"metric\",\"type\":\"Literal['cosine', 'ip', 'l2']\",\"required\":false,\"default\":\"cosine\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Distance metric to use for the index; one of `'cosine'`, `'ip'`, or `'l2'`.\\nThe default is `'cosine'`.\"},{\"name\":\"precision\",\"type\":\"Literal['fp16', 'fp32']\",\"required\":false,\"defau"
+    },
+    {
+      "tool_use_id": "toolu_0142uVqv8mTLXEsJ6y15y6Uk",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_016EKgqen9qmVe1Brq3Pzn3k",
+      "content": "{\"results\":[{\"id\":\"pixeltable.functions.huggingface:\",\"kind\":\"module\",\"summary\":\"Pixeltable UDFs that wrap various models from the Hugging Face `transformers` package.\",\"import\":\"import pixeltable.functions.huggingface\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01EtjrjAvuSkAS33MLjJBX1C",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Q3NgjohxZFwzfVgN5B9UN9",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01UqtrmJhhLGBUuoYtUHyghr",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_017tCrZwrEYN5VMyH9EsFNj2",
+      "content": "{\"library\":{\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"pixeltable\",\"symbols\":1},{\"module\":\"pixeltable._query\",\"symbols\":60},{\"module\":\"pixeltable._version\",\"symbols\":1},{\"module\":\"pixeltable.catalog\",\"symbols\":1},{\"module\":\"pixeltable.catalog.catalog\",\"symbols\":43},{\"module\":\"pixeltable.catalog.catalog_base\",\"symbols\":12},{\"module\":\"pixeltable.catalog.catalog_proxy\",\"symbols\":13},{\"module\":\"pixeltable.catalog.column\",\"symbols\":43},{\"module\":\"pixeltable.catalog.dir\",\"symbols\":3},{\"module\":\"pixeltable.catalog.globals\",\"symbols\":39},{\"module\":\"pixeltable.catalog.insertable_table\",\"symbols\":49},{\"module\":\"pixeltable.catalog.insertable_table_proxy\",\"symbols\":45},{\"module\":\"pixeltable.catalog.local_table\",\"symbols\":48},{\"module\":\"pixeltable.catalog.path\",\"symbols\":23},{\"module\":\"pixeltable.catalog.schema_object\",\"symbols\":4},{\"module\":\"pixeltable.catalog.table\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_metadata\",\"symbols\":6},{\"module\":\"pixeltable.catalog.table_path\",\"symbols\":73},{\"module\":\"pixeltable.catalog.table_proxy\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_version\",\"symbols\":80},{\"module\":\"pixeltable.catalog.table_version_handle\",\"symbols\":21},{\"module\":\"pixeltable.catalog.tbl_ops\",\"symbols\":95},{\"module\":\"pixeltable.catalog.update_status\",\"symbols\":27},{\"module\":\"pixeltable.catalog.view\",\"symbols\":49},{\"module\":\"pixeltable.config\",\"symbols\":26},{\"module\":\"pixeltable.env\",\"symbols\":64},{\"module\":\"pixeltable.exceptions\",\"symbols\":50},{\"module\":\"pixeltable.exec\",\"symbols\":1},{\"module\":\"pixeltable.exec.aggregation_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.cache_prefetch_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_materialization_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_reconstruction_node\",\"symbols\":18},{\"module\":\"pixeltable.exec.component_iteration_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.data_row_batch\",\"symbols\":8},{\"module\":\"pixeltable.exec.e"
+    },
+    {
+      "tool_use_id": "toolu_01GgezWN5Hin5kffbj932eqm",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012fjWtZzKR2GyviDz4vjJsU",
+      "content": "{\"results\":[{\"id\":\"pixeltable.utils.av:ffmpeg_clip_args\",\"kind\":\"function\",\"summary\":\"Construct args for an ffmpeg commandline that creates a clip.\",\"import\":\"from pixeltable.utils.av import ffmpeg_clip_args\"},{\"id\":\"pixeltable.utils.av:ffmpeg_clip_cmd\",\"kind\":\"function\",\"summary\":\"Function ffmpeg_clip_cmd\",\"import\":\"from pixeltable.utils.av import ffmpeg_clip_cmd\"},{\"id\":\"pixeltable.utils.av:get_max_volume_db\",\"kind\":\"function\",\"summary\":\"Measure the peak amplitude of an audio clip in dBFS.\",\"import\":\"from pixeltable.utils.av import get_max_volume_db\"},{\"id\":\"pixeltable:Table#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Add an embedding index to the table. Once the index is created, it will be automatically kept up-to-date as new rows are inserted into the table.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table#add_embedding_index\"},{\"id\":\"pixeltable.exprs:ColumnRef#embedding\",\"kind\":\"method\",\"summary\":\"Return a reference to the values of an embedding index on this column.\",\"import\":\"from pixeltable.exprs import ColumnRef\",\"resolved_via_alias\":\"pixeltable.exprs.column_ref:ColumnRef#embedding\"},{\"id\":\"pixeltable.exprs:ColumnRef#similarity\",\"kind\":\"method\",\"summary\":\"Return a new expression representing the similarity score between the values of this column and the given (constant) item. In order for this to work, there must be an embedding index defined on this column that supports the modality of the given item (string, image, audio, video, document). Similarity will be scored according to the metric defined by the embedding index.\",\"import\":\"from pixeltable.exprs import ColumnRef\",\"resolved_via_alias\":\"pixeltable.exprs.column_ref:ColumnRef#similarity\"}],\"total\":6,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_018P9KJsgaVhDXuLWtSR3uGE",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.catalog:Catalog#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Must be executed inside a transaction. Might raise PendingTableOpsError.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table_by_id\"},{\"id\":\"pixeltable.catalog:LocalTable#compute\",\"kind\":\"method\",\"summary\":\"Materialize the computed columns of this table for the given input rows and return the resulting rows without persisting them.\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#compute\"},{\"id\":\"pixeltabl"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

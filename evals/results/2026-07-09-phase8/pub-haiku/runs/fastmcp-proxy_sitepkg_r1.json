@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import fastmcp\nfrom fastmcp import Server\nimport inspect\nfrom typing import Any, Callable\n\n\ndef create_transparent_proxy(backend_server: Server) -> Server:\n    \"\"\"\n    Create a transparent proxy server that forwards all tools and resources\n    to a backend FastMCP server.\n    \n    Args:\n        backend_server: The backend FastMCP Server instance to proxy.\n        \n    Returns:\n        A new Server instance that proxies all requests to the backend.\n    \"\"\"\n    proxy = Server(\"transparent-proxy\")\n    \n    # Proxy all tools from backend\n    backend_tools = getattr(backend_server, '_tools', {})\n    for tool_name, tool_handler in backend_tools.items():\n        def make_tool_proxy(handler: Callable, name: str) -> Callable:\n            async def proxy_tool(*args: Any, **kwargs: Any) -> Any:\n                if inspect.iscoroutinefunction(handler):\n                    return await handler(*args, **kwargs)\n                return handler(*args, **kwargs)\n            proxy_tool.__name__ = name\n            proxy_tool.__doc__ = getattr(handler, '__doc__', None)\n            return proxy_tool\n        \n        wrapper = make_tool_proxy(tool_handler, tool_name)\n        proxy.tool()(wrapper)\n    \n    # Proxy all resources from backend\n    backend_resources = getattr(backend_server, '_resources', {})\n    for resource_name, resource_handler in backend_resources.items():\n        def make_resource_proxy(handler: Callable, name: str) -> Callable:\n            async def proxy_resource(*args: Any, **kwargs: Any) -> Any:\n                if inspect.iscoroutinefunction(handler):\n                    return await handler(*args, **kwargs)\n                return handler(*args, **kwargs)\n            proxy_resource.__name__ = name\n            proxy_resource.__doc__ = getattr(handler, '__doc__', None)\n            return proxy_resource\n        \n        wrapper = make_resource_proxy(resource_handler, resource_name)\n        proxy.resource()(wrapper)\n    \n    return proxy",
+  "result_text": "```python\nimport fastmcp\nfrom fastmcp import Server\nimport inspect\nfrom typing import Any, Callable\n\n\ndef create_transparent_proxy(backend_server: Server) -> Server:\n    \"\"\"\n    Create a transparent proxy server that forwards all tools and resources\n    to a backend FastMCP server.\n    \n    Args:\n        backend_server: The backend FastMCP Server instance to proxy.\n        \n    Returns:\n        A new Server instance that proxies all requests to the backend.\n    \"\"\"\n    proxy = Server(\"transparent-proxy\")\n    \n    # Proxy all tools from backend\n    backend_tools = getattr(backend_server, '_tools', {})\n    for tool_name, tool_handler in backend_tools.items():\n        def make_tool_proxy(handler: Callable, name: str) -> Callable:\n            async def proxy_tool(*args: Any, **kwargs: Any) -> Any:\n                if inspect.iscoroutinefunction(handler):\n                    return await handler(*args, **kwargs)\n                return handler(*args, **kwargs)\n            proxy_tool.__name__ = name\n            proxy_tool.__doc__ = getattr(handler, '__doc__', None)\n            return proxy_tool\n        \n        wrapper = make_tool_proxy(tool_handler, tool_name)\n        proxy.tool()(wrapper)\n    \n    # Proxy all resources from backend\n    backend_resources = getattr(backend_server, '_resources', {})\n    for resource_name, resource_handler in backend_resources.items():\n        def make_resource_proxy(handler: Callable, name: str) -> Callable:\n            async def proxy_resource(*args: Any, **kwargs: Any) -> Any:\n                if inspect.iscoroutinefunction(handler):\n                    return await handler(*args, **kwargs)\n                return handler(*args, **kwargs)\n            proxy_resource.__name__ = name\n            proxy_resource.__doc__ = getattr(handler, '__doc__', None)\n            return proxy_resource\n        \n        wrapper = make_resource_proxy(resource_handler, resource_name)\n        proxy.resource()(wrapper)\n    \n    return proxy\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3664,
+    "cache_read_tokens": 17267,
+    "cache_creation_tokens": 6819,
+    "cost_usd": 0.0336937,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 35.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

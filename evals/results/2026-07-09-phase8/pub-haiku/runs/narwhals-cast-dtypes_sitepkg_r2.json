@@ -1,0 +1,29 @@
+{
+  "case_id": "narwhals-cast-dtypes",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport pandas as pd\n\n# Create sample DataFrame\ndf_pd = pd.DataFrame({\n    \"user_id\": [\"123\", \"456\", \"789\"],\n    \"score\": [0.5, 0.75, 0.9]\n})\n\n# Convert to narwhals\ndf = nw.from_native(df_pd)\n\n# Convert dtypes\ndf_converted = df.with_columns([\n    nw.col(\"user_id\").cast(nw.Int32),\n    nw.col(\"score\").cast(nw.Float32)\n])\n\nprint(df_converted)",
+  "result_text": "```python\nimport narwhals as nw\nimport pandas as pd\n\n# Create sample DataFrame\ndf_pd = pd.DataFrame({\n    \"user_id\": [\"123\", \"456\", \"789\"],\n    \"score\": [0.5, 0.75, 0.9]\n})\n\n# Convert to narwhals\ndf = nw.from_native(df_pd)\n\n# Convert dtypes\ndf_converted = df.with_columns([\n    nw.col(\"user_id\").cast(nw.Int32),\n    nw.col(\"score\").cast(nw.Float32)\n])\n\nprint(df_converted)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1002,
+    "cache_read_tokens": 24115,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.007430500000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 13.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

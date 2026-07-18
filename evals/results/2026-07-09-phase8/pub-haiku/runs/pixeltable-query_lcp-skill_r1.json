@@ -1,0 +1,178 @@
+{
+  "case_id": "pixeltable-query",
+  "arm": "lcp-skill",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\n# Get the films table\ntbl = pxt.get_table('films')\n\n# Filter rows where year > 1990, select title and revenue columns, then materialize\nresults = tbl.where(tbl['year'] > 1990).select(tbl['title'], tbl['revenue']).collect()\n\n# Display the results\nfor row in results:\n    print(row)",
+  "result_text": "```python\nimport pixeltable as pxt\n\n# Get the films table\ntbl = pxt.get_table('films')\n\n# Filter rows where year > 1990, select title and revenue columns, then materialize\nresults = tbl.where(tbl['year'] > 1990).select(tbl['title'], tbl['revenue']).collect()\n\n# Display the results\nfor row in results:\n    print(row)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 116,
+    "output_tokens": 2233,
+    "cache_read_tokens": 392324,
+    "cache_creation_tokens": 21942,
+    "cost_usd": 0.09439740000000002,
+    "num_turns": 15,
+    "tool_calls": 13,
+    "duration_s": 44.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable",
+        "version": "0.6.6"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "table get open",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "table",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get open films",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "catalog",
+        "library": "pixeltable",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable.catalog:Catalog"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get",
+        "library": "pixeltable",
+        "kind": "function",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:get_table",
+          "pixeltable:Table#where",
+          "pixeltable:Table#select",
+          "pixeltable:Table#collect"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_018fBPZitUMkMVupXzT8BJ91",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01RwT4EihbBA2vxeEVkNwGm2",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01A74BiTVnoxi3CBJ76BQwcP",
+      "content": "{\"results\":[{\"id\":\"pixeltable:Table\",\"kind\":\"class\",\"summary\":\"A handle to a table, view, or snapshot. This class is the primary interface through which table operations (queries, insertions, updates, etc.) are performed in Pixeltable.\",\"import\":\"from pixeltable import Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table\"},{\"id\":\"pixeltable.metadata.converters.util:Table\",\"kind\":\"class\",\"summary\":\"Table represents both tables and views.\",\"import\":\"from pixeltable.metadata.converters.util import Table\",\"resolved_via_alias\":\"pixeltable.metadata.schema:Table\"},{\"id\":\"pixeltable.catalog:TableVersionMd\",\"kind\":\"class\",\"summary\":\"Complete set of md records for a specific TableVersion instance.\",\"import\":\"from pixeltable.catalog import TableVersionMd\",\"resolved_via_alias\":\"pixeltable.catalog.globals:TableVersionMd\"},{\"id\":\"pixeltable:TableMetadata\",\"kind\":\"class\",\"summary\":\"Metadata for a Pixeltable table.\",\"import\":\"from pixeltable import TableMetadata\",\"resolved_via_alias\":\"pixeltable.catalog.table_metadata:TableMetadata\"},{\"id\":\"pixeltable.catalog:TableMdPath\",\"kind\":\"class\",\"summary\":\"TablePath backed by TableVersionMd. Does not provide access to catalog objects (Table/TableVersion/Column).\",\"import\":\"from pixeltable.catalog import TableMdPath\",\"resolved_via_alias\":\"pixeltable.catalog.table_path:TableMdPath\"},{\"id\":\"pixeltable.catalog:TablePath\",\"kind\":\"class\",\"summary\":\"TablePath represents an abstract interface to the complete metadata of a table or view - completeness here means all the metadata needed to execute queries and updates against a particular version of a table/view. - for a view, it also includes metadata for all of its bases - multiple snapshots can reference the same TableVersion, but with different bases, which means that the graph of TableVersions is a DAG, not a tree (which is why we cannot embed the DAG into TableVersion directly)\",\"import\":\"from pixeltable.catalog import TablePath\",\"resolved_via_alias\":\"pixeltable.catalog.table_path:TablePa"
+    },
+    {
+      "tool_use_id": "toolu_01NcL8efK9aqX8jnZWF3hnpQ",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"pixeltable.catalog.table\",\"aliases\":[\"pixeltable.catalog.local_table:Table\",\"pixeltable.catalog.table_proxy:Table\",\"pixeltable.catalog:Table\",\"pixeltable.io.external_store:Table\",\"pixeltable.io.globals:Table\",\"pixeltable:Table\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"obj_id\",\"type\":\"UUID\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}]}],\"semantics\":{\"summary\":\"A handle to a table, view, or snapshot. This class is the primary interface through which table operations (queries, insertions, updates, etc.) are performed in Pixeltable.\",\"description\":\"Thread-safe.\"},\"id\":\"pixeltable:Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table\",\"import\":\"from pixeltable import Table\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"obj_id\",\"type\":\"UUID\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"pixeltable:Table#__getitem__\",\"kind\":\"method\",\"summary\":\"Return a ColumnRef for the given name.\"},{\"id\":\"pixeltable:Table#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"pixeltable:Table#add_column\",\"kind\":\"method\",\"summary\":\"Adds an ordinary (non-computed) column to the table.\"},{\"id\":\"pixeltable:Table#add_columns\",\"kind\":\"method\",\"summary\":\"Adds multiple columns to the table. The columns must be concrete (non-computed) columns; to add computed columns, use [`add_computed_column()`][pixeltable.catalog.Table.add_computed_column] instead.\"},{\"id\":\"pixeltable:Table#add_computed_column\",\"kind\":\"method\",\"summary\":\"Adds a computed column to the table.\"},{\"id\":\"pixeltable:Table#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Add an embedding index to the table. Once the index is created, it will be automatically kept up-to-date as new rows are inserted into the table.\"},{\"id\":\"pixeltable:Table#batch_update\",\"kind\":\"method\",\"summary\":\"Update rows in this table.\"},{\"id\":\"pixeltable:Table#collect\",\"kind\":\"method\",\"summary\":\"Return rows from this table.\"},{\"id\":\"pixeltable:Table#columns\""
+    },
+    {
+      "tool_use_id": "toolu_01WQvBs6gzK5hBMABREXH2iX",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01KpYiZJap4raC8nsYrriC4F",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog\",\"kind\":\"class\",\"summary\":\"The functional interface to getting access to catalog objects\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog\"},{\"id\":\"pixeltable.runtime:Runtime#catalog\",\"kind\":\"attribute\",\"summary\":\"The local Catalog instance.\",\"import\":\"from pixeltable.runtime import Runtime\"},{\"id\":\"pixeltable.catalog:CatalogBase\",\"kind\":\"class\",\"summary\":\"The public catalog API.\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase\"},{\"id\":\"pixeltable.catalog:CatalogProxy\",\"kind\":\"class\",\"summary\":\"An implementation of CatalogBase that delegates to a hosted catalog.\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy\"},{\"id\":\"pixeltable.catalog:Path#catalog_uri\",\"kind\":\"attribute\",\"summary\":\"The catalog this path lives in, as a URI string. Empty string for the in-process catalog.\",\"import\":\"from pixeltable.catalog import Path\",\"resolved_via_alias\":\"pixeltable.catalog.path:Path#catalog_uri\"},{\"id\":\"pixeltable.runtime:Runtime#get_catalog\",\"kind\":\"method\",\"summary\":\"Return the catalog that the given path lives in, creating it on first use.\",\"import\":\"from pixeltable.runtime import Runtime\"},{\"id\":\"pixeltable.catalog.catalog:\",\"kind\":\"module\",\"summary\":\"Module pixeltable.catalog.catalog\",\"import\":\"import pixeltable.catalog.catalog\"},{\"id\":\"pixeltable.catalog:Catalog#create_user\",\"kind\":\"method\",\"summary\":\"Creates a catalog record (root directory) for the specified user, if one does not already exist.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#create_user\"},{\"id\":\"pixeltable.catalog.catalog_base:\",\"kind\":\"module\",\"summary\":\"Module pixeltable.catalog.catalog_base\",\"import\":\"import pixeltable.catalog.catalog_base\"},{\"id\":\"pixeltable.catalog.catalog_proxy:\",\"kind\":\"modul"
+    },
+    {
+      "tool_use_id": "toolu_016NNUN72zkFPrJirC9mWcgP",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"pixeltable.catalog.catalog\",\"aliases\":[\"pixeltable.catalog:Catalog\"],\"signatures\":[{\"async_\":false,\"returns\":\"None\"}],\"semantics\":{\"summary\":\"The functional interface to getting access to catalog objects\",\"description\":\"All interface functions must be called in the context of a transaction, started with Catalog.begin_xact() or\\n    via retry_loop().\\n\\n    When calling functions that involve Table or TableVersion instances, the catalog needs to get a chance to finalize\\n    pending ops against those tables. The protocol depends on where metadata loads occur relative to the atomic\\n    operation:\\n    - If all metadata loads happen at the beginning of an atomic operation (eg, insert/update/delete), use\\n      begin_xact(). It will finalize pending ops before locking.\\n    - If metadata loads happen in the middle of an atomic operation, wrap the entire operation in retry_loop(), which\\n      handles pending ops and serialization retries.\\n\\n    get_tbl_version() manages its own retry loop internally if called outside of a transaction or a retry loop. Callers\\n    that don't need to perform multiple of these atomically do not need to wrap the call.\\n\\n    Metadata changes: all Table operations that change metadata need follow this protocol:\\n    - write the metadata changes to the store in a single transaction, including the op log that implements the updates\\n    - roll_forward()\\n    - invalidate any cached TableVersion instances for the affected table and call TVP.clear_cached_md()\\n    TODO: this is currently only implemented for Table.add_columns()\\n\\n    Caching and invalidation of metadata:\\n    - Catalog caches TableVersion instances in order to avoid excessive metadata loading\\n    - Any updates to the metadata need to include clearing/invalidating the metadata cache\\n    - for any specific table version (ie, combination of id and effective version) there can be only a single\\n      Tableversion instance in circulation; th"
+    },
+    {
+      "tool_use_id": "toolu_01UnJKnxG5qjjtaTKvhuNc3S",
+      "content": "{\"results\":[{\"id\":\"pixeltable:\",\"kind\":\"module\",\"summary\":\"Core Pixeltable API for table operations, data processing, and UDF management.\",\"import\":\"import pixeltable\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01JoiFHxhr3PHqgBoT2pVUc8",
+      "content": "{\"results\":[{\"id\":\"pixeltable.func.globals:get_caller_module_path\",\"kind\":\"function\",\"summary\":\"Return the module path of our caller's caller\",\"import\":\"from pixeltable.func.globals import get_caller_module_path\"},{\"id\":\"pixeltable.functions.util:get_metadata\",\"kind\":\"function\",\"summary\":\"Function get_metadata\",\"import\":\"from pixeltable.functions.util import get_metadata\"},{\"id\":\"pixeltable:get_dir_contents\",\"kind\":\"function\",\"summary\":\"Get the contents of a Pixeltable directory.\",\"import\":\"from pixeltable import get_dir_contents\",\"resolved_via_alias\":\"pixeltable.globals:get_dir_contents\"},{\"id\":\"pixeltable:get_dir_tree\",\"kind\":\"function\",\"summary\":\"Get a tree representation of the Pixeltable directory structure.\",\"import\":\"from pixeltable import get_dir_tree\",\"resolved_via_alias\":\"pixeltable.globals:get_dir_tree\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.store:get_runtime\",\"kind\":\"function\",\"summary\":\"Get the current thread's Runtime instance, creating one if needed.\",\"import\":\"from pixeltable.store import get_runtime\",\"resolved_via_alias\":\"pixeltable.runtime:get_runtime\"},{\"id\":\"pixeltable.utils.av:get_audio_duration\",\"kind\":\"function\",\"summary\":\"Return audio duration in seconds, or None if there is no audio stream or the duration cannot be determined.\",\"import\":\"from pixeltable.utils.av import get_audio_duration\"},{\"id\":\"pixeltable.utils.av:get_max_volume_db\",\"kind\":\"function\",\"summary\":\"Measure the peak amplitude of an audio clip in dBFS.\",\"import\":\"from pixeltable.utils.av import get_max_volume_db\"},{\"id\":\"pixeltable.utils.av:get_video_duration\",\"kind\":\"function\",\"summary\":\"Return video duration in seconds.\",\"import\":\"from pixeltable.utils.av import get_video_duration\"},{\"id\":\"pixeltable.utils.cloud_utils:get_bucket_credentials\",\"kind\":\"function\",\"summary\":\"Fetch temporary R2 c"
+    },
+    {
+      "tool_use_id": "toolu_01CwNTXKmEhqMCUhHGArtnkQ",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.globals\",\"aliases\":[\"pixeltable:get_table\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path to the table.\"},{\"name\":\"if_not_exists\",\"type\":\"Literal[error, ignore]\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Directive regarding how to handle if the path does not exist.\\nMust be one of the following:\\n\\n- `'error'`: raise an error\\n- `'ignore'`: do nothing and return `None`\"}],\"returns\":\"UnionType[Table, None]\",\"returns_description\":\"A handle to the [`Table`][pixeltable.Table].\",\"raises\":[{\"type\":\"Error\",\"condition\":\"If the path does not exist or does not designate a table object.\"}]}],\"semantics\":{\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"description\":\"Args:\\n        path: Path to the table.\\n        if_not_exists: Directive regarding how to handle if the path does not exist.\\n            Must be one of the following:\\n\\n            - `'error'`: raise an error\\n            - `'ignore'`: do nothing and return `None`\\n\\n    Returns:\\n        A handle to the [`Table`][pixeltable.Table].\\n\\n    Raises:\\n        Error: If the path does not exist or does not designate a table object.\\n\\n    Examples:\\n        Get handle for a table in the top-level directory:\\n\\n        >>> tbl = pxt.get_table('my_table')\\n\\n        For a table in a subdirectory:\\n\\n        >>> tbl = pxt.get_table('subdir/my_table')\\n\\n        Handles to views and snapshots are retrieved in the same way:\\n\\n        >>> tbl = pxt.get_table('my_snapshot')\\n\\n        Get a handle to a specific version of a table:\\n\\n        >>> tbl = pxt.get_table('my_table:722')\",\"examples\":[{\"code\":\">>> tbl = pxt.get_table('my_table')\\n>>> tbl = pxt.get_table('subdir/my_table')\\n>>> tbl = pxt.get_table('my_snapshot')\\n>>> tbl = pxt.get_table('my_table:722')\",\"description\":\"Get handle for a table in the top-level d"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

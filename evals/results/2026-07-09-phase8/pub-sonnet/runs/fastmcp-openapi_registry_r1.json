@@ -1,0 +1,88 @@
+{
+  "case_id": "fastmcp-openapi",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from typing import Any\n\nimport httpx\nfrom fastmcp import FastMCP\n\n\ndef build_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI Server\",\n) -> FastMCP:\n    \"\"\"Generate an MCP server whose tools mirror an OpenAPI specification.\n\n    Args:\n        openapi_spec: Minimal OpenAPI 3.0 specification as a dict.\n        client: httpx.AsyncClient configured with the API base URL.\n        name: Name for the generated MCP server.\n\n    Returns:\n        A FastMCP server instance with tools derived from the spec.\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n    )\n\n\nOPENAPI_SPEC: dict[str, Any] = {\n    \"openapi\": \"3.0.0\",\n    \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n    \"paths\": {\n        \"/items/{item_id}\": {\n            \"get\": {\n                \"operationId\": \"get_item\",\n                \"summary\": \"Get an item by ID\",\n                \"parameters\": [\n                    {\n                        \"name\": \"item_id\",\n                        \"in\": \"path\",\n                        \"required\": True,\n                        \"schema\": {\"type\": \"integer\"},\n                    }\n                ],\n                \"responses\": {\"200\": {\"description\": \"OK\"}},\n            }\n        }\n    },\n}\n\n\ndef main() -> None:\n    client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    mcp = build_mcp_server(OPENAPI_SPEC, client)\n    mcp.run()\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "API confirmed. Here's the code:\n\n```python\nfrom typing import Any\n\nimport httpx\nfrom fastmcp import FastMCP\n\n\ndef build_mcp_server(\n    openapi_spec: dict[str, Any],\n    client: httpx.AsyncClient,\n    name: str = \"OpenAPI Server\",\n) -> FastMCP:\n    \"\"\"Generate an MCP server whose tools mirror an OpenAPI specification.\n\n    Args:\n        openapi_spec: Minimal OpenAPI 3.0 specification as a dict.\n        client: httpx.AsyncClient configured with the API base URL.\n        name: Name for the generated MCP server.\n\n    Returns:\n        A FastMCP server instance with tools derived from the spec.\n    \"\"\"\n    return FastMCP.from_openapi(\n        openapi_spec=openapi_spec,\n        client=client,\n        name=name,\n    )\n\n\nOPENAPI_SPEC: dict[str, Any] = {\n    \"openapi\": \"3.0.0\",\n    \"info\": {\"title\": \"Example API\", \"version\": \"1.0.0\"},\n    \"paths\": {\n        \"/items/{item_id}\": {\n            \"get\": {\n                \"operationId\": \"get_item\",\n                \"summary\": \"Get an item by ID\",\n                \"parameters\": [\n                    {\n                        \"name\": \"item_id\",\n                        \"in\": \"path\",\n                        \"required\": True,\n                        \"schema\": {\"type\": \"integer\"},\n                    }\n                ],\n                \"responses\": {\"200\": {\"description\": \"OK\"}},\n            }\n        }\n    },\n}\n\n\ndef main() -> None:\n    client = httpx.AsyncClient(base_url=\"https://api.example.com\")\n    mcp = build_mcp_server(OPENAPI_SPEC, client)\n    mcp.run()\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1963,
+    "cache_read_tokens": 190653,
+    "cache_creation_tokens": 21032,
+    "cost_usd": 0.2128689,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 44.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "fastmcp",
+        "version": "3.4.4"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "from_openapi",
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#from_openapi",
+          "fastmcp.server:FastMCP"
+        ],
+        "library": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "fastmcp.server:FastMCP#run",
+          "fastmcp.server:FastMCP#run_async"
+        ],
+        "library": "fastmcp"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_012dxKebprj5sCNqLm5kZ4hS",
+      "content": "{\"status\":\"loaded\",\"name\":\"fastmcp\",\"version\":\"3.4.4\",\"language\":\"python\",\"symbol_count\":3562,\"module_count\":250,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='fastmcp') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012RTXfhEWc4Jaj137LfWc4T",
+      "content": "{\"results\":[{\"id\":\"fastmcp.server.openapi:FastMCPOpenAPI#from_openapi\",\"kind\":\"method\",\"summary\":\"Create a FastMCP server from an OpenAPI specification.\",\"import\":\"from fastmcp.server.openapi import FastMCPOpenAPI\",\"resolved_via_alias\":\"fastmcp.server.openapi.server:FastMCPOpenAPI#from_openapi\"},{\"id\":\"fastmcp.server.proxy:FastMCPProxy#from_openapi\",\"kind\":\"method\",\"summary\":\"Create a FastMCP server from an OpenAPI specification.\",\"import\":\"from fastmcp.server.proxy import FastMCPProxy\",\"resolved_via_alias\":\"fastmcp.server.providers.proxy:FastMCPProxy#from_openapi\"},{\"id\":\"fastmcp.server:FastMCP#from_openapi\",\"kind\":\"method\",\"summary\":\"Create a FastMCP server from an OpenAPI specification.\",\"import\":\"from fastmcp.server import FastMCP\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#from_openapi\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01LsRSYwt4p7QoKMmqRQKAEj",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"openapi_spec\",\"type\":\"dict[str, Any]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"OpenAPI schema as a dictionary\"},{\"name\":\"client\",\"type\":\"httpx.AsyncClient | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional httpx AsyncClient for making HTTP requests.\\nIf not provided, a default client is created using the first\\nserver URL from the OpenAPI spec with a 30-second timeout.\"},{\"name\":\"name\",\"type\":\"str\",\"required\":false,\"default\":\"OpenAPI Server\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Name for the MCP server\"},{\"name\":\"route_maps\",\"type\":\"list[RouteMap] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional list of RouteMap objects defining route mappings\"},{\"name\":\"route_map_fn\",\"type\":\"OpenAPIRouteMapFn | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional callable for advanced route type mapping\"},{\"name\":\"mcp_component_fn\",\"type\":\"OpenAPIComponentFn | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional callable for component customization\"},{\"name\":\"mcp_names\",\"type\":\"dict[str, str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional dictionary mapping operationId to component names\"},{\"name\":\"tags\",\"type\":\"set[str] | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Optional set of tags to add to all components\"},{\"name\":\"validate_output\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"If True (default), tools use the output schema\\nextracted from the OpenAPI spec for response validation. If\\nFalse, a permissive schema is used instead, allowing any\\nresponse structure while still returning structured JSON.\"},{\"name\":\"settings\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest"
+    },
+    {
+      "tool_use_id": "toolu_015SpAwarZRxP3T9Y6HPhB69",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"transport\",\"type\":\"Transport | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Transport protocol to use (\\\"http\\\", \\\"stdio\\\", \\\"sse\\\", or \\\"streamable-http\\\")\"},{\"name\":\"show_banner\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Whether to display the server banner. If None, uses the\\nFASTMCP_SHOW_SERVER_BANNER setting (default: True).\"},{\"name\":\"transport_kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Run the FastMCP server. Note this is a synchronous function.\",\"description\":\"Args:\\n            transport: Transport protocol to use (\\\"http\\\", \\\"stdio\\\", \\\"sse\\\", or \\\"streamable-http\\\")\\n            show_banner: Whether to display the server banner. If None, uses the\\n                FASTMCP_SHOW_SERVER_BANNER setting (default: True).\"},\"id\":\"fastmcp.server:FastMCP#run\",\"resolved_via_alias\":\"fastmcp.server.server:FastMCP#run\",\"import\":\"from fastmcp.server import FastMCP\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"transport_kwargs\",\"type\":\"Any\"}],\"optional_parameters\":[{\"name\":\"transport\",\"type\":\"Transport | None\",\"default\":null},{\"name\":\"show_banner\",\"type\":\"bool | None\",\"default\":null}],\"is_async\":false,\"return_type\":\"None\"}},{\"kind\":\"method\",\"module\":\"fastmcp.server.server\",\"signatures\":[{\"async_\":true,\"params\":[{\"name\":\"transport\",\"type\":\"Transport | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Transport protocol to use (\\\"stdio\\\", \\\"http\\\", \\\"sse\\\", or \\\"streamable-http\\\")\"},{\"name\":\"show_banner\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Whether to display the server banner. If None, uses the\\nFASTMCP_SHOW_SERVER_BANNER setting (default: True).\"},{\"name\":\"transport_kwargs\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"retu"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

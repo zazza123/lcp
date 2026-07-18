@@ -1,0 +1,34 @@
+{
+  "case_id": "fastmcp-mount",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import Server\n\n# Create sub-server with math tools\nmath_server = Server(\"math\")\n\n@math_server.tool()\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@math_server.tool()\ndef subtract(a: float, b: float) -> float:\n    \"\"\"Subtract two numbers.\"\"\"\n    return a - b\n\n@math_server.tool()\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\"\"\"\n    return a * b\n\n@math_server.tool()\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers.\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Create main server\nmain_server = Server(\"main\")\n\n# Attach math sub-server under \"math\" prefix\nmain_server.attach(math_server, prefix=\"math\")\n\n# Optionally add tools directly to main server\n@main_server.tool()\ndef ping() -> str:\n    \"\"\"Ping the main server.\"\"\"\n    return \"pong\"\n\nif __name__ == \"__main__\":\n    import asyncio\n\n    async def run_server():\n        async with main_server:\n            print(\"Main server running with math sub-server at 'math' prefix\")\n            print(\"Available tools: math:add, math:subtract, math:multiply, math:divide, ping\")\n            await asyncio.sleep(float('inf'))\n\n    asyncio.run(run_server())",
+  "result_text": "```python\nfrom fastmcp import Server\n\n# Create sub-server with math tools\nmath_server = Server(\"math\")\n\n@math_server.tool()\ndef add(a: float, b: float) -> float:\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n@math_server.tool()\ndef subtract(a: float, b: float) -> float:\n    \"\"\"Subtract two numbers.\"\"\"\n    return a - b\n\n@math_server.tool()\ndef multiply(a: float, b: float) -> float:\n    \"\"\"Multiply two numbers.\"\"\"\n    return a * b\n\n@math_server.tool()\ndef divide(a: float, b: float) -> float:\n    \"\"\"Divide two numbers.\"\"\"\n    if b == 0:\n        raise ValueError(\"Cannot divide by zero\")\n    return a / b\n\n# Create main server\nmain_server = Server(\"main\")\n\n# Attach math sub-server under \"math\" prefix\nmain_server.attach(math_server, prefix=\"math\")\n\n# Optionally add tools directly to main server\n@main_server.tool()\ndef ping() -> str:\n    \"\"\"Ping the main server.\"\"\"\n    return \"pong\"\n\nif __name__ == \"__main__\":\n    import asyncio\n\n    async def run_server():\n        async with main_server:\n            print(\"Main server running with math sub-server at 'math' prefix\")\n            print(\"Available tools: math:add, math:subtract, math:multiply, math:divide, ping\")\n            await asyncio.sleep(float('inf'))\n\n    asyncio.run(run_server())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2910,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6915,
+    "cost_usd": 0.029903600000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#mount"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "fastmcp.Server"
+    ],
+    "error": null
+  }
+}

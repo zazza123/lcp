@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nimport cyclopts\nfrom cyclopts.config import Toml\n\napp = cyclopts.App(\n    config=Toml(\n        Path(\"pyproject.toml\"),\n        root_keys=[\"tool\", \"mycli\"],\n        must_exist=False,\n    )\n)\n\n\n@app.default\ndef main(name: str = \"world\", count: int = 1, verbose: bool = False):\n    \"\"\"Greet someone, with defaults fillable from pyproject.toml's [tool.mycli] table.\n\n    Args:\n        name: Name to greet.\n        count: Number of times to repeat the greeting.\n        verbose: Whether to print an extra verbose line before each greeting.\n    \"\"\"\n    for _ in range(count):\n        if verbose:\n            print(f\"[verbose] greeting {name!r}\")\n        print(f\"Hello, {name}!\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom pathlib import Path\n\nimport cyclopts\nfrom cyclopts.config import Toml\n\napp = cyclopts.App(\n    config=Toml(\n        Path(\"pyproject.toml\"),\n        root_keys=[\"tool\", \"mycli\"],\n        must_exist=False,\n    )\n)\n\n\n@app.default\ndef main(name: str = \"world\", count: int = 1, verbose: bool = False):\n    \"\"\"Greet someone, with defaults fillable from pyproject.toml's [tool.mycli] table.\n\n    Args:\n        name: Name to greet.\n        count: Number of times to repeat the greeting.\n        verbose: Whether to print an extra verbose line before each greeting.\n    \"\"\"\n    for _ in range(count):\n        if verbose:\n            print(f\"[verbose] greeting {name!r}\")\n        print(f\"Hello, {name}!\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1237,
+    "cache_read_tokens": 30199,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0276207,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 16.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

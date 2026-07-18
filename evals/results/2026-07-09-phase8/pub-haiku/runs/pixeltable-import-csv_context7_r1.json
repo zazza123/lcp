@@ -1,0 +1,69 @@
+{
+  "case_id": "pixeltable-import-csv",
+  "arm": "context7",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\n\npxt.create_dir('demo', if_exists='ignore')\ntrades_table = pxt.create_table(\n    'demo.trades',\n    source='trades.csv'\n)",
+  "result_text": "```python\nimport pixeltable as pxt\n\npxt.create_dir('demo', if_exists='ignore')\ntrades_table = pxt.create_table(\n    'demo.trades',\n    source='trades.csv'\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 45,
+    "output_tokens": 1736,
+    "cache_read_tokens": 117504,
+    "cache_creation_tokens": 14595,
+    "cost_usd": 0.0496654,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 45.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pixeltable io csv import tabular",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pixeltable documentation api reference",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "libraryName": "pixeltable",
+        "query": "CSV import tabular io namespace create table from file"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/pixeltable/pixeltable",
+        "query": "io namespace import CSV file create table from CSV schema inference"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01Wa6PB8AyNRUzzV2mkdogQU",
+      "content": "Available Libraries:\n\n- Title: Pixeltable\n- Context7-compatible library ID: /pixeltable/pixeltable\n- Description: Pixeltable is a declarative data infrastructure for multimodal AI applications, unifying storage, retrieval, and orchestration for diverse data types.\n- Code Snippets: 3585\n- Source Reputation: High\n- Benchmark Score: 100\n----------\n- Title: Pixeltable\n- Context7-compatible library ID: /websites/pixeltable\n- Description: Pixeltable is a multimodal data platform that enables building and managing AI applications with support for tables, computed columns, UDFs, embeddings, and version control.\n- Code Snippets: 30\n- Source Reputation: Medium\n----------\n- Title: Pixeltable\n- Context7-compatible library ID: /llmstxt/pixeltable_llms-full_txt\n- Description: Pixeltable is a data management system and framework for AI and LLM applications, providing features like data versioning, time travel, and robust integrations with various large language models.\n- Code Snippets: 979\n- Source Reputation: Medium"
+    },
+    {
+      "tool_use_id": "toolu_01M9z9AjMf6KGwueztM6FA4s",
+      "content": "### Create Table from CSV Source\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/tutorials/tables-and-data-operations.ipynb\n\nLoad data into a Pixeltable table from a CSV file using `create_table()`. Specify the table name, source URL, primary key, and schema overrides for specific columns like timestamps.\n\n```python\neq_t = pxt.create_table(\n    'fundamentals/earthquakes',  # Name for the new table\n    source='https://raw.githubusercontent.com/pixeltable/pixeltable/release/docs/resources/earthquakes.csv',\n    primary_key='id',  # Column 'id' is the primary key\n    schema_overrides={\n        'timestamp': pxt.Timestamp\n    },  # Interpret column 3 as a timestamp\n)\n```\n\n--------------------------------\n\n### Create a Pixeltable Table from CSV\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/tutorials/computed-columns.ipynb\n\nCreate a Pixeltable table named 'population' using a CSV file from a URL. The `if_exists='replace'` argument ensures the table is recreated if it already exists.\n\n```python\nimport pixeltable as pxt\n\npxt.create_dir('fundamentals', if_exists='ignore')\npop_t = pxt.create_table(\n    'fundamentals/population',\n    source='https://github.com/pixeltable/pixeltable/raw/release/docs/resources/world-population-data.csv',\n    if_exists='replace',\n)\n```\n\n--------------------------------\n\n### Import CSV from URL\n\nSource: https://github.com/pixeltable/pixeltable/blob/main/docs/release/howto/cookbooks/data/data-import-csv.ipynb\n\nCreates a Pixeltable table named 'population' by importing data directly from a CSV file hosted at a given URL. This method is suitable for loading data from remote sources.\n\n```python\n# Import CSV from URL\ncsv_url = 'https://raw.githubusercontent.com/pixeltable/pixeltable/main/docs/resources/world-population-data.csv'\n\npopulation = pxt.create_table('import_demo/population', source=csv_url)\n```\n\n### Import data from CSV files > Solution\n\nSource: https://github.com/pixeltable/pixeltable/blob/ma"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pixeltable.io:import_csv"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

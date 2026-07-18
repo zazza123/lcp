@@ -1,0 +1,34 @@
+{
+  "case_id": "pocket-coffea-cartesian-categories",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.categorization import Cut, Cartesian\n\n# Jet multiplicity binning (exactly 4, exactly 5, at least 6 jets)\njet_multiplicity = Cut(\n    name=\"nJets\",\n    cuts=[\n        (\"j4\", lambda x: x.JetGood.counts == 4),\n        (\"j5\", lambda x: x.JetGood.counts == 5),\n        (\"j6plus\", lambda x: x.JetGood.counts >= 6),\n    ]\n)\n\n# B-tag multiplicity binning (exactly 2, at least 3 b-jets)\nbtag_multiplicity = Cut(\n    name=\"nBtags\",\n    cuts=[\n        (\"b2\", lambda x: x.BJetGood.counts == 2),\n        (\"b3plus\", lambda x: x.BJetGood.counts >= 3),\n    ]\n)\n\n# Cartesian product of jet and b-tag binnings\ncategories = Cartesian(\n    jet_multiplicity,\n    btag_multiplicity\n)",
+  "result_text": "```python\nfrom pocket_coffea.lib.categorization import Cut, Cartesian\n\n# Jet multiplicity binning (exactly 4, exactly 5, at least 6 jets)\njet_multiplicity = Cut(\n    name=\"nJets\",\n    cuts=[\n        (\"j4\", lambda x: x.JetGood.counts == 4),\n        (\"j5\", lambda x: x.JetGood.counts == 5),\n        (\"j6plus\", lambda x: x.JetGood.counts >= 6),\n    ]\n)\n\n# B-tag multiplicity binning (exactly 2, at least 3 b-jets)\nbtag_multiplicity = Cut(\n    name=\"nBtags\",\n    cuts=[\n        (\"b2\", lambda x: x.BJetGood.counts == 2),\n        (\"b3plus\", lambda x: x.BJetGood.counts >= 3),\n    ]\n)\n\n# Cartesian product of jet and b-tag binnings\ncategories = Cartesian(\n    jet_multiplicity,\n    btag_multiplicity\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2841,
+    "cache_read_tokens": 15192,
+    "cache_creation_tokens": 6978,
+    "cost_usd": 0.029689200000000002,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 31.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.categorization:CartesianSelection",
+      "pocket_coffea.lib.categorization:MultiCut"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.categorization.Cartesian"
+    ],
+    "error": null
+  }
+}

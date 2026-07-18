@@ -1,0 +1,35 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from omegaconf import OmegaConf\nimport os\n\n# Step 1: Fetch framework defaults\ntry:\n    from pocket_coffea.lib_analysis_tools import load_config\n    default_params = load_config()\nexcept ImportError:\n    from pocket_coffea.config import defaults\n    default_params = OmegaConf.create(defaults)\n\n# Step 2: Load and overlay YAML files in order\nyaml_files = [\n    \"params/object_preselection.yaml\",\n    \"params/triggers.yaml\"\n]\n\nfor yaml_file in yaml_files:\n    if os.path.exists(yaml_file):\n        yaml_params = OmegaConf.load(yaml_file)\n        default_params = OmegaConf.merge(default_params, yaml_params)\n\n# Final parameters object\nfinal_params = default_params\nprint(OmegaConf.to_yaml(final_params))",
+  "result_text": "```python\nfrom omegaconf import OmegaConf\nimport os\n\n# Step 1: Fetch framework defaults\ntry:\n    from pocket_coffea.lib_analysis_tools import load_config\n    default_params = load_config()\nexcept ImportError:\n    from pocket_coffea.config import defaults\n    default_params = OmegaConf.create(defaults)\n\n# Step 2: Load and overlay YAML files in order\nyaml_files = [\n    \"params/object_preselection.yaml\",\n    \"params/triggers.yaml\"\n]\n\nfor yaml_file in yaml_files:\n    if os.path.exists(yaml_file):\n        yaml_params = OmegaConf.load(yaml_file)\n        default_params = OmegaConf.merge(default_params, yaml_params)\n\n# Final parameters object\nfinal_params = default_params\nprint(OmegaConf.to_yaml(final_params))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3229,
+    "cache_read_tokens": 22067,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.018360699999999997,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pocket_coffea.parameters.defaults:get_default_parameters",
+      "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.config.defaults",
+      "pocket_coffea.lib_analysis_tools.load_config"
+    ],
+    "error": null
+  }
+}

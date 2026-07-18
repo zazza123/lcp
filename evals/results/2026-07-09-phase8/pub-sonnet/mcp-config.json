@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "lcp": {
+      "command": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/lcp",
+      "args": [
+        "serve-all",
+        "--cache-dir",
+        "/Users/andreazanini/Projects/lcp/lcp/evals/.lcp-cache-bench",
+        "--expose",
+        "cyclopts",
+        "--expose",
+        "cyhole",
+        "--expose",
+        "fastmcp",
+        "--expose",
+        "flask",
+        "--expose",
+        "griffe",
+        "--expose",
+        "hamana",
+        "--expose",
+        "narwhals",
+        "--expose",
+        "pixeltable",
+        "--expose",
+        "pocket-coffea",
+        "--expose",
+        "polars",
+        "--expose",
+        "requests"
+      ]
+    }
+  }
+}

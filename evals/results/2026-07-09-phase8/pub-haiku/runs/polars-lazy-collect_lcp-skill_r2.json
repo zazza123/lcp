@@ -1,0 +1,143 @@
+{
+  "case_id": "polars-lazy-collect",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\ndata = {\n    \"user\": [\"alice\", \"bob\", \"charlie\", \"diana\", \"eve\"],\n    \"amount\": [50, 150, 75, 200, 120]\n}\n\ndf = pl.DataFrame(data)\n\nresult = (\n    df.lazy()\n    .filter(pl.col(\"amount\") > 100)\n    .select(\"user\")\n    .collect()\n)\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\ndata = {\n    \"user\": [\"alice\", \"bob\", \"charlie\", \"diana\", \"eve\"],\n    \"amount\": [50, 150, 75, 200, 120]\n}\n\ndf = pl.DataFrame(data)\n\nresult = (\n    df.lazy()\n    .filter(pl.col(\"amount\") > 100)\n    .select(\"user\")\n    .collect()\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 91,
+    "output_tokens": 1704,
+    "cache_read_tokens": 319850,
+    "cache_creation_tokens": 28209,
+    "cost_usd": 0.097014,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 35.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "select:resolve_library",
+        "args": "polars"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "DataFrame",
+        "library": "polars",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "lazy filter select collect",
+        "library": "polars",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:DataFrame#lazy",
+          "polars:DataFrame#filter",
+          "polars:DataFrame#select",
+          "polars:DataFrame#collect"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:LazyFrame#filter",
+          "polars:LazyFrame#select",
+          "polars:LazyFrame#collect"
+        ],
+        "library": "polars"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "polars:LazyFrame#collect"
+        ],
+        "library": "polars"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01UxNMcRzUPdswturfTQagtb",
+      "content": "{\"status\":\"loaded\",\"name\":\"polars\",\"version\":\"1.42.1\",\"language\":\"python\",\"symbol_count\":4152,\"module_count\":196,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='polars') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01YKMobngEHW4NpMQGFsw9gx",
+      "content": "{\"results\":[{\"id\":\"polars:DataFrame\",\"kind\":\"class\",\"summary\":\"Two-dimensional data structure representing data as a table with rows and columns.\",\"import\":\"from polars import DataFrame\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame\"},{\"id\":\"polars.interchange.dataframe:InterchangeDataFrame\",\"kind\":\"class\",\"summary\":\"Interchange dataframe object.\",\"import\":\"from polars.interchange.dataframe import InterchangeDataFrame\",\"resolved_via_alias\":\"polars.interchange.protocol:DataFrame\"},{\"id\":\"polars.dataframe.frame:dataframe_to_pydf\",\"kind\":\"function\",\"summary\":\"Construct a PyDataFrame from an existing Polars DataFrame.\",\"import\":\"from polars.dataframe.frame import dataframe_to_pydf\",\"resolved_via_alias\":\"polars._utils.construction.dataframe:dataframe_to_pydf\"},{\"id\":\"polars.series.series:dataframe_to_pyseries\",\"kind\":\"function\",\"summary\":\"Construct a new PySeries from a Polars DataFrame.\",\"import\":\"from polars.series.series import dataframe_to_pyseries\",\"resolved_via_alias\":\"polars._utils.construction.series:dataframe_to_pyseries\"},{\"id\":\"polars.dataframe.frame:DataFramePlot\",\"kind\":\"class\",\"summary\":\"DataFrame.plot namespace.\",\"import\":\"from polars.dataframe.frame import DataFramePlot\",\"resolved_via_alias\":\"polars.dataframe.plotting:DataFramePlot\"}],\"total\":1467,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01DqU88DsdLJ4pRAHeiaFLWh",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"polars.dataframe.frame\",\"aliases\":[\"polars._reexport:DataFrame\",\"polars.convert.normalize:DataFrame\",\"polars.dataframe:DataFrame\",\"polars.ml.utilities:DataFrame\",\"polars.testing.asserts.frame:DataFrame\",\"polars:DataFrame\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"FrameInitTypes | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Two-dimensional data in various forms; dict input must contain Sequences,\\nGenerators, or a `range`. Sequence may contain Series or other Sequences.\"},{\"name\":\"schema\",\"type\":\"SchemaDefinition | None\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"The schema of the resulting DataFrame. The schema may be declared in several\\nways:\\n\\n* As a dict of {name:type} pairs; if type is None, it will be auto-inferred.\\n* As a list of column names; in this case types are automatically inferred.\\n* As a list of (name,type) pairs; this is equivalent to the dictionary form.\\n\\nThe order of the schema determines the column order of the frame.\\nWhen passing a dict, its insertion order is respected. To override specific\\ncolumn data types by name without changing column order, use\\n``schema_overrides`` instead.\\n\\nIf you supply a list of column names that does not match the names in the\\nunderlying data, the names given here will overwrite them. The number\\nof names given in the schema should match the underlying data dimensions.\\n\\nIf set to `None` (default), the schema is inferred from the data.\"},{\"name\":\"schema_overrides\",\"type\":\"SchemaDict | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Support type specification or override of one or more columns; note that\\nany dtypes inferred from the schema param will be overridden.\\n\\nThe number of entries in the schema should match the underlying data\\ndimensions, unless a sequence of dictionaries is being passed, in which case\\na *partial* schema can be declared to prevent spec"
+    },
+    {
+      "tool_use_id": "toolu_01WxUS7zDgCfFaM4Dp1bL9eo",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Bx14TeJ3iX2Rrh79z4SpMU",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"returns\":\"LazyFrame\"}],\"semantics\":{\"summary\":\"Start a lazy query from this point. This returns a `LazyFrame` object.\",\"description\":\"Operations on a `LazyFrame` are not executed until this is triggered\\n        by calling one of:\\n\\n        * :meth:`.collect() <polars.LazyFrame.collect>`\\n            (run on all data)\\n        * :meth:`.explain() <polars.LazyFrame.explain>`\\n            (print the query plan)\\n        * :meth:`.show_graph() <polars.LazyFrame.show_graph>`\\n            (show the query plan as graphviz graph)\\n        * :meth:`.collect_schema() <polars.LazyFrame.collect_schema>`\\n            (return the final frame schema)\\n\\n        Lazy operations are recommended because they allow for query optimization and\\n        additional parallelism.\\n\\n        Returns\\n        -------\\n        LazyFrame\\n\\n        Examples\\n        --------\\n        >>> df = pl.DataFrame(\\n        ...     {\\n        ...         \\\"a\\\": [None, 2, 3, 4],\\n        ...         \\\"b\\\": [0.5, None, 2.5, 13],\\n        ...         \\\"c\\\": [True, True, False, None],\\n        ...     }\\n        ... )\\n        >>> df.lazy()\\n        <LazyFrame at ...>\",\"examples\":[{\"code\":\">>> df = pl.DataFrame(\\n...     {\\n...         \\\"a\\\": [None, 2, 3, 4],\\n...         \\\"b\\\": [0.5, None, 2.5, 13],\\n...         \\\"c\\\": [True, True, False, None],\\n...     }\\n... )\"},{\"code\":\">>> df.lazy()\\n<LazyFrame at ...>\"}]},\"id\":\"polars:DataFrame#lazy\",\"resolved_via_alias\":\"polars.dataframe.frame:DataFrame#lazy\",\"import\":\"from polars import DataFrame\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"LazyFrame\",\"returns_classes\":[\"polars:LazyFrame\"],\"next\":\"returns LazyFrame \u2192 get_symbol(ids=['polars:LazyFrame']) to see its members\"}},{\"kind\":\"method\",\"module\":\"polars.dataframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"predicates\",\"type\":\"IntoExprColumn | Iterable["
+    },
+    {
+      "tool_use_id": "toolu_019Y4qsUmx19STnLKAwADWjH",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.lazyframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"predicates\",\"type\":\"IntoExprColumn | Iterable[IntoExprColumn] | bool | list[bool] | np.ndarray[Any, Any]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Expression that evaluates to a boolean Series.\"},{\"name\":\"constraints\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Column filters; use `name = value` to filter columns using the supplied\\nvalue. Each constraint behaves the same as `pl.col(name).eq(value)`,\\nand is implicitly joined with the other filter conditions using `&`.\"}],\"returns\":\"LazyFrame\"}],\"semantics\":{\"summary\":\"Filter rows in the LazyFrame based on a predicate expression.\",\"description\":\"The original order of the remaining rows is preserved.\\n\\n        Rows where the filter predicate does not evaluate to True are discarded\\n        (this includes rows where the predicate evaluates as `null`).\\n\\n        Parameters\\n        ----------\\n        predicates\\n            Expression that evaluates to a boolean Series.\\n        constraints\\n            Column filters; use `name = value` to filter columns using the supplied\\n            value. Each constraint behaves the same as `pl.col(name).eq(value)`,\\n            and is implicitly joined with the other filter conditions using `&`.\\n\\n        Notes\\n        -----\\n        If you are transitioning from Pandas, and performing filter operations based on\\n        the comparison of two or more columns, please note that in Polars any comparison\\n        involving `null` values will result in a `null` result, *not* boolean True or\\n        False. As a result, these rows will not be retained. Ensure that null values\\n        are handled appropriately to avoid unexpected behaviour (see examples below).\\n\\n        See Also\\n        --------\\n        remove\\n\\n        Examples\\n        --------\\n        >>> lf = pl.LazyFrame(\\n        ...     {\\n        ...        "
+    },
+    {
+      "tool_use_id": "toolu_01PF6ci3i1xgYuAkJPPGGziN",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"polars.lazyframe.frame\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"type_coercion\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Do type coercion optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"predicate_pushdown\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Do predicate pushdown optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"projection_pushdown\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Do projection pushdown optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"simplify_expression\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Run simplify expressions optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"slice_pushdown\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Slice pushdown optimization.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"comm_subplan_elim\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Will try to cache branching subplans that occur on self-joins or unions.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"comm_subexpr_elim\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Common subexpressions will be cached and reused.\\n\\n.. deprecated:: 1.30.0\\n    Use the `optimizations` parameters.\"},{\"name\":\"cluster_with_columns\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Combine sequential independent calls to with_columns\\n\\n.. deprecated:: 1.30.0\\n    Use the `op"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

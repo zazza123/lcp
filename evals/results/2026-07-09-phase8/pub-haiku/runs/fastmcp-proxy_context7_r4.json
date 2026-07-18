@@ -1,0 +1,31 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "context7",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from fastmcp import FastMCP\nimport asyncio\n\nasync def main():\n    # Create and configure backend server\n    backend = FastMCP(\"backend\")\n    \n    @backend.tool()\n    async def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n    \n    @backend.tool()\n    async def multiply(x: float, y: float) -> float:\n        \"\"\"Multiply two numbers.\"\"\"\n        return x * y\n    \n    @backend.resource()\n    async def config() -> str:\n        \"\"\"Get configuration.\"\"\"\n        return '{\"version\": \"1.0\"}'\n    \n    # Create transparent proxy server\n    proxy = FastMCP(\"proxy-server\")\n    \n    # Proxy all tools from backend\n    for tool_name, tool_def in backend._tools.items():\n        handler = tool_def.handler\n        description = tool_def.description or f\"Proxy: {tool_name}\"\n        \n        def make_proxy_tool(h, name):\n            async def proxy_tool(**kwargs):\n                return await h(**kwargs)\n            proxy_tool.__name__ = name\n            return proxy_tool\n        \n        proxy_tool_func = make_proxy_tool(handler, tool_name)\n        proxy.tool(name=tool_name, description=description)(proxy_tool_func)\n    \n    # Proxy all resources from backend\n    for resource_uri, resource_def in backend._resources.items():\n        handler = resource_def.handler\n        resource_name = getattr(resource_def, 'name', resource_uri)\n        description = getattr(resource_def, 'description', f\"Proxy: {resource_uri}\")\n        \n        def make_proxy_resource(h, uri):\n            async def proxy_resource():\n                return await h()\n            proxy_resource.__name__ = f\"proxy_{uri}\"\n            return proxy_resource\n        \n        proxy_resource_func = make_proxy_resource(handler, resource_uri)\n        proxy.resource(uri=resource_uri, name=resource_name, description=description)(proxy_resource_func)\n    \n    # Verify proxy forwarding\n    backend_add = backend._tools[\"add\"].handler\n    proxy_add = proxy._tools[\"add\"].handler\n    \n    result_backend = await backend_add(a=10, b=5)\n    result_proxy = await proxy_add(a=10, b=5)\n    print(f\"Backend add(10, 5): {result_backend}\")\n    print(f\"Proxy add(10, 5): {result_proxy}\")\n    assert result_backend == result_proxy == 15\n    \n    backend_config = backend._resources[\"config\"].handler\n    proxy_config = proxy._resources[\"config\"].handler\n    \n    config_backend = await backend_config()\n    config_proxy = await proxy_config()\n    print(f\"Backend config resource: {config_backend}\")\n    print(f\"Proxy config resource: {config_proxy}\")\n    assert config_backend == config_proxy\n    \n    print(\"\\n\u2713 Transparent proxy successfully forwards all tools and resources\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nimport asyncio\n\nasync def main():\n    # Create and configure backend server\n    backend = FastMCP(\"backend\")\n    \n    @backend.tool()\n    async def add(a: int, b: int) -> int:\n        \"\"\"Add two numbers.\"\"\"\n        return a + b\n    \n    @backend.tool()\n    async def multiply(x: float, y: float) -> float:\n        \"\"\"Multiply two numbers.\"\"\"\n        return x * y\n    \n    @backend.resource()\n    async def config() -> str:\n        \"\"\"Get configuration.\"\"\"\n        return '{\"version\": \"1.0\"}'\n    \n    # Create transparent proxy server\n    proxy = FastMCP(\"proxy-server\")\n    \n    # Proxy all tools from backend\n    for tool_name, tool_def in backend._tools.items():\n        handler = tool_def.handler\n        description = tool_def.description or f\"Proxy: {tool_name}\"\n        \n        def make_proxy_tool(h, name):\n            async def proxy_tool(**kwargs):\n                return await h(**kwargs)\n            proxy_tool.__name__ = name\n            return proxy_tool\n        \n        proxy_tool_func = make_proxy_tool(handler, tool_name)\n        proxy.tool(name=tool_name, description=description)(proxy_tool_func)\n    \n    # Proxy all resources from backend\n    for resource_uri, resource_def in backend._resources.items():\n        handler = resource_def.handler\n        resource_name = getattr(resource_def, 'name', resource_uri)\n        description = getattr(resource_def, 'description', f\"Proxy: {resource_uri}\")\n        \n        def make_proxy_resource(h, uri):\n            async def proxy_resource():\n                return await h()\n            proxy_resource.__name__ = f\"proxy_{uri}\"\n            return proxy_resource\n        \n        proxy_resource_func = make_proxy_resource(handler, resource_uri)\n        proxy.resource(uri=resource_uri, name=resource_name, description=description)(proxy_resource_func)\n    \n    # Verify proxy forwarding\n    backend_add = backend._tools[\"add\"].handler\n    proxy_add = proxy._tools[\"add\"].handler\n    \n    result_backend = await backend_add(a=10, b=5)\n    result_proxy = await proxy_add(a=10, b=5)\n    print(f\"Backend add(10, 5): {result_backend}\")\n    print(f\"Proxy add(10, 5): {result_proxy}\")\n    assert result_backend == result_proxy == 15\n    \n    backend_config = backend._resources[\"config\"].handler\n    proxy_config = proxy._resources[\"config\"].handler\n    \n    config_backend = await backend_config()\n    config_proxy = await proxy_config()\n    print(f\"Backend config resource: {config_backend}\")\n    print(f\"Proxy config resource: {config_proxy}\")\n    assert config_backend == config_proxy\n    \n    print(\"\\n\u2713 Transparent proxy successfully forwards all tools and resources\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6423,
+    "cache_read_tokens": 22061,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0343301,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 60.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

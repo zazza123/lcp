@@ -1,0 +1,29 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-sonnet-5",
+  "code": "from pathlib import Path\n\nimport cyclopts\nfrom cyclopts.config import Toml\n\napp = cyclopts.App(\n    name=\"mycli\",\n    config=Toml(\n        Path(\"pyproject.toml\"),\n        root_keys=[\"tool\", \"mycli\"],\n        must_exist=False,\n    ),\n)\n\n\n@app.default\ndef main(\n    name: str = \"world\",\n    count: int = 1,\n    verbose: bool = False,\n):\n    \"\"\"Greet someone, with defaults fillable from pyproject.toml's [tool.mycli] table.\n\n    Parameters\n    ----------\n    name: Name to greet.\n    count: Number of times to greet.\n    verbose: Print an extra line before each greeting.\n    \"\"\"\n    for _ in range(count):\n        if verbose:\n            print(f\"[verbose] greeting {name!r}\")\n        print(f\"Hello, {name}!\")\n\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom pathlib import Path\n\nimport cyclopts\nfrom cyclopts.config import Toml\n\napp = cyclopts.App(\n    name=\"mycli\",\n    config=Toml(\n        Path(\"pyproject.toml\"),\n        root_keys=[\"tool\", \"mycli\"],\n        must_exist=False,\n    ),\n)\n\n\n@app.default\ndef main(\n    name: str = \"world\",\n    count: int = 1,\n    verbose: bool = False,\n):\n    \"\"\"Greet someone, with defaults fillable from pyproject.toml's [tool.mycli] table.\n\n    Parameters\n    ----------\n    name: Name to greet.\n    count: Number of times to greet.\n    verbose: Print an extra line before each greeting.\n    \"\"\"\n    for _ in range(count):\n        if verbose:\n            print(f\"[verbose] greeting {name!r}\")\n        print(f\"Hello, {name}!\")\n\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 1441,
+    "cache_read_tokens": 14777,
+    "cache_creation_tokens": 15555,
+    "cost_usd": 0.11938409999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 19.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

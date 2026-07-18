@@ -1,0 +1,32 @@
+{
+  "case_id": "pixeltable-video-frames",
+  "arm": "sitepkg",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom pixeltable.iterators import FrameIterator\n\n# Connect to pixeltable\npxt.client.connect()\n\n# Get the existing videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that extracts frames at 1 fps\n# Each row represents one frame from the video\nframes_view = pxt.create_view(\n    name='frames',\n    select=videos.select(\n        *videos.columns,\n        frame=FrameIterator(videos.video, fps=1)\n    )\n)",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.iterators import FrameIterator\n\n# Connect to pixeltable\npxt.client.connect()\n\n# Get the existing videos table\nvideos = pxt.get_table('videos')\n\n# Create a view that extracts frames at 1 fps\n# Each row represents one frame from the video\nframes_view = pxt.create_view(\n    name='frames',\n    select=videos.select(\n        *videos.columns,\n        frame=FrameIterator(videos.video, fps=1)\n    )\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3576,
+    "cache_read_tokens": 24103,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0202993,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 27.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pixeltable.client",
+      "pixeltable.client.connect"
+    ],
+    "error": null
+  }
+}

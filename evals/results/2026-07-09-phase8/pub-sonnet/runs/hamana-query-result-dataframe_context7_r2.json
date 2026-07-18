@@ -1,0 +1,107 @@
+{
+  "case_id": "hamana-query-result-dataframe",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "from hamana.core.query import Query\n\nsql = \"SELECT id, name FROM users\"\n\nquery = Query(sql=sql)\nquery.exec()\ndf = query.to_pandas()\n\nprint(df)",
+  "result_text": "I wasn't able to verify hamana's actual API \u2014 Context7's quota is exhausted, and this session has no Bash/Read/WebFetch tools to introspect the installed package or check PyPI. The code below is my best-effort reconstruction from typical patterns for this kind of library, **not verified against real docs or the installed package**. Please sanity-check it (e.g. `python -c \"import hamana; help(hamana.core.query.Query)\"`) before relying on it.\n\n```python\nfrom hamana.core.query import Query\n\nsql = \"SELECT id, name FROM users\"\n\nquery = Query(sql=sql)\nquery.exec()\ndf = query.to_pandas()\n\nprint(df)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 5316,
+    "cache_read_tokens": 375337,
+    "cache_creation_tokens": 32483,
+    "cost_usd": 0.38729910000000006,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 83.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "wrap SQL string in Query object, execute against internal database, read results as pandas DataFrame",
+        "libraryName": "hamana"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "bash powershell shell execute command",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "run shell command execute script terminal",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,Read,Grep,Glob,Write,Edit",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "web search fetch url",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/zazza123/hamana",
+        "query": "Query object execute SQL against internal database and get pandas DataFrame"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01GKuMB8v4Qo9Cjd5tCfqrTB",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    },
+    {
+      "tool_use_id": "toolu_01LvcZhLMeRy69tWbGyQ1jmN",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana:Query",
+      "hamana.connector.db.query:Query#result"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.core.query.Query"
+    ],
+    "error": null
+  }
+}

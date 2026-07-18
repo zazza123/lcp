@@ -1,0 +1,58 @@
+{
+  "case_id": "cyclopts-single-function",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import cyclopts\n\ndef greet(name: str, excited: bool = False):\n    greeting = f\"Hello, {name}\"\n    if excited:\n        greeting += \"!\"\n    else:\n        greeting += \".\"\n    print(greeting)\n\nif __name__ == \"__main__\":\n    cyclopts.parse(greet)",
+  "result_text": "```python\nimport cyclopts\n\ndef greet(name: str, excited: bool = False):\n    greeting = f\"Hello, {name}\"\n    if excited:\n        greeting += \"!\"\n    else:\n        greeting += \".\"\n    print(greeting)\n\nif __name__ == \"__main__\":\n    cyclopts.parse(greet)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 41,
+    "output_tokens": 6260,
+    "cache_read_tokens": 115804,
+    "cache_creation_tokens": 7845,
+    "cost_usd": 0.0586114,
+    "num_turns": 5,
+    "tool_calls": 4,
+    "duration_s": 96.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyc*"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts:run"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.parse"
+    ],
+    "error": null
+  }
+}

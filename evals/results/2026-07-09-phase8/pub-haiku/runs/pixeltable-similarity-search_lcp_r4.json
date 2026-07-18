@@ -1,0 +1,38 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "lcp",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.sentence_transformers import embed\nfrom sentence_transformers import SentenceTransformer\n\n# Initialize pixeltable\npxt.create_client()\n\n# Access the docs table\ndocs = pxt.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = embed(docs['content'], model='all-MiniLM-L6-v2')\n\n# Create vector index for semantic search\ndocs.create_index('content_embedding_index', column='content_embedding')\n\n# Get query embedding\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\nquery_embedding = model.encode('climate change policy')\n\n# Perform semantic similarity search\nfrom pixeltable import select, col\nresults = docs.select(\n    col('content'),\n    col('content_embedding').similarity(query_embedding).alias('similarity')\n).order_by(-col('similarity')).limit(5)\n\n# Display results ranked from closest to farthest\ndf = results.to_pandas()\nfor idx, row in df.iterrows():\n    print(f\"{idx + 1}. {row['content']} (similarity: {row['similarity']:.4f})\")",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.functions.sentence_transformers import embed\nfrom sentence_transformers import SentenceTransformer\n\n# Initialize pixeltable\npxt.create_client()\n\n# Access the docs table\ndocs = pxt.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = embed(docs['content'], model='all-MiniLM-L6-v2')\n\n# Create vector index for semantic search\ndocs.create_index('content_embedding_index', column='content_embedding')\n\n# Get query embedding\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\nquery_embedding = model.encode('climate change policy')\n\n# Perform semantic similarity search\nfrom pixeltable import select, col\nresults = docs.select(\n    col('content'),\n    col('content_embedding').similarity(query_embedding).alias('similarity')\n).order_by(-col('similarity')).limit(5)\n\n# Display results ranked from closest to farthest\ndf = results.to_pandas()\nfor idx, row in df.iterrows():\n    print(f\"{idx + 1}. {row['content']} (similarity: {row['similarity']:.4f})\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2893,
+    "cache_read_tokens": 22166,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0166906,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 24.0
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 4,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.col",
+      "pixeltable.create_client",
+      "pixeltable.functions.sentence_transformers.embed"
+    ],
+    "error": null
+  }
+}

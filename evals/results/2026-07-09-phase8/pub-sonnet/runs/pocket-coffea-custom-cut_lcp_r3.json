@@ -1,0 +1,115 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import awkward as ak\n\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"Event passes if it has >=2 muons above pt threshold with an opposite-charge leading pair.\"\"\"\n    muons = events.Muon\n    good_muons = muons[muons.pt > params[\"pt_threshold\"]]\n\n    has_two_muons = ak.num(good_muons, axis=1) >= 2\n\n    padded = ak.pad_none(good_muons, 2, axis=1)\n    leading = padded[:, 0]\n    subleading = padded[:, 1]\n    opposite_charge = (leading.charge * subleading.charge) < 0\n\n    mask = has_two_muons & opposite_charge\n    return ak.fill_none(mask, False)\n\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n\n# Usage in a PocketCoffea configuration:\n# \"preselections\": [dimuon_cut],",
+  "result_text": "```python\nimport awkward as ak\n\nfrom pocket_coffea.lib.cut_definition import Cut\n\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"Event passes if it has >=2 muons above pt threshold with an opposite-charge leading pair.\"\"\"\n    muons = events.Muon\n    good_muons = muons[muons.pt > params[\"pt_threshold\"]]\n\n    has_two_muons = ak.num(good_muons, axis=1) >= 2\n\n    padded = ak.pad_none(good_muons, 2, axis=1)\n    leading = padded[:, 0]\n    subleading = padded[:, 1]\n    opposite_charge = (leading.charge * subleading.charge) < 0\n\n    mask = has_two_muons & opposite_charge\n    return ak.fill_none(mask, False)\n\n\ndimuon_cut = Cut(\n    name=\"dimuon\",\n    params={\"pt_threshold\": 15},\n    function=dimuon_mask,\n)\n\n# Usage in a PocketCoffea configuration:\n# \"preselections\": [dimuon_cut],\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 22,
+    "output_tokens": 5749,
+    "cache_read_tokens": 421097,
+    "cache_creation_tokens": 20560,
+    "cost_usd": 0.33599009999999996,
+    "num_turns": 11,
+    "tool_calls": 10,
+    "duration_s": 93.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol,mcp__lcp__get_overview",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea"
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket_coffea"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "Bash shell command execute",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell,Bash,Shell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "read file contents",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Cut",
+        "library": "pocket-coffea"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash,BashOutput",
+        "max_results": 5
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01BTPjZ6bFeMqK2rdLDWWUn6",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01USr7Acf3KuH9r8CF4DP5F9",
+      "content": "{\"error\":{\"code\":\"library_not_exposed\",\"message\":\"Library 'pocket_coffea' is not exposed by this server.\",\"hint\":\"Ask for one of the exposed libraries instead.\",\"exposed\":[\"cyclopts\",\"cyhole\",\"fastmcp\",\"flask\",\"griffe\",\"hamana\",\"narwhals\",\"pixeltable\",\"pocket-coffea\",\"polars\",\"requests\"]}}"
+    },
+    {
+      "tool_use_id": "toolu_01YBcVwCKJxYuZ856f6AiLex",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    },
+    {
+      "tool_use_id": "toolu_01APHxpQoB8JojdiSVnqkDs1",
+      "content": "{\"error\":{\"code\":\"library_not_loaded\",\"message\":\"Library 'pocket-coffea' is not loaded.\",\"hint\":\"Call resolve_library('pocket-coffea') first.\",\"loaded_libraries\":[]}}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

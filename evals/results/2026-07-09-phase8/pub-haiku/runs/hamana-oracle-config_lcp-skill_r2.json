@@ -1,0 +1,118 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nfrom hamana.connector.db import Oracle\n\nuser = \"your_user\"\npassword = os.environ.get(\"ORACLE_PASSWORD\")\nhost = \"your_host\"\nservice = \"your_service\"\n\nconfig = Oracle.create_config(user=user, password=password, host=host, service=service)\n\nconnector = Oracle.new(user=user, password=password, host=host, service=service)\n\nresult = connector.execute(\"SELECT sysdate FROM dual\")\n\nif result:\n    print(result.result)",
+  "result_text": "```python\nimport os\nfrom hamana.connector.db import Oracle\n\nuser = \"your_user\"\npassword = os.environ.get(\"ORACLE_PASSWORD\")\nhost = \"your_host\"\nservice = \"your_service\"\n\nconfig = Oracle.create_config(user=user, password=password, host=host, service=service)\n\nconnector = Oracle.new(user=user, password=password, host=host, service=service)\n\nresult = connector.execute(\"SELECT sysdate FROM dual\")\n\nif result:\n    print(result.result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 67,
+    "output_tokens": 1750,
+    "cache_read_tokens": 198330,
+    "cache_creation_tokens": 14384,
+    "cost_usd": 0.057418,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 36.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "library resolve mcp lcp",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "hamana",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "oracle connector configuration"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Oracle",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db:Oracle#create_config",
+          "hamana.connector.db:Oracle#new",
+          "hamana.connector.db.oracle:OracleConnectorConfig"
+        ],
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "execute",
+        "library": "hamana"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "hamana.connector.db:Oracle#execute"
+        ],
+        "library": "hamana"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01JYzysJEgAQskUHFdpyYWh6",
+      "content": "{\"status\":\"loaded\",\"name\":\"hamana\",\"version\":\"1.0.1\",\"language\":\"python\",\"symbol_count\":245,\"module_count\":21,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='hamana') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_013BAbd9LAn5FP8jSA6zUZV1",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db:Oracle#create_config\",\"kind\":\"method\",\"summary\":\"Use this function to create a new Oracle connector configuration.\",\"import\":\"from hamana.connector.db import Oracle\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#create_config\"}],\"total\":1,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FgibJSG8zn4zoAtwu4d1pn",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db:Oracle\",\"kind\":\"class\",\"summary\":\"Class representing a connector to an Oracle database.\",\"import\":\"from hamana.connector.db import Oracle\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector\"},{\"id\":\"hamana.connector.db.oracle:OracleConnectorConfig\",\"kind\":\"class\",\"summary\":\"Class to represent the configuration of an Oracle database.\",\"import\":\"from hamana.connector.db.oracle import OracleConnectorConfig\"},{\"id\":\"hamana.connector.db.oracle:\",\"kind\":\"module\",\"summary\":\"Module hamana.connector.db.oracle\",\"import\":\"import hamana.connector.db.oracle\"},{\"id\":\"hamana.connector.db:Oracle#create_config\",\"kind\":\"method\",\"summary\":\"Use this function to create a new Oracle connector configuration.\",\"import\":\"from hamana.connector.db import Oracle\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#create_config\"},{\"id\":\"hamana.connector.db:Oracle#new\",\"kind\":\"method\",\"summary\":\"Use this function to create a new Oracle connector.\",\"import\":\"from hamana.connector.db import Oracle\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#new\"},{\"id\":\"hamana.connector.db:Hamana\",\"kind\":\"class\",\"summary\":\"This class is responsible for handling the database connection of the library. For each execution, only one instance of this class is allowed to manage a single database connection.\",\"import\":\"from hamana.connector.db import Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector\"}],\"total\":6,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Aut8JucNj5aSRqipNBAGyg",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"hamana.connector.db.oracle\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"user\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"User to connect to the database.\"},{\"name\":\"password\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Password to uso to connect to the database.\"},{\"name\":\"host\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Host of the database.\"},{\"name\":\"service\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Service name of the database.\"},{\"name\":\"port\",\"type\":\"int\",\"required\":false,\"default\":1521,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Port of the database.\"},{\"name\":\"data_source_name\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"DSN connection string to connect on the database. \\nObserve that if DSN is provided, then host, service and port are ignored.\"}],\"returns\":\"OracleConnectorConfig\",\"returns_description\":\"Oracle connector configuration.\"}],\"semantics\":{\"summary\":\"Use this function to create a new Oracle connector configuration.\",\"description\":\"Parameters:\\n                user: User to connect to the database.\\n                password: Password to uso to connect to the database.\\n                host: Host of the database.\\n                service: Service name of the database.\\n                port: Port of the database.\\n                data_source_name: DSN connection string to connect on the database. \\n                    Observe that if DSN is provided, then host, service and port are ignored.\\n\\n            Returns:\\n                Oracle connector configuration.\"},\"id\":\"hamana.connector.db:Oracle#create_config\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#create_config\",\"import\":\"from hamana.connector.db import Oracle\",\"usage_hints\":{\"requi"
+    },
+    {
+      "tool_use_id": "toolu_0168tSndkQ4yDMfszUUYsu9r",
+      "content": "{\"results\":[{\"id\":\"hamana.connector.db.oracle:BaseConnector#execute\",\"kind\":\"method\",\"summary\":\"Method execute\",\"import\":\"from hamana.connector.db.oracle import BaseConnector\",\"resolved_via_alias\":\"hamana.connector.db.base:BaseConnector#execute\"},{\"id\":\"hamana.connector.db:Hamana#execute\",\"kind\":\"method\",\"summary\":\"Method execute\",\"import\":\"from hamana.connector.db import Hamana\",\"resolved_via_alias\":\"hamana.connector.db.hamana:HamanaConnector#execute\"},{\"id\":\"hamana:execute\",\"kind\":\"function\",\"summary\":\"Execute the query on the internal database. This function is a helper function to execute a query on the `hamana` SQLite database.\",\"import\":\"from hamana import execute\",\"resolved_via_alias\":\"hamana.connector.db.hamana:execute\"},{\"id\":\"hamana.connector.db.base:Cursor#execute\",\"kind\":\"method\",\"summary\":\"Execute a database operation.\",\"import\":\"from hamana.connector.db.base import Cursor\",\"resolved_via_alias\":\"hamana.connector.db.interface:Cursor#execute\"},{\"id\":\"hamana.connector.db.base:DatabaseConnectorABC#execute\",\"kind\":\"method\",\"summary\":\"Function used to extract data from the database by executin a SELECT query.\",\"import\":\"from hamana.connector.db.base import DatabaseConnectorABC\",\"resolved_via_alias\":\"hamana.connector.db.interface:DatabaseConnectorABC#execute\"},{\"id\":\"hamana.connector.db:Oracle#execute\",\"kind\":\"method\",\"summary\":\"Method execute\",\"import\":\"from hamana.connector.db import Oracle\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#execute\"},{\"id\":\"hamana.connector.db:SQLite#execute\",\"kind\":\"method\",\"summary\":\"Method execute\",\"import\":\"from hamana.connector.db import SQLite\",\"resolved_via_alias\":\"hamana.connector.db.sqlite:SQLiteConnector#execute\"},{\"id\":\"hamana.connector.db:Teradata#execute\",\"kind\":\"method\",\"summary\":\"Method execute\",\"import\":\"from hamana.connector.db import Teradata\",\"resolved_via_alias\":\"hamana.connector.db.teradata:TeradataConnector#execute\"},{\"id\":\"hamana.connector.file:CSV#execute\",\"kind\":\"method\",\"summary\":\"Fun"
+    },
+    {
+      "tool_use_id": "toolu_01VMysQuBBDpNxyDwGT7D9Ei",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"hamana.connector.db.oracle\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"query\",\"type\":\"UnionType[Query, str]\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"UnionType[None, Query]\"}],\"semantics\":{\"summary\":\"Method execute\"},\"id\":\"hamana.connector.db:Oracle#execute\",\"resolved_via_alias\":\"hamana.connector.db.oracle:OracleConnector#execute\",\"import\":\"from hamana.connector.db import Oracle\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"query\",\"type\":\"UnionType[Query, str]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"UnionType[None, Query]\",\"returns_classes\":[\"hamana:Query\"],\"next\":\"returns UnionType[None, Query] \u2192 get_symbol(ids=['hamana:Query']) to see its members\"}}],\"not_found\":[]}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db.oracle:OracleConnector#create_config"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-helius-get-asset",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import os\nimport sys\nimport json\nfrom cyhole.helius import Helius\n\n# Read API key from environment variable\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n\n# Get asset ID from command line argument\nif len(sys.argv) < 2:\n    raise ValueError(\"Usage: python script.py <asset_id>\")\n\nasset_id = sys.argv[1]\n\n# Create Helius client\nhelius = Helius(api_key=api_key)\n\n# Fetch the asset metadata using DAS\nasset_metadata = helius.get_asset(asset_id)\n\n# Print the full metadata\nprint(json.dumps(asset_metadata, indent=2))",
+  "result_text": "```python\nimport os\nimport sys\nimport json\nfrom cyhole.helius import Helius\n\n# Read API key from environment variable\napi_key = os.getenv(\"HELIUS_API_KEY\")\nif not api_key:\n    raise ValueError(\"HELIUS_API_KEY environment variable is not set\")\n\n# Get asset ID from command line argument\nif len(sys.argv) < 2:\n    raise ValueError(\"Usage: python script.py <asset_id>\")\n\nasset_id = sys.argv[1]\n\n# Create Helius client\nhelius = Helius(api_key=api_key)\n\n# Fetch the asset metadata using DAS\nasset_metadata = helius.get_asset(asset_id)\n\n# Print the full metadata\nprint(json.dumps(asset_metadata, indent=2))\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1672,
+    "cache_read_tokens": 22019,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.010570900000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 17.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.helius.client:HeliusClient#post_get_asset"
+    ],
+    "forbidden_used": [
+      "cyhole.helius.client:HeliusClient#get_asset"
+    ],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

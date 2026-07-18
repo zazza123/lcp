@@ -1,0 +1,31 @@
+{
+  "case_id": "narwhals-lazy-parquet",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\nimport polars as pl\n\n# Scan the parquet file lazily with polars backend\ndf = nw.from_native(\n    pl.scan_parquet(\"events.parquet\"),\n    eager_or_lazy=\"lazy\"\n)\n\n# Build and materialize the lazy pipeline\nresult = (\n    df\n    .filter(nw.col(\"status\") == \"ok\")\n    .select([\"user\", \"duration\"])\n    .collect()\n)\n\nprint(result)",
+  "result_text": "```python\nimport narwhals as nw\nimport polars as pl\n\n# Scan the parquet file lazily with polars backend\ndf = nw.from_native(\n    pl.scan_parquet(\"events.parquet\"),\n    eager_or_lazy=\"lazy\"\n)\n\n# Build and materialize the lazy pipeline\nresult = (\n    df\n    .filter(nw.col(\"status\") == \"ok\")\n    .select([\"user\", \"duration\"])\n    .collect()\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 1500,
+    "cache_read_tokens": 15146,
+    "cache_creation_tokens": 6948,
+    "cost_usd": 0.0229196,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 14.7
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "narwhals:scan_parquet"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

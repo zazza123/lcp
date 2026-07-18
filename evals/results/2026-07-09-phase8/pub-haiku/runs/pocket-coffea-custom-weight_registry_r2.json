@@ -1,0 +1,51 @@
+{
+  "case_id": "pocket-coffea-custom-weight",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "class ToyReweight:\n    \"\"\"Custom per-event MC weight with symmetric variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        # Nominal weight: LHEWeight_originalXWGTUP normalized to 1\n        nominal = events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n        \n        return {\n            \"nominal\": nominal,\n            \"up\": nominal * 1.05,\n            \"down\": nominal * 0.95,\n        }",
+  "result_text": "```python\nclass ToyReweight:\n    \"\"\"Custom per-event MC weight with symmetric variations.\"\"\"\n    \n    name = \"toy_reweight\"\n    has_variations = True\n    \n    @staticmethod\n    def weight(events):\n        # Nominal weight: LHEWeight_originalXWGTUP normalized to 1\n        nominal = events.LHEWeight_originalXWGTUP / events.LHEWeight_originalXWGTUP.mean()\n        \n        return {\n            \"nominal\": nominal,\n            \"up\": nominal * 1.05,\n            \"down\": nominal * 0.95,\n        }\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 27,
+    "output_tokens": 1558,
+    "cache_read_tokens": 60877,
+    "cache_creation_tokens": 8597,
+    "cost_usd": 0.0310987,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 23.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search",
+        "max_results": 2
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pocket-coffea",
+        "version": "0.9.13"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01RHnwB9ygQNKPfiwxbCrtpN",
+      "content": "{\"error\":{\"code\":\"resolve_failed\",\"message\":\"Cannot resolve library 'pocket-coffea': 'pocket-coffea' is not importable by the scan interpreter (/Users/andreazanini/Projects/lcp/lcp/evals/.venv-registry/bin/python3.12). It may be installed in a different environment \u2014 point the server at that env via .lcp-config.json ('scan_python' or 'python'); the distribution name may also differ from the import path (e.g. import 'google.adk' is provided by 'pip install google-adk').\",\"hint\":\"Check the package name (pip distribution vs import path) and that it is installed in this environment.\"}}"
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "pocket_coffea.lib.weights.weights:WeightLambda"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

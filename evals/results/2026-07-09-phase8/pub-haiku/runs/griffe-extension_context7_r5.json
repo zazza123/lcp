@@ -1,0 +1,36 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "context7",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.extensions import Extension\nfrom griffe.objects import Function\nfrom griffe.loader import GriffeLoader\n\n\nclass AppendCheckedExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to function docstrings.\"\"\"\n    \n    def on_object_loaded(self, obj):\n        \"\"\"Modify docstring when an object is loaded.\"\"\"\n        if isinstance(obj, Function) and obj.docstring and obj.docstring.value:\n            obj.docstring.value += \" [checked]\"\n\n\n# Aggregate extension the way griffe expects\nextensions = [AppendCheckedExtension()]\n\n# Load package through loader with extension enabled\nloader = GriffeLoader(extensions=extensions)\npackage = loader.load(\"mypkg\")\n\n# Verify extension worked\nfor name, member in package.members.items():\n    if isinstance(member, Function) and member.docstring:\n        print(f\"{name}: {member.docstring.value}\")",
+  "result_text": "```python\nfrom griffe.extensions import Extension\nfrom griffe.objects import Function\nfrom griffe.loader import GriffeLoader\n\n\nclass AppendCheckedExtension(Extension):\n    \"\"\"Extension that appends ' [checked]' to function docstrings.\"\"\"\n    \n    def on_object_loaded(self, obj):\n        \"\"\"Modify docstring when an object is loaded.\"\"\"\n        if isinstance(obj, Function) and obj.docstring and obj.docstring.value:\n            obj.docstring.value += \" [checked]\"\n\n\n# Aggregate extension the way griffe expects\nextensions = [AppendCheckedExtension()]\n\n# Load package through loader with extension enabled\nloader = GriffeLoader(extensions=extensions)\npackage = loader.load(\"mypkg\")\n\n# Verify extension worked\nfor name, member in package.members.items():\n    if isinstance(member, Function) and member.docstring:\n        print(f\"{name}: {member.docstring.value}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3712,
+    "cache_read_tokens": 22083,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0207773,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 37.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "griffe:Extension",
+      "griffe:load"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension",
+      "griffe.loader.GriffeLoader",
+      "griffe.objects.Function"
+    ],
+    "error": null
+  }
+}

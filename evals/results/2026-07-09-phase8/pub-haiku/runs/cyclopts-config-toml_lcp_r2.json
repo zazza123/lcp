@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "lcp",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import cyclopts\n\napp = cyclopts.App(\n    config=cyclopts.Config(\n        default_config_paths=[\"pyproject.toml\"],\n    ),\n)\n\n@app.default\ndef main(\n    name: str = \"World\",\n    count: int = 1,\n    verbose: bool = False,\n):\n    \"\"\"CLI application with configuration file support.\n    \n    Reads defaults from [tool.mycli] section in pyproject.toml.\n    Command-line arguments override config file values.\n    \"\"\"\n    for _ in range(count):\n        print(f\"Hello, {name}!\")\n    if verbose:\n        print(\"Verbose mode enabled\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nimport cyclopts\n\napp = cyclopts.App(\n    config=cyclopts.Config(\n        default_config_paths=[\"pyproject.toml\"],\n    ),\n)\n\n@app.default\ndef main(\n    name: str = \"World\",\n    count: int = 1,\n    verbose: bool = False,\n):\n    \"\"\"CLI application with configuration file support.\n    \n    Reads defaults from [tool.mycli] section in pyproject.toml.\n    Command-line arguments override config file values.\n    \"\"\"\n    for _ in range(count):\n        print(f\"Hello, {name}!\")\n    if verbose:\n        print(\"Verbose mode enabled\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3188,
+    "cache_read_tokens": 22152,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0181642,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 31.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.Config"
+    ],
+    "error": null
+  }
+}

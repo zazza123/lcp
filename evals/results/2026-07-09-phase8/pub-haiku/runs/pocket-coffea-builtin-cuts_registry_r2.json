@@ -1,0 +1,36 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "registry",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cut_functions import (\n    get_nobj_min,\n    get_nBtagged_min,\n)\nimport operator\n\n# Parameters containing trigger information and analysis settings\nparameters = {\n    \"dataset\": \"semileptonic\",\n    \"year\": 2018,\n    \"triggers\": {\n        \"semileptonic\": [\n            \"HLT_IsoMu27\",\n            \"HLT_Ele35_WPTight_Gsf\",\n            \"HLT_Ele28_eta2p1_WPTight_Gsf_HT150\",\n        ]\n    },\n    \"working_points\": {\n        \"btag\": \"medium\",\n    }\n}\n\ndef semileptonic_trigger_cut(params):\n    \"\"\"HLT trigger selection for semileptonic primary dataset\"\"\"\n    triggers = params[\"triggers\"][\"semileptonic\"]\n    def cut(events):\n        trigger_mask = None\n        for trigger in triggers:\n            if trigger in events.HLT.fields:\n                if trigger_mask is None:\n                    trigger_mask = events.HLT[trigger]\n                else:\n                    trigger_mask = trigger_mask | events.HLT[trigger]\n        return trigger_mask\n    return cut\n\n# Skim cuts - minimal filtering for data reduction\nskim_cuts = [\n    semileptonic_trigger_cut(parameters),\n]\n\n# Preselection cuts - physics-level selection\npreselection_cuts = [\n    semileptonic_trigger_cut(parameters),\n    get_nobj_min(4, 30, \"JetGood\"),  # At least 4 jets with pT > 30 GeV\n    get_nBtagged_min(2),  # At least 2 b-tagged jets\n]\n\n# Configuration for PocketCoffea processor\nconfig = {\n    \"parameters\": parameters,\n    \"skim_cuts\": skim_cuts,\n    \"preselection_cuts\": preselection_cuts,\n}",
+  "result_text": "```python\nfrom pocket_coffea.lib.cut_functions import (\n    get_nobj_min,\n    get_nBtagged_min,\n)\nimport operator\n\n# Parameters containing trigger information and analysis settings\nparameters = {\n    \"dataset\": \"semileptonic\",\n    \"year\": 2018,\n    \"triggers\": {\n        \"semileptonic\": [\n            \"HLT_IsoMu27\",\n            \"HLT_Ele35_WPTight_Gsf\",\n            \"HLT_Ele28_eta2p1_WPTight_Gsf_HT150\",\n        ]\n    },\n    \"working_points\": {\n        \"btag\": \"medium\",\n    }\n}\n\ndef semileptonic_trigger_cut(params):\n    \"\"\"HLT trigger selection for semileptonic primary dataset\"\"\"\n    triggers = params[\"triggers\"][\"semileptonic\"]\n    def cut(events):\n        trigger_mask = None\n        for trigger in triggers:\n            if trigger in events.HLT.fields:\n                if trigger_mask is None:\n                    trigger_mask = events.HLT[trigger]\n                else:\n                    trigger_mask = trigger_mask | events.HLT[trigger]\n        return trigger_mask\n    return cut\n\n# Skim cuts - minimal filtering for data reduction\nskim_cuts = [\n    semileptonic_trigger_cut(parameters),\n]\n\n# Preselection cuts - physics-level selection\npreselection_cuts = [\n    semileptonic_trigger_cut(parameters),\n    get_nobj_min(4, 30, \"JetGood\"),  # At least 4 jets with pT > 30 GeV\n    get_nBtagged_min(2),  # At least 2 b-tagged jets\n]\n\n# Configuration for PocketCoffea processor\nconfig = {\n    \"parameters\": parameters,\n    \"skim_cuts\": skim_cuts,\n    \"preselection_cuts\": preselection_cuts,\n}\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2397,
+    "cache_read_tokens": 22081,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.014202099999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 26.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cut_functions.get_nBtagged_min",
+      "pocket_coffea.lib.cut_functions.get_nobj_min"
+    ],
+    "error": null
+  }
+}

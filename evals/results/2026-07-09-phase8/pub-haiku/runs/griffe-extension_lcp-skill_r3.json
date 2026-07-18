@@ -1,0 +1,99 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.extensions import Extension\nfrom griffe.loader import load\n\n\nclass CheckedDocstringExtension(Extension):\n    def on_create_docstring(self, docstring, **_kwargs):\n        if docstring and docstring.value:\n            docstring.value += \" [checked]\"\n        return docstring\n\n\nextensions = [CheckedDocstringExtension()]\npackage = load(\"mypkg\", extensions=extensions)\n\nfor name, member in package.members.items():\n    if hasattr(member, 'docstring') and member.docstring:\n        print(f\"{name}: {member.docstring.value[:50]}\")",
+  "result_text": "```python\nfrom griffe.extensions import Extension\nfrom griffe.loader import load\n\n\nclass CheckedDocstringExtension(Extension):\n    def on_create_docstring(self, docstring, **_kwargs):\n        if docstring and docstring.value:\n            docstring.value += \" [checked]\"\n        return docstring\n\n\nextensions = [CheckedDocstringExtension()]\npackage = load(\"mypkg\", extensions=extensions)\n\nfor name, member in package.members.items():\n    if hasattr(member, 'docstring') and member.docstring:\n        print(f\"{name}: {member.docstring.value[:50]}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 95,
+    "output_tokens": 3311,
+    "cache_read_tokens": 253372,
+    "cache_creation_tokens": 6546,
+    "cost_usd": 0.055079199999999995,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 51.9
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library",
+        "max_results": 1
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "extension griffe",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 2,
+    "required_missing": [
+      "griffe:Extension",
+      "griffe:load"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension",
+      "griffe.loader.load"
+    ],
+    "error": null
+  }
+}

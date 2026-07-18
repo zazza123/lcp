@@ -1,0 +1,47 @@
+{
+  "case_id": "cyclopts-parse-no-execute",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import cyclopts\n\napp = cyclopts.App()\n\n\n@app.command\ndef add(a: int, b: int):\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\n@app.command\ndef subtract(a: int, b: int):\n    \"\"\"Subtract two numbers.\"\"\"\n    return a - b\n\n\nif __name__ == \"__main__\":\n    command, bound, ignored = app.parse_args([\"add\", \"2\", \"3\"], exit_on_error=False)\n\n    print(f\"Command: {command.__name__}\")\n    print(f\"Bound arguments: {bound.arguments}\")",
+  "result_text": "Confirmed: `App.parse_args(tokens)` returns `(command, bound, ignored)` without invoking the command. Here's the code.\n\n```python\nimport cyclopts\n\napp = cyclopts.App()\n\n\n@app.command\ndef add(a: int, b: int):\n    \"\"\"Add two numbers.\"\"\"\n    return a + b\n\n\n@app.command\ndef subtract(a: int, b: int):\n    \"\"\"Subtract two numbers.\"\"\"\n    return a - b\n\n\nif __name__ == \"__main__\":\n    command, bound, ignored = app.parse_args([\"add\", \"2\", \"3\"], exit_on_error=False)\n\n    print(f\"Command: {command.__name__}\")\n    print(f\"Bound arguments: {bound.arguments}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 823,
+    "cache_read_tokens": 99379,
+    "cache_creation_tokens": 3359,
+    "cost_usd": 0.0623307,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 17.1
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def parse_args",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts",
+        "output_mode": "content",
+        "-n": true
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "offset": 1700,
+        "limit": 150
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

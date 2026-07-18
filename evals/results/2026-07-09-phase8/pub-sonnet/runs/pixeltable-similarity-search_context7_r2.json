@@ -1,0 +1,49 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "context7",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\n# Connect to the existing \"docs\" table\nt = pxt.get_table(\"docs\")\n\n# Create an embedding index on the \"content\" column using the\n# sentence-transformers UDF pixeltable ships, with the all-MiniLM-L6-v2 model\nt.add_embedding_index(\n    column=\"content\",\n    string_embed=sentence_transformer.using(model_id=\"all-MiniLM-L6-v2\"),\n)\n\n# Build a similarity expression against the query string\nsim = t.content.similarity(\"climate change policy\")\n\n# Retrieve the 5 closest rows, ranked from closest to farthest\nresults = (\n    t.order_by(sim, asc=False)\n    .limit(5)\n    .select(t.content, similarity=sim)\n    .collect()\n)\n\nprint(results)",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.functions.huggingface import sentence_transformer\n\n# Connect to the existing \"docs\" table\nt = pxt.get_table(\"docs\")\n\n# Create an embedding index on the \"content\" column using the\n# sentence-transformers UDF pixeltable ships, with the all-MiniLM-L6-v2 model\nt.add_embedding_index(\n    column=\"content\",\n    string_embed=sentence_transformer.using(model_id=\"all-MiniLM-L6-v2\"),\n)\n\n# Build a similarity expression against the query string\nsim = t.content.similarity(\"climate change policy\")\n\n# Retrieve the 5 closest rows, ranked from closest to farthest\nresults = (\n    t.order_by(sim, asc=False)\n    .limit(5)\n    .select(t.content, similarity=sim)\n    .collect()\n)\n\nprint(results)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 6,
+    "output_tokens": 1222,
+    "cache_read_tokens": 83715,
+    "cache_creation_tokens": 12346,
+    "cost_usd": 0.11753850000000002,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 19.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "embedding index for semantic search on a table column using sentence-transformers UDF",
+        "libraryName": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_0123KogWUVoQ9ng38nuxuf4g",
+      "content": "Monthly quota exceeded. Create a free API key at https://context7.com/dashboard for more requests."
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

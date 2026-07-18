@@ -1,0 +1,29 @@
+{
+  "case_id": "pocket-coffea-custom-cut",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    Requires at least two muons with pT > threshold and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    \n    # Filter muons by pT threshold\n    selected_muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Sort by pT (descending)\n    sorted_muons = selected_muons[ak.argsort(selected_muons.pt, ascending=False)]\n    \n    # Get leading pair\n    leading_mu1 = sorted_muons[:, 0]\n    leading_mu2 = sorted_muons[:, 1]\n    \n    # Check requirements\n    n_muons = ak.num(selected_muons)\n    has_two_muons = n_muons >= 2\n    opposite_charge = (leading_mu1.charge * leading_mu2.charge) < 0\n    \n    # Fill None values with False for events with fewer than 2 muons\n    opposite_charge = ak.fill_none(opposite_charge, False)\n    \n    return has_two_muons & opposite_charge\n\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_functions import Cut\n\ndef dimuon_mask(events, params, **kwargs):\n    \"\"\"\n    Event-level preselection cut for dimuon events.\n    Requires at least two muons with pT > threshold and opposite-charge leading pair.\n    \"\"\"\n    pt_threshold = params.get(\"pt_threshold\", 15)\n    \n    # Filter muons by pT threshold\n    selected_muons = events.Muon[events.Muon.pt > pt_threshold]\n    \n    # Sort by pT (descending)\n    sorted_muons = selected_muons[ak.argsort(selected_muons.pt, ascending=False)]\n    \n    # Get leading pair\n    leading_mu1 = sorted_muons[:, 0]\n    leading_mu2 = sorted_muons[:, 1]\n    \n    # Check requirements\n    n_muons = ak.num(selected_muons)\n    has_two_muons = n_muons >= 2\n    opposite_charge = (leading_mu1.charge * leading_mu2.charge) < 0\n    \n    # Fill None values with False for events with fewer than 2 muons\n    opposite_charge = ak.fill_none(opposite_charge, False)\n    \n    return has_two_muons & opposite_charge\n\ndimuon = Cut(\n    name=\"dimuon\",\n    function=dimuon_mask,\n    params={\"pt_threshold\": 15}\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3692,
+    "cache_read_tokens": 22093,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0206783,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 33.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

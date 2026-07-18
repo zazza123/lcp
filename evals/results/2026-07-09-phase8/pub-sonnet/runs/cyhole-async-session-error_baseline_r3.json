@@ -1,0 +1,33 @@
+{
+  "case_id": "cyhole-async-session-error",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import AsyncSessionNotInitialised\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    try:\n        # Calling a method on the async client without first doing\n        # `async with solana_fm.async_client as client:` leaves the\n        # underlying HTTP session uninitialised.\n        await solana_fm.async_client.get_account_info(\n            account=\"9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM\"\n        )\n    except AsyncSessionNotInitialised as e:\n        print(f\"Async session not initialised: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+  "result_text": "```python\nimport asyncio\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\nfrom cyhole.core.exception import AsyncSessionNotInitialised\n\n\nasync def main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    try:\n        # Calling a method on the async client without first doing\n        # `async with solana_fm.async_client as client:` leaves the\n        # underlying HTTP session uninitialised.\n        await solana_fm.async_client.get_account_info(\n            account=\"9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM\"\n        )\n    except AsyncSessionNotInitialised as e:\n        print(f\"Async session not initialised: {e}\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 4600,
+    "cache_read_tokens": 30198,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.07806540000000001,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 52.3
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyhole.core.exception:AsyncClientAPISessionNotAvailable"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyhole.core.exception.AsyncSessionNotInitialised"
+    ],
+    "error": null
+  }
+}

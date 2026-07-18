@@ -1,0 +1,208 @@
+{
+  "case_id": "pixeltable-computed-column",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pixeltable import get_table\n\ntbl = get_table('films')\ntbl.add_computed_column(profit=tbl.revenue - tbl.budget)",
+  "result_text": "```python\nfrom pixeltable import get_table\n\ntbl = get_table('films')\ntbl.add_computed_column(profit=tbl.revenue - tbl.budget)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 138,
+    "output_tokens": 2611,
+    "cache_read_tokens": 495516,
+    "cache_creation_tokens": 18826,
+    "cost_usd": 0.1003966,
+    "num_turns": 18,
+    "tool_calls": 16,
+    "duration_s": 54.9
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "superpowers:using-superpowers"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "computed column incremental",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "add column expression",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "table column",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table#add_computed_column"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get table open",
+        "library": "pixeltable",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "catalog table access",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "client database create table",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable",
+        "kind": "function",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "pixeltable",
+        "module": "pixeltable.catalog.catalog",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:Table"
+        ],
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "get_table",
+        "library": "pixeltable"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "pixeltable:get_table"
+        ],
+        "library": "pixeltable"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016PAwhUrb4PKKxVkkHAimwy",
+      "content": "{\"status\":\"loaded\",\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"symbol_count\":5404,\"module_count\":248,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='pixeltable') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01DbU1H8eHbFuTmTjJrpAUPL",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FGTdT1Ro8rageA8QxGcz4z",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Cn69MQRY4uYoLYECA5u6wN",
+      "content": "{\"results\":[{\"id\":\"pixeltable:Column#validate_name\",\"kind\":\"method\",\"summary\":\"Check that a name is usable as a pixeltable column name\",\"import\":\"from pixeltable import Column\",\"resolved_via_alias\":\"pixeltable.catalog.column:Column#validate_name\"},{\"id\":\"pixeltable.catalog:ColumnVersionMd\",\"kind\":\"class\",\"summary\":\"Complete set of metadata records for a table column.\",\"import\":\"from pixeltable.catalog import ColumnVersionMd\",\"resolved_via_alias\":\"pixeltable.catalog.globals:ColumnVersionMd\"},{\"id\":\"pixeltable:View#select_list_to_additional_columns\",\"kind\":\"method\",\"summary\":\"Returns a list of columns in the same format as the additional_columns parameter of View.create. The source is the list of expressions from a select() statement on a Query. If the column is a ColumnRef, to a base table column, it is marked to not be stored.sy\",\"import\":\"from pixeltable import View\",\"resolved_via_alias\":\"pixeltable.catalog.view:View#select_list_to_additional_columns\"},{\"id\":\"pixeltable.exprs:ColumnPropertyRef\",\"kind\":\"class\",\"summary\":\"A reference to a property of a table column\",\"import\":\"from pixeltable.exprs import ColumnPropertyRef\",\"resolved_via_alias\":\"pixeltable.exprs.column_property_ref:ColumnPropertyRef\"},{\"id\":\"pixeltable.io.external_store:MockProject#validate_columns\",\"kind\":\"method\",\"summary\":\"Verifies that the specified `col_mapping` is valid. In particular, checks that: (i) the keys of `col_mapping` are valid columns of the specified `Table`; (ii) the values of `col_mapping` are valid external columns (i.e., they appear in either `export_cols` or `import_cols`; and (iii) the Pixeltable types of the `col_mapping` keys are consistent with the expected types of the corresponding external (import or export) columns. If validation fails, an exception will be raised. If validation succeeds, a new mapping will be returned in which the Pixeltable column names are resolved to the corresponding `Column` objects. TODO: return columns as names or qualified ids\",\"import\":\"from pi"
+    },
+    {
+      "tool_use_id": "toolu_01QEyEFjxNCnefUnR2oEH1oJ",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"pixeltable.catalog.table\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"stored\",\"type\":\"bool | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Whether the column is materialized and stored or computed on demand.\"},{\"name\":\"destination\",\"type\":\"str | Path | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An object store reference for persisting computed files.\"},{\"name\":\"custom_metadata\",\"type\":\"Any\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Optional user-defined metadata to associate with the column. Must be a valid\\nJSON-serializable object.\"},{\"name\":\"comment\",\"type\":\"str\",\"required\":false,\"default\":\"\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"An optional comment; its meaning is user-defined.\"},{\"name\":\"print_stats\",\"type\":\"bool\",\"required\":false,\"default\":false,\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"If `True`, print execution metrics during evaluation.\"},{\"name\":\"on_error\",\"type\":\"Literal['abort', 'ignore']\",\"required\":false,\"default\":\"abort\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if an error occurs while evaluating the column expression for at least one\\nrow.\\n\\n- `'abort'`: an exception will be raised and the column will not be added.\\n- `'ignore'`: execution will continue and the column will be added. Any rows\\n    with errors will have a `None` value for the column, with information about the error stored in the\\n    corresponding `tbl.col_name.errormsg` and `tbl.col_name.errortype` fields.\"},{\"name\":\"if_exists\",\"type\":\"Literal['error', 'ignore', 'replace']\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"keyword_only\",\"description\":\"Determines the behavior if the column already exists. Must be one of the following:\\n- `'error'`: an exception will be raised.\\n- `'ignore'`: do nothing and return.\\n- `'replace' or 'replace_force'`: drop the existing column a"
+    },
+    {
+      "tool_use_id": "toolu_01MHmsfkyJAbpJT7jrq6G8Ja",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Ws3D5GsfLBE5EDb2Vxm5bU",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01QNXMyhg2fnSNLPXQiqdojM",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01NsB5kPJ1qZL2nyPmdtyPCA",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01PQVaL48pSMxyxCLjFPsNVu",
+      "content": "{\"library\":{\"name\":\"pixeltable\",\"version\":\"0.6.6\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"pixeltable\",\"symbols\":1},{\"module\":\"pixeltable._query\",\"symbols\":60},{\"module\":\"pixeltable._version\",\"symbols\":1},{\"module\":\"pixeltable.catalog\",\"symbols\":1},{\"module\":\"pixeltable.catalog.catalog\",\"symbols\":43},{\"module\":\"pixeltable.catalog.catalog_base\",\"symbols\":12},{\"module\":\"pixeltable.catalog.catalog_proxy\",\"symbols\":13},{\"module\":\"pixeltable.catalog.column\",\"symbols\":43},{\"module\":\"pixeltable.catalog.dir\",\"symbols\":3},{\"module\":\"pixeltable.catalog.globals\",\"symbols\":39},{\"module\":\"pixeltable.catalog.insertable_table\",\"symbols\":49},{\"module\":\"pixeltable.catalog.insertable_table_proxy\",\"symbols\":45},{\"module\":\"pixeltable.catalog.local_table\",\"symbols\":48},{\"module\":\"pixeltable.catalog.path\",\"symbols\":23},{\"module\":\"pixeltable.catalog.schema_object\",\"symbols\":4},{\"module\":\"pixeltable.catalog.table\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_metadata\",\"symbols\":6},{\"module\":\"pixeltable.catalog.table_path\",\"symbols\":73},{\"module\":\"pixeltable.catalog.table_proxy\",\"symbols\":46},{\"module\":\"pixeltable.catalog.table_version\",\"symbols\":80},{\"module\":\"pixeltable.catalog.table_version_handle\",\"symbols\":21},{\"module\":\"pixeltable.catalog.tbl_ops\",\"symbols\":95},{\"module\":\"pixeltable.catalog.update_status\",\"symbols\":27},{\"module\":\"pixeltable.catalog.view\",\"symbols\":49},{\"module\":\"pixeltable.config\",\"symbols\":26},{\"module\":\"pixeltable.env\",\"symbols\":64},{\"module\":\"pixeltable.exceptions\",\"symbols\":50},{\"module\":\"pixeltable.exec\",\"symbols\":1},{\"module\":\"pixeltable.exec.aggregation_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.cache_prefetch_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_materialization_node\",\"symbols\":16},{\"module\":\"pixeltable.exec.cell_reconstruction_node\",\"symbols\":18},{\"module\":\"pixeltable.exec.component_iteration_node\",\"symbols\":14},{\"module\":\"pixeltable.exec.data_row_batch\",\"symbols\":8},{\"module\":\"pixeltable.exec.e"
+    },
+    {
+      "tool_use_id": "toolu_012aUooYotTfwWS6cCEKqJ6M",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#in_write_xact\",\"kind\":\"attribute\",\"summary\":\"Attribute in_write_xact\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#in_write_xact\"},{\"id\":\"pixeltable.catalog:Catalog\",\"kind\":\"class\",\"summary\":\"The functional interface to getting access to catalog objects\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog\"},{\"id\":\"pixeltable.catalog.catalog:PendingTableOpsError\",\"kind\":\"class\",\"summary\":\"Class PendingTableOpsError\",\"import\":\"from pixeltable.catalog.catalog import PendingTableOpsError\"},{\"id\":\"pixeltable.catalog.catalog:TYPE_CHECKING\",\"kind\":\"constant\",\"summary\":\"Constant TYPE_CHECKING\",\"import\":\"from pixeltable.catalog.catalog import TYPE_CHECKING\"},{\"id\":\"pixeltable.catalog:retry_loop\",\"kind\":\"function\",\"summary\":\"Function retry_loop\",\"import\":\"from pixeltable.catalog import retry_loop\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:retry_loop\"},{\"id\":\"pixeltable.catalog:Catalog#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#__init__\"},{\"id\":\"pixeltable.catalog.catalog:PendingTableOpsError#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\",\"import\":\"from pixeltable.catalog.catalog import PendingTableOpsError\"},{\"id\":\"pixeltable.catalog:Catalog#add_columns\",\"kind\":\"method\",\"summary\":\"Method add_columns\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#add_columns\"},{\"id\":\"pixeltable.catalog:Catalog#begin_xact\",\"kind\":\"method\",\"summary\":\"Return a context manager that yields a connection to the database. Idempotent.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#begin_xact\"},{\"id\":\"pixeltable.catalog:Catalog#collect_tbl_history\",\"kind\":\"method\",\"summary\":\"Method collect_tbl_"
+    },
+    {
+      "tool_use_id": "toolu_01F2LWWUdiRDFSTdy87qKhkB",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"pixeltable.catalog.table\",\"aliases\":[\"pixeltable.catalog.local_table:Table\",\"pixeltable.catalog.table_proxy:Table\",\"pixeltable.catalog:Table\",\"pixeltable.io.external_store:Table\",\"pixeltable.io.globals:Table\",\"pixeltable:Table\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"obj_id\",\"type\":\"UUID\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"}]}],\"semantics\":{\"summary\":\"A handle to a table, view, or snapshot. This class is the primary interface through which table operations (queries, insertions, updates, etc.) are performed in Pixeltable.\",\"description\":\"Thread-safe.\"},\"id\":\"pixeltable:Table\",\"resolved_via_alias\":\"pixeltable.catalog.table:Table\",\"import\":\"from pixeltable import Table\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"obj_id\",\"type\":\"UUID\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":null},\"members\":[{\"id\":\"pixeltable:Table#__getitem__\",\"kind\":\"method\",\"summary\":\"Return a ColumnRef for the given name.\"},{\"id\":\"pixeltable:Table#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"pixeltable:Table#add_column\",\"kind\":\"method\",\"summary\":\"Adds an ordinary (non-computed) column to the table.\"},{\"id\":\"pixeltable:Table#add_columns\",\"kind\":\"method\",\"summary\":\"Adds multiple columns to the table. The columns must be concrete (non-computed) columns; to add computed columns, use [`add_computed_column()`][pixeltable.catalog.Table.add_computed_column] instead.\"},{\"id\":\"pixeltable:Table#add_computed_column\",\"kind\":\"method\",\"summary\":\"Adds a computed column to the table.\"},{\"id\":\"pixeltable:Table#add_embedding_index\",\"kind\":\"method\",\"summary\":\"Add an embedding index to the table. Once the index is created, it will be automatically kept up-to-date as new rows are inserted into the table.\"},{\"id\":\"pixeltable:Table#batch_update\",\"kind\":\"method\",\"summary\":\"Update rows in this table.\"},{\"id\":\"pixeltable:Table#collect\",\"kind\":\"method\",\"summary\":\"Return rows from this table.\"},{\"id\":\"pixeltable:Table#columns\""
+    },
+    {
+      "tool_use_id": "toolu_01HkTeuvZziVsZ9ncfhBpVKY",
+      "content": "{\"results\":[{\"id\":\"pixeltable.catalog:Catalog#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table\",\"kind\":\"method\",\"summary\":\"Method get_table\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table\"},{\"id\":\"pixeltable:get_table\",\"kind\":\"function\",\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"import\":\"from pixeltable import get_table\",\"resolved_via_alias\":\"pixeltable.globals:get_table\"},{\"id\":\"pixeltable.catalog:Catalog#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Must be executed inside a transaction. Might raise PendingTableOpsError.\",\"import\":\"from pixeltable.catalog import Catalog\",\"resolved_via_alias\":\"pixeltable.catalog.catalog:Catalog#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogBase#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogBase\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_base:CatalogBase#get_table_by_id\"},{\"id\":\"pixeltable.catalog:CatalogProxy#get_table_by_id\",\"kind\":\"method\",\"summary\":\"Method get_table_by_id\",\"import\":\"from pixeltable.catalog import CatalogProxy\",\"resolved_via_alias\":\"pixeltable.catalog.catalog_proxy:CatalogProxy#get_table_by_id\"},{\"id\":\"pixeltable.catalog:LocalTable#compute\",\"kind\":\"method\",\"summary\":\"Materialize the computed columns of this table for the given input rows and return the resulting rows without persisting them.\",\"import\":\"from pixeltable.catalog import LocalTable\",\"resolved_via_alias\":\"pixeltable.catalog.local_table:LocalTable#compute\"},{\"id\":\"pixeltabl"
+    },
+    {
+      "tool_use_id": "toolu_01CeQKzoyxei2nCnGPDcq266",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"pixeltable.globals\",\"aliases\":[\"pixeltable:get_table\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"path\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Path to the table.\"},{\"name\":\"if_not_exists\",\"type\":\"Literal[error, ignore]\",\"required\":false,\"default\":\"error\",\"variadic\":false,\"kind\":\"positional\",\"description\":\"Directive regarding how to handle if the path does not exist.\\nMust be one of the following:\\n\\n- `'error'`: raise an error\\n- `'ignore'`: do nothing and return `None`\"}],\"returns\":\"UnionType[Table, None]\",\"returns_description\":\"A handle to the [`Table`][pixeltable.Table].\",\"raises\":[{\"type\":\"Error\",\"condition\":\"If the path does not exist or does not designate a table object.\"}]}],\"semantics\":{\"summary\":\"Get a handle to an existing table, view, or snapshot.\",\"description\":\"Args:\\n        path: Path to the table.\\n        if_not_exists: Directive regarding how to handle if the path does not exist.\\n            Must be one of the following:\\n\\n            - `'error'`: raise an error\\n            - `'ignore'`: do nothing and return `None`\\n\\n    Returns:\\n        A handle to the [`Table`][pixeltable.Table].\\n\\n    Raises:\\n        Error: If the path does not exist or does not designate a table object.\\n\\n    Examples:\\n        Get handle for a table in the top-level directory:\\n\\n        >>> tbl = pxt.get_table('my_table')\\n\\n        For a table in a subdirectory:\\n\\n        >>> tbl = pxt.get_table('subdir/my_table')\\n\\n        Handles to views and snapshots are retrieved in the same way:\\n\\n        >>> tbl = pxt.get_table('my_snapshot')\\n\\n        Get a handle to a specific version of a table:\\n\\n        >>> tbl = pxt.get_table('my_table:722')\",\"examples\":[{\"code\":\">>> tbl = pxt.get_table('my_table')\\n>>> tbl = pxt.get_table('subdir/my_table')\\n>>> tbl = pxt.get_table('my_snapshot')\\n>>> tbl = pxt.get_table('my_table:722')\",\"description\":\"Get handle for a table in the top-level d"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

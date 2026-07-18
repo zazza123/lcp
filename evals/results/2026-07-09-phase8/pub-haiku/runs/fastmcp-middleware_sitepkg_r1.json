@@ -1,0 +1,96 @@
+{
+  "case_id": "fastmcp-middleware",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import logging\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNext\n\nlogging.basicConfig(level=logging.INFO, format=\"%(message)s\")\n\nclass RequestLoggingMiddleware(Middleware):\n    \"\"\"Custom middleware that logs every incoming request before handling.\"\"\"\n    \n    def __init__(self, logger: logging.Logger | None = None):\n        self.logger = logger or logging.getLogger(\"request_logger\")\n    \n    async def on_message(\n        self,\n        context: MiddlewareContext,\n        call_next: CallNext,\n    ):\n        self.logger.info(\n            f\"Incoming request: method={context.method}, \"\n            f\"type={context.type}, source={context.source}, \"\n            f\"timestamp={context.timestamp}\"\n        )\n        result = await call_next(context)\n        return result\n\nserver = FastMCP(\"ExampleServer\")\nserver.add_middleware(RequestLoggingMiddleware())\n\n@server.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet someone.\"\"\"\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    import asyncio\n    \n    async def demo():\n        tools = await server.list_tools()\n        print(f\"Registered tools: {[t.name for t in tools]}\")\n    \n    asyncio.run(demo())",
+  "result_text": "```python\nimport logging\nfrom fastmcp import FastMCP\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNext\n\nlogging.basicConfig(level=logging.INFO, format=\"%(message)s\")\n\nclass RequestLoggingMiddleware(Middleware):\n    \"\"\"Custom middleware that logs every incoming request before handling.\"\"\"\n    \n    def __init__(self, logger: logging.Logger | None = None):\n        self.logger = logger or logging.getLogger(\"request_logger\")\n    \n    async def on_message(\n        self,\n        context: MiddlewareContext,\n        call_next: CallNext,\n    ):\n        self.logger.info(\n            f\"Incoming request: method={context.method}, \"\n            f\"type={context.type}, source={context.source}, \"\n            f\"timestamp={context.timestamp}\"\n        )\n        result = await call_next(context)\n        return result\n\nserver = FastMCP(\"ExampleServer\")\nserver.add_middleware(RequestLoggingMiddleware())\n\n@server.tool()\ndef greet(name: str) -> str:\n    \"\"\"Greet someone.\"\"\"\n    return f\"Hello, {name}!\"\n\nif __name__ == \"__main__\":\n    import asyncio\n    \n    async def demo():\n        tools = await server.list_tools()\n        print(f\"Registered tools: {[t.name for t in tools]}\")\n    \n    asyncio.run(demo())\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 81,
+    "output_tokens": 2025,
+    "cache_read_tokens": 300455,
+    "cache_creation_tokens": 24000,
+    "cost_usd": 0.08825149999999998,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 31.7
+  },
+  "tool_call_details": [
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp*"
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/**/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/app.py",
+        "limit": 200
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/apps/app.py",
+        "limit": 400
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "middleware|Middleware",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp",
+        "type": "py",
+        "head_limit": 50
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/middleware/middleware.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "add_middleware|attach_middleware",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server",
+        "type": "py",
+        "head_limit": 20
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "middleware",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/server.py",
+        "type": "py",
+        "output_mode": "content",
+        "head_limit": 50
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/fastmcp/server/middleware/logging.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

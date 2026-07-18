@@ -1,0 +1,78 @@
+{
+  "case_id": "requests-session-auth-header",
+  "arm": "lcp-skill",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nsession = requests.Session()\nsession.headers.update({\"Authorization\": \"Bearer TESTTOKEN\"})\n\nresponse = session.get(\"https://api.example.com/me\")\nprint(response.status_code)\nprint(response.text)",
+  "result_text": "```python\nimport requests\n\nsession = requests.Session()\nsession.headers.update({\"Authorization\": \"Bearer TESTTOKEN\"})\n\nresponse = session.get(\"https://api.example.com/me\")\nprint(response.status_code)\nprint(response.text)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 51,
+    "output_tokens": 1147,
+    "cache_read_tokens": 143011,
+    "cache_creation_tokens": 3448,
+    "cost_usd": 0.026983100000000003,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 20.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Skill",
+      "input": {
+        "skill": "lcp-universal",
+        "args": "requests"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "resolve_library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "Session",
+        "library": "requests"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "requests:Session"
+        ]
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_011pP5Rsn6rBF9BJBeUx451K",
+      "content": "{\"status\":\"loaded\",\"name\":\"requests\",\"version\":\"2.34.2\",\"language\":\"python\",\"symbol_count\":338,\"module_count\":19,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='requests') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01RiC9sukUsFsKHfE3LjNKPa",
+      "content": "{\"results\":[{\"id\":\"requests:Session\",\"kind\":\"class\",\"summary\":\"A Requests session.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session\"},{\"id\":\"requests:session\",\"kind\":\"function\",\"summary\":\"Returns a :class:`Session` for context-management.\",\"import\":\"from requests import session\",\"resolved_via_alias\":\"requests.sessions:session\"},{\"id\":\"requests.sessions:SessionRedirectMixin\",\"kind\":\"class\",\"summary\":\"Class SessionRedirectMixin\",\"import\":\"from requests.sessions import SessionRedirectMixin\"},{\"id\":\"requests:Response#is_redirect\",\"kind\":\"attribute\",\"summary\":\"True if this Response is a well-formed HTTP redirect that could have been processed automatically (by :meth:`Session.resolve_redirects`).\",\"import\":\"from requests import Response\",\"resolved_via_alias\":\"requests.models:Response#is_redirect\"},{\"id\":\"requests.sessions:\",\"kind\":\"module\",\"summary\":\"requests.sessions ~~~~~~~~~~~~~~~~~\",\"import\":\"import requests.sessions\"},{\"id\":\"requests:Session#close\",\"kind\":\"method\",\"summary\":\"Closes all adapters and as such the session\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session#close\"},{\"id\":\"requests:Session#prepare_request\",\"kind\":\"method\",\"summary\":\"Constructs a :class:`PreparedRequest <PreparedRequest>` for transmission and returns it. The :class:`PreparedRequest` has settings merged from the :class:`Request <Request>` instance and those of the :class:`Session`.\",\"import\":\"from requests import Session\",\"resolved_via_alias\":\"requests.sessions:Session#prepare_request\"},{\"id\":\"requests.sessions:merge_hooks\",\"kind\":\"function\",\"summary\":\"Properly merges both requests and session hooks.\",\"import\":\"from requests.sessions import merge_hooks\"},{\"id\":\"requests.sessions:merge_setting\",\"kind\":\"function\",\"summary\":\"Determines appropriate setting for a given request, taking into account the explicit setting on that request, and the setting in the session. If a setting is a dictionary, they will be merged toget"
+    },
+    {
+      "tool_use_id": "toolu_01BFMRo2rLoygmidZdYWiuF2",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"requests.sessions\",\"aliases\":[\"requests:Session\"],\"signatures\":[{\"async_\":false,\"returns\":\"None\"}],\"semantics\":{\"summary\":\"A Requests session.\",\"description\":\"Provides cookie persistence, connection-pooling, and configuration.\\n\\n    Basic Usage::\\n\\n      >>> import requests\\n      >>> s = requests.Session()\\n      >>> s.get('https://httpbin.org/get')\\n      <Response [200]>\\n\\n    Or as a context manager::\\n\\n      >>> with requests.Session() as s:\\n      ...     s.get('https://httpbin.org/get')\\n      <Response [200]>\"},\"id\":\"requests:Session\",\"resolved_via_alias\":\"requests.sessions:Session\",\"import\":\"from requests import Session\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"requests:Session#__enter__\",\"kind\":\"method\",\"summary\":\"Method __enter__\"},{\"id\":\"requests:Session#__exit__\",\"kind\":\"method\",\"summary\":\"Method __exit__\"},{\"id\":\"requests:Session#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"requests:Session#close\",\"kind\":\"method\",\"summary\":\"Closes all adapters and as such the session\"},{\"id\":\"requests:Session#delete\",\"kind\":\"method\",\"summary\":\"Sends a DELETE request. Returns :class:`Response` object.\"},{\"id\":\"requests:Session#get\",\"kind\":\"method\",\"summary\":\"Sends a GET request. Returns :class:`Response` object.\"},{\"id\":\"requests:Session#get_adapter\",\"kind\":\"method\",\"summary\":\"Returns the appropriate connection adapter for the given URL.\"},{\"id\":\"requests:Session#get_redirect_target\",\"kind\":\"method\",\"summary\":\"Receives a Response. Returns a redirect URI or ``None``\"},{\"id\":\"requests:Session#head\",\"kind\":\"method\",\"summary\":\"Sends a HEAD request. Returns :class:`Response` object.\"},{\"id\":\"requests:Session#merge_environment_settings\",\"kind\":\"method\",\"summary\":\"Check the environment and merge it with some settings.\"},{\"id\":\"requests:Session#mount\",\"kind\":\"method\",\"summary\":\"Registers a connection adapter to a prefix.\"},{\"id\":\"requests:S"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "case_id": "cyclopts-bounds-validator",
+  "arm": "sitepkg",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from typing import Annotated\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n@app.default\ndef serve(port: Annotated[int, Parameter(validator=validators.Number(gte=1024, lte=65535))]) -> None:\n    \"\"\"Serve on the specified port.\"\"\"\n    print(f\"Serving on port {port}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom typing import Annotated\nfrom cyclopts import App, Parameter, validators\n\napp = App()\n\n@app.default\ndef serve(port: Annotated[int, Parameter(validator=validators.Number(gte=1024, lte=65535))]) -> None:\n    \"\"\"Serve on the specified port.\"\"\"\n    print(f\"Serving on port {port}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 57,
+    "output_tokens": 5585,
+    "cache_read_tokens": 214185,
+    "cache_creation_tokens": 22352,
+    "cost_usd": 0.09410449999999998,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 64.4
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "class.*Bound|class.*Interval|class.*Range",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/core.py",
+        "limit": 500
+      }
+    },
+    {
+      "name": "Glob",
+      "input": {
+        "pattern": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/*.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/validators/_number.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/validators/__init__.py"
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/__init__.py"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

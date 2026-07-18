@@ -1,0 +1,31 @@
+{
+  "case_id": "polars-map-rows",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import polars as pl\n\n# Create sample DataFrame\ndf = pl.DataFrame({\n    \"a\": [5, 8, 2, 3, 7],\n    \"b\": [6, 3, 5, 8, 4]\n})\n\n# Define callback function invoked per row\ndef check_sum(row):\n    return \"hi\" if row[\"a\"] + row[\"b\"] > 10 else \"lo\"\n\n# Apply callback to each row\nresult = df.with_columns(\n    pl.struct(\"a\", \"b\").map_elements(check_sum, return_dtype=pl.Utf8).alias(\"result\")\n)\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\n# Create sample DataFrame\ndf = pl.DataFrame({\n    \"a\": [5, 8, 2, 3, 7],\n    \"b\": [6, 3, 5, 8, 4]\n})\n\n# Define callback function invoked per row\ndef check_sum(row):\n    return \"hi\" if row[\"a\"] + row[\"b\"] > 10 else \"lo\"\n\n# Apply callback to each row\nresult = df.with_columns(\n    pl.struct(\"a\", \"b\").map_elements(check_sum, return_dtype=pl.Utf8).alias(\"result\")\n)\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2327,
+    "cache_read_tokens": 22038,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0138478,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 23.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "polars:DataFrame#map_rows"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

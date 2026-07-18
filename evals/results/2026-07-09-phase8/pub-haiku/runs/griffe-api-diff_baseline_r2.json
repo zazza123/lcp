@@ -1,0 +1,34 @@
+{
+  "case_id": "griffe-api-diff",
+  "arm": "baseline",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import subprocess\nimport tempfile\nfrom pathlib import Path\nfrom griffe.loader import GriffeLoader\n\ncurrent_dir = Path.cwd()\nsrc_dir = current_dir / \"src\" if (current_dir / \"src\").is_dir() else current_dir\n\n# Load at v1.0.0\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_repo = Path(tmpdir) / \"v1\"\n    subprocess.run([\"git\", \"clone\", \"-q\", str(current_dir), str(old_repo)], check=True)\n    subprocess.run([\"git\", \"-C\", str(old_repo), \"checkout\", \"-q\", \"v1.0.0\"], check=True)\n    old_src = old_repo / \"src\" if (old_repo / \"src\").is_dir() else old_repo\n    old_module = GriffeLoader(search_paths=[str(old_src)]).load_python(\"mypkg\")\n\n# Load at HEAD\nnew_module = GriffeLoader(search_paths=[str(src_dir)]).load_python(\"mypkg\")\n\n# Print all breakages\nfor breakage in old_module.get_breaking_changes(new_module):\n    print(breakage)",
+  "result_text": "```python\nimport subprocess\nimport tempfile\nfrom pathlib import Path\nfrom griffe.loader import GriffeLoader\n\ncurrent_dir = Path.cwd()\nsrc_dir = current_dir / \"src\" if (current_dir / \"src\").is_dir() else current_dir\n\n# Load at v1.0.0\nwith tempfile.TemporaryDirectory() as tmpdir:\n    old_repo = Path(tmpdir) / \"v1\"\n    subprocess.run([\"git\", \"clone\", \"-q\", str(current_dir), str(old_repo)], check=True)\n    subprocess.run([\"git\", \"-C\", str(old_repo), \"checkout\", \"-q\", \"v1.0.0\"], check=True)\n    old_src = old_repo / \"src\" if (old_repo / \"src\").is_dir() else old_repo\n    old_module = GriffeLoader(search_paths=[str(old_src)]).load_python(\"mypkg\")\n\n# Load at HEAD\nnew_module = GriffeLoader(search_paths=[str(src_dir)]).load_python(\"mypkg\")\n\n# Print all breakages\nfor breakage in old_module.get_breaking_changes(new_module):\n    print(breakage)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6223,
+    "cache_read_tokens": 22042,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0333282,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 55.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:load_git",
+      "griffe:find_breaking_changes"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.loader.GriffeLoader"
+    ],
+    "error": null
+  }
+}

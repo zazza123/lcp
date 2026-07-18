@@ -1,0 +1,33 @@
+{
+  "case_id": "cyclopts-config-toml",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\nfrom cyclopts.sources import Toml\nfrom pathlib import Path\n\n# Create a sample pyproject.toml for demonstration\nPath(\"pyproject.toml\").write_text(\"\"\"\n[tool.mycli]\nname = \"Alice\"\ngreeting = \"Hello\"\nverbose = true\ncount = 2\n\"\"\")\n\n# Create app with TOML config source\napp = App(\n    config_sources=[\n        Toml(\"pyproject.toml\", config_key=\"tool.mycli\")\n    ]\n)\n\n@app.default\ndef main(\n    name: str = \"World\",\n    greeting: str = \"Hey\",\n    verbose: bool = False,\n    count: int = 1,\n):\n    \"\"\"Greet someone. Defaults come from [tool.mycli] in pyproject.toml.\"\"\"\n    msg = f\"{greeting}, {name}!\"\n    for _ in range(count):\n        print(msg)\n    if verbose:\n        print(f\"[verbose] count={count}, name={name}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\nfrom cyclopts.sources import Toml\nfrom pathlib import Path\n\n# Create a sample pyproject.toml for demonstration\nPath(\"pyproject.toml\").write_text(\"\"\"\n[tool.mycli]\nname = \"Alice\"\ngreeting = \"Hello\"\nverbose = true\ncount = 2\n\"\"\")\n\n# Create app with TOML config source\napp = App(\n    config_sources=[\n        Toml(\"pyproject.toml\", config_key=\"tool.mycli\")\n    ]\n)\n\n@app.default\ndef main(\n    name: str = \"World\",\n    greeting: str = \"Hey\",\n    verbose: bool = False,\n    count: int = 1,\n):\n    \"\"\"Greet someone. Defaults come from [tool.mycli] in pyproject.toml.\"\"\"\n    msg = f\"{greeting}, {name}!\"\n    for _ in range(count):\n        print(msg)\n    if verbose:\n        print(f\"[verbose] count={count}, name={name}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 2017,
+    "cache_read_tokens": 22045,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0122985,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 21.4
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "cyclopts.config:Toml"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "cyclopts.sources.Toml"
+    ],
+    "error": null
+  }
+}

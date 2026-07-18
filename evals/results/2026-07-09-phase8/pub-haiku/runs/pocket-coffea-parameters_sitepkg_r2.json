@@ -1,0 +1,34 @@
+{
+  "case_id": "pocket-coffea-parameters",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from omegaconf import OmegaConf\nimport yaml\n\n# Step 1: Fetch framework defaults\ntry:\n    from pocket_coffea.config import get_defaults\n    default_params = get_defaults()\nexcept (ImportError, AttributeError):\n    default_params = OmegaConf.create({})\n\n# Step 2: Overlay YAML files in order\nyaml_files = [\"params/object_preselection.yaml\", \"params/triggers.yaml\"]\n\nfor yaml_file in yaml_files:\n    with open(yaml_file) as f:\n        file_config = OmegaConf.create(yaml.safe_load(f))\n    default_params = OmegaConf.merge(default_params, file_config)\n\n# Final OmegaConf parameters object\nparams = default_params",
+  "result_text": "```python\nfrom omegaconf import OmegaConf\nimport yaml\n\n# Step 1: Fetch framework defaults\ntry:\n    from pocket_coffea.config import get_defaults\n    default_params = get_defaults()\nexcept (ImportError, AttributeError):\n    default_params = OmegaConf.create({})\n\n# Step 2: Overlay YAML files in order\nyaml_files = [\"params/object_preselection.yaml\", \"params/triggers.yaml\"]\n\nfor yaml_file in yaml_files:\n    with open(yaml_file) as f:\n        file_config = OmegaConf.create(yaml.safe_load(f))\n    default_params = OmegaConf.merge(default_params, file_config)\n\n# Final OmegaConf parameters object\nparams = default_params\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3726,
+    "cache_read_tokens": 24126,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0210516,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 40.5
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.parameters.defaults:get_default_parameters",
+      "pocket_coffea.parameters.defaults:merge_parameters_from_files"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.config.get_defaults"
+    ],
+    "error": null
+  }
+}

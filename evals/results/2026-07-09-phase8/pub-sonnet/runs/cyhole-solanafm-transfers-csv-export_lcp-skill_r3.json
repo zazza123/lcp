@@ -1,0 +1,257 @@
+{
+  "case_id": "cyhole-solanafm-transfers-csv-export",
+  "arm": "lcp-skill",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom cyhole.solana_fm import SolanaFM\n\nACCOUNT_ADDRESS = \"ACCOUNT_ADDRESS_HERE\"\nREPORT_PATH = \"account_transfers_report.csv\"\n\n\ndef main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    # Synchronous call to the \"Account Transfers CSV Export\" endpoint\n    response = solana_fm.client.get_account_transfers_csv_export(ACCOUNT_ADDRESS)\n\n    dumped = response.model_dump()\n    values = list(dumped.values())\n\n    with open(REPORT_PATH, \"w\", encoding=\"utf-8\") as report_file:\n        if len(values) == 1 and isinstance(values[0], str):\n            # Single string field: this is the raw CSV payload itself\n            report_file.write(values[0])\n        else:\n            # Fallback: persist the full response structure\n            report_file.write(response.model_dump_json(indent=2))\n\n    print(f\"Report saved to {REPORT_PATH}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+  "result_text": "```python\nimport os\n\nfrom cyhole.solana_fm import SolanaFM\n\nACCOUNT_ADDRESS = \"ACCOUNT_ADDRESS_HERE\"\nREPORT_PATH = \"account_transfers_report.csv\"\n\n\ndef main() -> None:\n    api_key = os.environ[\"SOLANA_FM_API_KEY\"]\n    solana_fm = SolanaFM(api_key=api_key)\n\n    # Synchronous call to the \"Account Transfers CSV Export\" endpoint\n    response = solana_fm.client.get_account_transfers_csv_export(ACCOUNT_ADDRESS)\n\n    dumped = response.model_dump()\n    values = list(dumped.values())\n\n    with open(REPORT_PATH, \"w\", encoding=\"utf-8\") as report_file:\n        if len(values) == 1 and isinstance(values[0], str):\n            # Single string field: this is the raw CSV payload itself\n            report_file.write(values[0])\n        else:\n            # Fallback: persist the full response structure\n            report_file.write(response.model_dump_json(indent=2))\n\n    print(f\"Report saved to {REPORT_PATH}\")\n\n\nif __name__ == \"__main__\":\n    main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 28,
+    "output_tokens": 8678,
+    "cache_read_tokens": 589697,
+    "cache_creation_tokens": 24468,
+    "cost_usd": 0.4539711,
+    "num_turns": 20,
+    "tool_calls": 19,
+    "duration_s": 281.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyhole",
+        "version": "0.3.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "SolanaFM",
+        "library": "cyhole",
+        "kind": "class"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "transfer csv export",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "csv",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solana_fm:SolanaFM",
+          "cyhole.solana_fm.interaction:SolanaFMClient"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solana_fm.interaction:SolanaFMClient#get_account_transfers_csv_export",
+          "cyhole.solana_fm.client:GetAccountTransfersCsvExportParam",
+          "cyhole.solana_fm.client:GetAccountTransfersCsvExportResponse",
+          "cyhole.solana_fm.interaction:SolanaFM#_get_account_transfers_csv_export"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "_get_account_transfers_csv_export",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetAccountTransfersCsvExportParam",
+        "library": "cyhole",
+        "kind": "attribute"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "flows",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_overview",
+      "input": {
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "TransfersCsvExport",
+        "library": "cyhole",
+        "module": "cyhole.solana_fm.schema"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solana_fm.client:GetAccountTransactionsParam",
+          "cyhole.solana_fm.schema:SolanaFMBaseResponse"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyhole.solana_fm.interaction:SolanaFM#_get_account_transfers_csv_export",
+          "cyhole.solana_fm.schema:GetAccountTransfersCsvExportResponse",
+          "cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam"
+        ],
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "\"\"",
+        "library": "cyhole",
+        "module": "cyhole.solana_fm.schema",
+        "kind": "attribute",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "GetAccountTransactionsResponse",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "result",
+        "library": "cyhole",
+        "module": "cyhole.solana_fm.schema"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "model_dump",
+        "library": "cyhole"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "ConfigDict",
+        "library": "cyhole"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_016fYvHq4wixBZXXJEYWb47o",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyhole\",\"version\":\"0.3.0\",\"language\":\"python\",\"symbol_count\":1274,\"module_count\":67,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyhole') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01V3W5amEcHZ9ojFfCSG3jJg",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm:SolanaFM\",\"kind\":\"class\",\"summary\":\"Class used to connect [SolanaFM](https://solana.fm/) API, popular site to interact and explore Solana blockchain. To have access SolanaFM API is **not** required an API key, but it is recommended to have one to increase the rate limit.\",\"import\":\"from cyhole.solana_fm import SolanaFM\",\"resolved_via_alias\":\"cyhole.solana_fm.interaction:SolanaFM\"},{\"id\":\"cyhole.solana_fm.interaction:SolanaFMAsyncClient\",\"kind\":\"class\",\"summary\":\"Client used for asynchronous API calls for `SolanaFM` interaction.\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMAsyncClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMAsyncClient\"},{\"id\":\"cyhole.solana_fm.interaction:SolanaFMClient\",\"kind\":\"class\",\"summary\":\"Client used for synchronous API calls for `SolanaFM` interaction.\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMClient\"},{\"id\":\"cyhole.solana_fm.exception:SolanaFMException\",\"kind\":\"class\",\"summary\":\"General Exception for SolanaFM API.\",\"import\":\"from cyhole.solana_fm.exception import SolanaFMException\"},{\"id\":\"cyhole.solana_fm.client:SolanaFMBlocksPaginationType\",\"kind\":\"class\",\"summary\":\"Pagination type for Solana FM blocks.\",\"import\":\"from cyhole.solana_fm.client import SolanaFMBlocksPaginationType\",\"resolved_via_alias\":\"cyhole.solana_fm.param:SolanaFMBlocksPaginationType\"},{\"id\":\"cyhole.solana_fm.schema:SolanaFMBaseResponse\",\"kind\":\"class\",\"summary\":\"Model used to identify the base response of the SolanaFM API.\",\"import\":\"from cyhole.solana_fm.schema import SolanaFMBaseResponse\"},{\"id\":\"cyhole.solana_fm.schema:SolanaFMBlockData\",\"kind\":\"class\",\"summary\":\"Model used to identify the data of the SolanaFM block.\",\"import\":\"from cyhole.solana_fm.schema import SolanaFMBlockData\"},{\"id\":\"cyhole.solana_fm.schema:SolanaFMPagination\",\"kind\":\"class\",\"summary\":\"Model used to identify the pagination of the SolanaFM API.\",\"impo"
+    },
+    {
+      "tool_use_id": "toolu_013snLk98xkFx6psau2bwPN8",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01CBfUEpL2YeUDHEc2NQX2og",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm.interaction:SolanaFMAsyncClient#get_account_transfers_csv_export\",\"kind\":\"method\",\"summary\":\"Call the SolanaFM's API endpoint GET **[Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for asynchronous logic. All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMAsyncClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMAsyncClient#get_account_transfers_csv_export\"},{\"id\":\"cyhole.solana_fm.interaction:SolanaFMClient#get_account_transfers_csv_export\",\"kind\":\"method\",\"summary\":\"Call the SolanaFM's API endpoint GET **[Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for synchronous logic. All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export\"},{\"id\":\"cyhole.solana_fm.client:GetAccountTransfersCsvExportParam\",\"kind\":\"class\",\"summary\":\"Model used to identify the parameters of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam\"},{\"id\":\"cyhole.solana_fm.client:GetAccountTransfersCsvExportResponse\",\"kind\":\"class\",\"summary\":\"Model used to identify the response of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportResponse\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportResponse\"}],\"total\":4,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01FHJ3FXnQsW6vGQwd3aUyD5",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.interaction\",\"aliases\":[\"cyhole.solana_fm:SolanaFM\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"api_key\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"specify the API key to use for the connection.\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class used to connect [SolanaFM](https://solana.fm/) API, popular site to interact and explore Solana blockchain. To have access SolanaFM API is **not** required an API key, but it is recommended to have one to increase the rate limit.\",\"description\":\"Check [https://docs.solana.fm/](https://docs.solana.fm/) for all the details on the available endpoints.\\n\\n        !!! info\\n            If the API key is not provided during the object creation, then it is tried to be \\n            retrieved also from ENV variable **SOLANA_FM_API_KEY**.\\n\\n        Parameters:\\n            api_key: specify the API key to use for the connection.\\n\\n        **Example**\\n        ```python\\n        import asyncio\\n        from cyhole.solana_fm import SolanaFM\\n\\n        account = \\\"ACCOUNT_ID\\\"\\n        solana_fm = SolanaFM()\\n\\n        # Get account transactions\\n        # synchronous\\n        response = solana_fm.client.get_account_transactions(account)\\n        print(\\\"Transactions Extracted:\\\", len(response.result.data))\\n\\n        # asynchronous\\n        async def main() -> None:\\n            async with solana_fm.async_client as client:\\n                response = await client.get_account_transactions(account)\\n                print(\\\"Transactions Extracted:\\\", len(response.result.data))\\n\\n        asyncio.run(main())\\n        ```\"},\"id\":\"cyhole.solana_fm:SolanaFM\",\"resolved_via_alias\":\"cyhole.solana_fm.interaction:SolanaFM\",\"import\":\"from cyhole.solana_fm import SolanaFM\",\"usage_hints\":{\"required_parameters\":[],\"optional_parameters\":[{\"name\":\"api_key\",\"type\":\"UnionType[str, None]\",\"default\":null}],\"is_async\":false,\"return_type\":\"No"
+    },
+    {
+      "tool_use_id": "toolu_01568UaWzgi3jPrGVG7HLwoS",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyhole.solana_fm.client\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"account\",\"type\":\"str\",\"required\":true,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"params\",\"type\":\"GetAccountTransfersCsvExportParam\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"positional\"}],\"returns\":\"GetAccountTransfersCsvExportResponse\"}],\"semantics\":{\"summary\":\"Call the SolanaFM's API endpoint GET **[Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for synchronous logic. All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].\"},\"id\":\"cyhole.solana_fm.interaction:SolanaFMClient#get_account_transfers_csv_export\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMClient\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"account\",\"type\":\"str\"}],\"optional_parameters\":[{\"name\":\"params\",\"type\":\"GetAccountTransfersCsvExportParam\",\"default\":\"...\"}],\"is_async\":false,\"return_type\":\"GetAccountTransfersCsvExportResponse\",\"returns_classes\":[\"cyhole.solana_fm.client:GetAccountTransfersCsvExportResponse\"],\"next\":\"returns GetAccountTransfersCsvExportResponse \u2192 get_symbol(ids=['cyhole.solana_fm.client:GetAccountTransfersCsvExportResponse']) to see its members\"}},{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.schema\",\"aliases\":[\"cyhole.solana_fm.client:GetAccountTransfersCsvExportParam\",\"cyhole.solana_fm.interaction:GetAccountTransfersCsvExportParam\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Model used to identify the parameters of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\"},\"id\":\"cyhole.solana_fm.client:GetAccountTransfersCsvExportParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAcco"
+    },
+    {
+      "tool_use_id": "toolu_018Pr9w3CmyJyFEZGzc2gTgz",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm.interaction:SolanaFMAsyncClient#get_account_transfers_csv_export\",\"kind\":\"method\",\"summary\":\"Call the SolanaFM's API endpoint GET **[Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for asynchronous logic. All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMAsyncClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMAsyncClient#get_account_transfers_csv_export\"},{\"id\":\"cyhole.solana_fm.interaction:SolanaFMClient#get_account_transfers_csv_export\",\"kind\":\"method\",\"summary\":\"Call the SolanaFM's API endpoint GET **[Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for synchronous logic. All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].\",\"import\":\"from cyhole.solana_fm.interaction import SolanaFMClient\",\"resolved_via_alias\":\"cyhole.solana_fm.client:SolanaFMClient#get_account_transfers_csv_export\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Qd4Bn6YYE1PbaVrV7YhWmr",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01BJHdL2XAvfMeb1qxSpGppW",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm.client:GetAccountTransactionsParam#serialize_flows\",\"kind\":\"method\",\"summary\":\"Method serialize_flows\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransactionsParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransactionsParam#serialize_flows\"},{\"id\":\"cyhole.solana_fm.client:GetAccountTransfersCsvExportParam#serialize_flows\",\"kind\":\"method\",\"summary\":\"Method serialize_flows\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam#serialize_flows\"},{\"id\":\"cyhole.solana_fm.client:GetAccountTransfersParam#serialize_flows\",\"kind\":\"method\",\"summary\":\"Method serialize_flows\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransfersParam#serialize_flows\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01P3XS9XyG9uU1Axy5XJkCHd",
+      "content": "{\"library\":{\"name\":\"cyhole\",\"version\":\"0.3.0\",\"language\":\"python\",\"schema_version\":\"1.0\",\"source\":\"cache\"},\"modules\":[{\"module\":\"cyhole\",\"symbols\":1},{\"module\":\"cyhole.birdeye\",\"symbols\":1},{\"module\":\"cyhole.birdeye.client\",\"symbols\":75},{\"module\":\"cyhole.birdeye.exception\",\"symbols\":10},{\"module\":\"cyhole.birdeye.interaction\",\"symbols\":4},{\"module\":\"cyhole.birdeye.param\",\"symbols\":21},{\"module\":\"cyhole.birdeye.schema\",\"symbols\":1},{\"module\":\"cyhole.birdeye.schema.creation_trending\",\"symbols\":7},{\"module\":\"cyhole.birdeye.schema.holder\",\"symbols\":24},{\"module\":\"cyhole.birdeye.schema.price\",\"symbols\":16},{\"module\":\"cyhole.birdeye.schema.security\",\"symbols\":3},{\"module\":\"cyhole.birdeye.schema.token_list\",\"symbols\":23},{\"module\":\"cyhole.birdeye.schema.token_stats\",\"symbols\":19},{\"module\":\"cyhole.birdeye.schema.transactions\",\"symbols\":20},{\"module\":\"cyhole.birdeye.schema.transfer\",\"symbols\":8},{\"module\":\"cyhole.birdeye.schema.wallet\",\"symbols\":2},{\"module\":\"cyhole.core\",\"symbols\":1},{\"module\":\"cyhole.core.client\",\"symbols\":13},{\"module\":\"cyhole.core.exception\",\"symbols\":19},{\"module\":\"cyhole.core.interaction\",\"symbols\":4},{\"module\":\"cyhole.core.param\",\"symbols\":3},{\"module\":\"cyhole.core.token\",\"symbols\":5},{\"module\":\"cyhole.core.token.ethereum\",\"symbols\":5},{\"module\":\"cyhole.core.token.solana\",\"symbols\":5},{\"module\":\"cyhole.dex_screener\",\"symbols\":1},{\"module\":\"cyhole.dex_screener.client\",\"symbols\":31},{\"module\":\"cyhole.dex_screener.exception\",\"symbols\":4},{\"module\":\"cyhole.dex_screener.interaction\",\"symbols\":4},{\"module\":\"cyhole.dex_screener.param\",\"symbols\":1},{\"module\":\"cyhole.dex_screener.schema\",\"symbols\":26},{\"module\":\"cyhole.helius\",\"symbols\":1},{\"module\":\"cyhole.helius.client\",\"symbols\":39},{\"module\":\"cyhole.helius.exception\",\"symbols\":4},{\"module\":\"cyhole.helius.interaction\",\"symbols\":4},{\"module\":\"cyhole.helius.param\",\"symbols\":13},{\"module\":\"cyhole.helius.schema\",\"symbols\":59},{\"module\":\"cyhole.jupiter\",\"symbols\":1},{\"module\":\"cyhole.jupiter.client\",\"symbols\":4"
+    },
+    {
+      "tool_use_id": "toolu_019GPNz9KC3KUqmmAuhBwqzz",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm.client:GetAccountTransfersCsvExportParam\",\"kind\":\"class\",\"summary\":\"Model used to identify the parameters of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam\"},{\"id\":\"cyhole.solana_fm.client:GetAccountTransfersCsvExportResponse\",\"kind\":\"class\",\"summary\":\"Model used to identify the response of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportResponse\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportResponse\"}],\"total\":2,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01GyxfGGEp7kLtTdBUygqzwm",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.schema\",\"aliases\":[\"cyhole.solana_fm.client:GetAccountTransactionsParam\",\"cyhole.solana_fm.interaction:GetAccountTransactionsParam\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Model used to identify the parameters of the GET \\\"Account - Transactions\\\" endpoint.\"},\"id\":\"cyhole.solana_fm.client:GetAccountTransactionsParam\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransactionsParam\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransactionsParam\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"data\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"cyhole.solana_fm.client:GetAccountTransactionsParam#serialize_flows\",\"kind\":\"method\",\"summary\":\"Method serialize_flows\"},{\"id\":\"cyhole.solana_fm.client:GetAccountTransactionsParam#serialize_str_list_input\",\"kind\":\"method\",\"summary\":\"Method serialize_str_list_input\"}]},{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.schema\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Model used to identify the base response of the SolanaFM API.\"},\"id\":\"cyhole.solana_fm.schema:SolanaFMBaseResponse\",\"import\":\"from cyhole.solana_fm.schema import SolanaFMBaseResponse\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"data\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[]}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01SFgoEWa6GXw4rxBeLSTJXr",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.schema\",\"aliases\":[\"cyhole.solana_fm.client:GetAccountTransfersCsvExportResponse\",\"cyhole.solana_fm.interaction:GetAccountTransfersCsvExportResponse\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Model used to identify the response of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\"},\"id\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportResponse\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportResponse\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"data\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[]},{\"kind\":\"class\",\"module\":\"cyhole.solana_fm.schema\",\"aliases\":[\"cyhole.solana_fm.client:GetAccountTransfersCsvExportParam\",\"cyhole.solana_fm.interaction:GetAccountTransfersCsvExportParam\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"data\",\"type\":\"Any\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Model used to identify the parameters of the GET \\\"Account - Transfers CSV Export\\\" endpoint.\"},\"id\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransfersCsvExportParam\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"data\",\"type\":\"Any\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam#serialize_flows\",\"kind\":\"method\",\"summary\":\"Method serialize_flows\"},{\"id\":\"cyhole.solana_fm.schema:GetAccountTransfersCsvExportParam#serialize_str_list_input\",\"kind\":\"method\",\"summary\":\"Method serialize_str_list_input\"}]}],\"not_found\":[\"cyhole.solana_fm.interaction:SolanaFM#_get_account_transfers_csv_export\"],\"hint\":\"Some ids were not found \u2014 take ids from search() results; the format is 'module:name' or 'module:Class#member'.\"}"
+    },
+    {
+      "tool_use_id": "toolu_012nk67PVj3Pw4xqwL5VCCQd",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01BecztCqgH1t3FNfqHNsXtM",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm.client:GetAccountTransactionsResponse\",\"kind\":\"class\",\"summary\":\"Model used to identify the response of the GET \\\"Account - Transactions\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.client import GetAccountTransactionsResponse\",\"resolved_via_alias\":\"cyhole.solana_fm.schema:GetAccountTransactionsResponse\"},{\"id\":\"cyhole.solscan.v1.client:GetAccountTransactionsResponse\",\"kind\":\"class\",\"summary\":\"This class refers to the response model of GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-transactions)** of **V1** API endpoint.\",\"import\":\"from cyhole.solscan.v1.client import GetAccountTransactionsResponse\",\"resolved_via_alias\":\"cyhole.solscan.v1.schema:GetAccountTransactionsResponse\"},{\"id\":\"cyhole.solscan.v2.client:GetAccountTransactionsResponse\",\"kind\":\"class\",\"summary\":\"Model used to parse the response of the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** of **V2** API endpoint.\",\"import\":\"from cyhole.solscan.v2.client import GetAccountTransactionsResponse\",\"resolved_via_alias\":\"cyhole.solscan.v2.schema:GetAccountTransactionsResponse\"}],\"total\":3,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_017HLCPurXHnteP7wihLATLQ",
+      "content": "{\"results\":[{\"id\":\"cyhole.solana_fm.schema:GetAccountTransactionsResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result of the GET \\\"Account - Transactions\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetAccountTransactionsResult\"},{\"id\":\"cyhole.solana_fm.schema:GetAccountTransfersResults\",\"kind\":\"class\",\"summary\":\"Model used to identify the results of the GET \\\"Account - Transfers\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetAccountTransfersResults\"},{\"id\":\"cyhole.solana_fm.schema:GetBlockResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result of the GET \\\"Block\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetBlockResult\"},{\"id\":\"cyhole.solana_fm.schema:GetBlocksResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result of the GET \\\"Blocks\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetBlocksResult\"},{\"id\":\"cyhole.solana_fm.schema:GetSolanaDailyTransactionFeesResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result of the GET \\\"Solana Daily Transaction Fees\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetSolanaDailyTransactionFeesResult\"},{\"id\":\"cyhole.solana_fm.schema:GetTaggedTokensListResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result of the GET \\\"Tagged Tokens List\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetTaggedTokensListResult\"},{\"id\":\"cyhole.solana_fm.schema:GetTokenInfoV0Result\",\"kind\":\"class\",\"summary\":\"Model used to identify the data of the GET \\\"Token Info (v0)\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetTokenInfoV0Result\"},{\"id\":\"cyhole.solana_fm.schema:GetTransferTransactionsResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result of the GET \\\"Transfer Transactions\\\" endpoint.\",\"import\":\"from cyhole.solana_fm.schema import GetTransferTransactionsResult\"},{\"id\":\"cyhole.solana_fm.schema:PostMultipleBlocksResult\",\"kind\":\"class\",\"summary\":\"Model used to identify the result o"
+    },
+    {
+      "tool_use_id": "toolu_01WJcMtj3mKLn6nyXYx1tNAN",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01Mn5HHxR2Ru9A1djptwpzPa",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

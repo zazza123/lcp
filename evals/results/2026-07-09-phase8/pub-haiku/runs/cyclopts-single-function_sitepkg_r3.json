@@ -1,0 +1,52 @@
+{
+  "case_id": "cyclopts-single-function",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import cyclopts\n\ndef greet(name: str, excited: bool = False):\n    if excited:\n        print(f\"Hello, {name}!\")\n    else:\n        print(f\"Hello, {name}\")\n\nif __name__ == \"__main__\":\n    cyclopts.run(greet)",
+  "result_text": "```python\nimport cyclopts\n\ndef greet(name: str, excited: bool = False):\n    if excited:\n        print(f\"Hello, {name}!\")\n    else:\n        print(f\"Hello, {name}\")\n\nif __name__ == \"__main__\":\n    cyclopts.run(greet)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 33,
+    "output_tokens": 4453,
+    "cache_read_tokens": 106582,
+    "cache_creation_tokens": 6449,
+    "cost_usd": 0.04585419999999999,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 37.5
+  },
+  "tool_call_details": [
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/__init__.py",
+        "limit": 100
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/_run.py",
+        "limit": 50
+      }
+    },
+    {
+      "name": "Read",
+      "input": {
+        "file_path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/cyclopts/_run.py",
+        "limit": 150,
+        "offset": 50
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

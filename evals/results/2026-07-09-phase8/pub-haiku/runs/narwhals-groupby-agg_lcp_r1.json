@@ -1,0 +1,161 @@
+{
+  "case_id": "narwhals-groupby-agg",
+  "arm": "lcp",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import narwhals as nw\n\n# Assuming df is already a narwhals DataFrame\nresult = df.group_by(\"store\").agg(\n    nw.col(\"revenue\").sum().alias(\"revenue_sum\"),\n    nw.col(\"items\").mean().alias(\"items_mean\")\n)",
+  "result_text": "```python\nimport narwhals as nw\n\n# Assuming df is already a narwhals DataFrame\nresult = df.group_by(\"store\").agg(\n    nw.col(\"revenue\").sum().alias(\"revenue_sum\"),\n    nw.col(\"items\").mean().alias(\"items_mean\")\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 99,
+    "output_tokens": 1822,
+    "cache_read_tokens": 304995,
+    "cache_creation_tokens": 17144,
+    "cost_usd": 0.07399649999999999,
+    "num_turns": 12,
+    "tool_calls": 11,
+    "duration_s": 33.6
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 3
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "groupby",
+        "library": "narwhals",
+        "limit": 10
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals.group_by:GroupBy"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals.group_by:GroupBy#agg"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "col function",
+        "library": "narwhals",
+        "limit": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "col",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:col"
+        ],
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "sum mean",
+        "library": "narwhals",
+        "kind": "method",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "sum",
+        "library": "narwhals",
+        "limit": 20
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "mean",
+        "library": "narwhals",
+        "limit": 20
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01FMCbwuKgyWesw87aTrPuzX",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_014gkmAMie8mneUMhnMtzXUj",
+      "content": "{\"results\":[{\"id\":\"narwhals.group_by:GroupBy\",\"kind\":\"class\",\"summary\":\"Class GroupBy\",\"import\":\"from narwhals.group_by import GroupBy\"},{\"id\":\"narwhals._arrow.group_by:ArrowGroupBy\",\"kind\":\"class\",\"summary\":\"Class ArrowGroupBy\",\"import\":\"from narwhals._arrow.group_by import ArrowGroupBy\"},{\"id\":\"narwhals.compliant:CompliantGroupBy\",\"kind\":\"class\",\"summary\":\"Class CompliantGroupBy\",\"import\":\"from narwhals.compliant import CompliantGroupBy\",\"resolved_via_alias\":\"narwhals._compliant.group_by:CompliantGroupBy\"},{\"id\":\"narwhals._compliant:DepthTrackingGroupBy\",\"kind\":\"class\",\"summary\":\"`CompliantGroupBy` variant, deals with `Eager` and other backends that utilize `CompliantExpr._depth`.\",\"import\":\"from narwhals._compliant import DepthTrackingGroupBy\",\"resolved_via_alias\":\"narwhals._compliant.group_by:DepthTrackingGroupBy\"},{\"id\":\"narwhals._compliant:EagerGroupBy\",\"kind\":\"class\",\"summary\":\"Class EagerGroupBy\",\"import\":\"from narwhals._compliant import EagerGroupBy\",\"resolved_via_alias\":\"narwhals._compliant.group_by:EagerGroupBy\"},{\"id\":\"narwhals._ibis.group_by:IbisGroupBy\",\"kind\":\"class\",\"summary\":\"Class IbisGroupBy\",\"import\":\"from narwhals._ibis.group_by import IbisGroupBy\"},{\"id\":\"narwhals._pandas_like.expr:PandasLikeGroupBy\",\"kind\":\"class\",\"summary\":\"Class PandasLikeGroupBy\",\"import\":\"from narwhals._pandas_like.expr import PandasLikeGroupBy\",\"resolved_via_alias\":\"narwhals._pandas_like.group_by:PandasLikeGroupBy\"},{\"id\":\"narwhals._polars.group_by:PolarsGroupBy\",\"kind\":\"class\",\"summary\":\"Class PolarsGroupBy\",\"import\":\"from narwhals._polars.group_by import PolarsGroupBy\"},{\"id\":\"narwhals._polars.group_by:PolarsLazyGroupBy\",\"kind\":\"class\",\"summary\":\"Class PolarsLazyGroupBy\",\"import\":\"from narwhals._polars.group_by import PolarsLazyGroupBy\"},{\"id\":\"narwhals._spark_like.group_by:SparkLikeLazyGroupBy\",\"kind\":\"class\",\"summary\":\"Class SparkLikeLazyGroupBy\",\"import\":\"from narwhals._spark_like.group_by import SparkLikeLazyGroupBy\"}],\"total\":13,\"truncated\":true}"
+    },
+    {
+      "tool_use_id": "toolu_01SAVgeXuyPGaAfaUcv3jGzk",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"narwhals.group_by\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"df\",\"type\":\"DataFrameT\",\"required\":true,\"variadic\":false,\"kind\":\"positional_only\"},{\"name\":\"keys\",\"type\":\"Sequence[str] | Sequence[CompliantExprAny]\",\"required\":true,\"variadic\":false,\"kind\":\"positional_only\"},{\"name\":\"drop_null_keys\",\"type\":\"bool\",\"required\":true,\"variadic\":false,\"kind\":\"keyword_only\"}],\"returns\":\"None\"}],\"semantics\":{\"summary\":\"Class GroupBy\"},\"id\":\"narwhals.group_by:GroupBy\",\"import\":\"from narwhals.group_by import GroupBy\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"df\",\"type\":\"DataFrameT\"},{\"name\":\"keys\",\"type\":\"Sequence[str] | Sequence[CompliantExprAny]\"},{\"name\":\"drop_null_keys\",\"type\":\"bool\"}],\"optional_parameters\":[],\"is_async\":false,\"return_type\":\"None\"},\"members\":[{\"id\":\"narwhals.group_by:GroupBy#__init__\",\"kind\":\"method\",\"summary\":\"Method __init__\"},{\"id\":\"narwhals.group_by:GroupBy#__iter__\",\"kind\":\"method\",\"summary\":\"Method __iter__\"},{\"id\":\"narwhals.group_by:GroupBy#agg\",\"kind\":\"method\",\"summary\":\"Compute aggregations for each group of a group by operation.\"}]}],\"not_found\":[]}"
+    },
+    {
+      "tool_use_id": "toolu_01DvJY3XWv6kjWpknSZpmwAn",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"narwhals.group_by\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"aggs\",\"type\":\"Expr | Iterable[Expr]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Aggregations to compute for each group of the group by operation,\\nspecified as positional arguments.\"},{\"name\":\"named_aggs\",\"type\":\"Expr\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Additional aggregations, specified as keyword arguments.\"}],\"returns\":\"DataFrameT\"}],\"semantics\":{\"summary\":\"Compute aggregations for each group of a group by operation.\",\"description\":\"Arguments:\\n            aggs: Aggregations to compute for each group of the group by operation,\\n                specified as positional arguments.\\n            named_aggs: Additional aggregations, specified as keyword arguments.\\n\\n        Examples:\\n            Group by one column or by multiple columns and call `agg` to compute\\n            the grouped sum of another column.\\n\\n            >>> import pandas as pd\\n            >>> import narwhals as nw\\n            >>> df_native = pd.DataFrame(\\n            ...     {\\n            ...         \\\"a\\\": [\\\"a\\\", \\\"b\\\", \\\"a\\\", \\\"b\\\", \\\"c\\\"],\\n            ...         \\\"b\\\": [1, 2, 1, 3, 3],\\n            ...         \\\"c\\\": [5, 4, 3, 2, 1],\\n            ...     }\\n            ... )\\n            >>> df = nw.from_native(df_native)\\n            >>>\\n            >>> df.group_by(\\\"a\\\").agg(nw.col(\\\"b\\\").sum()).sort(\\\"a\\\")\\n            \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n            |Narwhals DataFrame|\\n            |------------------|\\n            |        a  b      |\\n            |     0  a  2      |\\n            |     1  b  5      |\\n            |     2  c  3      |\\n            \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\\n            >>>\\n            >>> df.group_by(\\\"a\\\", \\\"b\\\").agg(nw.col(\\\"c\\\").sum()).sort(\\\"a\\\", \\\"b\\\").to_native()\\n               a  b  c\\n            0  a  1  8\\n            1  b  2  4\\n            2  b  3  2\\n            3  c  3  1\",\"examples\":[{\"code\":\">>> imp"
+    },
+    {
+      "tool_use_id": "toolu_01Hux9YHtpynzeLqY8xmeFx2",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01HnKEUhT7H86fSpJfbYPWaJ",
+      "content": "{\"results\":[{\"id\":\"narwhals._arrow.namespace:ArrowNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._arrow.namespace import ArrowNamespace\"},{\"id\":\"narwhals.compliant:CompliantNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals.compliant import CompliantNamespace\",\"resolved_via_alias\":\"narwhals._compliant.namespace:CompliantNamespace#col\"},{\"id\":\"narwhals._compliant:DepthTrackingNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._compliant import DepthTrackingNamespace\",\"resolved_via_alias\":\"narwhals._compliant.namespace:DepthTrackingNamespace#col\"},{\"id\":\"narwhals._compliant:EagerNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._compliant import EagerNamespace\",\"resolved_via_alias\":\"narwhals._compliant.namespace:EagerNamespace#col\"},{\"id\":\"narwhals._compliant:LazyNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._compliant import LazyNamespace\",\"resolved_via_alias\":\"narwhals._compliant.namespace:LazyNamespace#col\"},{\"id\":\"narwhals._pandas_like.namespace:PandasLikeNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._pandas_like.namespace import PandasLikeNamespace\"},{\"id\":\"narwhals._spark_like.namespace:SparkLikeNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._spark_like.namespace import SparkLikeNamespace\"},{\"id\":\"narwhals._spark_like.namespace:SQLNamespace#col\",\"kind\":\"method\",\"summary\":\"Method col\",\"import\":\"from narwhals._spark_like.namespace import SQLNamespace\",\"resolved_via_alias\":\"narwhals._sql.namespace:SQLNamespace#col\"},{\"id\":\"narwhals:col\",\"kind\":\"function\",\"summary\":\"Creates an expression that references one or more columns by their name(s).\",\"import\":\"from narwhals import col\",\"resolved_via_alias\":\"narwhals.functions:col\"},{\"id\":\"narwhals.stable.v1:col\",\"kind\":\"function\",\"summary\":\"Function col\",\"import\":\"from narwhals.stable.v1 import col\"},{\"id\":\"narwhals.stab"
+    },
+    {
+      "tool_use_id": "toolu_01VWCQnjceSFqGL7ZDvqPtQu",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.functions\",\"aliases\":[\"narwhals._arrow.expr:nw_col\",\"narwhals._pandas_like.dataframe:nw_col\",\"narwhals.series:col\",\"narwhals:col\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"names\",\"type\":\"UnionType[str, Iterable[str]]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Name(s) of the columns to use.\"}],\"returns\":\"Expr\"}],\"semantics\":{\"summary\":\"Creates an expression that references one or more columns by their name(s).\",\"description\":\"Arguments:\\n        names: Name(s) of the columns to use.\\n\\n    Examples:\\n        >>> import polars as pl\\n        >>> import narwhals as nw\\n        >>>\\n        >>> df_native = pl.DataFrame({\\\"a\\\": [1, 2], \\\"b\\\": [3, 4], \\\"c\\\": [\\\"x\\\", \\\"z\\\"]})\\n        >>> nw.from_native(df_native).select(nw.col(\\\"a\\\", \\\"b\\\") * nw.col(\\\"b\\\"))\\n        \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n        |Narwhals DataFrame|\\n        |------------------|\\n        |  shape: (2, 2)   |\\n        |  \u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2510   |\\n        |  \u2502 a   \u2506 b   \u2502   |\\n        |  \u2502 --- \u2506 --- \u2502   |\\n        |  \u2502 i64 \u2506 i64 \u2502   |\\n        |  \u255e\u2550\u2550\u2550\u2550\u2550\u256a\u2550\u2550\u2550\u2550\u2550\u2561   |\\n        |  \u2502 3   \u2506 9   \u2502   |\\n        |  \u2502 8   \u2506 16  \u2502   |\\n        |  \u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2518   |\\n        \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\",\"examples\":[{\"code\":\">>> import polars as pl\\n>>> import narwhals as nw\\n>>> df_native = pl.DataFrame({\\\"a\\\": [1, 2], \\\"b\\\": [3, 4], \\\"c\\\": [\\\"x\\\", \\\"z\\\"]})\\n>>> nw.from_native(df_native).select(nw.col(\\\"a\\\", \\\"b\\\") * nw.col(\\\"b\\\"))\\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n|Narwhals DataFrame|\\n|------------------|\\n|  shape: (2, 2)   |\\n|  \u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2510   |\\n|  \u2502 a   \u2506 b   \u2502   |\\n|  \u2502 --- \u2506 --- \u2502   |\\n|  \u2502 i64 \u2506 i64 \u2502   |\\n|  \u255e\u2550\u2550\u2550\u2550\u2550\u256a\u2550\u2550\u2550\u2550\u2550\u2561   |\\n|  \u2502 3   \u2506 9   \u2502   |\\n|  \u2502 8   \u2506 16  \u2502   |\\n|  \u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2518   |\\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\"}]},\"id\":\"narwhals:col\",\"resolved_via_alias\":\"narwhals.functions:col\",\"import\":\"from narwhals import col\",\"usage_hints\":{\"required_parameters\":[{\"name\":\"names\",\"type\":\"UnionType[str, Iterable[str]]\"}],\"optional_parameters\":[],\"is_async\":false,\"return_"
+    },
+    {
+      "tool_use_id": "toolu_012yKrfMq39mpWweFZxhNJPW",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01B5gGTVcHCAdAtLBpRL568F",
+      "content": "{\"results\":[{\"id\":\"narwhals._arrow.namespace:ArrowExpr#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._arrow.namespace import ArrowExpr\",\"resolved_via_alias\":\"narwhals._arrow.expr:ArrowExpr#sum\"},{\"id\":\"narwhals._arrow.selectors:ArrowSelector#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._arrow.selectors import ArrowSelector\"},{\"id\":\"narwhals._arrow.expr:ArrowSeries#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._arrow.expr import ArrowSeries\",\"resolved_via_alias\":\"narwhals._arrow.series:ArrowSeries#sum\"},{\"id\":\"narwhals._arrow.series:ArrowSeriesListNamespace#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._arrow.series import ArrowSeriesListNamespace\",\"resolved_via_alias\":\"narwhals._arrow.series_list:ArrowSeriesListNamespace#sum\"},{\"id\":\"narwhals.compliant:ListNamespace#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals.compliant import ListNamespace\",\"resolved_via_alias\":\"narwhals._compliant.any_namespace:ListNamespace#sum\"},{\"id\":\"narwhals.compliant:CompliantExpr#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals.compliant import CompliantExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:CompliantExpr#sum\"},{\"id\":\"narwhals._compliant:DepthTrackingExpr#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._compliant import DepthTrackingExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:DepthTrackingExpr#sum\"},{\"id\":\"narwhals._compliant:EagerExpr#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._compliant import EagerExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:EagerExpr#sum\"},{\"id\":\"narwhals._compliant:LazyExpr#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals._compliant import LazyExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:LazyExpr#sum\"},{\"id\":\"narwhals.compliant:CompliantSelector#sum\",\"kind\":\"method\",\"summary\":\"Method sum\",\"import\":\"from narwhals.compliant import CompliantS"
+    },
+    {
+      "tool_use_id": "toolu_01H1qUPZjLNTwNTWohCcVR8H",
+      "content": "{\"results\":[{\"id\":\"narwhals._arrow.namespace:ArrowExpr#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._arrow.namespace import ArrowExpr\",\"resolved_via_alias\":\"narwhals._arrow.expr:ArrowExpr#mean\"},{\"id\":\"narwhals._arrow.selectors:ArrowSelector#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._arrow.selectors import ArrowSelector\"},{\"id\":\"narwhals._arrow.expr:ArrowSeries#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._arrow.expr import ArrowSeries\",\"resolved_via_alias\":\"narwhals._arrow.series:ArrowSeries#mean\"},{\"id\":\"narwhals._arrow.series:ArrowSeriesListNamespace#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._arrow.series import ArrowSeriesListNamespace\",\"resolved_via_alias\":\"narwhals._arrow.series_list:ArrowSeriesListNamespace#mean\"},{\"id\":\"narwhals.compliant:ListNamespace#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals.compliant import ListNamespace\",\"resolved_via_alias\":\"narwhals._compliant.any_namespace:ListNamespace#mean\"},{\"id\":\"narwhals.compliant:CompliantExpr#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals.compliant import CompliantExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:CompliantExpr#mean\"},{\"id\":\"narwhals._compliant:DepthTrackingExpr#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._compliant import DepthTrackingExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:DepthTrackingExpr#mean\"},{\"id\":\"narwhals._compliant:EagerExpr#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._compliant import EagerExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:EagerExpr#mean\"},{\"id\":\"narwhals._compliant:LazyExpr#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals._compliant import LazyExpr\",\"resolved_via_alias\":\"narwhals._compliant.expr:LazyExpr#mean\"},{\"id\":\"narwhals.compliant:CompliantSelector#mean\",\"kind\":\"method\",\"summary\":\"Method mean\",\"import\":\"from narwhals"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

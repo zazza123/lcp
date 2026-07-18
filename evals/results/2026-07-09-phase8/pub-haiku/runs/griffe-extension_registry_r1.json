@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-extension",
+  "arm": "registry",
+  "rep": 1,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pathlib import Path\nfrom griffe import load\nfrom griffe.extensions import Extension\n\n# Create a minimal test package\nPath(\"mypkg\").mkdir(exist_ok=True)\nPath(\"mypkg/__init__.py\").write_text('''\ndef my_function(x):\n    \"\"\"This is a test function.\"\"\"\n    return x * 2\n\ndef another_function():\n    \"\"\"Another function.\"\"\"\n    pass\n''')\n\nclass CheckedExtension(Extension):\n    def on_object_loaded(self, obj):\n        if obj.is_function and obj.docstring:\n            obj.docstring.value += \" [checked]\"\n\n# Aggregate and load with extension\nmodule = load(\"mypkg\", extensions=[CheckedExtension()])\n\n# Verify the docstrings were modified\nfor name, member in module.members.items():\n    if member.is_function:\n        docstring = member.docstring.value if member.docstring else \"No docstring\"\n        print(f\"{name}: {docstring}\")",
+  "result_text": "```python\nfrom pathlib import Path\nfrom griffe import load\nfrom griffe.extensions import Extension\n\n# Create a minimal test package\nPath(\"mypkg\").mkdir(exist_ok=True)\nPath(\"mypkg/__init__.py\").write_text('''\ndef my_function(x):\n    \"\"\"This is a test function.\"\"\"\n    return x * 2\n\ndef another_function():\n    \"\"\"Another function.\"\"\"\n    pass\n''')\n\nclass CheckedExtension(Extension):\n    def on_object_loaded(self, obj):\n        if obj.is_function and obj.docstring:\n            obj.docstring.value += \" [checked]\"\n\n# Aggregate and load with extension\nmodule = load(\"mypkg\", extensions=[CheckedExtension()])\n\n# Verify the docstrings were modified\nfor name, member in module.members.items():\n    if member.is_function:\n        docstring = member.docstring.value if member.docstring else \"No docstring\"\n        print(f\"{name}: {docstring}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5093,
+    "cache_read_tokens": 15092,
+    "cache_creation_tokens": 6937,
+    "cost_usd": 0.040857199999999996,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 55.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:Extension"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.extensions.Extension"
+    ],
+    "error": null
+  }
+}

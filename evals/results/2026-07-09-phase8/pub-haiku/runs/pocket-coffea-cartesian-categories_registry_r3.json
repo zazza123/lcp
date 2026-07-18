@@ -1,0 +1,33 @@
+{
+  "case_id": "pocket-coffea-cartesian-categories",
+  "arm": "registry",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\nfrom pocket_coffea.lib.categorization import Cartesian, MultiCut\n\n# Jet multiplicity binning: exactly 4, exactly 5, at least 6 jets\nnjets_binning = MultiCut(\n    \"njets\",\n    [\n        Cut(\"eq4\", lambda ev: ak.num(ev.JetGood) == 4),\n        Cut(\"eq5\", lambda ev: ak.num(ev.JetGood) == 5),\n        Cut(\"ge6\", lambda ev: ak.num(ev.JetGood) >= 6),\n    ]\n)\n\n# B-tag multiplicity binning: exactly 2, at least 3 b-tags\nnbtags_binning = MultiCut(\n    \"nbtags\",\n    [\n        Cut(\"eq2\", lambda ev: ak.num(ev.JetGood[ev.JetGood.btagDeepB > 0.5]) == 2),\n        Cut(\"ge3\", lambda ev: ak.num(ev.JetGood[ev.JetGood.btagDeepB > 0.5]) >= 3),\n    ]\n)\n\n# Cartesian product automatically creates all 6 category combinations\ncategories = Cartesian([njets_binning, nbtags_binning])",
+  "result_text": "```python\nimport awkward as ak\nfrom pocket_coffea.lib.cut_definition import Cut\nfrom pocket_coffea.lib.categorization import Cartesian, MultiCut\n\n# Jet multiplicity binning: exactly 4, exactly 5, at least 6 jets\nnjets_binning = MultiCut(\n    \"njets\",\n    [\n        Cut(\"eq4\", lambda ev: ak.num(ev.JetGood) == 4),\n        Cut(\"eq5\", lambda ev: ak.num(ev.JetGood) == 5),\n        Cut(\"ge6\", lambda ev: ak.num(ev.JetGood) >= 6),\n    ]\n)\n\n# B-tag multiplicity binning: exactly 2, at least 3 b-tags\nnbtags_binning = MultiCut(\n    \"nbtags\",\n    [\n        Cut(\"eq2\", lambda ev: ak.num(ev.JetGood[ev.JetGood.btagDeepB > 0.5]) == 2),\n        Cut(\"ge3\", lambda ev: ak.num(ev.JetGood[ev.JetGood.btagDeepB > 0.5]) >= 3),\n    ]\n)\n\n# Cartesian product automatically creates all 6 category combinations\ncategories = Cartesian([njets_binning, nbtags_binning])\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 4966,
+    "cache_read_tokens": 22070,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.027045999999999997,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 75.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "pocket_coffea.lib.categorization:CartesianSelection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.categorization.Cartesian"
+    ],
+    "error": null
+  }
+}

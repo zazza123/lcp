@@ -1,0 +1,31 @@
+{
+  "case_id": "cyclopts-existing-file",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\nfrom cyclopts.types import File\n\napp = App()\n\n@app.default\ndef convert(input_file: File, output_name: str) -> None:\n    \"\"\"Convert an existing file to a new output name.\n    \n    Args:\n        input_file: Path to an existing file to convert\n        output_name: Name for the output file\n    \"\"\"\n    with open(input_file) as f:\n        content = f.read()\n    \n    with open(output_name, 'w') as f:\n        f.write(content)\n    \n    print(f\"Successfully converted {input_file} to {output_name}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\nfrom cyclopts.types import File\n\napp = App()\n\n@app.default\ndef convert(input_file: File, output_name: str) -> None:\n    \"\"\"Convert an existing file to a new output name.\n    \n    Args:\n        input_file: Path to an existing file to convert\n        output_name: Name for the output file\n    \"\"\"\n    with open(input_file) as f:\n        content = f.read()\n    \n    with open(output_name, 'w') as f:\n        f.write(content)\n    \n    print(f\"Successfully converted {input_file} to {output_name}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 6069,
+    "cache_read_tokens": 22036,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.03255759999999999,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 61.6
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "cyclopts.types:ExistingFile"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "case_id": "hamana-oracle-config",
+  "arm": "baseline",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import os\n\nfrom hamana.connector.db.oracle import OracleConfig, OracleConnector\n\nconfig = OracleConfig(\n    user=\"your_username\",\n    password=os.environ[\"ORACLE_PASSWORD\"],\n    host=\"your_host\",\n    service_name=\"your_service_name\",\n)\n\nconnector = OracleConnector(config=config)\n\nresult = connector.query(\"SELECT sysdate FROM dual\")\n\nprint(result)",
+  "result_text": "```python\nimport os\n\nfrom hamana.connector.db.oracle import OracleConfig, OracleConnector\n\nconfig = OracleConfig(\n    user=\"your_username\",\n    password=os.environ[\"ORACLE_PASSWORD\"],\n    host=\"your_host\",\n    service_name=\"your_service_name\",\n)\n\nconnector = OracleConnector(config=config)\n\nresult = connector.query(\"SELECT sysdate FROM dual\")\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 4,
+    "output_tokens": 3946,
+    "cache_read_tokens": 60414,
+    "cache_creation_tokens": 6037,
+    "cost_usd": 0.11354819999999999,
+    "num_turns": 3,
+    "tool_calls": 2,
+    "duration_s": 55.0
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "hamana oracle connector lookup",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve library symbol",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "hamana.connector.db.oracle:OracleConnector#create_config",
+      "hamana.connector.db.oracle:OracleConnector#execute"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "hamana.connector.db.oracle.OracleConfig"
+    ],
+    "error": null
+  }
+}

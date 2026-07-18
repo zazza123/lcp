@@ -1,0 +1,117 @@
+{
+  "case_id": "cyclopts-subcommands",
+  "arm": "lcp-skill",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from cyclopts import App\n\napp = App(name=\"fileman\")\n\n@app.command\ndef upload(path: str):\n    print(f\"Would upload: {path}\")\n\n@app.command\ndef download(url: str, *, dest: str):\n    print(f\"URL: {url}\")\n    print(f\"Destination: {dest}\")\n\nif __name__ == \"__main__\":\n    app()",
+  "result_text": "```python\nfrom cyclopts import App\n\napp = App(name=\"fileman\")\n\n@app.command\ndef upload(path: str):\n    print(f\"Would upload: {path}\")\n\n@app.command\ndef download(url: str, *, dest: str):\n    print(f\"URL: {url}\")\n    print(f\"Destination: {dest}\")\n\nif __name__ == \"__main__\":\n    app()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 75,
+    "output_tokens": 2992,
+    "cache_read_tokens": 250547,
+    "cache_creation_tokens": 13477,
+    "cost_usd": 0.0670437,
+    "num_turns": 9,
+    "tool_calls": 8,
+    "duration_s": 47.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:resolve_library,search,get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "lcp resolve library",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "App class main",
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "",
+        "library": "cyclopts",
+        "limit": 50
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "default register parse command",
+        "library": "cyclopts",
+        "limit": 30
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:App"
+        ],
+        "library": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "cyclopts:App#command",
+          "cyclopts:App#default"
+        ],
+        "library": "cyclopts"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01DfKhG7cPYbHuv11JZU5WXo",
+      "content": "{\"status\":\"loaded\",\"name\":\"cyclopts\",\"version\":\"4.20.0\",\"language\":\"python\",\"symbol_count\":671,\"module_count\":72,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='cyclopts') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_017Zj4pPFLvfhgqfib6AYzna",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_01KAsJwgNXvvAEVZBCc81t3u",
+      "content": "{\"results\":[{\"id\":\"cyclopts:Token#address\",\"kind\":\"attribute\",\"summary\":\"Hashable subkey destination address for this token.\",\"import\":\"from cyclopts import Token\",\"resolved_via_alias\":\"cyclopts.token:Token#address\"},{\"id\":\"cyclopts.help:HelpEntry#all_options\",\"kind\":\"attribute\",\"summary\":\"All options in display order: positive longs, positive shorts, negative longs, negative shorts.\",\"import\":\"from cyclopts.help import HelpEntry\",\"resolved_via_alias\":\"cyclopts.help.help:HelpEntry#all_options\"},{\"id\":\"cyclopts:Argument#children_recursive\",\"kind\":\"attribute\",\"summary\":\"Attribute children_recursive\",\"import\":\"from cyclopts import Argument\",\"resolved_via_alias\":\"cyclopts.argument._argument:Argument#children_recursive\"},{\"id\":\"cyclopts.core:AppStack#command_groups\",\"kind\":\"attribute\",\"summary\":\"Attribute command_groups\",\"import\":\"from cyclopts.core import AppStack\",\"resolved_via_alias\":\"cyclopts.app_stack:AppStack#command_groups\"},{\"id\":\"cyclopts.config._common:ConfigBase#config\",\"kind\":\"attribute\",\"summary\":\"Return the configuration dictionary.\",\"import\":\"from cyclopts.config._common import ConfigBase\"},{\"id\":\"cyclopts.config:ConfigFromFile#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import ConfigFromFile\",\"resolved_via_alias\":\"cyclopts.config._common:ConfigFromFile#config\"},{\"id\":\"cyclopts.config:Dict#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Dict\",\"resolved_via_alias\":\"cyclopts.config._common:Dict#config\"},{\"id\":\"cyclopts.config:Json#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Json\",\"resolved_via_alias\":\"cyclopts.config._json:Json#config\"},{\"id\":\"cyclopts.config:Toml#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclopts.config import Toml\",\"resolved_via_alias\":\"cyclopts.config._toml:Toml#config\"},{\"id\":\"cyclopts.config:Yaml#config\",\"kind\":\"attribute\",\"summary\":\"Attribute config\",\"import\":\"from cyclo"
+    },
+    {
+      "tool_use_id": "toolu_01J6yoDbF3ZVtxkvnhAibZDS",
+      "content": "{\"results\":[],\"total\":0,\"truncated\":false}"
+    },
+    {
+      "tool_use_id": "toolu_012uwd8EY3ZMr95z1BeX7ewj",
+      "content": "{\"symbols\":[{\"kind\":\"class\",\"module\":\"cyclopts.core\",\"aliases\":[\"cyclopts:App\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"name\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"help\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"usage\",\"type\":\"UnionType[str, None]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\"},{\"name\":\"alias\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"synonym\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"default_command\",\"type\":\"UnionType[Callable[Ellipsis, Any], None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"default_parameter\",\"type\":\"UnionType[Parameter, None]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"config\",\"type\":\"_ConfigCallable | Iterable[_ConfigCallable] | None\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version\",\"type\":\"UnionType[None, str, Callable[Ellipsis, str], Callable[Ellipsis, Coroutine[Any, Any, str]]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"version_flags\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"show\",\"type\":\"bool\",\"required\":false,\"default\":true,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"error_console\",\"type\":\"Optional[ForwardRef('Console')]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help_flags\",\"type\":\"UnionType[str, Iterable[str], None]\",\"required\":false,\"default\":\"...\",\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"help_format\",\"type\":\"Optional[Literal[markdown, md, plaintext, restructuredtext, rst, rich]]\",\"required\":false,\"variadic\":false,\"kind"
+    },
+    {
+      "tool_use_id": "toolu_01Bt3DgZE8zNejbNPaCFBgmC",
+      "content": "{\"symbols\":[{\"kind\":\"method\",\"module\":\"cyclopts.core\",\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"obj\",\"type\":\"Union[T, None, str]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Function, :class:`App`, or import path string to be registered as a command.\\nFor lazy loading, provide a string in format \\\"module.path:function_or_app_name\\\".\"},{\"name\":\"name\",\"type\":\"UnionType[None, str, Iterable[str]]\",\"required\":false,\"variadic\":false,\"kind\":\"positional\",\"description\":\"Name(s) to register the command to.\\nIf not provided, defaults to:\\n\\n* If registering an :class:`App`, then the app's name.\\n* If registering a **function**, then the function's name after applying :attr:`name_transform`.\\n* If registering via **import path**, then the attribute name after applying :attr:`name_transform`.\\n\\nSpecial value ``\\\"*\\\"`` flattens all sub-App commands into this app (App instances only).\\nSee :ref:`Flattening SubCommands` for details.\"},{\"name\":\"alias\",\"type\":\"UnionType[None, str, Iterable[str]]\",\"required\":false,\"variadic\":false,\"kind\":\"keyword_only\"},{\"name\":\"kwargs\",\"type\":\"object\",\"required\":true,\"variadic\":true,\"kind\":\"rest\"}],\"returns\":\"Union[T, Callable[[~T], T], None]\"}],\"semantics\":{\"summary\":\"Decorator to register a function as a CLI command.\",\"description\":\"Example usage:\\n\\n        .. code-block::\\n\\n            from cyclopts import App\\n\\n            app = App()\\n\\n            @app.command\\n            def foo():\\n                print(\\\"foo!\\\")\\n\\n            @app.command(name=\\\"buzz\\\")\\n            def bar():\\n                print(\\\"bar!\\\")\\n\\n            # Lazy loading via import path\\n            app.command(\\\"myapp.commands:create_user\\\", name=\\\"create\\\")\\n\\n            app()\\n\\n        .. code-block:: console\\n\\n            $ my-script foo\\n            foo!\\n\\n            $ my-script buzz\\n            bar!\\n\\n            $ my-script create\\n            # Imports and runs myapp.commands:create_user\\n\\n        Parameters\\n        ---"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

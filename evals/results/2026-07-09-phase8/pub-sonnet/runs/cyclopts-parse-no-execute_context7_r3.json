@@ -1,0 +1,60 @@
+{
+  "case_id": "cyclopts-parse-no-execute",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from cyclopts import App\n\napp = App(name=\"myapp\")\n\n\n@app.command\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers.\"\"\"\n    return a + b\n\n\n@app.command\ndef sub(a: int, b: int) -> int:\n    \"\"\"Subtract two integers.\"\"\"\n    return a - b\n\n\nif __name__ == \"__main__\":\n    tokens = [\"add\", \"2\", \"3\"]\n\n    # parse_args resolves the command and binds arguments but does NOT invoke it.\n    command, bound, ignored = app.parse_args(tokens, exit_on_error=False)\n\n    print(f\"Command function name: {command.__name__}\")\n    print(f\"Bound arguments: {dict(bound.arguments)}\")",
+  "result_text": "```python\nfrom cyclopts import App\n\napp = App(name=\"myapp\")\n\n\n@app.command\ndef add(a: int, b: int) -> int:\n    \"\"\"Add two integers.\"\"\"\n    return a + b\n\n\n@app.command\ndef sub(a: int, b: int) -> int:\n    \"\"\"Subtract two integers.\"\"\"\n    return a - b\n\n\nif __name__ == \"__main__\":\n    tokens = [\"add\", \"2\", \"3\"]\n\n    # parse_args resolves the command and binds arguments but does NOT invoke it.\n    command, bound, ignored = app.parse_args(tokens, exit_on_error=False)\n\n    print(f\"Command function name: {command.__name__}\")\n    print(f\"Bound arguments: {dict(bound.arguments)}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 8,
+    "output_tokens": 1424,
+    "cache_read_tokens": 116722,
+    "cache_creation_tokens": 13442,
+    "cost_usd": 0.13705260000000002,
+    "num_turns": 4,
+    "tool_calls": 3,
+    "duration_s": 30.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "parse tokens to command and bound arguments without executing",
+        "libraryName": "cyclopts"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/brianpugh/cyclopts",
+        "query": "App.parse_args method return value command bound arguments without executing"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01WDUHdzcRhGazQBij7wuWxu",
+      "content": "Available Libraries:\n\n- Title: Cyclopts\n- Context7-compatible library ID: /brianpugh/cyclopts\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework that provides an intuitive and efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 1468\n- Source Reputation: High\n- Benchmark Score: 83.77\n----------\n- Title: Cyclopts\n- Context7-compatible library ID: /websites/cyclopts_readthedocs_io_en_stable\n- Description: Cyclopts is a modern, easy-to-use command-line interface (CLI) framework providing an intuitive & efficient developer experience with advanced type hinting and rich help generation.\n- Code Snippets: 996\n- Source Reputation: High\n- Benchmark Score: 84.33"
+    },
+    {
+      "tool_use_id": "toolu_01JaFwLs34Bf4ddcyeuA5syn",
+      "content": "### Custom Command Invocation Logic\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/meta_app.rst\n\nIllustrates the core logic of App.__call__ for custom command invocation, including parsing arguments and returning command execution.\n\n```python\ndef __call__(self, tokens=None, **kwargs):\n    command, bound, ignored = self.parse_args(tokens, **kwargs)\n    return command(*bound.args, **bound.kwargs)\n```\n\n--------------------------------\n\n### Test Environment Variable for Name Argument\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/cookbook/unit_testing.rst\n\nTests if an environment variable is correctly parsed as an argument to the application. Uses monkeypatch to set environment variables and parse_args to simulate argument parsing without execution.\n\n```python\ndef test_name_env_var(monkeypatch):\n    from pypi_checker import pypi_checker\n    monkeypatch.setenv(\"PYPI_CHECKER_NAME\", \"foo\")\n    command, bound, _ = app.parse_args([])  # An empty list - no CLI arguments passed in.\n    assert command == pypi_checker\n    assert bound.arguments['name'] == \"foo\"\n```\n\n--------------------------------\n\n### Parse Arguments with Ignored Parameters\n\nSource: https://github.com/brianpugh/cyclopts/blob/main/docs/source/meta_app.rst\n\nUse this when you need to prevent Cyclopts from parsing specific keyword-only arguments and instead pass them to a custom handler. The 'ignored' dictionary maps parameter names to their type annotations for custom processing.\n\n```python\ncommand, bound, ignored = app.parse_args(tokens)\n# \"ignored\" is a dict mapping python-variable-name to it's type annotation for parameters with \"parse=False\".\nif \"user_obj\" in ignored:\n    # 'ignored[\"user_obj\"]' is the class \"User\"\n    additional_kwargs[\"user_obj\"] = ignored[\"user_obj\"](user)\nreturn command(*bound.args, **bound.kwargs, **additional_kwargs)\n```"
+    }
+  ],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

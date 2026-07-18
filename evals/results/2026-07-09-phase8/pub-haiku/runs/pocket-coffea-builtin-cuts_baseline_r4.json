@@ -1,0 +1,37 @@
+{
+  "case_id": "pocket-coffea-builtin-cuts",
+  "arm": "baseline",
+  "rep": 4,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from pocket_coffea.lib.cuts import (\n    get_HLT_cut,\n    get_jet_multiplicity_cut,\n    get_btag_multiplicity_cut,\n)\n\n# Configuration parameters\nprimary_dataset = \"semileptonic\"\njet_collection = \"JetGood\"\n\n# Skim cuts - minimal selection for efficiency\nskim_cuts = [\n    get_HLT_cut(dataset=primary_dataset),\n]\n\n# Preselection cuts - full event selection\npreselection_cuts = [\n    get_HLT_cut(dataset=primary_dataset),\n    get_jet_multiplicity_cut(\n        collection=jet_collection,\n        n_min=4,\n        pt_min=30\n    ),\n    get_btag_multiplicity_cut(\n        collection=jet_collection,\n        n_min=2\n    ),\n]\n\n# Output the configuration\nif __name__ == \"__main__\":\n    print(\"2018 Semileptonic ttbar Analysis\")\n    print(f\"Skim: {len(skim_cuts)} cut(s)\")\n    print(f\"Preselection: {len(preselection_cuts)} cut(s)\")",
+  "result_text": "```python\nfrom pocket_coffea.lib.cuts import (\n    get_HLT_cut,\n    get_jet_multiplicity_cut,\n    get_btag_multiplicity_cut,\n)\n\n# Configuration parameters\nprimary_dataset = \"semileptonic\"\njet_collection = \"JetGood\"\n\n# Skim cuts - minimal selection for efficiency\nskim_cuts = [\n    get_HLT_cut(dataset=primary_dataset),\n]\n\n# Preselection cuts - full event selection\npreselection_cuts = [\n    get_HLT_cut(dataset=primary_dataset),\n    get_jet_multiplicity_cut(\n        collection=jet_collection,\n        n_min=4,\n        pt_min=30\n    ),\n    get_btag_multiplicity_cut(\n        collection=jet_collection,\n        n_min=2\n    ),\n]\n\n# Output the configuration\nif __name__ == \"__main__\":\n    print(\"2018 Semileptonic ttbar Analysis\")\n    print(f\"Skim: {len(skim_cuts)} cut(s)\")\n    print(f\"Preselection: {len(preselection_cuts)} cut(s)\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 5967,
+    "cache_read_tokens": 22101,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0320541,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 56.1
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pocket_coffea.lib.cut_functions:get_HLTsel",
+      "pocket_coffea.lib.cut_functions:get_nObj_min",
+      "pocket_coffea.lib.cut_functions:get_nBtagMin"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "pocket_coffea.lib.cuts.get_HLT_cut",
+      "pocket_coffea.lib.cuts.get_btag_multiplicity_cut",
+      "pocket_coffea.lib.cuts.get_jet_multiplicity_cut"
+    ],
+    "error": null
+  }
+}

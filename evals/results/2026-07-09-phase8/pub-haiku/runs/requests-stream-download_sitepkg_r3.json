@@ -1,0 +1,29 @@
+{
+  "case_id": "requests-stream-download",
+  "arm": "sitepkg",
+  "rep": 3,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import requests\n\nurl = \"https://example.com/big.bin\"\noutput_file = \"big.bin\"\nchunk_size = 8192  # 8KB chunks\n\nresponse = requests.get(url, stream=True)\nresponse.raise_for_status()\n\nwith open(output_file, 'wb') as f:\n    for chunk in response.iter_content(chunk_size=chunk_size):\n        if chunk:\n            f.write(chunk)\n\nprint(f\"Downloaded {output_file}\")",
+  "result_text": "```python\nimport requests\n\nurl = \"https://example.com/big.bin\"\noutput_file = \"big.bin\"\nchunk_size = 8192  # 8KB chunks\n\nresponse = requests.get(url, stream=True)\nresponse.raise_for_status()\n\nwith open(output_file, 'wb') as f:\n    for chunk in response.iter_content(chunk_size=chunk_size):\n        if chunk:\n            f.write(chunk)\n\nprint(f\"Downloaded {output_file}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 578,
+    "cache_read_tokens": 24086,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0053076,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 9.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

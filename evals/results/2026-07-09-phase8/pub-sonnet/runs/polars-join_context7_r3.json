@@ -1,0 +1,29 @@
+{
+  "case_id": "polars-join",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import polars as pl\n\nnames_df = pl.DataFrame({\n    \"id\": [1, 2, 3, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\"],\n})\n\namounts_df = pl.DataFrame({\n    \"id\": [2, 3, 4, 5],\n    \"amount\": [100.0, 250.5, 75.25, 300.0],\n})\n\nresult = names_df.join(amounts_df, on=\"id\", how=\"inner\")\n\nprint(result)",
+  "result_text": "```python\nimport polars as pl\n\nnames_df = pl.DataFrame({\n    \"id\": [1, 2, 3, 4],\n    \"name\": [\"Alice\", \"Bob\", \"Charlie\", \"Diana\"],\n})\n\namounts_df = pl.DataFrame({\n    \"id\": [2, 3, 4, 5],\n    \"amount\": [100.0, 250.5, 75.25, 300.0],\n})\n\nresult = names_df.join(amounts_df, on=\"id\", how=\"inner\")\n\nprint(result)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 255,
+    "cache_read_tokens": 30373,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0129429,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 5.2
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

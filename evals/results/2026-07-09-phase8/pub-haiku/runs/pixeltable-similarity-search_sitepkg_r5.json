@@ -1,0 +1,38 @@
+{
+  "case_id": "pixeltable-similarity-search",
+  "arm": "sitepkg",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "import pixeltable as pxt\nfrom pixeltable.functions.builtin import sentence_transformers\n\n# Initialize pixeltable\npxt.create_client()\n\n# Access the existing docs table\ndocs = pxt.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = sentence_transformers(\n    docs['content'],\n    model='all-MiniLM-L6-v2'\n)\n\n# Create vector index for efficient nearest-neighbor search\ndocs.create_index('content_embedding')\n\n# Embed the search query\nquery_embedding = sentence_transformers(\n    'climate change policy',\n    model='all-MiniLM-L6-v2'\n)\n\n# Execute semantic search - return top 5 most similar rows ranked by similarity\nresults = docs.select(\n    docs['*'],\n    similarity=docs['content_embedding'].cosine_similarity(query_embedding)\n).order_by('similarity', desc=True).limit(5)\n\n# Display results\nfor row in results:\n    print(f\"Similarity Score: {row['similarity']:.4f}\")\n    print(f\"Content: {row['content']}\\n\")",
+  "result_text": "```python\nimport pixeltable as pxt\nfrom pixeltable.functions.builtin import sentence_transformers\n\n# Initialize pixeltable\npxt.create_client()\n\n# Access the existing docs table\ndocs = pxt.get_table('docs')\n\n# Create embedding column using sentence-transformers UDF\ndocs['content_embedding'] = sentence_transformers(\n    docs['content'],\n    model='all-MiniLM-L6-v2'\n)\n\n# Create vector index for efficient nearest-neighbor search\ndocs.create_index('content_embedding')\n\n# Embed the search query\nquery_embedding = sentence_transformers(\n    'climate change policy',\n    model='all-MiniLM-L6-v2'\n)\n\n# Execute semantic search - return top 5 most similar rows ranked by similarity\nresults = docs.select(\n    docs['*'],\n    similarity=docs['content_embedding'].cosine_similarity(query_embedding)\n).order_by('similarity', desc=True).limit(5)\n\n# Display results\nfor row in results:\n    print(f\"Similarity Score: {row['similarity']:.4f}\")\n    print(f\"Content: {row['content']}\\n\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 3583,
+    "cache_read_tokens": 24145,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0203385,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 34.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 3,
+    "required_missing": [
+      "pixeltable:Table#add_embedding_index",
+      "pixeltable.exprs:ColumnRef#similarity",
+      "pixeltable.functions.huggingface:sentence_transformer"
+    ],
+    "forbidden_used": [
+      "pixeltable:Table#create_index"
+    ],
+    "unresolved_usages": [
+      "pixeltable.create_client",
+      "pixeltable.functions.builtin.sentence_transformers"
+    ],
+    "error": null
+  }
+}

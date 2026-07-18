@@ -1,0 +1,85 @@
+{
+  "case_id": "fastmcp-proxy",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "from fastmcp import FastMCP\nfrom fastmcp.server import create_proxy\n\n# `backend_server` is the existing in-memory FastMCP instance created elsewhere.\n# create_proxy() wraps it with an in-memory Client, so every tool/resource/\n# prompt request on the proxy is transparently forwarded to the backend.\nproxy_server = create_proxy(backend_server)\n\nif __name__ == \"__main__\":\n    proxy_server.run()",
+  "result_text": "```python\nfrom fastmcp import FastMCP\nfrom fastmcp.server import create_proxy\n\n# `backend_server` is the existing in-memory FastMCP instance created elsewhere.\n# create_proxy() wraps it with an in-memory Client, so every tool/resource/\n# prompt request on the proxy is transparently forwarded to the backend.\nproxy_server = create_proxy(backend_server)\n\nif __name__ == \"__main__\":\n    proxy_server.run()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 1968,
+    "cache_read_tokens": 189817,
+    "cache_creation_tokens": 18582,
+    "cost_usd": 0.19799309999999998,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 49.7
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__context7__resolve-library-id,mcp__context7__query-docs",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "create a proxy FastMCP server forwarding to an existing in-memory server",
+        "libraryName": "fastmcp"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "FastMCP.as_proxy in-memory transport proxy existing server instance"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "FastMCP.as_proxy passing existing FastMCP server instance directly as backend"
+      }
+    },
+    {
+      "name": "mcp__context7__query-docs",
+      "input": {
+        "libraryId": "/prefecthq/fastmcp",
+        "query": "create_proxy target parameter accepts FastMCP server instance in-memory transport client_factory"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01VRvWjegPPpAtQUccS4zgqp",
+      "content": "Available Libraries:\n\n- Title: FastMCP\n- Context7-compatible library ID: /prefecthq/fastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers, clients, and apps that connect LLMs to tools, resources, and data with automatic schema generation and protocol management.\n- Code Snippets: 4237\n- Source Reputation: High\n- Benchmark Score: 88.92\n- Versions: v3.2.0, v3.2.4\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /llmstxt/gofastmcp_llms_txt\n- Description: FastMCP is a fast, Pythonic framework for building and deploying Multi-modal Conversational Platform (MCP) servers and clients, offering programmatic interfaces and extensive integrations for LLMs and various services.\n- Code Snippets: 3774\n- Source Reputation: High\n- Benchmark Score: 83.81\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients that connect LLMs to tools and data in a production-ready, Pythonic way.\n- Code Snippets: 752\n- Source Reputation: High\n- Benchmark Score: 75.16\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /websites/gofastmcp_v2_getting-started\n- Description: FastMCP is a Python framework for building Model Context Protocol (MCP) servers and clients with a clean, Pythonic interface, providing production-ready features including enterprise authentication, deployment tools, and comprehensive client libraries.\n- Code Snippets: 37\n- Source Reputation: High\n- Benchmark Score: 61.14\n----------\n- Title: FastMCP\n- Context7-compatible library ID: /punkpeye/fastmcp\n- Description: FastMCP is a TypeScript framework for building MCP servers, simplifying the process of handling client sessions, tools, and resources with built-in features like authentication, streaming, and logging.\n- Code Snippets: 732\n- Source Reputation: High\n- Benchmark Score: 80.8"
+    },
+    {
+      "tool_use_id": "toolu_01UuKFjN9SQhUMXAesKZhRnf",
+      "content": "### In-Memory Transport Example\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/clients/transports.mdx\n\nDemonstrates connecting to a FastMCP server instance within the same Python process using in-memory transport.\n\n```python\nfrom fastmcp import FastMCP, Client\nimport os\n\nmcp = FastMCP(\"TestServer\")\n\n@mcp.tool\ndef greet(name: str) -> str:\n    prefix = os.environ.get(\"GREETING_PREFIX\", \"Hello\")\n    return f\"{prefix}, {name}!\"\n\nclient = Client(mcp)\n\nasync with client:\n    result = await client.call_tool(\"greet\", {\"name\": \"World\"})\n```\n\n--------------------------------\n\n### Initialize FastMCP Client with In-memory Transport\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/clients/client.mdx\n\nUse the in-memory transport for testing and development to connect directly to a FastMCP server instance within the same Python process, eliminating network and subprocess complexity.\n\n```python\nfrom fastmcp import Client, FastMCP\n\nserver = FastMCP(\"TestServer\")\nclient = Client(server)  # In-memory, no network or subprocess\n```\n\n--------------------------------\n\n### Test FastMCP Tools Using In-Memory Transport (Python)\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/development/tests.mdx\n\nTest FastMCP server functionality directly by passing the server instance to the client, enabling deterministic and fast execution within the same Python process without network overhead.\n\n```python\nfrom fastmcp import FastMCP, Client\n\n# Create your server\nserver = FastMCP(\"WeatherServer\")\n\n@server.tool\ndef get_temperature(city: str) -> dict:\n    \"\"\"Get current temperature for a city\"\"\"\n    temps = {\"NYC\": 72, \"LA\": 85, \"Chicago\": 68}\n    return {\"city\": city, \"temp\": temps.get(city, 70)}\n\nasync def test_weather_operations():\n    # Pass server directly - no deployment needed\n    async with Client(server) as client:\n        result = await client.call_tool(\"get_temperature\", {\"city\": \"NYC\"})\n        assert result.data == {\"city\": \"NYC\", \"temp\": 72}\n```\n\n--------"
+    },
+    {
+      "tool_use_id": "toolu_014QCJqvuwe6khzCvFAUDbag",
+      "content": "### Adding Middleware to a Proxy Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/server.py\n\nShows how to add custom middleware to a proxy using add_middleware().\n\n```python\nfrom fastmcp.server import create_proxy\nfrom fastmcp.server.middleware import Middleware, MiddlewareContext, CallNext\nfrom fastmcp import FastMCP\n\nclass MetricsMiddleware(Middleware):\n    async def on_call_tool(self, context: MiddlewareContext, call_next: CallNext):\n        tool_name = context.params.name\n        return await call_next(context)\n\noriginal_server = FastMCP(\"MyServer\")\nproxy = create_proxy(original_server)\nproxy.add_middleware(MetricsMiddleware())\n```\n\n--------------------------------\n\n### Adding Proxied Components to Existing Server\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/docs/servers/providers/proxy.mdx\n\nDemonstrates how to mount proxied tools from an external FastMCP server onto an existing local FastMCP server, combining local and proxied functionalities.\n\n```python\nfrom fastmcp import FastMCP\nfrom fastmcp.server import create_proxy\n\nserver = FastMCP(\"My Server\")\n\n# Add local tools\n@server.tool\ndef local_tool() -> str:\n    return \"Local result\"\n\n# Mount proxied tools from another server\nexternal = create_proxy(\"http://external-server/mcp\")\nserver.mount(external)\n\n# Now server has both local and proxied tools\n```\n\n--------------------------------\n\n### `FastMCP.mount` \u2014 mounts another server via add_provider\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/server.py\n\nCreates a FastMCPProvider from the mounted server, optionally wraps it with ToolTransform for custom renames, then calls self.add_provider with the namespace. This is the user-facing entry point for mounting servers.\n\n```python\n    def mount(\n        self,\n        server: FastMCP[LifespanResultT],\n        namespace: str | None = None,\n        tool_names: dict[str, str] | None = None,\n    ) -> None:\n        ...\n        from fa"
+    },
+    {
+      "tool_use_id": "toolu_014xNeKUQTRYDcmo6pRrkJCF",
+      "content": "### ProxyProvider: client_factory and cache_ttl semantics\n\nSource: https://github.com/prefecthq/fastmcp/blob/main/fastmcp_slim/fastmcp/server/providers/proxy.py\n\nProxyProvider.__init__ accepts a client_factory callable (sync or async) that is invoked per-request to create Client instances. Component lists are cached with a default 300s TTL; cache_ttl=0 disables caching entirely. The cache is lazily refreshed on list_* calls and entries expire when time.monotonic() - timestamp >= ttl.\n\n```python\nclass ProxyProvider(Provider):\n    \"\"\"Provider that proxies to a remote MCP server via a client factory.\n\n    This provider fetches components from a remote server and returns Proxy*\n    component instances that forward execution to the remote server.\n\n    All components returned by this provider have task_config.mode=\"forbidden\"\n    because tasks cannot be executed through a proxy.\n\n    Component lists (tools, resources, templates, prompts) are cached so that\n    individual lookups (e.g. during ``call_tool``) can resolve from the cache\n    instead of opening a new backend connection.  The cache stores the\n    backend's raw component metadata and is shared across all sessions;\n    per-session visibility and auth filtering are applied after cache lookup\n    by the server layer.  The cache is refreshed whenever a ``list_*`` call\n    is made, and entries expire after ``cache_ttl`` seconds (default 300).\n    Set ``cache_ttl=0`` to disable caching.  Disabling is recommended for\n    backends whose component lists change dynamically.\n    \"\"\"\n\n    def __init__(\n        self,\n        client_factory: ClientFactoryT,\n        cache_ttl: float | None = None,\n    ):\n        \"\"\"Initialize a ProxyProvider.\n\n        Args:\n            client_factory: A callable that returns a Client instance when called.\n                           This gives you full control over session creation and reuse.\n                           Can be either a synchronous or asynchronous function.\n            cache_ttl: "
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "fastmcp:FastMCP",
+      "fastmcp:FastMCP#as_proxy"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

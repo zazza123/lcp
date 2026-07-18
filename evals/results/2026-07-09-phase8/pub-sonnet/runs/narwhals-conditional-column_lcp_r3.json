@@ -1,0 +1,92 @@
+{
+  "case_id": "narwhals-conditional-column",
+  "arm": "lcp",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import narwhals as nw\n\ndf = nw.with_columns(\n    df,\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\")),\n)",
+  "result_text": "```python\nimport narwhals as nw\n\ndf = nw.with_columns(\n    df,\n    tier=nw.when(nw.col(\"spend\") >= 1000).then(nw.lit(\"gold\")).otherwise(nw.lit(\"standard\")),\n)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 10,
+    "output_tokens": 914,
+    "cache_read_tokens": 161996,
+    "cache_creation_tokens": 8092,
+    "cost_usd": 0.1108908,
+    "num_turns": 6,
+    "tool_calls": 5,
+    "duration_s": 17.3
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:mcp__lcp__resolve_library,mcp__lcp__search,mcp__lcp__get_symbol",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "mcp__lcp__resolve_library",
+      "input": {
+        "name": "narwhals",
+        "version": "2.23.0"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "when",
+        "library": "narwhals",
+        "kind": "function"
+      }
+    },
+    {
+      "name": "mcp__lcp__search",
+      "input": {
+        "query": "with_columns",
+        "library": "narwhals"
+      }
+    },
+    {
+      "name": "mcp__lcp__get_symbol",
+      "input": {
+        "ids": [
+          "narwhals:when",
+          "narwhals:DataFrame#with_columns",
+          "narwhals:Expr#ge",
+          "narwhals:Expr#alias"
+        ],
+        "library": "narwhals"
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_01QFNwfDtrjQwQGHZKFsB11a",
+      "content": "{\"status\":\"loaded\",\"name\":\"narwhals\",\"version\":\"2.23.0\",\"language\":\"python\",\"symbol_count\":5722,\"module_count\":134,\"source\":\"cache\",\"next_step\":\"search(<what you need>, library='narwhals') to find symbols, then get_symbol(ids=[...]) to verify signatures.\"}"
+    },
+    {
+      "tool_use_id": "toolu_01NR6WiYoMKPQZZYTmhbnM8n",
+      "content": "{\"results\":[{\"id\":\"narwhals:when\",\"kind\":\"function\",\"summary\":\"Start a `when-then-otherwise` expression.\",\"import\":\"from narwhals import when\",\"resolved_via_alias\":\"narwhals.functions:when\"},{\"id\":\"narwhals.stable.v1:when\",\"kind\":\"function\",\"summary\":\"Function when\",\"import\":\"from narwhals.stable.v1 import when\"},{\"id\":\"narwhals.stable.v2:when\",\"kind\":\"function\",\"summary\":\"Start a `when-then-otherwise` expression.\",\"import\":\"from narwhals.stable.v2 import when\"},{\"id\":\"narwhals._utils:issue_deprecation_warning\",\"kind\":\"function\",\"summary\":\"Issue a deprecation warning.\",\"import\":\"from narwhals._utils import issue_deprecation_warning\",\"resolved_via_alias\":\"narwhals._exceptions:issue_deprecation_warning\"},{\"id\":\"narwhals.functions:deprecate_native_namespace\",\"kind\":\"function\",\"summary\":\"Decorator to transition from `native_namespace` to `backend` argument.\",\"import\":\"from narwhals.functions import deprecate_native_namespace\",\"resolved_via_alias\":\"narwhals._utils:deprecate_native_namespace\"},{\"id\":\"narwhals:all_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the bitwise AND horizontally across columns.\",\"import\":\"from narwhals import all_horizontal\",\"resolved_via_alias\":\"narwhals.functions:all_horizontal\"},{\"id\":\"narwhals:any_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the bitwise OR horizontally across columns.\",\"import\":\"from narwhals import any_horizontal\",\"resolved_via_alias\":\"narwhals.functions:any_horizontal\"},{\"id\":\"narwhals:concat\",\"kind\":\"function\",\"summary\":\"Concatenate multiple DataFrames, LazyFrames into a single entity.\",\"import\":\"from narwhals import concat\",\"resolved_via_alias\":\"narwhals.functions:concat\"},{\"id\":\"narwhals.stable.v2:all_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the bitwise AND horizontally across columns.\",\"import\":\"from narwhals.stable.v2 import all_horizontal\"},{\"id\":\"narwhals.stable.v2:any_horizontal\",\"kind\":\"function\",\"summary\":\"Compute the bitwise OR horizontally across columns.\",\"import\":\"from narwhals.stable.v2 import a"
+    },
+    {
+      "tool_use_id": "toolu_01MfGc1QkKYnFBoLcmseQ3zS",
+      "content": "{\"results\":[{\"id\":\"narwhals._arrow.namespace:ArrowDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._arrow.namespace import ArrowDataFrame\",\"resolved_via_alias\":\"narwhals._arrow.dataframe:ArrowDataFrame#with_columns\"},{\"id\":\"narwhals.typing:CompliantDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals.typing import CompliantDataFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantDataFrame#with_columns\"},{\"id\":\"narwhals._compliant:CompliantFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._compliant import CompliantFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantFrame#with_columns\"},{\"id\":\"narwhals.typing:CompliantLazyFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals.typing import CompliantLazyFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:CompliantLazyFrame#with_columns\"},{\"id\":\"narwhals._compliant:EagerDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._compliant import EagerDataFrame\",\"resolved_via_alias\":\"narwhals._compliant.dataframe:EagerDataFrame#with_columns\"},{\"id\":\"narwhals._pandas_like.namespace:PandasLikeDataFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._pandas_like.namespace import PandasLikeDataFrame\",\"resolved_via_alias\":\"narwhals._pandas_like.dataframe:PandasLikeDataFrame#with_columns\"},{\"id\":\"narwhals._spark_like.namespace:SparkLikeLazyFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._spark_like.namespace import SparkLikeLazyFrame\",\"resolved_via_alias\":\"narwhals._spark_like.dataframe:SparkLikeLazyFrame#with_columns\"},{\"id\":\"narwhals._spark_like.dataframe:SQLLazyFrame#with_columns\",\"kind\":\"method\",\"summary\":\"Method with_columns\",\"import\":\"from narwhals._spark_like.dataframe import SQLLazyFrame\",\"resolve"
+    },
+    {
+      "tool_use_id": "toolu_01B4Z6W5qDYi1seTpAnC4Kvs",
+      "content": "{\"symbols\":[{\"kind\":\"function\",\"module\":\"narwhals.functions\",\"aliases\":[\"narwhals:when\"],\"signatures\":[{\"async_\":false,\"params\":[{\"name\":\"predicates\",\"type\":\"IntoExpr | Iterable[IntoExpr]\",\"required\":true,\"variadic\":true,\"kind\":\"rest\",\"description\":\"Condition(s) that must be met in order to apply the subsequent\\nstatement. Accepts one or more boolean expressions, which are implicitly\\ncombined with `&`. String input is parsed as a column name.\"}],\"returns\":\"When\",\"returns_description\":\"A \\\"When\\\" object, which `.then` can be called on.\"}],\"semantics\":{\"summary\":\"Start a `when-then-otherwise` expression.\",\"description\":\"Expression similar to an `if-else` statement in Python. Always initiated by a\\n    `nw.when(<condition>).then(<value if condition>)`, and optionally followed by\\n    chained `.when(<condition>).then(<value>)` calls.\\n    An `.otherwise(<value if condition is false>)` can be appended at the end.\\n    If not appended, and the condition is not `True`, `None` will be returned.\\n\\n    Arguments:\\n        predicates: Condition(s) that must be met in order to apply the subsequent\\n            statement. Accepts one or more boolean expressions, which are implicitly\\n            combined with `&`. String input is parsed as a column name.\\n\\n    Returns:\\n        A \\\"When\\\" object, which `.then` can be called on.\\n\\n    Examples:\\n        >>> import pandas as pd\\n        >>> import narwhals as nw\\n        >>>\\n        >>> data = {\\\"a\\\": [1, 2, 3], \\\"b\\\": [5, 10, 15]}\\n        >>> df_native = pd.DataFrame(data)\\n        >>> nw.from_native(df_native).with_columns(\\n        ...     nw.when(nw.col(\\\"a\\\") < 2)\\n        ...     .then(5)\\n        ...     .when(nw.col(\\\"a\\\") < 3)\\n        ...     .then(6)\\n        ...     .otherwise(6)\\n        ...     .alias(\\\"a_when\\\")\\n        ... )\\n        \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n        |Narwhals DataFrame|\\n        |------------------|\\n        |    a   b  a_when |\\n        | 0  1   5       5 |\\n        | 1  2  10       6 |\\n     "
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "narwhals:DataFrame#with_columns"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "narwhals.with_columns"
+    ],
+    "error": null
+  }
+}

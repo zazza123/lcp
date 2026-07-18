@@ -1,0 +1,33 @@
+{
+  "case_id": "griffe-loader-aliases",
+  "arm": "baseline",
+  "rep": 5,
+  "model": "claude-haiku-4-5-20251001",
+  "code": "from griffe.loader import Loader\n\n# Instantiate loader with source directory as search path\nloader = Loader(search_paths=[\"./src\"])\n\n# Load the package\npackage = loader.load(\"mypkg\")\n\n# Resolve all aliases (imported and re-exported names)\nloader.resolve_aliases()\n\nprint(f\"Package loaded: {package.name}\")\nprint(f\"Members: {list(package.members.keys())}\")",
+  "result_text": "```python\nfrom griffe.loader import Loader\n\n# Instantiate loader with source directory as search path\nloader = Loader(search_paths=[\"./src\"])\n\n# Load the package\npackage = loader.load(\"mypkg\")\n\n# Resolve all aliases (imported and re-exported names)\nloader.resolve_aliases()\n\nprint(f\"Package loaded: {package.name}\")\nprint(f\"Members: {list(package.members.keys())}\")\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 9,
+    "output_tokens": 654,
+    "cache_read_tokens": 22035,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0054824999999999995,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 10.9
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": false,
+    "misuse_count": 1,
+    "required_missing": [
+      "griffe:GriffeLoader"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [
+      "griffe.loader.Loader"
+    ],
+    "error": null
+  }
+}

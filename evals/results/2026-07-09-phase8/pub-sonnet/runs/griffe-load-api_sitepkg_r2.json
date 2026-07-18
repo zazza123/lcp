@@ -1,0 +1,110 @@
+{
+  "case_id": "griffe-load-api",
+  "arm": "sitepkg",
+  "rep": 2,
+  "model": "claude-sonnet-5",
+  "code": "import griffe\n\npackage = griffe.load(\"requests\")\n\npublic_functions = sorted(\n    name\n    for name, member in package.members.items()\n    if member.is_function and member.is_public\n)\n\nfor name in public_functions:\n    print(name)",
+  "result_text": "Confirmed `is_public` exists in `mixins.py:376`. Now writing the code.\n\n```python\nimport griffe\n\npackage = griffe.load(\"requests\")\n\npublic_functions = sorted(\n    name\n    for name, member in package.members.items()\n    if member.is_function and member.is_public\n)\n\nfor name in public_functions:\n    print(name)\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 20,
+    "output_tokens": 2025,
+    "cache_read_tokens": 344020,
+    "cache_creation_tokens": 3723,
+    "cost_usd": 0.15597899999999998,
+    "num_turns": 10,
+    "tool_calls": 9,
+    "duration_s": 39.2
+  },
+  "tool_call_details": [
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load\\b",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load\\(|^    def load\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "-A": 20
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "^def load\\(|^    def load\\(",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/loader.py",
+        "-A": 20,
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "is_function|class Kind|FUNCTION =",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "-n": true
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "is_function|is_public|def members",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "-n": true,
+        "output_mode": "content"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "def is_public",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/models.py",
+        "-n": true,
+        "-A": 15
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "is_public",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal",
+        "-n": true,
+        "-C": 5,
+        "glob": "*.py"
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "is_public",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe/_internal/mixins.py",
+        "-n": true,
+        "-B": 5,
+        "-A": 15
+      }
+    },
+    {
+      "name": "Grep",
+      "input": {
+        "pattern": "is_public",
+        "path": "/Users/andreazanini/Projects/lcp/lcp/evals/.venv-bench/lib/python3.12/site-packages/griffe",
+        "-n": true,
+        "output_mode": "content"
+      }
+    }
+  ],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "case_id": "hamana-internal-singleton",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": null,
+  "result_text": "I looked for `hamana` in Context7 to confirm the real class/method names before writing this, but the lookup is currently rate-limited (~20 min cooldown), and I don't have reliable built-in knowledge of this specific package's internal API (singleton connector class name, its accessor method, or the attribute holding the raw connection). This session also doesn't have shell/file tools available to me to inspect the installed package directly.\n\nSince your request centers on internal implementation details (an internal singleton class, not the public API), guessing class/method names would likely produce code that doesn't actually run \u2014 I'd rather not hand you a fabricated \"complete, runnable\" snippet that silently fails.\n\nCould you do one of the following so I get this right:\n- Point me to the class name (e.g. via `python -c \"import hamana; help(hamana)\"` or the source on PyPI/GitHub) you want me to target, or paste the relevant snippet of `hamana`'s source, or\n- Give me a couple minutes to retry the Context7 lookup once the rate limit clears.",
+  "error": null,
+  "metrics": {
+    "input_tokens": 12,
+    "output_tokens": 4456,
+    "cache_read_tokens": 218121,
+    "cache_creation_tokens": 23241,
+    "cost_usd": 0.2717583,
+    "num_turns": 7,
+    "tool_calls": 6,
+    "duration_s": 61.5
+  },
+  "tool_call_details": [
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "context7 resolve library docs",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "mcp__context7__resolve-library-id",
+      "input": {
+        "query": "internal database connector singleton class, get instance, get underlying raw database connection",
+        "libraryName": "hamana"
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:PowerShell",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "shell command execute bash terminal",
+        "max_results": 10
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "select:Bash",
+        "max_results": 5
+      }
+    },
+    {
+      "name": "ToolSearch",
+      "input": {
+        "query": "pip show inspect python package source code",
+        "max_results": 10
+      }
+    }
+  ],
+  "tool_results": [
+    {
+      "tool_use_id": "toolu_019V4QDURHPbXCmmfzzjpe4C",
+      "content": "Rate limit exceeded. Please try again in 1225 seconds. Sign up free at https://context7.com for higher limits."
+    }
+  ],
+  "verification": {
+    "passed": false,
+    "misuse_count": 0,
+    "required_missing": [
+      "hamana.connector.db:Hamana",
+      "hamana.connector.db.hamana:HamanaConnector#get_instance",
+      "hamana.connector.db.hamana:HamanaConnector#get_connection"
+    ],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": "no code block"
+  }
+}

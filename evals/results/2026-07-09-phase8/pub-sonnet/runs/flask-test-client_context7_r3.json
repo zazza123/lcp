@@ -1,0 +1,29 @@
+{
+  "case_id": "flask-test-client",
+  "arm": "context7",
+  "rep": 3,
+  "model": "claude-sonnet-5",
+  "code": "import unittest\n\n\nclass TestRootRoute(unittest.TestCase):\n    def test_root_route_returns_200(self):\n        client = app.test_client()\n        response = client.get(\"/\")\n        self.assertEqual(response.status_code, 200)\n\n\nif __name__ == \"__main__\":\n    unittest.main()",
+  "result_text": "```python\nimport unittest\n\n\nclass TestRootRoute(unittest.TestCase):\n    def test_root_route_returns_200(self):\n        client = app.test_client()\n        response = client.get(\"/\")\n        self.assertEqual(response.status_code, 200)\n\n\nif __name__ == \"__main__\":\n    unittest.main()\n```",
+  "error": null,
+  "metrics": {
+    "input_tokens": 2,
+    "output_tokens": 303,
+    "cache_read_tokens": 30348,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.0136554,
+    "num_turns": 1,
+    "tool_calls": 0,
+    "duration_s": 8.8
+  },
+  "tool_call_details": [],
+  "tool_results": [],
+  "verification": {
+    "passed": true,
+    "misuse_count": 0,
+    "required_missing": [],
+    "forbidden_used": [],
+    "unresolved_usages": [],
+    "error": null
+  }
+}
