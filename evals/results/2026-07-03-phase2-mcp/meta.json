@@ -1,7 +1,0 @@
-{
-  "claude_version": "2.1.200 (Claude Code)",
-  "model": "claude-haiku-4-5-20251001",
-  "lcp_commit": "9020a17",
-  "fastmcp_runtime_in_evals_venv": "2.14.4",
-  "notes": "Phase 2 V2 surface (resolve_library/search/get_symbol/get_overview). iter2 = LCP arm only, fastmcp+cyhole cases, after the unconditional-verification instructions rewrite (9020a17)."
-}

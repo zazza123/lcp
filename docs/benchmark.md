@@ -6,8 +6,8 @@ cuts its API-misuse rate in half, outperforming an agent that reads the
 installed package source.** For a frontier model the same libraries rise from
 68% to 92%.
 
-The full harness, cases, pre-registration and per-run data are committed under
-[`evals/`](https://github.com/zazza123/lcp/tree/main/evals) so every number
+The full harness, cases, pre-registration and per-run data live in
+[`lcp-benchmark`](https://github.com/zazza123/lcp-benchmark) so every number
 below is reproducible.
 
 ## What was measured
@@ -68,7 +68,7 @@ Overall, by arm:
 
 Confidence intervals are seeded percentile bootstraps. The full six-arm
 table for every model, with per-class breakdowns, is in
-[`analysis.md`](https://github.com/zazza123/lcp/blob/main/evals/results/2026-07-09-phase8/analysis.md).
+[`analysis.md`](https://github.com/zazza123/lcp-benchmark/blob/main/results/2026-07-09-phase8/analysis.md).
 
 ## What the numbers say — honestly
 
@@ -93,24 +93,21 @@ table for every model, with per-class breakdowns, is in
 ## Reproduce it
 
 ```bash
-# Build the benchmark environment (Python 3.12)
-python3 -m venv evals/.venv-bench
-evals/.venv-bench/bin/pip install -e . -r evals/bench-requirements.txt
-
-# Re-run one arm of the grid (resumable; skips existing runs)
-evals/.venv-bench/bin/python evals/run.py run \
-  --out evals/results/<name> --cases evals/cases-v2 \
+git clone https://github.com/zazza123/lcp-benchmark
+cd lcp-benchmark
+# Environment setup and the full grid procedure:
+# https://github.com/zazza123/lcp-benchmark/blob/main/docs/reproduce.md
+.venv-bench/bin/python run.py run \
+  --out results/<name> --cases cases/python/publication \
   --model claude-haiku-4-5-20251001 --reps 5 --arms lcp-skill
-
-# Recompute the tables from the committed run data
-evals/.venv-bench/bin/python evals/results/2026-07-09-phase8/analyze_grid.py
 ```
 
 The frozen methodology, metrics and decision rules are pre-registered in
-`evals/results/2026-07-09-phase8/PREREGISTRATION.md`; the full analysis with
-per-class breakdowns and caveats is in the sibling `analysis.md`. Cases are
-pinned in `evals/bench-requirements.lock.txt`; the harness commit and model
-ids are recorded in each results directory's `meta.json`.
+[`results/2026-07-09-phase8/PREREGISTRATION.md`](https://github.com/zazza123/lcp-benchmark/blob/main/results/2026-07-09-phase8/PREREGISTRATION.md);
+the full analysis with per-class breakdowns and caveats is in the sibling
+`analysis.md`. Cases are pinned in `bench-requirements.lock.txt`; the
+harness commit and model ids are recorded in each results directory's
+`meta.json`.
 
 ## Caveats
 

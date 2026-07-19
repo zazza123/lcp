@@ -232,10 +232,6 @@ docs/superpowers/
 # MkDocs build output
 site_build/
 
-# Eval harness (Phase 0)
-evals/.venv/
-evals/.venv-bench/
-evals/.venv-registry/
-evals/.lcp-cache/
-evals/.lcp-cache-bench/
-evals/.lcp-registry-cache/
+# Leftover local environments from before the benchmark was split out
+# into the lcp-benchmark repo (evals/ is no longer tracked here)
+evals/
