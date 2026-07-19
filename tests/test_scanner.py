@@ -808,3 +808,20 @@ class TestUnresolvedReexports:
         ]
 
         assert _attach_aliases([], records) == [("pkg.big", 2), ("pkg.small", 1)]
+
+    def test_survives_serialization_round_trip(self):
+        """The subprocess boundary must not drop the diagnostic."""
+        from lcp.scanner import scan_package, scanned_from_dict, scanned_to_dict
+
+        scanned = scan_package("sample_package.convenience")
+        restored = scanned_from_dict(scanned_to_dict(scanned))
+
+        assert restored.unresolved_reexports == [("sample_package.core", 2)]
+
+    def test_payload_without_the_key_still_loads(self):
+        """An older child emits no such key; the host must not crash."""
+        from lcp.scanner import scanned_from_dict
+
+        restored = scanned_from_dict({"name": "x", "version": "1.0", "symbols": []})
+
+        assert restored.unresolved_reexports == []

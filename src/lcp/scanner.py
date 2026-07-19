@@ -198,6 +198,9 @@ def scanned_to_dict(module: ScannedModule) -> dict:
         "name": module.name,
         "version": module.version,
         "symbols": [_symbol_to_dict(s) for s in module.symbols],
+        "unresolved_reexports": [
+            [mod, count] for mod, count in module.unresolved_reexports
+        ],
     }
 
 
@@ -207,6 +210,9 @@ def scanned_from_dict(d: dict) -> ScannedModule:
         name=d["name"],
         version=d["version"],
         symbols=[_symbol_from_dict(s) for s in d.get("symbols", [])],
+        unresolved_reexports=[
+            (mod, count) for mod, count in d.get("unresolved_reexports", [])
+        ],
     )
 
 
