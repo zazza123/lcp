@@ -64,6 +64,8 @@ An `_AliasRecord` can end up dangling — its target was never scanned, so `_att
 
 `_attach_aliases()` tracks the second case per origin module and returns it as `(module_path, count)` pairs, sorted by descending count, which `scan_package()` carries on `ScannedModule.unresolved_reexports`. `lcp scan` prints a warning to stderr naming the origin module and suggesting a follow-up scan of it; the MCP `resolve_library` tool attaches a `note` to its response pointing the calling agent at the module it should resolve instead.
 
+The diagnostic is structurally blind when the re-export crosses a top-level package boundary — a facade re-exporting from a *different* installed distribution (the `flask`-importing-from-`jinja2` shape) never produces an `_AliasRecord` at all, because `scan_module()` only records one when the target is inside the same package root, so that lost surface is reported nowhere and the absence of a warning must not be read as proof nothing was lost.
+
 This diagnostic is scan-time only: it is derived from data that never enters the `LCPDocument` or the manifest schema, so it appears on the scan that produces it and not on subsequent cache or registry hits for the same package. That is a deliberate trade-off — the manifest itself stays a pure implementation of the LCP v1 spec, with no scanner-internal bookkeeping leaking into it.
 
 ### Docstring Parsing
