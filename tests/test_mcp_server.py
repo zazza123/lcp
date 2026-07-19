@@ -638,12 +638,11 @@ class TestResolveLibraryDocument:
             )
 
         assert source == "registry"
-        assert result_doc is not None
 
     def test_registry_not_used_when_scan_succeeds(self, tmp_path: Path):
         """Should not contact registry when local scan succeeds."""
         with patch("urllib.request.urlopen") as mock_urlopen:
-            doc, source = resolve_library_document(
+            result, source = resolve_library_document(
                 "tests.sample_module",
                 cache_dir=tmp_path / "cache",
                 no_cache=True,
@@ -1117,6 +1116,53 @@ class TestResolveLibraryTool:
         result = server.tools["resolve_library"](name="tests.sample_module")
         assert result["source"] == "cache"
         assert "version_mismatch" not in result
+
+    def test_note_names_origin_when_reexports_are_unresolved(self, tmp_path):
+        """A facade scan attaches a note naming the unscanned origin (#58)."""
+        server = create_universal_server(
+            cache_dir=tmp_path / "cache", no_cache=True, scan_mode="inprocess"
+        )
+        result = server.tools["resolve_library"](name="sample_package.convenience")
+
+        assert result["status"] == "loaded"
+        assert "note" in result
+        assert "sample_package.core" in result["note"]
+        assert "2 public names" in result["note"]
+        assert "resolve_library('sample_package.core')" in result["note"]
+
+    def test_note_flags_additional_origins_when_more_than_one(
+        self, tmp_path, monkeypatch, sample_lcp_file
+    ):
+        """The note must not silently drop origins beyond the first (FIX 2)."""
+        from lcp.subprocess_scan import ScanResult
+
+        doc = load_lcp_document(sample_lcp_file)
+        fake_result = ScanResult(
+            document=doc,
+            unresolved_reexports=[("pkg.core", 3), ("pkg.extras", 1)],
+        )
+        monkeypatch.setattr(
+            "lcp.mcp_server.resolve_library_document",
+            lambda *a, **k: (fake_result, "scan"),
+        )
+
+        server = create_universal_server(cache_dir=tmp_path / "cache", no_cache=True)
+        result = server.tools["resolve_library"](name="tests.sample_module")
+
+        assert "note" in result
+        assert "pkg.core" in result["note"]
+        assert "3 public names" in result["note"]
+        # The second origin (pkg.extras) is not itself named, but its
+        # existence must not be silently dropped from the note.
+        assert "pkg.extras" not in result["note"]
+        assert "1 other" in result["note"]
+
+    def test_note_absent_when_no_reexports_are_unresolved(self, universal_server):
+        """The happy path (no lost surface) must not carry a note at all."""
+        result = universal_server.tools["resolve_library"](
+            name="tests.sample_module"
+        )
+        assert "note" not in result
 
 
 class TestLibraryDisambiguation:

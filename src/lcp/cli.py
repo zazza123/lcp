@@ -135,8 +135,9 @@ def scan(
         # manifest that still validates; say so rather than exiting 0 in
         # silence (issue #58).
         for origin, count in scanned.unresolved_reexports:
+            noun, verb = ("name", "is") if count == 1 else ("names", "are")
             click.echo(
-                f"warning: {count} public names are defined in {origin}, "
+                f"warning: {count} public {noun} {verb} defined in {origin}, "
                 f"which was not scanned.",
                 err=True,
             )
