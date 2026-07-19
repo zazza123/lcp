@@ -73,6 +73,7 @@ class ScannedModule:
     name: str
     version: str
     symbols: list[ScannedSymbol] = field(default_factory=list)
+    unresolved_reexports: list[tuple[str, int]] = field(default_factory=list)
 
 
 class _ComplexDefault:
@@ -226,20 +227,40 @@ class _AliasRecord:
 
 def _attach_aliases(
     symbols: list[ScannedSymbol], records: list[_AliasRecord]
-) -> None:
+) -> list[tuple[str, int]]:
     """Attach re-export aliases to their canonical scanned symbols.
 
-    Records whose target was never scanned (e.g. the defining module failed
-    to import, or the object is not a scannable kind) are dropped.
+    Records whose target was never scanned are dropped. A drop is *benign*
+    when the defining module was itself scanned — the target simply is not a
+    scannable kind. A drop means real lost surface when the defining module
+    was never visited at all: that happens when the scan root is a facade
+    re-exporting from a sibling package (see issue #58), and those are
+    reported back so callers can warn instead of silently shipping an empty
+    manifest.
+
+    Args:
+        symbols: Every symbol scanned so far, canonical definitions included.
+        records: Re-exports observed during scanning, targets unresolved.
+
+    Returns:
+        ``(module_path, count)`` pairs for modules that were never scanned,
+        ordered by descending count then module path.
     """
     by_key = {(s.module_path, s.qualified_name): s for s in symbols}
+    scanned_modules = {s.module_path for s in symbols if s.kind == "module"}
+    unresolved: dict[str, int] = {}
+
     for rec in records:
         target = by_key.get((rec.target_module, rec.target_name))
         if target is None:
+            if rec.target_module not in scanned_modules:
+                unresolved[rec.target_module] = unresolved.get(rec.target_module, 0) + 1
             continue
         alias = (rec.alias_module, rec.alias_name)
         if alias not in target.aliases:
             target.aliases.append(alias)
+
+    return sorted(unresolved.items(), key=lambda kv: (-kv[1], kv[0]))
 
 
 def _raw_docstring(doc: Any) -> str | None:
@@ -849,5 +870,10 @@ def scan_package(
                 )
             )
 
-    _attach_aliases(symbols, alias_records)
-    return ScannedModule(name=package_name, version=version, symbols=symbols)
+    unresolved = _attach_aliases(symbols, alias_records)
+    return ScannedModule(
+        name=package_name,
+        version=version,
+        symbols=symbols,
+        unresolved_reexports=unresolved,
+    )

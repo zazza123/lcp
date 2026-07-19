@@ -737,3 +737,74 @@ class TestScannedSerialization:
         direct = json.loads(generate_lcp(scanned).to_json())["symbols"]
         round_tripped = json.loads(generate_lcp(rebuilt).to_json())["symbols"]
         assert direct == round_tripped
+
+
+class TestUnresolvedReexports:
+    """Re-exports whose defining module was never scanned are reported."""
+
+    def test_sibling_reexports_are_reported(self):
+        """Scanning a submodule leaves its siblings' definitions unscanned."""
+        from lcp.scanner import scan_package
+
+        scanned = scan_package("sample_package.convenience")
+
+        assert scanned.unresolved_reexports == [("sample_package.core", 2)]
+
+    def test_full_package_scan_reports_nothing(self):
+        """When the whole package is scanned, every target resolves."""
+        from lcp.scanner import scan_package
+
+        scanned = scan_package("sample_package")
+
+        assert scanned.unresolved_reexports == []
+
+    def test_scanned_module_is_not_reported(self):
+        """A dangling record is benign when its module *was* scanned."""
+        from lcp.scanner import ScannedSymbol, _AliasRecord, _attach_aliases
+
+        symbols = [
+            ScannedSymbol(
+                name="sample_package.core",
+                qualified_name="",
+                module_path="sample_package.core",
+                kind="module",
+                summary="Module",
+            )
+        ]
+        records = [
+            _AliasRecord(
+                target_module="sample_package.core",
+                target_name="NOT_A_SCANNABLE_KIND",
+                alias_module="sample_package",
+                alias_name="NOT_A_SCANNABLE_KIND",
+            )
+        ]
+
+        assert _attach_aliases(symbols, records) == []
+
+    def test_counts_sort_by_descending_count(self):
+        """Origins are ordered most-lost-first so the worst offender leads."""
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="pkg.small",
+                target_name="One",
+                alias_module="pkg",
+                alias_name="One",
+            ),
+            _AliasRecord(
+                target_module="pkg.big",
+                target_name="A",
+                alias_module="pkg",
+                alias_name="A",
+            ),
+            _AliasRecord(
+                target_module="pkg.big",
+                target_name="B",
+                alias_module="pkg",
+                alias_name="B",
+            ),
+        ]
+
+        assert _attach_aliases([], records) == [("pkg.big", 2), ("pkg.small", 1)]
