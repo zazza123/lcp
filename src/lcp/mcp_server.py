@@ -1248,8 +1248,12 @@ def _register_tools(
                 ),
             }
         if result.unresolved_reexports:
-            origin, count = result.unresolved_reexports[0]
+            origin, count, module_count = result.unresolved_reexports[0]
             noun, verb = ("name", "is") if count == 1 else ("names", "are")
+            if module_count == 1:
+                where = f"in {origin}"
+            else:
+                where = f"under {origin} ({module_count} modules)"
             others = result.unresolved_reexports[1:]
 
             if others:
@@ -1263,7 +1267,7 @@ def _register_tools(
                 tail = f"resolve_library('{origin}') for the full surface."
 
             payload["note"] = (
-                f"{count} public {noun} of {name} {verb} defined in {origin}, "
+                f"{count} public {noun} of {name} {verb} defined {where}, "
                 f"which was not scanned.{others_clause} Call {tail}"
             )
         return payload

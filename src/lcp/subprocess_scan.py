@@ -128,13 +128,14 @@ class ScanResult:
 
     Attributes:
         document: The generated LCP document.
-        unresolved_reexports: ``(module_path, count)`` pairs for modules that
-            define re-exported names but were never scanned (issue #58).
-            Empty for documents that did not come from a live scan.
+        unresolved_reexports: ``(ancestor_module, count, module_count)``
+            triples for sibling packages that define re-exported names but
+            were never scanned (issue #58). Empty for documents that did not
+            come from a live scan.
     """
 
     document: LCPDocument
-    unresolved_reexports: list[tuple[str, int]] = field(default_factory=list)
+    unresolved_reexports: list[tuple[str, int, int]] = field(default_factory=list)
 
 
 def scan_package_subprocess(

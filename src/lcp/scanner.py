@@ -73,7 +73,7 @@ class ScannedModule:
     name: str
     version: str
     symbols: list[ScannedSymbol] = field(default_factory=list)
-    unresolved_reexports: list[tuple[str, int]] = field(default_factory=list)
+    unresolved_reexports: list[tuple[str, int, int]] = field(default_factory=list)
 
 
 class _ComplexDefault:
@@ -199,7 +199,8 @@ def scanned_to_dict(module: ScannedModule) -> dict:
         "version": module.version,
         "symbols": [_symbol_to_dict(s) for s in module.symbols],
         "unresolved_reexports": [
-            [mod, count] for mod, count in module.unresolved_reexports
+            [mod, count, module_count]
+            for mod, count, module_count in module.unresolved_reexports
         ],
     }
 
@@ -211,7 +212,8 @@ def scanned_from_dict(d: dict) -> ScannedModule:
         version=d["version"],
         symbols=[_symbol_from_dict(s) for s in d.get("symbols", [])],
         unresolved_reexports=[
-            (mod, count) for mod, count in d.get("unresolved_reexports", [])
+            (mod, count, module_count)
+            for mod, count, module_count in d.get("unresolved_reexports", [])
         ],
     )
 
@@ -232,45 +234,73 @@ class _AliasRecord:
 
 
 def _attach_aliases(
-    symbols: list[ScannedSymbol], records: list[_AliasRecord]
-) -> list[tuple[str, int]]:
+    symbols: list[ScannedSymbol], records: list[_AliasRecord], target: str
+) -> list[tuple[str, int, int]]:
     """Attach re-export aliases to their canonical scanned symbols.
 
     Records whose target was never scanned are dropped. A drop is *benign*
     when the defining module was itself scanned — the target simply is not a
     scannable kind. A drop means real lost surface when the defining module
     was never visited at all: that happens when the scan root is a facade
-    re-exporting from a sibling package (see issue #58), and those are
-    reported back so callers can warn instead of silently shipping an empty
-    manifest.
+    re-exporting from a sibling package (see issue #58).
+
+    A facade re-exports from a SIBLING package, which sits at the same depth
+    in the module tree as the scanned package itself. So before reporting,
+    each unscanned origin module is collapsed to its first ``N`` dotted
+    segments, ``N`` being the number of segments in *target* — e.g. scanning
+    ``google.cloud.firestore`` (3 segments) collapses the origin
+    ``google.cloud.firestore_v1.types.write`` to ``google.cloud.firestore_v1``,
+    the sibling package a user should actually scan, rather than reporting
+    every defining submodule (including private ones such as
+    ``google.cloud.firestore_v1._helpers``) as a separate line. An origin
+    with fewer segments than *target* keeps its own full name — it is never
+    padded out to *target*'s depth. Collapsed diagnostics are reported back
+    so callers can warn instead of silently shipping an empty manifest.
 
     Args:
         symbols: Every symbol scanned so far, canonical definitions included.
         records: Re-exports observed during scanning, targets unresolved.
+        target: Dotted path of the package or module that was scanned (e.g.
+            ``"google.cloud.firestore"``); sets the collapsing depth.
 
     Returns:
-        ``(module_path, count)`` pairs for modules that were never scanned,
-        ``count`` being the number of distinct names lost (not the number of
+        ``(ancestor_module, distinct_name_count, contributing_module_count)``
+        triples for ancestor modules that were never scanned.
+        ``distinct_name_count`` is the number of distinct names lost across
+        every origin module collapsed into that ancestor (not the number of
         re-export sites — the same name re-exported from both a package's
-        ``__init__.py`` and a compat shim counts once), ordered by
-        descending count then module path.
+        ``__init__.py`` and a compat shim counts once).
+        ``contributing_module_count`` is the number of distinct origin
+        modules that collapsed into the ancestor. Ordered by descending
+        ``distinct_name_count`` then ascending ``ancestor_module``.
     """
     by_key = {(s.module_path, s.qualified_name): s for s in symbols}
     scanned_modules = {s.module_path for s in symbols if s.kind == "module"}
     unresolved: dict[str, set[str]] = {}
 
     for rec in records:
-        target = by_key.get((rec.target_module, rec.target_name))
-        if target is None:
+        target_symbol = by_key.get((rec.target_module, rec.target_name))
+        if target_symbol is None:
             if rec.target_module not in scanned_modules:
                 unresolved.setdefault(rec.target_module, set()).add(rec.target_name)
             continue
         alias = (rec.alias_module, rec.alias_name)
-        if alias not in target.aliases:
-            target.aliases.append(alias)
+        if alias not in target_symbol.aliases:
+            target_symbol.aliases.append(alias)
+
+    depth = len(target.split("."))
+    collapsed_names: dict[str, set[str]] = {}
+    collapsed_modules: dict[str, set[str]] = {}
+    for mod, names in unresolved.items():
+        ancestor = ".".join(mod.split(".")[:depth])
+        collapsed_names.setdefault(ancestor, set()).update(names)
+        collapsed_modules.setdefault(ancestor, set()).add(mod)
 
     return sorted(
-        ((mod, len(names)) for mod, names in unresolved.items()),
+        (
+            (ancestor, len(names), len(collapsed_modules[ancestor]))
+            for ancestor, names in collapsed_names.items()
+        ),
         key=lambda kv: (-kv[1], kv[0]),
     )
 
@@ -722,7 +752,7 @@ def scan_module(
             continue
 
     if _alias_records is None:
-        _attach_aliases(symbols, records)
+        _attach_aliases(symbols, records, module_path)
 
     return symbols
 
@@ -882,7 +912,7 @@ def scan_package(
                 )
             )
 
-    unresolved = _attach_aliases(symbols, alias_records)
+    unresolved = _attach_aliases(symbols, alias_records, package_name)
     return ScannedModule(
         name=package_name,
         version=version,

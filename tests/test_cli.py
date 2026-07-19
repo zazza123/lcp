@@ -535,9 +535,12 @@ class TestScanUnresolvedWarning:
 
         assert result.exit_code == 0
         assert "warning:" in result.output
-        assert "sample_package.core" in result.output
-        assert "2 public names" in result.output
+        assert "2 public names are defined in sample_package.core, " in result.output
+        assert "which was not scanned." in result.output
         assert "lcp scan sample_package.core" in result.output
+        # Single-origin-module case: "in", no parenthetical module count.
+        assert "under" not in result.output
+        assert "modules)" not in result.output
 
     def test_silent_on_a_fully_scanned_package(self, runner, tmp_path):
         out = tmp_path / "pkg.lcp.json"
@@ -545,3 +548,26 @@ class TestScanUnresolvedWarning:
 
         assert result.exit_code == 0
         assert "warning:" not in result.output
+
+    def test_warns_with_collapsed_multi_module_wording(self, runner, tmp_path):
+        """Several origin submodules of one sibling render as one warning."""
+        from lcp.scanner import ScannedModule
+
+        fake = ScannedModule(
+            name="google.cloud.firestore",
+            version="2.28.0",
+            symbols=[],
+            unresolved_reexports=[("google.cloud.firestore_v1", 55, 26)],
+        )
+        out = tmp_path / "firestore.lcp.json"
+        with patch("lcp.cli.scan_package", return_value=fake):
+            result = runner.invoke(
+                main, ["scan", "google.cloud.firestore", "-o", str(out)]
+            )
+
+        assert result.exit_code == 0
+        assert (
+            "warning: 55 public names are defined under google.cloud.firestore_v1 "
+            "(26 modules), which was not scanned." in result.output
+        )
+        assert "Consider: lcp scan google.cloud.firestore_v1" in result.output

@@ -413,5 +413,5 @@ class TestUnresolvedReexportsPropagate:
             "sample_package.convenience", extra_paths=[str(TESTS_DIR)]
         )
 
-        assert result.unresolved_reexports == [("sample_package.core", 2)]
+        assert result.unresolved_reexports == [("sample_package.core", 2, 1)]
         assert result.document.manifest.library.name == "sample_package.convenience"

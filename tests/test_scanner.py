@@ -748,7 +748,7 @@ class TestUnresolvedReexports:
 
         scanned = scan_package("sample_package.convenience")
 
-        assert scanned.unresolved_reexports == [("sample_package.core", 2)]
+        assert scanned.unresolved_reexports == [("sample_package.core", 2, 1)]
 
     def test_full_package_scan_reports_nothing(self):
         """When the whole package is scanned, every target resolves."""
@@ -780,7 +780,7 @@ class TestUnresolvedReexports:
             )
         ]
 
-        assert _attach_aliases(symbols, records) == []
+        assert _attach_aliases(symbols, records, "sample_package") == []
 
     def test_counts_sort_by_descending_count(self):
         """Origins are ordered most-lost-first so the worst offender leads."""
@@ -807,7 +807,12 @@ class TestUnresolvedReexports:
             ),
         ]
 
-        assert _attach_aliases([], records) == [("pkg.big", 2), ("pkg.small", 1)]
+        # Origins already sit at the same depth as "pkg.facade" (2 segments),
+        # so neither collapses: each keeps its own name and module count 1.
+        assert _attach_aliases([], records, "pkg.facade") == [
+            ("pkg.big", 2, 1),
+            ("pkg.small", 1, 1),
+        ]
 
     def test_counts_distinct_names_not_reexport_sites(self):
         """Two sites re-exporting the same name from the same origin count once.
@@ -833,7 +838,75 @@ class TestUnresolvedReexports:
             ),
         ]
 
-        assert _attach_aliases([], records) == [("pkg.core", 1)]
+        assert _attach_aliases([], records, "pkg.facade") == [("pkg.core", 1, 1)]
+
+    def test_several_submodules_of_one_sibling_collapse_to_one_entry(self):
+        """Many defining submodules of one sibling become a single suggestion.
+
+        This is the real-world google-cloud-firestore shape (issue #58):
+        scanning a 3-segment facade package while dozens of submodules of a
+        sibling package define the re-exported names must not produce one
+        warning line per submodule.
+        """
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1.pipeline_types",
+                target_name="A",
+                alias_module="google.cloud.firestore",
+                alias_name="A",
+            ),
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1.transforms",
+                target_name="B",
+                alias_module="google.cloud.firestore",
+                alias_name="B",
+            ),
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1.transforms",
+                target_name="C",
+                alias_module="google.cloud.firestore",
+                alias_name="C",
+            ),
+        ]
+
+        assert _attach_aliases([], records, "google.cloud.firestore") == [
+            ("google.cloud.firestore_v1", 3, 2)
+        ]
+
+    def test_private_leaf_submodule_is_collapsed_away(self):
+        """A private defining submodule must never surface in the suggestion."""
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1._helpers",
+                target_name="build_timestamp",
+                alias_module="google.cloud.firestore",
+                alias_name="build_timestamp",
+            ),
+        ]
+
+        result = _attach_aliases([], records, "google.cloud.firestore")
+
+        assert result == [("google.cloud.firestore_v1", 1, 1)]
+        assert not any("_helpers" in ancestor for ancestor, _, _ in result)
+
+    def test_origin_with_fewer_segments_than_target_keeps_its_own_name(self):
+        """An origin shallower than the scan target is never padded out."""
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="sib",
+                target_name="Thing",
+                alias_module="pkg.facade.deep",
+                alias_name="Thing",
+            ),
+        ]
+
+        assert _attach_aliases([], records, "pkg.facade.deep") == [("sib", 1, 1)]
 
     def test_survives_serialization_round_trip(self):
         """The subprocess boundary must not drop the diagnostic."""
@@ -842,7 +915,7 @@ class TestUnresolvedReexports:
         scanned = scan_package("sample_package.convenience")
         restored = scanned_from_dict(scanned_to_dict(scanned))
 
-        assert restored.unresolved_reexports == [("sample_package.core", 2)]
+        assert restored.unresolved_reexports == [("sample_package.core", 2, 1)]
 
     def test_payload_without_the_key_still_loads(self):
         """An older child emits no such key; the host must not crash."""

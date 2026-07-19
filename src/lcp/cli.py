@@ -134,10 +134,14 @@ def scan(
         # A facade package re-exporting from a sibling yields a near-empty
         # manifest that still validates; say so rather than exiting 0 in
         # silence (issue #58).
-        for origin, count in scanned.unresolved_reexports:
+        for origin, count, module_count in scanned.unresolved_reexports:
             noun, verb = ("name", "is") if count == 1 else ("names", "are")
+            if module_count == 1:
+                where = f"in {origin}"
+            else:
+                where = f"under {origin} ({module_count} modules)"
             click.echo(
-                f"warning: {count} public {noun} {verb} defined in {origin}, "
+                f"warning: {count} public {noun} {verb} defined {where}, "
                 f"which was not scanned.",
                 err=True,
             )

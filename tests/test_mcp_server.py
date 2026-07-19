@@ -719,7 +719,7 @@ class TestResolveReportsUnresolved:
         )
 
         assert source == "scan"
-        assert result.unresolved_reexports == [("sample_package.core", 2)]
+        assert result.unresolved_reexports == [("sample_package.core", 2, 1)]
 
     def test_cache_and_registry_hits_carry_nothing(self, tmp_path):
         """Only a live scan can produce the diagnostic."""
@@ -728,7 +728,7 @@ class TestResolveReportsUnresolved:
         first, _ = resolve_library_document(
             "sample_package.convenience", cache_dir=tmp_path, scan_mode="inprocess"
         )
-        assert first.unresolved_reexports == [("sample_package.core", 2)]
+        assert first.unresolved_reexports == [("sample_package.core", 2, 1)]
 
         second, source = resolve_library_document(
             "sample_package.convenience", cache_dir=tmp_path, scan_mode="inprocess"
@@ -1128,6 +1128,7 @@ class TestResolveLibraryTool:
         assert "note" in result
         assert "sample_package.core" in result["note"]
         assert "2 public names" in result["note"]
+        assert "defined in sample_package.core" in result["note"]
         assert "resolve_library('sample_package.core')" in result["note"]
 
     def test_note_flags_additional_origins_when_more_than_one(
@@ -1139,7 +1140,7 @@ class TestResolveLibraryTool:
         doc = load_lcp_document(sample_lcp_file)
         fake_result = ScanResult(
             document=doc,
-            unresolved_reexports=[("pkg.core", 3), ("pkg.extras", 1)],
+            unresolved_reexports=[("pkg.core", 3, 1), ("pkg.extras", 1, 1)],
         )
         monkeypatch.setattr(
             "lcp.mcp_server.resolve_library_document",
@@ -1159,6 +1160,33 @@ class TestResolveLibraryTool:
         # The tail must not promise full surface when other origins exist.
         assert "for the full surface" not in result["note"]
         assert "to recover that surface" in result["note"]
+
+    def test_note_uses_under_wording_when_ancestor_spans_several_modules(
+        self, tmp_path, monkeypatch, sample_lcp_file
+    ):
+        """A collapsed ancestor with several contributing modules reads "under"."""
+        from lcp.subprocess_scan import ScanResult
+
+        doc = load_lcp_document(sample_lcp_file)
+        fake_result = ScanResult(
+            document=doc,
+            unresolved_reexports=[("google.cloud.firestore_v1", 55, 26)],
+        )
+        monkeypatch.setattr(
+            "lcp.mcp_server.resolve_library_document",
+            lambda *a, **k: (fake_result, "scan"),
+        )
+
+        server = create_universal_server(cache_dir=tmp_path / "cache", no_cache=True)
+        result = server.tools["resolve_library"](name="tests.sample_module")
+
+        assert "note" in result
+        assert (
+            "defined under google.cloud.firestore_v1 (26 modules)" in result["note"]
+        )
+        # Single ancestor: the tail still promises the full surface.
+        assert "for the full surface" in result["note"]
+        assert "to recover that surface" not in result["note"]
 
     def test_note_absent_when_no_reexports_are_unresolved(self, universal_server):
         """The happy path (no lost surface) must not carry a note at all."""
