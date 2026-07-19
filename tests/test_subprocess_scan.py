@@ -240,7 +240,7 @@ class TestResolveViaSubprocess:
             raise ScanSpawnError("spawn blocked")
 
         monkeypatch.setattr("lcp.mcp_server.scan_package_subprocess", blocked)
-        doc, source = resolve_library_document(
+        result, source = resolve_library_document(
             "tests.sample_module", cache_dir=tmp_path, no_cache=True
         )
         assert source == "scan"  # fell back to in-process, same environment
