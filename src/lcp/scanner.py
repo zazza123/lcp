@@ -246,16 +246,27 @@ def _attach_aliases(
 
     A facade re-exports from a SIBLING package, which sits at the same depth
     in the module tree as the scanned package itself. So before reporting,
-    each unscanned origin module is collapsed to its first ``N`` dotted
-    segments, ``N`` being the number of segments in *target* — e.g. scanning
-    ``google.cloud.firestore`` (3 segments) collapses the origin
-    ``google.cloud.firestore_v1.types.write`` to ``google.cloud.firestore_v1``,
-    the sibling package a user should actually scan, rather than reporting
-    every defining submodule (including private ones such as
-    ``google.cloud.firestore_v1._helpers``) as a separate line. An origin
-    with fewer segments than *target* keeps its own full name — it is never
-    padded out to *target*'s depth. Collapsed diagnostics are reported back
-    so callers can warn instead of silently shipping an empty manifest.
+    each unscanned origin module OUTSIDE the scanned subtree is collapsed to
+    its first ``N`` dotted segments, ``N`` being the number of segments in
+    *target* — e.g. scanning ``google.cloud.firestore`` (3 segments)
+    collapses the origin ``google.cloud.firestore_v1.types.write`` to
+    ``google.cloud.firestore_v1``, the sibling package a user should
+    actually scan, rather than reporting every defining submodule
+    (including private ones such as ``google.cloud.firestore_v1._helpers``)
+    as a separate line. An origin with fewer segments than *target* keeps
+    its own full name — it is never padded out to *target*'s depth.
+
+    An origin NESTED under *target* (i.e. ``origin == target`` or it starts
+    with ``target + "."``) is never collapsed: truncating it to *target*'s
+    depth would just return *target* itself, which is nonsensical — the
+    package that was just scanned cannot also be the follow-up scan
+    suggestion. This case is a submodule of the scanned package that simply
+    failed to import during the walk (an optional dependency, a
+    ``TYPE_CHECKING``-only import, a platform-specific module); its own full
+    module path is the genuinely actionable target, so it is kept as-is.
+
+    Collapsed diagnostics are reported back so callers can warn instead of
+    silently shipping an empty manifest.
 
     Args:
         symbols: Every symbol scanned so far, canonical definitions included.
@@ -292,7 +303,13 @@ def _attach_aliases(
     collapsed_names: dict[str, set[str]] = {}
     collapsed_modules: dict[str, set[str]] = {}
     for mod, names in unresolved.items():
-        ancestor = ".".join(mod.split(".")[:depth])
+        if mod == target or mod.startswith(target + "."):
+            # Descendant of the scanned subtree: a submodule that failed to
+            # import, not a sibling. Truncating to `depth` would collapse it
+            # onto `target` itself, so keep its own full path.
+            ancestor = mod
+        else:
+            ancestor = ".".join(mod.split(".")[:depth])
         collapsed_names.setdefault(ancestor, set()).update(names)
         collapsed_modules.setdefault(ancestor, set()).add(mod)
 

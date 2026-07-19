@@ -875,6 +875,36 @@ class TestUnresolvedReexports:
             ("google.cloud.firestore_v1", 3, 2)
         ]
 
+    def test_collapsed_names_union_not_sum_across_origins(self):
+        """The merged distinct-name count is a union, not a per-module sum.
+
+        Two distinct origin submodules collapse into the same ancestor and
+        each lose a symbol named ``get``. A naive implementation that sums
+        per-module counts instead of unioning name sets would report 2
+        distinct names lost; the correct answer is 1, since it is the same
+        name lost twice from the same eventual ancestor.
+        """
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1.pipeline_types",
+                target_name="get",
+                alias_module="google.cloud.firestore",
+                alias_name="get",
+            ),
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1.transforms",
+                target_name="get",
+                alias_module="google.cloud.firestore",
+                alias_name="get",
+            ),
+        ]
+
+        assert _attach_aliases([], records, "google.cloud.firestore") == [
+            ("google.cloud.firestore_v1", 1, 2)
+        ]
+
     def test_private_leaf_submodule_is_collapsed_away(self):
         """A private defining submodule must never surface in the suggestion."""
         from lcp.scanner import _AliasRecord, _attach_aliases
@@ -907,6 +937,87 @@ class TestUnresolvedReexports:
         ]
 
         assert _attach_aliases([], records, "pkg.facade.deep") == [("sib", 1, 1)]
+
+    def test_nested_origin_reports_its_own_full_path(self):
+        """A failed-import submodule of the scanned package is never folded
+        back onto the scanned package itself.
+
+        Unlike a sibling re-export, an origin nested under *target* is a
+        submodule of the very package being scanned that simply failed to
+        import during the walk. Collapsing it to *target*'s depth would
+        return *target* unchanged, producing a self-contradictory warning
+        ("defined in flask, which was not scanned" right after a successful
+        scan of flask) whose suggested follow-up scan is a no-op.
+        """
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="flask.json",
+                target_name="JSONEncoder",
+                alias_module="flask.wrappers",
+                alias_name="JSONEncoder",
+            ),
+        ]
+
+        assert _attach_aliases([], records, "flask") == [("flask.json", 1, 1)]
+
+    def test_nested_origin_ancestor_is_never_the_scanned_target(self):
+        """The reported ancestor must never equal the module that was scanned.
+
+        Regression guard for the specific failure mode of the collapsing
+        rule: at any depth, an unresolved origin nested under the target
+        must resolve to its own path, not back to the target.
+        """
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="pkg.facade.internal",
+                target_name="Thing",
+                alias_module="pkg.facade",
+                alias_name="Thing",
+            ),
+        ]
+
+        result = _attach_aliases([], records, "pkg.facade")
+
+        assert result == [("pkg.facade.internal", 1, 1)]
+        assert all(ancestor != "pkg.facade" for ancestor, _, _ in result)
+
+    def test_sibling_still_collapses_alongside_nested_origin(self):
+        """Sibling collapsing (added in the commit this guards) still works,
+        and coexists with a nested origin in the same call, each handled by
+        its own rule: the sibling collapses to the shared ancestor while the
+        nested origin keeps its own full path.
+        """
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            # Sibling: outside the scanned subtree, at the same depth as the
+            # target -> collapses to the ancestor package.
+            _AliasRecord(
+                target_module="google.cloud.firestore_v1.types.write",
+                target_name="A",
+                alias_module="google.cloud.firestore",
+                alias_name="A",
+            ),
+            # Nested: a submodule of the scanned package that failed to
+            # import -> keeps its own full path.
+            _AliasRecord(
+                target_module="google.cloud.firestore.internal",
+                target_name="B",
+                alias_module="google.cloud.firestore",
+                alias_name="B",
+            ),
+        ]
+
+        result = _attach_aliases([], records, "google.cloud.firestore")
+
+        assert result == [
+            ("google.cloud.firestore.internal", 1, 1),
+            ("google.cloud.firestore_v1", 1, 1),
+        ]
 
     def test_survives_serialization_round_trip(self):
         """The subprocess boundary must not drop the diagnostic."""
