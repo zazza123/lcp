@@ -181,6 +181,7 @@ class TestResolveViaSubprocess:
         monkeypatch.chdir(TESTS_DIR)  # child inherits cwd → fixtures importable
         cache_dir = tmp_path / "cache"
         doc, source = resolve_library_document("sample_package", cache_dir=cache_dir)
+        doc = doc.document
         assert source == "scan"
         assert len(doc.symbols) > 0
         _, source2 = resolve_library_document("sample_package", cache_dir=cache_dir)
@@ -203,6 +204,7 @@ class TestResolveViaSubprocess:
             no_cache=True,
             scan_python=str(second_venv),
         )
+        doc = doc.document
         assert source == "scan"
         assert "secondvenv_only_pkg:greet" in doc.symbols
 
@@ -227,6 +229,7 @@ class TestResolveViaSubprocess:
             no_cache=True,
             scan_mode="inprocess",
         )
+        doc = doc.document
         assert source == "scan"
         assert len(doc.symbols) > 0
 
@@ -325,6 +328,7 @@ class TestConcurrency:
                 cache_dir=tmp_path / "quick-cache",
                 no_cache=True,
             )
+            doc = doc.document
             assert len(doc.symbols) > 0
             assert not slow_done.is_set(), (
                 "quick resolve should complete while the slow scan is running"

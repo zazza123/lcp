@@ -547,7 +547,7 @@ def resolve_library_document(
     scan_mode: str = "subprocess",
     scan_python: str | None = None,
     scan_timeout: float = DEFAULT_SCAN_TIMEOUT,
-) -> tuple[LCPDocument, str]:
+) -> tuple[ScanResult, str]:
     """Resolve an LCP document for *name* using the standard resolution order.
 
     Resolution order:
@@ -581,8 +581,10 @@ def resolve_library_document(
         scan_timeout: Seconds before a subprocess scan is killed.
 
     Returns:
-        Tuple of (LCPDocument, source) where source is ``"cache"``,
-        ``"scan"``, or ``"registry"``.
+        Tuple of (ScanResult, source) where source is ``"cache"``,
+        ``"scan"``, or ``"registry"``. Only a ``"scan"`` result can carry
+        ``unresolved_reexports``; cache and registry hits carry an empty
+        list, because the diagnostic is not persisted in the manifest.
 
     Raises:
         ImportError: If the package cannot be resolved via any available
@@ -599,23 +601,23 @@ def resolve_library_document(
             # Exact-version match (requested version wins over installed)
             cached = _load_from_cache(cache_dir, name, lookup_ver)
             if cached is not None:
-                return cached, "cache"
+                return ScanResult(document=cached), "cache"
         else:
             # No version to pin: return any cached entry for this package
             cached = _find_any_cached(cache_dir, name)
             if cached is not None:
-                return cached, "cache"
+                return ScanResult(document=cached), "cache"
 
     # 2. Live scan
     scan_error: Exception | None = None
     try:
-        doc = _scan_live(name, scan_mode, scan_python, scan_timeout).document
+        result = _scan_live(name, scan_mode, scan_python, scan_timeout)
         if not no_cache:
             try:
-                _save_to_cache(cache_dir, doc)
+                _save_to_cache(cache_dir, result.document)
             except Exception:
                 pass  # cache write failure is non-fatal
-        return doc, "scan"
+        return result, "scan"
     except Exception as exc:
         scan_error = exc
 
@@ -628,7 +630,7 @@ def resolve_library_document(
                     _save_to_cache(cache_dir, doc)
                 except Exception:
                     pass  # cache write failure is non-fatal
-            return doc, "registry"
+            return ScanResult(document=doc), "registry"
         except ImportError:
             pass  # fall through to final error
 
@@ -1183,7 +1185,7 @@ def _register_tools(
                 ),
             }
         try:
-            doc, source = resolve_library_document(
+            result, source = resolve_library_document(
                 name,
                 cache_dir=cache_dir,
                 no_cache=no_cache,
@@ -1202,12 +1204,13 @@ def _register_tools(
                     "path) and that it is installed in this environment."
                 ),
             )
+        doc = result.document
 
         index = LCPIndex(doc)
         libraries.add(name, index, source=source)
         lib = doc.manifest.library
         # Report the registration key: it is what library= accepts.
-        result: dict[str, Any] = {
+        payload: dict[str, Any] = {
             "status": "loaded",
             "name": name,
             "version": lib.version,
@@ -1221,17 +1224,17 @@ def _register_tools(
             ),
         }
         if lib.name != name:
-            result["manifest_name"] = lib.name
+            payload["manifest_name"] = lib.name
         if source in ("cache", "registry"):
             installed = _installed_version(name)
             if installed != lib.version:
                 # Honesty flag: the served docs describe a version that is
                 # not (or cannot be confirmed to be) the installed one.
-                result["version_mismatch"] = True
-                result["installed_version"] = installed
-                result["resolved_version"] = lib.version
+                payload["version_mismatch"] = True
+                payload["installed_version"] = installed
+                payload["resolved_version"] = lib.version
         if version and lib.version != version:
-            result["warning"] = {
+            payload["warning"] = {
                 "code": "version_mismatch",
                 "requested": version,
                 "resolved": lib.version,
@@ -1240,7 +1243,14 @@ def _register_tools(
                     f"{lib.version}; the docs describe {lib.version}."
                 ),
             }
-        return result
+        if result.unresolved_reexports:
+            origin, count = result.unresolved_reexports[0]
+            payload["note"] = (
+                f"{count} public names of {name} are defined in {origin}, "
+                f"which was not scanned. Call resolve_library('{origin}') "
+                f"for the full surface."
+            )
+        return payload
 
     def search(
         query: str,

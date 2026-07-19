@@ -377,6 +377,7 @@ class TestResolveDocumentVersion:
             version=cached_version,
             scan_mode="inprocess",
         )
+        got = got.document
         assert source == "cache"
         assert got.manifest.library.version == cached_version
 
@@ -557,6 +558,7 @@ class TestResolveLibraryDocument:
             no_cache=True,
             scan_mode="inprocess",
         )
+        doc = doc.document
         assert doc is not None
         assert source == "scan"
         assert len(doc.symbols) > 0
@@ -571,6 +573,7 @@ class TestResolveLibraryDocument:
             no_cache=False,
             scan_mode="inprocess",
         )
+        doc1 = doc1.document
         assert source1 == "scan"
         # Cache directory should exist
         assert cache_dir.exists()
@@ -582,6 +585,7 @@ class TestResolveLibraryDocument:
             no_cache=False,
             scan_mode="inprocess",
         )
+        doc2 = doc2.document
         assert source2 == "cache"
         assert len(doc2.symbols) == len(doc1.symbols)
 
@@ -700,6 +704,38 @@ class TestResolveLibraryDocument:
 
         assert source == "registry"
         assert cache_dir.exists()
+
+
+class TestResolveReportsUnresolved:
+    """An agent resolving a facade must be told where the surface lives."""
+
+    def test_resolve_document_carries_unresolved(self, tmp_path):
+        from lcp.mcp_server import resolve_library_document
+
+        result, source = resolve_library_document(
+            "sample_package.convenience",
+            cache_dir=tmp_path,
+            no_cache=True,
+            scan_mode="inprocess",
+        )
+
+        assert source == "scan"
+        assert result.unresolved_reexports == [("sample_package.core", 2)]
+
+    def test_cache_and_registry_hits_carry_nothing(self, tmp_path):
+        """Only a live scan can produce the diagnostic."""
+        from lcp.mcp_server import resolve_library_document
+
+        first, _ = resolve_library_document(
+            "sample_package.convenience", cache_dir=tmp_path, scan_mode="inprocess"
+        )
+        assert first.unresolved_reexports == [("sample_package.core", 2)]
+
+        second, source = resolve_library_document(
+            "sample_package.convenience", cache_dir=tmp_path, scan_mode="inprocess"
+        )
+        assert source == "cache"
+        assert second.unresolved_reexports == []
 
 
 # ---------------------------------------------------------------------------
