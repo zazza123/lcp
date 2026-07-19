@@ -131,6 +131,17 @@ def scan(
         else:
             click.echo(json_output)
 
+        # A facade package re-exporting from a sibling yields a near-empty
+        # manifest that still validates; say so rather than exiting 0 in
+        # silence (issue #58).
+        for origin, count in scanned.unresolved_reexports:
+            click.echo(
+                f"warning: {count} public names are defined in {origin}, "
+                f"which was not scanned.",
+                err=True,
+            )
+            click.echo(f"  Consider: lcp scan {origin}", err=True)
+
         # Generate coverage report if requested
         if coverage:
             click.echo("Generating coverage report...", err=True)

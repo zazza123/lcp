@@ -522,3 +522,26 @@ class TestServeAllScanOptions:
         assert captured["scan_mode"] == "subprocess"
         assert captured["scan_python"] is None
         assert captured["scan_timeout"] == 60.0
+
+
+class TestScanUnresolvedWarning:
+    """`lcp scan` must not report success while dropping the public surface."""
+
+    def test_warns_when_definitions_were_not_scanned(self, runner, tmp_path):
+        out = tmp_path / "conv.lcp.json"
+        result = runner.invoke(
+            main, ["scan", "sample_package.convenience", "-o", str(out)]
+        )
+
+        assert result.exit_code == 0
+        assert "warning:" in result.output
+        assert "sample_package.core" in result.output
+        assert "2 public names" in result.output
+        assert "lcp scan sample_package.core" in result.output
+
+    def test_silent_on_a_fully_scanned_package(self, runner, tmp_path):
+        out = tmp_path / "pkg.lcp.json"
+        result = runner.invoke(main, ["scan", "sample_package", "-o", str(out)])
+
+        assert result.exit_code == 0
+        assert "warning:" not in result.output
