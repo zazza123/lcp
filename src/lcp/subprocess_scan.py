@@ -30,6 +30,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Sequence
 
@@ -121,12 +122,27 @@ def _stderr_message(stderr: str) -> str | None:
     return None
 
 
+@dataclass
+class ScanResult:
+    """A generated LCP document plus the diagnostics from producing it.
+
+    Attributes:
+        document: The generated LCP document.
+        unresolved_reexports: ``(module_path, count)`` pairs for modules that
+            define re-exported names but were never scanned (issue #58).
+            Empty for documents that did not come from a live scan.
+    """
+
+    document: LCPDocument
+    unresolved_reexports: list[tuple[str, int]] = field(default_factory=list)
+
+
 def scan_package_subprocess(
     package: str,
     python: str | None = None,
     timeout: float = DEFAULT_SCAN_TIMEOUT,
     extra_paths: Sequence[str] = (),
-) -> LCPDocument:
+) -> ScanResult:
     """Scan *package* in a child interpreter and return its LCP document.
 
     Args:
@@ -139,8 +155,9 @@ def scan_package_subprocess(
             so the target interpreter needs neither ``lcp`` nor ``pydantic``.
 
     Returns:
-        The :class:`~lcp.models.LCPDocument` generated on the host from the
-        child's raw ``ScannedModule`` JSON.
+        A :class:`ScanResult` with the :class:`~lcp.models.LCPDocument`
+        generated on the host from the child's raw ``ScannedModule`` JSON,
+        plus any unresolved re-export diagnostics from the scan.
 
     Raises:
         ScanImportError: The package is not importable in the scan environment.
@@ -176,7 +193,10 @@ def scan_package_subprocess(
             from .scanner import scanned_from_dict
 
             scanned = scanned_from_dict(json.loads(proc.stdout))
-            return generate_lcp(scanned)
+            return ScanResult(
+                document=generate_lcp(scanned),
+                unresolved_reexports=scanned.unresolved_reexports,
+            )
         except Exception as exc:
             raise ScanFailedError(
                 f"scan of '{package}' produced invalid scan data: {exc}"

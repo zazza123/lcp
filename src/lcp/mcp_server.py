@@ -21,6 +21,7 @@ from .subprocess_scan import (
     DEFAULT_SCAN_TIMEOUT,
     ScanImportError,
     ScanInterpreterNotFoundError,
+    ScanResult,
     ScanSpawnError,
     ScanTimeoutError,
     scan_package_subprocess,
@@ -499,12 +500,16 @@ def _fetch_from_registry(
         ) from exc
 
 
-def _scan_inprocess(name: str) -> LCPDocument:
+def _scan_inprocess(name: str) -> ScanResult:
     """Scan *name* by importing it into this process (legacy path)."""
     from .generator import generate_lcp
     from .scanner import scan_package
 
-    return generate_lcp(scan_package(name, include_private=False, recursive=True))
+    scanned = scan_package(name, include_private=False, recursive=True)
+    return ScanResult(
+        document=generate_lcp(scanned),
+        unresolved_reexports=scanned.unresolved_reexports,
+    )
 
 
 def _scan_live(
@@ -512,7 +517,7 @@ def _scan_live(
     scan_mode: str,
     scan_python: str | None,
     scan_timeout: float,
-) -> LCPDocument:
+) -> ScanResult:
     """Run the live scan for *name* honoring the configured scan mode.
 
     Falls back to in-process scanning only when the subprocess could not be
@@ -604,7 +609,7 @@ def resolve_library_document(
     # 2. Live scan
     scan_error: Exception | None = None
     try:
-        doc = _scan_live(name, scan_mode, scan_python, scan_timeout)
+        doc = _scan_live(name, scan_mode, scan_python, scan_timeout).document
         if not no_cache:
             try:
                 _save_to_cache(cache_dir, doc)

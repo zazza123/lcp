@@ -90,7 +90,7 @@ class TestScanPackageSubprocess:
     def test_happy_path_returns_document(self):
         doc = scan_package_subprocess(
             "sample_package", extra_paths=[str(TESTS_DIR)]
-        )
+        ).document
         assert doc.manifest.library.name == "sample_package"
         assert len(doc.symbols) > 0
 
@@ -168,7 +168,7 @@ class TestCrossEnvironmentScan:
     def test_scan_resolves_package_from_second_venv(self, second_venv):
         doc = scan_package_subprocess(
             "secondvenv_only_pkg", python=str(second_venv)
-        )
+        ).document
         assert "secondvenv_only_pkg:greet" in doc.symbols
 
 
@@ -393,7 +393,21 @@ class TestHostLeakIsolation:
 
         doc = scan_package_subprocess(
             "contam_pkg", python=bare_target_venv, extra_paths=[str(tmp_path)]
-        )
+        ).document
 
         assert "contam_pkg:core" in doc.symbols
         assert not any(sid.startswith("contam_pkg.opt") for sid in doc.symbols)
+
+
+class TestUnresolvedReexportsPropagate:
+    """The diagnostic must survive the child-to-host JSON hop."""
+
+    def test_subprocess_scan_reports_unresolved(self):
+        from lcp.subprocess_scan import scan_package_subprocess
+
+        result = scan_package_subprocess(
+            "sample_package.convenience", extra_paths=[str(TESTS_DIR)]
+        )
+
+        assert result.unresolved_reexports == [("sample_package.core", 2)]
+        assert result.document.manifest.library.name == "sample_package.convenience"
