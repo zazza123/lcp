@@ -68,8 +68,10 @@ cells are ceiling context; churned cells measure stale-training traps.
    >20%-relative bar by a wide margin.
 
 2. **The client-side skill is what closes the F1 adoption gap.** Only the
-   `lcp-skill` arm carries the plugin skill; the bare `lcp`, `registry` and
-   `context7` arms get the server but no task-side nudge. Their engagement is
+   `lcp-skill` arm carries the plugin skill. The bare `lcp` and
+   `registry` arms get the server with no task-side nudge at all; `context7`
+   does get one (`CONTEXT7_RULE`, the vendor's own recommended always-use
+   rule) and still lands at baseline on niche — see point 4. Their engagement is
    low on haiku (12–19%) and their niche pass rate sits at baseline. The
    server's content is not the bottleneck — adoption is, exactly as Phases
    0–2b found, and the skill is the lever (haiku lcp 19% → lcp-skill 70%
