@@ -6,18 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Python SDK for generating [Library Context Protocol (LCP)](https://github.com/zazza123/lcp) files from Python packages by introspecting installed modules using `inspect` and `ast`.
 
-## Active Roadmap
-
-Ongoing improvement work is tracked in
-`docs/superpowers/plans/2026-07-02-agentic-improvements-roadmap.md`
-(master roadmap, phases 0–8: eval harness → v2 design → MCP consolidation →
-re-export aliases → structured docstrings → subprocess scan → docs →
-registry → benchmark). When a session works on one of its phases: read that
-file first (header + the phase's section, including its **Code notes**),
-settle the phase's Open decisions, then produce the detailed plan per the
-roadmap header's process. At the end of a phase session, update the phase's
-**Status** line and the eval results log in the roadmap, and commit.
-
 ## Development Commands
 
 ```bash
