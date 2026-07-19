@@ -1157,7 +1157,11 @@ def _register_tools(
             When the cache/registry serves a version that differs from the
             locally installed one (or the package is not installed at all),
             the result also carries "version_mismatch": true plus
-            "installed_version" and "resolved_version".
+            "installed_version" and "resolved_version". When a live scan
+            found re-exported names whose defining module was never
+            scanned (a facade package), the result also carries "note",
+            naming the module that should be resolved instead for the
+            full surface.
         """
         if allow is not None and name not in allow:
             return _error(

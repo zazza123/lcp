@@ -55,6 +55,17 @@ Re-exported symbols — where `obj.__module__` differs from the current module's
 
 The definition site remains the canonical identity; the generator turns the recorded pairs into the additive `Symbol.aliases` field (a sorted list of full Symbol IDs, e.g. `requests:get`), so a symbol is findable under the import path users actually write while the `symbols` map key stays stable. Why this design: agents and users think in documented import paths (`requests.get`), but rewriting IDs to the re-export site would break ID stability across internal refactors — aliases give both.
 
+### Unresolved Re-export Reporting
+
+An `_AliasRecord` can end up dangling — its target was never scanned, so `_attach_aliases()` has nothing to attach the alias to. There are two distinct reasons a record dangles, and the scanner deliberately treats them differently:
+
+- **Benign drop.** The defining module *was* scanned, but the target is not a scannable kind (a plain module-level variable, for instance). This is silent, exactly as before this diagnostic existed — there was never any public surface being lost.
+- **Real lost surface.** The defining module was *never* scanned at all. This is the issue #58 case: a facade package that re-exports from a sibling package. `scan_package()` sets the package root to the top-level distribution name (`google` for `google.cloud.firestore`, say), so a sibling re-export does pass the in-package test and an alias record *is* created — it only dies later, dangling, because the sibling module was never visited by the walk. Without this distinction, the scan of the facade would silently produce a near-empty manifest that still validates and still exits successfully.
+
+`_attach_aliases()` tracks the second case per origin module and returns it as `(module_path, count)` pairs, sorted by descending count, which `scan_package()` carries on `ScannedModule.unresolved_reexports`. `lcp scan` prints a warning to stderr naming the origin module and suggesting a follow-up scan of it; the MCP `resolve_library` tool attaches a `note` to its response pointing the calling agent at the module it should resolve instead.
+
+This diagnostic is scan-time only: it is derived from data that never enters the `LCPDocument` or the manifest schema, so it appears on the scan that produces it and not on subsequent cache or registry hits for the same package. That is a deliberate trade-off — the manifest itself stays a pure implementation of the LCP v1 spec, with no scanner-internal bookkeeping leaking into it.
+
 ### Docstring Parsing
 
 `_parse_docstring()` splits a raw docstring into:
