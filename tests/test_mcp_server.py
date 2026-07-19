@@ -1154,7 +1154,8 @@ class TestResolveLibraryTool:
         assert "3 public names" in result["note"]
         # The other origins are now named so the agent can act on them.
         assert "pkg.extras" in result["note"]
-        assert "also defined in" in result["note"]
+        # Distinct names, not the same ones restated at a second location.
+        assert "Further names come from" in result["note"]
         # The tail must not promise full surface when other origins exist.
         assert "for the full surface" not in result["note"]
         assert "to recover that surface" in result["note"]

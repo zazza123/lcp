@@ -1254,15 +1254,17 @@ def _register_tools(
 
             if others:
                 other_origins = ", ".join(o[0] for o in others)
-                others_clause = f" (also defined in {other_origins})"
+                others_clause = (
+                    f" Further names come from {other_origins}, also unscanned."
+                )
                 tail = f"resolve_library('{origin}') to recover that surface."
             else:
                 others_clause = ""
                 tail = f"resolve_library('{origin}') for the full surface."
 
             payload["note"] = (
-                f"{count} public {noun} of {name} {verb} defined in {origin}"
-                f"{others_clause}, which was not scanned. Call {tail}"
+                f"{count} public {noun} of {name} {verb} defined in {origin}, "
+                f"which was not scanned.{others_clause} Call {tail}"
             )
         return payload
 
