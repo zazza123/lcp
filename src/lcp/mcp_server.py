@@ -1251,16 +1251,18 @@ def _register_tools(
             origin, count = result.unresolved_reexports[0]
             noun, verb = ("name", "is") if count == 1 else ("names", "are")
             others = result.unresolved_reexports[1:]
-            others_clause = (
-                f" ({len(others)} other unscanned origin"
-                f"{'s' if len(others) != 1 else ''} also lost surface)"
-                if others
-                else ""
-            )
+
+            if others:
+                other_origins = ", ".join(o[0] for o in others)
+                others_clause = f" (also defined in {other_origins})"
+                tail = f"resolve_library('{origin}') to recover that surface."
+            else:
+                others_clause = ""
+                tail = f"resolve_library('{origin}') for the full surface."
+
             payload["note"] = (
                 f"{count} public {noun} of {name} {verb} defined in {origin}"
-                f"{others_clause}, which was not scanned. Call "
-                f"resolve_library('{origin}') for the full surface."
+                f"{others_clause}, which was not scanned. Call {tail}"
             )
         return payload
 

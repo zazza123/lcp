@@ -1152,10 +1152,12 @@ class TestResolveLibraryTool:
         assert "note" in result
         assert "pkg.core" in result["note"]
         assert "3 public names" in result["note"]
-        # The second origin (pkg.extras) is not itself named, but its
-        # existence must not be silently dropped from the note.
-        assert "pkg.extras" not in result["note"]
-        assert "1 other" in result["note"]
+        # The other origins are now named so the agent can act on them.
+        assert "pkg.extras" in result["note"]
+        assert "also defined in" in result["note"]
+        # The tail must not promise full surface when other origins exist.
+        assert "for the full surface" not in result["note"]
+        assert "to recover that surface" in result["note"]
 
     def test_note_absent_when_no_reexports_are_unresolved(self, universal_server):
         """The happy path (no lost surface) must not carry a note at all."""
