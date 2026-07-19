@@ -809,6 +809,32 @@ class TestUnresolvedReexports:
 
         assert _attach_aliases([], records) == [("pkg.big", 2), ("pkg.small", 1)]
 
+    def test_counts_distinct_names_not_reexport_sites(self):
+        """Two sites re-exporting the same name from the same origin count once.
+
+        A facade whose ``__init__.py`` re-exports a name and whose compat
+        shim re-exports the same name from the same origin must not double
+        the reported count: it is still exactly one lost name.
+        """
+        from lcp.scanner import _AliasRecord, _attach_aliases
+
+        records = [
+            _AliasRecord(
+                target_module="pkg.core",
+                target_name="Thing",
+                alias_module="pkg",
+                alias_name="Thing",
+            ),
+            _AliasRecord(
+                target_module="pkg.core",
+                target_name="Thing",
+                alias_module="pkg.compat",
+                alias_name="Thing",
+            ),
+        ]
+
+        assert _attach_aliases([], records) == [("pkg.core", 1)]
+
     def test_survives_serialization_round_trip(self):
         """The subprocess boundary must not drop the diagnostic."""
         from lcp.scanner import scan_package, scanned_from_dict, scanned_to_dict

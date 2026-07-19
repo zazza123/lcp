@@ -250,23 +250,29 @@ def _attach_aliases(
 
     Returns:
         ``(module_path, count)`` pairs for modules that were never scanned,
-        ordered by descending count then module path.
+        ``count`` being the number of distinct names lost (not the number of
+        re-export sites — the same name re-exported from both a package's
+        ``__init__.py`` and a compat shim counts once), ordered by
+        descending count then module path.
     """
     by_key = {(s.module_path, s.qualified_name): s for s in symbols}
     scanned_modules = {s.module_path for s in symbols if s.kind == "module"}
-    unresolved: dict[str, int] = {}
+    unresolved: dict[str, set[str]] = {}
 
     for rec in records:
         target = by_key.get((rec.target_module, rec.target_name))
         if target is None:
             if rec.target_module not in scanned_modules:
-                unresolved[rec.target_module] = unresolved.get(rec.target_module, 0) + 1
+                unresolved.setdefault(rec.target_module, set()).add(rec.target_name)
             continue
         alias = (rec.alias_module, rec.alias_name)
         if alias not in target.aliases:
             target.aliases.append(alias)
 
-    return sorted(unresolved.items(), key=lambda kv: (-kv[1], kv[0]))
+    return sorted(
+        ((mod, len(names)) for mod, names in unresolved.items()),
+        key=lambda kv: (-kv[1], kv[0]),
+    )
 
 
 def _raw_docstring(doc: Any) -> str | None:
