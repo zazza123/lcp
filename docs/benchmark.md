@@ -97,6 +97,8 @@ git clone https://github.com/zazza123/lcp-benchmark
 cd lcp-benchmark
 # Environment setup and the full grid procedure:
 # https://github.com/zazza123/lcp-benchmark/blob/main/docs/reproduce.md
+# One arm over the full 84-case set at 5 reps is 420 agent runs and costs
+# real API budget. Add --case-id <id> (repeatable) to try a few cases first.
 .venv-bench/bin/python run.py run \
   --out results/<name> --cases cases/python/publication \
   --model claude-haiku-4-5-20251001 --reps 5 --arms lcp-skill
