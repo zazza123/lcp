@@ -194,6 +194,21 @@ class TestIsConstant:
         Odd.__module__ = None
         assert _is_constant("ODD", Odd()) is True
 
+    def test_type_with_non_string_module_does_not_raise(self):
+        """__module__ is settable to any object; .split() must not explode.
+
+        A non-string is not merely None: without an explicit str() wrap it
+        has no .split() method at all, so the AttributeError would propagate
+        and drop the symbol via scan_module's broad except.
+        """
+        from lcp.scanner import _is_constant
+
+        class Weird:
+            pass
+
+        Weird.__module__ = object()  # non-string, non-None
+        assert _is_constant("WEIRD", Weird()) is True
+
     def test_hostile_object_is_classified_without_touching_attributes(self):
         """Proxies raise on attribute access; only type(obj) is safe."""
         from lcp.scanner import _is_constant

@@ -660,10 +660,18 @@ def _is_primitive(value: Any) -> bool:
     falls back to reading ``value.__class__``, and that read goes through a
     hostile ``__getattribute__``: an ``AttributeError`` is swallowed, but a
     proxy raising anything else propagates out of what reads like a pure
-    predicate (``flask.request`` raises ``RuntimeError`` outside a request
-    context). The identity check settles the common case without touching the
-    object at all; the guarded fallback preserves subclass semantics, which a
-    bare ``type(value) in`` check would lose.
+    predicate. The identity check settles the common case without touching
+    the object at all; the guarded fallback preserves subclass semantics,
+    which a bare ``type(value) in`` check would lose.
+
+    A proxy like ``flask.request`` never actually reaches this function
+    through ``scan_module``: the member loop's own
+    ``getattr(obj, "__module__", None)`` raises first and the member is
+    dropped before classification is attempted. Reaching this guarded
+    fallback at all is only possible for objects that survive that earlier
+    step; it remains as defence-in-depth for callers that classify a value
+    directly (as some tests do) or for a future member-loop shape that
+    reaches classification sooner.
 
     Args:
         value: The object to classify.
@@ -717,7 +725,7 @@ def _is_constant(name: str, value: Any) -> bool:
         return name.isupper()
     if callable(value) and not name.isupper():
         return False
-    top_level = (type(value).__module__ or "").split(".")[0]
+    top_level = str(type(value).__module__ or "").split(".")[0]
     return top_level not in sys.stdlib_module_names
 
 
