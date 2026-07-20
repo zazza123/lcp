@@ -34,9 +34,19 @@ jobs:
           queries: security-and-quality
           # tests/sample_package is a re-export fixture: its "unused"
           # imports and star-import ARE the behavior under test.
+          #
+          # tests/hostile_objects.py defines fixtures that deliberately
+          # raise RuntimeError (not AttributeError) from __getattr__ /
+          # __getattribute__, to prove isinstance()'s __class__ fallback
+          # doesn't swallow a proxy's exception (flask.request raises
+          # RuntimeError). CodeQL's "non-standard exception raised in
+          # special method" rule would suggest raising AttributeError
+          # instead, which would silence the very bug these tests exist
+          # to catch -- see the module docstring for details.
           config: |
             paths-ignore:
               - tests/sample_package
+              - tests/hostile_objects.py
 
       - name: perform codeql analysis
         uses: github/codeql-action/analyze@v4

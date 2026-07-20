@@ -3,6 +3,7 @@
 import inspect
 
 import pytest
+from hostile_objects import Hostile, HostileProxy
 
 from lcp.scanner import (
     ScannedModule,
@@ -213,10 +214,6 @@ class TestIsConstant:
         """Proxies raise on attribute access; only type(obj) is safe."""
         from lcp.scanner import _is_constant
 
-        class Hostile:
-            def __getattr__(self, item):
-                raise RuntimeError("working outside of request context")
-
         assert _is_constant("PROXY", Hostile()) is True
 
     def test_hostile_getattribute_runtime_error_is_classified_without_raising(self):
@@ -228,10 +225,6 @@ class TestIsConstant:
         the object must still be classified (and admitted) without raising.
         """
         from lcp.scanner import _is_constant
-
-        class HostileProxy:
-            def __getattribute__(self, item):
-                raise RuntimeError("working outside of request context")
 
         assert _is_constant("proxy", HostileProxy()) is True
 
@@ -1189,10 +1182,6 @@ class TestConstantSummary:
     def test_hostile_getattribute_runtime_error_summary_does_not_raise(self):
         """A proxy's RuntimeError must not propagate out of the summary builder."""
         from lcp.scanner import _constant_summary
-
-        class HostileProxy:
-            def __getattribute__(self, item):
-                raise RuntimeError("working outside of request context")
 
         assert _constant_summary(HostileProxy()) == "HostileProxy constant."
 
