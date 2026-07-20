@@ -94,12 +94,17 @@ def test_scan_does_not_abort_on_raising_class_member(poison_class_module):
 
 @pytest.fixture
 def hostile_isinstance_module():
-    """A module whose member raises merely on being *classified*.
+    """A module whose member raises on any *instance*-level attribute access.
 
-    Mirrors ``django.conf.settings`` (a lazy object): fetching the member is
-    fine, but ``inspect.ismodule()`` / ``isinstance()`` triggers its
-    ``__getattribute__`` and raises (``ImproperlyConfigured`` in django). The
-    fetch guard (``_safe_getmembers``) does not cover this later step.
+    Mirrors ``django.conf.settings`` (a lazy proxy object): fetching the
+    member off the module is fine, but touching any of its own attributes
+    (``__module__``, ``__doc__``, ...) goes through its overridden
+    ``__getattribute__`` and raises (``ImproperlyConfigured`` in django).
+    Classification must not do that — it may only consult ``type(value)``,
+    which bypasses the instance's ``__getattribute__`` entirely. Because that
+    stays safe, and because the resulting object is a legitimate public
+    singleton (issue #61), the scan captures it as a constant rather than
+    skipping it.
     """
     mod = types.ModuleType("hostilepkg")
 
@@ -117,11 +122,12 @@ def hostile_isinstance_module():
 
 
 def test_scan_does_not_abort_when_member_classification_raises(hostile_isinstance_module):
-    # Must not raise; the hostile member is skipped, the healthy one kept.
+    # Must not raise; the hostile member's own attributes are never touched,
+    # so it is classified safely and captured as a constant like the healthy one.
     result = scan_package("hostilepkg")
     names = {s.name for s in result.symbols}
     assert "GOOD" in names
-    assert "settings" not in names
+    assert "settings" in names
 
 
 def _build_pkg(tmp_path, name, files):

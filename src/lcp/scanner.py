@@ -6,6 +6,7 @@ import importlib
 import importlib.metadata
 import inspect
 import pkgutil
+import sys
 import typing
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -649,13 +650,47 @@ def _scan_function(
     )
 
 
+_PRIMITIVE_TYPES = (int, float, str, bytes, bool, type(None), tuple, frozenset)
+
+
 def _is_constant(name: str, value: Any) -> bool:
-    """Check if a value looks like a constant."""
-    # Constants are typically UPPER_CASE
-    if not name.isupper():
+    """Decide whether *value* should be recorded as a public constant.
+
+    Three cases, in order:
+
+    * a primitive value is admitted only under an ``UPPER_CASE`` name — the
+      historical rule, unchanged;
+    * a callable under a non-``UPPER_CASE`` name is rejected;
+    * anything else is admitted when its *type* is defined outside the
+      standard library.
+
+    That asymmetry on case is what keeps C-implemented functions out.
+    Libraries written partly in C ship their functions as instances of a
+    library-defined callable type — ``numpy.add`` is a ``ufunc``,
+    ``numpy.mean`` an ``_ArrayFunctionDispatcher`` — and those are
+    structurally indistinguishable from a legitimate value object such as
+    ``click.INT``: ``inspect.isroutine``, the descriptor protocol,
+    ``__code__`` and ``__wrapped__`` all fail to separate them. Python's
+    naming convention separates what structure cannot. Scanning those
+    functions properly is issue #63.
+
+    Only ``type(value)`` is consulted. Attribute access on the value itself
+    is unsafe: a proxy forwards it and can raise (``flask.request`` raises
+    ``RuntimeError`` outside a request context).
+
+    Args:
+        name: Attribute name the object is bound to in its module.
+        value: The object bound to that name.
+
+    Returns:
+        ``True`` when the symbol should be recorded as a constant.
+    """
+    if isinstance(value, _PRIMITIVE_TYPES):
+        return name.isupper()
+    if callable(value) and not name.isupper():
         return False
-    # Must be a simple type
-    return isinstance(value, (int, float, str, bytes, bool, type(None), tuple, frozenset))
+    top_level = (type(value).__module__ or "").split(".")[0]
+    return top_level not in sys.stdlib_module_names
 
 
 def scan_module(

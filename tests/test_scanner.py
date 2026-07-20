@@ -134,6 +134,76 @@ class TestIsConstant:
         assert _is_constant("MY_LIST", [1, 2, 3]) is False
         assert _is_constant("MY_DICT", {"a": 1}) is False
 
+    def test_library_sentinel_is_constant(self):
+        """A non-primitive instance of a library type is admitted."""
+        from lcp.scanner import _is_constant
+
+        class Sentinel:
+            pass
+
+        assert _is_constant("SERVER_TIMESTAMP", Sentinel()) is True
+
+    def test_lowercase_non_callable_instance_is_constant(self):
+        """The UPPER_CASE requirement is dropped for non-callables."""
+        from lcp.scanner import _is_constant
+
+        class Missing:
+            pass
+
+        assert _is_constant("missing", Missing()) is True
+
+    def test_lowercase_callable_instance_is_not_constant(self):
+        """Callables must still be UPPER_CASE: this is how C functions stay out."""
+        from lcp.scanner import _is_constant
+
+        class Dispatcher:
+            def __call__(self):
+                return None
+
+        assert _is_constant("mean", Dispatcher()) is False
+
+    def test_uppercase_callable_instance_is_constant(self):
+        """click.INT is callable but is a value, and its name says so."""
+        from lcp.scanner import _is_constant
+
+        class IntParamType:
+            def __call__(self):
+                return None
+
+        assert _is_constant("INT", IntParamType()) is True
+
+    def test_stdlib_typed_object_is_not_constant(self):
+        """`annotations` leaked by __future__ must not become a symbol."""
+        import __future__
+
+        from lcp.scanner import _is_constant
+
+        # NOTE: `from __future__ import annotations` is a compiler directive
+        # and is a SyntaxError anywhere but the top of a module — import the
+        # module and read the attribute instead. Its type `_Feature` lives in
+        # `__future__`, which is in sys.stdlib_module_names, so it is rejected.
+        assert _is_constant("annotations", __future__.annotations) is False
+
+    def test_type_without_module_does_not_raise(self):
+        """__module__ can be None on exotic types; .split() must not explode."""
+        from lcp.scanner import _is_constant
+
+        class Odd:
+            pass
+
+        Odd.__module__ = None
+        assert _is_constant("ODD", Odd()) is True
+
+    def test_hostile_object_is_classified_without_touching_attributes(self):
+        """Proxies raise on attribute access; only type(obj) is safe."""
+        from lcp.scanner import _is_constant
+
+        class Hostile:
+            def __getattr__(self, item):
+                raise RuntimeError("working outside of request context")
+
+        assert _is_constant("PROXY", Hostile()) is True
+
 
 class TestGetParamKind:
     """Tests for _get_param_kind function."""
