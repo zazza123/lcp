@@ -127,9 +127,15 @@ def scan_one(import_name: str) -> dict[str, Any]:
 
     try:
         document = generate_lcp(scan_package(import_name))
-    except KeyboardInterrupt:
-        raise
-    except BaseException as exc:  # noqa: BLE001 - a scan may raise SystemExit
+    except (Exception, SystemExit) as exc:
+        # SystemExit is named explicitly because a scanned library's
+        # import-time code can call sys.exit(); scanjson.py and _childscan.py
+        # guard the same way. KeyboardInterrupt is deliberately absent, so
+        # Ctrl-C propagates and stops the run instead of being recorded as a
+        # per-library failure — see this function's docstring. Naming the two
+        # concrete classes rather than BaseException also keeps GeneratorExit
+        # and BaseExceptionGroup, which a library import cannot realistically
+        # raise, out of the net.
         return {"error": f"{type(exc).__name__}: {exc}"}
 
     symbols = {
