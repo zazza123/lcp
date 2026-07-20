@@ -99,5 +99,5 @@ With `--include-private`, names starting with `_` (except `__dunder__`) are also
 - [Architecture](architecture.md) - Scanner internals, generator logic, LCP models, and validator
 
 ---
-**Last Updated:** February 2026
+**Last Updated:** July 2026
 **Status:** Implemented
