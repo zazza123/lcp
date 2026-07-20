@@ -235,3 +235,7 @@ site_build/
 # Leftover local environments from before the benchmark was split out
 # into the lcp-benchmark repo (evals/ is no longer tracked here)
 /evals/
+
+# Corpus diff tool (tools/corpus): local venv and generated snapshots
+tools/corpus/.venv/
+tools/corpus/*.json
