@@ -693,6 +693,31 @@ def _is_constant(name: str, value: Any) -> bool:
     return top_level not in sys.stdlib_module_names
 
 
+_MAX_CONSTANT_REPR = 60
+
+
+def _constant_summary(value: Any) -> str:
+    """Build the summary line for a constant symbol.
+
+    Primitives carry their value; everything else carries only its type name.
+    The value is deliberately withheld for non-primitives: ``__repr__`` on an
+    arbitrary object can be enormous, expensive, or raise.
+
+    Args:
+        value: The object bound to the constant's name.
+
+    Returns:
+        e.g. ``"int constant: 100"`` or ``"Sentinel constant."``.
+    """
+    type_name = type(value).__name__
+    if not isinstance(value, _PRIMITIVE_TYPES):
+        return f"{type_name} constant."
+    rendered = repr(value)
+    if len(rendered) > _MAX_CONSTANT_REPR:
+        rendered = rendered[:_MAX_CONSTANT_REPR] + "…"
+    return f"{type_name} constant: {rendered}"
+
+
 def scan_module(
     module: ModuleType,
     include_private: bool = False,
@@ -795,7 +820,7 @@ def scan_module(
                         qualified_name=name,
                         module_path=module_path,
                         kind="constant",
-                        summary=f"Constant {name}",
+                        summary=_constant_summary(obj),
                     )
                 )
         except KeyboardInterrupt:

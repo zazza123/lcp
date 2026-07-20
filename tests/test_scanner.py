@@ -1105,3 +1105,40 @@ class TestUnresolvedReexports:
         restored = scanned_from_dict({"name": "x", "version": "1.0", "symbols": []})
 
         assert restored.unresolved_reexports == []
+
+
+class TestConstantSummary:
+    """A constant symbol must say what it is, and what it holds when simple."""
+
+    def test_primitive_carries_its_value(self):
+        from lcp.scanner import _constant_summary
+
+        assert _constant_summary(100) == "int constant: 100"
+        assert _constant_summary("lcp") == "str constant: 'lcp'"
+
+    def test_object_carries_its_type_only(self):
+        from lcp.scanner import _constant_summary
+
+        class Sentinel:
+            pass
+
+        assert _constant_summary(Sentinel()) == "Sentinel constant."
+
+    def test_long_primitive_repr_is_truncated(self):
+        from lcp.scanner import _constant_summary
+
+        summary = _constant_summary("x" * 200)
+
+        assert summary.startswith("str constant: ")
+        assert summary.endswith("…")
+        assert len(summary) < 100
+
+    def test_summary_reaches_the_scanned_symbol(self):
+        """The call site must use the helper, not the old literal."""
+        from lcp.scanner import scan_package
+
+        scanned = scan_package("sample_module", recursive=False)
+        by_name = {s.name: s for s in scanned.symbols}
+
+        assert by_name["MAX_ITEMS"].summary == "int constant: 100"
+        assert by_name["MODULE_VERSION"].summary == "str constant: '1.0.0'"
