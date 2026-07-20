@@ -70,10 +70,10 @@ checkouts and the venv only has to be built once:
 ```bash
 git worktree add /tmp/lcp-before main
 tools/corpus/.venv/bin/python tools/corpus/snapshot.py \
-    --src /tmp/lcp-before/src -o before.json --tier full
+    --src /tmp/lcp-before/src -o tools/corpus/before.json --tier full
 tools/corpus/.venv/bin/python tools/corpus/snapshot.py \
-    --src ./src -o after.json --tier full
-tools/corpus/.venv/bin/python tools/corpus/compare.py before.json after.json
+    --src ./src -o tools/corpus/after.json --tier full
+tools/corpus/.venv/bin/python tools/corpus/compare.py tools/corpus/before.json tools/corpus/after.json
 git worktree remove /tmp/lcp-before
 ```
 
