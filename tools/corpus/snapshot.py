@@ -77,15 +77,31 @@ def _lcp_sha(src: str) -> str:
     Returns ``"unknown"`` when the path is not inside a git work tree, so a
     snapshot taken from an exported tree still records something rather than
     crashing.
+
+    A ``-dirty`` suffix is appended when the work tree has uncommitted
+    changes. Without it, snapshotting an uncommitted edit labels the
+    snapshot with HEAD's SHA, so a before/after pair taken around that edit
+    would carry the *same* SHA on both sides — indistinguishable from two
+    snapshots of the same, unmodified commit.
     """
     try:
+        repo = str(Path(src).parent)
         out = subprocess.run(
-            ["git", "-C", str(Path(src).parent), "rev-parse", "--short", "HEAD"],
+            ["git", "-C", repo, "rev-parse", "--short", "HEAD"],
             capture_output=True,
             text=True,
             check=True,
         )
-        return out.stdout.strip()
+        sha = out.stdout.strip()
+        status = subprocess.run(
+            ["git", "-C", repo, "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        if status.stdout.strip():
+            sha += "-dirty"
+        return sha
     except Exception:
         return "unknown"
 
@@ -98,13 +114,21 @@ def scan_one(import_name: str) -> dict[str, Any]:
 
     Returns:
         ``{"symbols": {...}}`` on success, ``{"error": "..."}`` on any
-        failure. Never raises: a corpus run must survive one bad library.
+        library-scan failure. Never raises for a bad library: a corpus run
+        must survive one broken import or scanner crash. ``KeyboardInterrupt``
+        is the one exception excluded from that contract and always
+        propagates, because an operator hitting Ctrl-C during a multi-minute
+        full-tier run means "stop now", not "record this library as failed
+        and move on to the next" — catching it here would otherwise take one
+        Ctrl-C per remaining library to actually stop the run.
     """
     from lcp.generator import generate_lcp
     from lcp.scanner import scan_package
 
     try:
         document = generate_lcp(scan_package(import_name))
+    except KeyboardInterrupt:
+        raise
     except BaseException as exc:  # noqa: BLE001 - a scan may raise SystemExit
         return {"error": f"{type(exc).__name__}: {exc}"}
 
@@ -146,6 +170,18 @@ def build_snapshot(src: str, libraries_path: Path, tier: str) -> dict[str, Any]:
     silently corrupt each other's results. Call it sequentially, or put a
     process boundary between concurrent snapshots.
 
+    After the eviction, this also verifies that ``lcp`` actually imports
+    from *src* before scanning anything. Inserting *src* at the front of
+    ``sys.path`` is not, by itself, a guarantee: if the corpus venv ever has
+    ``lcp`` installed too — especially as a setuptools editable install,
+    which registers a ``sys.meta_path`` finder that is consulted *before*
+    ``sys.path`` — that installed copy silently wins, ``--src`` is ignored,
+    and the snapshot's ``provenance.lcp_sha`` would faithfully report the
+    SHA of a checkout that was never actually measured. That failure mode is
+    invisible to a diff: two snapshots built from two different checkouts
+    but both actually measuring the same wrong one would render as an empty
+    report with two different SHAs printed above it.
+
     Args:
         src: Path to a checkout's ``src`` directory. Prepended to ``sys.path``
             for the duration of this call only.
@@ -157,6 +193,10 @@ def build_snapshot(src: str, libraries_path: Path, tier: str) -> dict[str, Any]:
 
     Raises:
         ValueError: If *tier* is not one of ``TIERS``.
+        RuntimeError: If, after eviction and the ``sys.path`` insertion,
+            ``lcp`` still does not import from inside *src* — e.g. because
+            it is separately installed in this interpreter and wins over
+            the ``sys.path`` entry.
     """
     src = str(Path(src).resolve())
 
@@ -173,6 +213,19 @@ def build_snapshot(src: str, libraries_path: Path, tier: str) -> dict[str, Any]:
         del sys.modules[name]
 
     try:
+        import lcp as _lcp
+
+        lcp_file = Path(_lcp.__file__).resolve()
+        src_path = Path(src)
+        if src_path not in lcp_file.parents:
+            raise RuntimeError(
+                f"lcp was imported from {lcp_file}, which is not inside "
+                f"--src {src_path}. --src was silently ignored, most likely "
+                "because lcp is separately installed in this interpreter "
+                "(e.g. an editable install, whose import hook wins over a "
+                "sys.path entry). Uninstall lcp from this venv and retry."
+            )
+
         entries = read_libraries(Path(libraries_path), tier)
         libraries: dict[str, Any] = {}
         versions: dict[str, str] = {}
@@ -186,6 +239,7 @@ def build_snapshot(src: str, libraries_path: Path, tier: str) -> dict[str, Any]:
         return {
             "provenance": {
                 "lcp_sha": _lcp_sha(src),
+                "lcp_file": str(lcp_file),
                 "python": platform.python_version(),
                 "tier": tier,
                 "versions": dict(sorted(versions.items())),
