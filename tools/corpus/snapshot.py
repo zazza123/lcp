@@ -140,6 +140,12 @@ def build_snapshot(src: str, libraries_path: Path, tier: str) -> dict[str, Any]:
     test suite does) is unaffected, since nothing observes the substitute
     modules except the scans running inside this function.
 
+    Not thread-safe. The save/evict/restore sequence mutates ``sys.modules``
+    and ``sys.path``, which are interpreter-global, with no synchronisation:
+    two threads calling this concurrently in the same process would race and
+    silently corrupt each other's results. Call it sequentially, or put a
+    process boundary between concurrent snapshots.
+
     Args:
         src: Path to a checkout's ``src`` directory. Prepended to ``sys.path``
             for the duration of this call only.
