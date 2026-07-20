@@ -130,6 +130,57 @@ def test_scan_does_not_abort_when_member_classification_raises(hostile_isinstanc
     assert "settings" in names
 
 
+@pytest.fixture
+def bad_repr_module():
+    """A module exposing UPPER_CASE constants whose ``repr()`` raises.
+
+    ``tuple`` and ``str`` are two of the eight types ``_is_primitive``
+    accepts, but neither guarantees a safe ``repr()``: a tuple can hold
+    arbitrary objects, and ``str`` can be subclassed with an overridden
+    ``__repr__`` (a common redacting-secret idiom). Before ``_constant_summary``
+    guarded the call, a raising ``repr()`` propagated out of it, and
+    ``scan_module``'s broad ``except`` then swallowed it — silently dropping
+    the whole symbol from the scan, not merely its value.
+    """
+    mod = types.ModuleType("badreprpkg")
+
+    class BadRepr:
+        def __repr__(self):
+            raise RuntimeError("__repr__ is intentionally broken")
+
+    class BadStr(str):
+        def __repr__(self):
+            raise RuntimeError("__repr__ is intentionally broken")
+
+    BadStr.__module__ = "badreprpkg"  # so the instance isn't filtered as re-exported
+
+    mod.MY_TUPLE = (BadRepr(),)
+    mod.NAME = BadStr("x")
+    sys.modules["badreprpkg"] = mod
+    try:
+        yield mod
+    finally:
+        sys.modules.pop("badreprpkg", None)
+
+
+def test_scan_captures_tuple_constant_whose_element_repr_raises(bad_repr_module):
+    """A raising element __repr__ must degrade the summary, not delete the symbol."""
+    result = scan_package("badreprpkg")
+    by_name = {s.name: s for s in result.symbols}
+
+    assert "MY_TUPLE" in by_name  # symbol must still be captured
+    assert by_name["MY_TUPLE"].summary == "tuple constant."
+
+
+def test_scan_captures_str_subclass_constant_whose_repr_raises(bad_repr_module):
+    """A raising __repr__ on a str subclass must degrade the summary, not delete the symbol."""
+    result = scan_package("badreprpkg")
+    by_name = {s.name: s for s in result.symbols}
+
+    assert "NAME" in by_name  # symbol must still be captured
+    assert by_name["NAME"].summary == "BadStr constant."
+
+
 def _build_pkg(tmp_path, name, files):
     """Write a real on-disk package and put it on ``sys.path``.
 

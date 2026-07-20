@@ -733,6 +733,13 @@ def _constant_summary(value: Any) -> str:
     detection goes through ``_is_primitive`` rather than a bare
     ``isinstance`` call, which is not safe on a hostile object.
 
+    Two of the primitive types, ``tuple`` and ``frozenset``, are containers
+    that can hold arbitrary objects, and ``str``/``bytes`` can be subclassed
+    with an overridden ``__repr__``. So even a primitive's own ``repr()``
+    call is not guaranteed safe: if it raises, the summary degrades to the
+    type-only form rather than letting the exception escape (which would
+    otherwise drop the whole symbol from the scan).
+
     Args:
         value: The object bound to the constant's name.
 
@@ -742,7 +749,10 @@ def _constant_summary(value: Any) -> str:
     type_name = type(value).__name__
     if not _is_primitive(value):
         return f"{type_name} constant."
-    rendered = repr(value)
+    try:
+        rendered = repr(value)
+    except Exception:
+        return f"{type_name} constant."
     if len(rendered) > _MAX_CONSTANT_REPR:
         rendered = rendered[:_MAX_CONSTANT_REPR] + "…"
     return f"{type_name} constant: {rendered}"
