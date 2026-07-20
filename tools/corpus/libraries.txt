@@ -1,0 +1,40 @@
+# tier  pip-name                 import-name
+# Chosen for shape, not for count. Each core entry covers a distinct
+# scanner behaviour; adding more of the same shape costs install time
+# without adding signal.
+
+# facade over a sibling package (issue #58, #62)
+core    google-cloud-firestore   google.cloud.firestore
+# no __all__, cross-distribution re-exports, proxy objects
+core    flask                    flask
+# lowercase non-callable sentinel: jinja2.utils.missing
+core    jinja2                   jinja2
+# UPPER_CASE callable value objects: INT, BOOL, FLOAT
+core    click                    click
+core    typer                    typer
+# lookup object, no __all__
+core    requests                 requests
+# many non-callable value constants
+core    rich                     rich
+# strict __all__ discipline
+core    pydantic                 pydantic
+core    jsonschema               jsonschema
+# ordinary mid-size surfaces
+core    httpx                    httpx
+core    starlette                starlette
+core    attrs                    attrs
+core    yarl                     yarl
+
+# C-extension heavy: where the largest measured risk lives
+full    numpy                    numpy
+full    scipy                    scipy
+full    pandas                   pandas
+full    pyarrow                  pyarrow
+full    polars                   polars
+full    pillow                   PIL
+# very large surfaces
+full    sqlalchemy               sqlalchemy
+full    boto3                    boto3
+full    botocore                 botocore
+full    aiohttp                  aiohttp
+full    fsspec                   fsspec
