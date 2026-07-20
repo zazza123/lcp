@@ -41,8 +41,11 @@ def read_libraries(path: Path, tier: str) -> list[tuple[str, str]]:
         ``(pip_name, import_name)`` pairs, in file order.
 
     Raises:
-        ValueError: If a line has the wrong number of columns or an unknown tier.
+        ValueError: If a line has the wrong number of columns, a line has an
+            unknown tier, or *tier* itself is not one of ``TIERS``.
     """
+    if tier not in TIERS:
+        raise ValueError(f"unknown tier {tier!r}; expected one of {TIERS}")
     wanted = {"core"} if tier == "core" else {"core", "full"}
     entries: list[tuple[str, str]] = []
     for lineno, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
@@ -119,37 +122,76 @@ def scan_one(import_name: str) -> dict[str, Any]:
 def build_snapshot(src: str, libraries_path: Path, tier: str) -> dict[str, Any]:
     """Build the full snapshot for *tier* using the lcp checkout at *src*.
 
+    Every call re-resolves ``lcp`` (and thus ``lcp.scanner``/``lcp.generator``)
+    against *src*, even if a previous call in the same process already
+    imported ``lcp`` from a different checkout. Python only consults
+    ``sys.path`` the first time a module is imported; once ``lcp.scanner`` is
+    cached in ``sys.modules``, a later ``sys.path`` change is silently
+    ignored by the import system. Without evicting the cache, a second call
+    with a different *src* would keep measuring the first checkout while
+    reporting the second one's provenance — a measurement tool's worst
+    failure mode, since nothing raises or errors.
+
+    The eviction is scoped to this call: whatever ``lcp``/``lcp.*`` entries
+    (and ``sys.path`` state) existed on entry are restored again before
+    returning, in a ``finally`` block that runs even if a scan raises. This
+    keeps the swap invisible outside a single ``build_snapshot()`` call — a
+    caller that also imports the real ``lcp`` package (as this project's own
+    test suite does) is unaffected, since nothing observes the substitute
+    modules except the scans running inside this function.
+
     Args:
-        src: Path to a checkout's ``src`` directory. Prepended to ``sys.path``.
+        src: Path to a checkout's ``src`` directory. Prepended to ``sys.path``
+            for the duration of this call only.
         libraries_path: Path to ``libraries.txt``.
         tier: ``"core"`` or ``"full"``.
 
     Returns:
         The snapshot document, ready to serialize.
+
+    Raises:
+        ValueError: If *tier* is not one of ``TIERS``.
     """
     src = str(Path(src).resolve())
-    if src not in sys.path:
+
+    inserted_path = src not in sys.path
+    if inserted_path:
         sys.path.insert(0, src)
 
-    entries = read_libraries(Path(libraries_path), tier)
-    libraries: dict[str, Any] = {}
-    versions: dict[str, str] = {}
-
-    for pip_name, import_name in entries:
-        version = _installed_version(pip_name)
-        if version is not None:
-            versions[pip_name] = version
-        libraries[pip_name] = scan_one(import_name)
-
-    return {
-        "provenance": {
-            "lcp_sha": _lcp_sha(src),
-            "python": platform.python_version(),
-            "tier": tier,
-            "versions": dict(sorted(versions.items())),
-        },
-        "libraries": dict(sorted(libraries.items())),
+    saved_modules = {
+        name: sys.modules[name]
+        for name in sys.modules
+        if name == "lcp" or name.startswith("lcp.")
     }
+    for name in saved_modules:
+        del sys.modules[name]
+
+    try:
+        entries = read_libraries(Path(libraries_path), tier)
+        libraries: dict[str, Any] = {}
+        versions: dict[str, str] = {}
+
+        for pip_name, import_name in entries:
+            version = _installed_version(pip_name)
+            if version is not None:
+                versions[pip_name] = version
+            libraries[pip_name] = scan_one(import_name)
+
+        return {
+            "provenance": {
+                "lcp_sha": _lcp_sha(src),
+                "python": platform.python_version(),
+                "tier": tier,
+                "versions": dict(sorted(versions.items())),
+            },
+            "libraries": dict(sorted(libraries.items())),
+        }
+    finally:
+        for name in [n for n in sys.modules if n == "lcp" or n.startswith("lcp.")]:
+            del sys.modules[name]
+        sys.modules.update(saved_modules)
+        if inserted_path:
+            sys.path.remove(src)
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -102,6 +102,77 @@ class TestSnapshot:
         assert set(core["libraries"]) == {"nope"}
         assert set(full["libraries"]) == {"nope", "also_nope"}
 
+    def test_unknown_tier_raises(self, tmp_path):
+        snapshot = _load("snapshot.py")
+        libraries = tmp_path / "libraries.txt"
+        libraries.write_text("core\tnope\tdefinitely_not_installed_xyz\n", encoding="utf-8")
+
+        with pytest.raises(ValueError, match="bogus"):
+            snapshot.read_libraries(libraries, "bogus")
+
+        with pytest.raises(ValueError, match="bogus"):
+            snapshot.build_snapshot(src=str(REPO_ROOT / "src"), libraries_path=libraries, tier="bogus")
+
+    def test_second_call_with_different_src_uses_that_checkout(self, tmp_path):
+        """A second build_snapshot() call with a *different* --src must not
+        silently keep measuring the first checkout's cached lcp.scanner /
+        lcp.generator (sys.path only affects imports that haven't happened
+        yet; sys.modules caching would otherwise hide the switch)."""
+        snapshot = _load("snapshot.py")
+
+        stub_root = tmp_path / "stub_src"
+        stub_lcp = stub_root / "lcp"
+        stub_lcp.mkdir(parents=True)
+        (stub_lcp / "__init__.py").write_text("", encoding="utf-8")
+        (stub_lcp / "scanner.py").write_text(
+            textwrap.dedent(
+                """
+                def scan_package(name, **kwargs):
+                    return None
+                """
+            ),
+            encoding="utf-8",
+        )
+        (stub_lcp / "generator.py").write_text(
+            textwrap.dedent(
+                """
+                from types import SimpleNamespace
+
+
+                def generate_lcp(scanned):
+                    symbol = SimpleNamespace(
+                        kind=SimpleNamespace(value="function"),
+                        module="stublib",
+                        semantics=SimpleNamespace(summary="stub sentinel"),
+                    )
+                    return SimpleNamespace(symbols={"stublib:SENTINEL_65": symbol})
+                """
+            ),
+            encoding="utf-8",
+        )
+
+        libraries = tmp_path / "libraries.txt"
+        libraries.write_text("core\tstublib\tstublib\n", encoding="utf-8")
+
+        # First call: the real checkout. "stublib" isn't importable through
+        # it, so this scan records an error entry -- that's fine, its only
+        # purpose is to get the real lcp.scanner/lcp.generator cached in
+        # sys.modules the way a real first invocation would.
+        snapshot.build_snapshot(
+            src=str(REPO_ROOT / "src"), libraries_path=libraries, tier="core"
+        )
+
+        # Second call: a different checkout (the stub). If lcp.scanner /
+        # lcp.generator stayed cached from the first call, this result would
+        # NOT contain the sentinel symbol -- it would instead reflect the
+        # real checkout's (error) behavior.
+        result = snapshot.build_snapshot(
+            src=str(stub_root), libraries_path=libraries, tier="core"
+        )
+
+        symbols = result["libraries"]["stublib"]["symbols"]
+        assert "stublib:SENTINEL_65" in symbols
+
     def test_provenance_records_the_measured_checkout(self, tiny_corpus):
         snapshot = _load("snapshot.py")
         result = snapshot.build_snapshot(
