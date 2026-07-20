@@ -204,6 +204,34 @@ class TestIsConstant:
 
         assert _is_constant("PROXY", Hostile()) is True
 
+    def test_hostile_getattribute_runtime_error_is_classified_without_raising(self):
+        """isinstance()'s __class__ fallback must not let a proxy's exception escape.
+
+        flask.request raises RuntimeError (not AttributeError) outside a
+        request context. A bare ``isinstance(value, _PRIMITIVE_TYPES)`` call
+        would let that propagate out of what reads like a pure predicate;
+        the object must still be classified (and admitted) without raising.
+        """
+        from lcp.scanner import _is_constant
+
+        class HostileProxy:
+            def __getattribute__(self, item):
+                raise RuntimeError("working outside of request context")
+
+        assert _is_constant("proxy", HostileProxy()) is True
+
+    def test_str_subclass_is_still_a_primitive(self):
+        """Subclass semantics must survive the safety fix: MyStr is a str here."""
+        from lcp.scanner import _is_constant
+
+        class MyStr(str):
+            pass
+
+        # Primitive branch applies (UPPER_CASE required) rather than the
+        # "non-stdlib type" branch (which would admit any name).
+        assert _is_constant("MY_CONST", MyStr("x")) is True
+        assert _is_constant("my_const", MyStr("x")) is False
+
 
 class TestGetParamKind:
     """Tests for _get_param_kind function."""
@@ -1142,3 +1170,23 @@ class TestConstantSummary:
 
         assert by_name["MAX_ITEMS"].summary == "int constant: 100"
         assert by_name["MODULE_VERSION"].summary == "str constant: '1.0.0'"
+
+    def test_hostile_getattribute_runtime_error_summary_does_not_raise(self):
+        """A proxy's RuntimeError must not propagate out of the summary builder."""
+        from lcp.scanner import _constant_summary
+
+        class HostileProxy:
+            def __getattribute__(self, item):
+                raise RuntimeError("working outside of request context")
+
+        assert _constant_summary(HostileProxy()) == "HostileProxy constant."
+
+    def test_str_subclass_renders_its_value(self):
+        """Subclass semantics must survive: the summary still renders the value."""
+        from lcp.scanner import _constant_summary
+
+        class MyStr(str):
+            pass
+
+        value = MyStr("hello")
+        assert _constant_summary(value) == f"MyStr constant: {value!r}"

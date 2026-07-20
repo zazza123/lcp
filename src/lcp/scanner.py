@@ -653,6 +653,32 @@ def _scan_function(
 _PRIMITIVE_TYPES = (int, float, str, bytes, bool, type(None), tuple, frozenset)
 
 
+def _is_primitive(value: Any) -> bool:
+    """Whether *value* is a primitive, without trusting the object.
+
+    ``isinstance`` is not safe here. When its fast ``type()`` check misses it
+    falls back to reading ``value.__class__``, and that read goes through a
+    hostile ``__getattribute__``: an ``AttributeError`` is swallowed, but a
+    proxy raising anything else propagates out of what reads like a pure
+    predicate (``flask.request`` raises ``RuntimeError`` outside a request
+    context). The identity check settles the common case without touching the
+    object at all; the guarded fallback preserves subclass semantics, which a
+    bare ``type(value) in`` check would lose.
+
+    Args:
+        value: The object to classify.
+
+    Returns:
+        ``True`` when *value* is one of the primitive types.
+    """
+    if type(value) in _PRIMITIVE_TYPES:
+        return True
+    try:
+        return isinstance(value, _PRIMITIVE_TYPES)
+    except Exception:
+        return False
+
+
 def _is_constant(name: str, value: Any) -> bool:
     """Decide whether *value* should be recorded as a public constant.
 
@@ -674,9 +700,11 @@ def _is_constant(name: str, value: Any) -> bool:
     naming convention separates what structure cannot. Scanning those
     functions properly is issue #63.
 
-    Only ``type(value)`` is consulted. Attribute access on the value itself
-    is unsafe: a proxy forwards it and can raise (``flask.request`` raises
-    ``RuntimeError`` outside a request context).
+    Only ``type(value)`` is consulted, never the instance's own attributes.
+    Attribute access on the value itself is unsafe: a proxy forwards it and
+    can raise (``flask.request`` raises ``RuntimeError`` outside a request
+    context). Primitive detection goes through ``_is_primitive`` rather than
+    a bare ``isinstance`` call for the same reason.
 
     Args:
         name: Attribute name the object is bound to in its module.
@@ -685,7 +713,7 @@ def _is_constant(name: str, value: Any) -> bool:
     Returns:
         ``True`` when the symbol should be recorded as a constant.
     """
-    if isinstance(value, _PRIMITIVE_TYPES):
+    if _is_primitive(value):
         return name.isupper()
     if callable(value) and not name.isupper():
         return False
@@ -701,7 +729,9 @@ def _constant_summary(value: Any) -> str:
 
     Primitives carry their value; everything else carries only its type name.
     The value is deliberately withheld for non-primitives: ``__repr__`` on an
-    arbitrary object can be enormous, expensive, or raise.
+    arbitrary object can be enormous, expensive, or raise. Primitive
+    detection goes through ``_is_primitive`` rather than a bare
+    ``isinstance`` call, which is not safe on a hostile object.
 
     Args:
         value: The object bound to the constant's name.
@@ -710,7 +740,7 @@ def _constant_summary(value: Any) -> str:
         e.g. ``"int constant: 100"`` or ``"Sentinel constant."``.
     """
     type_name = type(value).__name__
-    if not isinstance(value, _PRIMITIVE_TYPES):
+    if not _is_primitive(value):
         return f"{type_name} constant."
     rendered = repr(value)
     if len(rendered) > _MAX_CONSTANT_REPR:
