@@ -192,3 +192,87 @@ class TestSnapshot:
             capture_output=True, text=True, check=True,
         ).stdout.strip()
         assert provenance["lcp_sha"] == expected
+
+
+def _snap(libraries, tier="core"):
+    """Build a minimal snapshot document for diff tests."""
+    return {
+        "provenance": {"lcp_sha": "abc1234", "python": "3.12.0",
+                       "tier": tier, "versions": {}},
+        "libraries": libraries,
+    }
+
+
+def _sym(kind="constant", summary="Box constant.", module="rich"):
+    return {"kind": kind, "module": module, "summary": summary}
+
+
+class TestCompare:
+    def test_reports_removed_symbols(self):
+        compare = _load("compare.py")
+        before = _snap({"rich": {"symbols": {"rich:A": _sym(), "rich:B": _sym()}}})
+        after = _snap({"rich": {"symbols": {"rich:A": _sym()}}})
+
+        diff = compare.diff_snapshots(before, after)
+
+        assert [d["id"] for d in diff["removed"]] == ["rich:B"]
+        assert diff["added"] == []
+
+    def test_reports_kind_changes_separately_from_add_and_remove(self):
+        compare = _load("compare.py")
+        before = _snap({"rich": {"symbols": {"rich:A": _sym(kind="constant")}}})
+        after = _snap({"rich": {"symbols": {"rich:A": _sym(kind="function")}}})
+
+        diff = compare.diff_snapshots(before, after)
+
+        assert diff["removed"] == []
+        assert diff["added"] == []
+        assert diff["kind_changed"] == [
+            {"library": "rich", "id": "rich:A", "before": "constant", "after": "function"}
+        ]
+
+    def test_groups_additions_by_object_type(self):
+        compare = _load("compare.py")
+        before = _snap({"numpy": {"symbols": {}}})
+        after = _snap({"numpy": {"symbols": {
+            "numpy:a": _sym(summary="ufunc constant.", module="numpy"),
+            "numpy:b": _sym(summary="ufunc constant.", module="numpy"),
+            "numpy:c": _sym(summary="ndarray constant.", module="numpy"),
+        }}})
+
+        diff = compare.diff_snapshots(before, after)
+        rendered = compare.render(diff)
+
+        assert "ufunc x2" in rendered
+        assert "ndarray x1" in rendered
+
+    def test_a_failed_scan_is_not_reported_as_removals(self):
+        """A library that crashed must never look like it lost every symbol."""
+        compare = _load("compare.py")
+        before = _snap({"scipy": {"symbols": {"scipy:A": _sym(), "scipy:B": _sym()}}})
+        after = _snap({"scipy": {"error": "ImportError: boom"}})
+
+        diff = compare.diff_snapshots(before, after)
+
+        assert diff["removed"] == []
+        assert diff["coverage"] == [{"library": "scipy", "state": "failed_in_after"}]
+
+    def test_a_library_missing_from_one_side_is_a_coverage_difference(self):
+        compare = _load("compare.py")
+        before = _snap({"rich": {"symbols": {"rich:A": _sym()}}})
+        after = _snap({"rich": {"symbols": {"rich:A": _sym()}},
+                       "numpy": {"symbols": {"numpy:x": _sym()}}})
+
+        diff = compare.diff_snapshots(before, after)
+
+        assert diff["added"] == []
+        assert diff["coverage"] == [{"library": "numpy", "state": "only_in_after"}]
+
+    def test_render_orders_removals_before_additions(self):
+        compare = _load("compare.py")
+        before = _snap({"rich": {"symbols": {"rich:GONE": _sym()}}})
+        after = _snap({"rich": {"symbols": {"rich:NEW": _sym()}}})
+
+        rendered = compare.render(compare.diff_snapshots(before, after))
+
+        assert rendered.index("REMOVED") < rendered.index("ADDED")
