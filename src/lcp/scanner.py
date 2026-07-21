@@ -808,6 +808,70 @@ def _is_followable_reexport(
     return top in followable_tops
 
 
+def _reexport_kind(name: str, obj: Any) -> str:
+    """Classify a followed foreign re-export.
+
+    Returns ``"class"``, ``"function"``, ``"value"`` or ``"defer"``. ``"defer"``
+    marks a callable with a recoverable signature — it looks like a
+    C-implemented function and is left for #63 rather than mislabelled a
+    constant here. A callable whose ``signature()`` raises (e.g. a proxy read
+    outside its context) is a value object, not a function.
+
+    Args:
+        name: Attribute name the object is bound to at the facade.
+        obj: The re-exported object.
+
+    Returns:
+        The classification tag.
+    """
+    if inspect.isclass(obj):
+        return "class"
+    if inspect.isfunction(obj):
+        return "function"
+    if _is_constant(name, obj):
+        return "value"
+    try:
+        inspect.signature(obj)
+    except Exception:
+        return "value"
+    return "defer"
+
+
+def _capture_reexport(
+    name: str, obj: Any, module_path: str, include_private: bool
+) -> ScannedSymbol | None:
+    """Capture a followed foreign re-export as a symbol at ``module_path``.
+
+    A re-exported class is scanned with its *origin* top-level as the package
+    root, so its own methods are kept rather than filtered out by the facade's
+    root. A deferred callable (see :func:`_reexport_kind`) yields ``None``.
+
+    Args:
+        name: Attribute name at the facade.
+        obj: The re-exported object.
+        module_path: The facade module the symbol is attributed to.
+        include_private: Whether to include private members (classes).
+
+    Returns:
+        The captured symbol, or ``None`` when deferred to #63.
+    """
+    kind = _reexport_kind(name, obj)
+    if kind == "class":
+        origin_root = str(getattr(obj, "__module__", "") or "").split(".")[0]
+        return _scan_class(obj, module_path, include_private, package_root=origin_root)
+    if kind == "function":
+        return _scan_function(obj, module_path, name)
+    if kind == "value":
+        return ScannedSymbol(
+            name=name,
+            qualified_name=name,
+            module_path=module_path,
+            kind="constant",
+            summary=_constant_summary(obj),
+        )
+    return None
+
+
 _MAX_CONSTANT_REPR = 60
 
 
