@@ -135,13 +135,11 @@ def test_scan_module_inert_without_followable_tops():
 
 
 def test_scan_package_follows_reexports_in_entry_module_only(monkeypatch):
-    import lcp.scanner as scanner_module
-
     sentinel = frozenset({"sentinel"})
-    monkeypatch.setattr(scanner_module, "_followable_top_levels", lambda root: sentinel)
+    monkeypatch.setattr(scanner, "_followable_top_levels", lambda root: sentinel)
 
     calls = []
-    real_scan_module = scanner_module.scan_module
+    real_scan_module = scanner.scan_module
 
     def recording(module, include_private=False, _visited=None, _package_root=None,
                   _alias_records=None, _followable_tops=None):
@@ -149,8 +147,8 @@ def test_scan_package_follows_reexports_in_entry_module_only(monkeypatch):
         return real_scan_module(module, include_private, _visited, _package_root,
                                 _alias_records, _followable_tops)
 
-    monkeypatch.setattr(scanner_module, "scan_module", recording)
-    scanner_module.scan_package("sample_package")
+    monkeypatch.setattr(scanner, "scan_module", recording)
+    scanner.scan_package("sample_package")
 
     entry = [ft for name, ft in calls if name == "sample_package"]
     subs = [ft for name, ft in calls if name != "sample_package"]
