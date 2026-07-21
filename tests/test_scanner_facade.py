@@ -1,6 +1,9 @@
 """Tests for facade thin cross-distribution re-export capture (#67)."""
 
+import types
+
 import facade_fixtures as fx
+from lcp import scanner
 from lcp.scanner import (
     _capture_reexport,
     _followable_top_levels,
@@ -82,3 +85,40 @@ def test_capture_reexport_defer_returns_none():
         _capture_reexport("reexported_cfunc", fx.reexported_cfunc, "facade", False)
         is None
     )
+
+
+def _make_facade():
+    facade = types.ModuleType("facade")
+    facade.__doc__ = "A facade package."
+    facade.ReexportedClass = fx.ReexportedClass
+    facade.reexported_function = fx.reexported_function
+    facade.reexported_signal = fx.reexported_signal
+    facade.reexported_proxy = fx.reexported_proxy
+    facade.reexported_cfunc = fx.reexported_cfunc
+    return facade
+
+
+def test_scan_module_follows_declared_reexports():
+    symbols = scanner.scan_module(
+        _make_facade(),
+        _package_root="facade",
+        _followable_tops=frozenset({"fakedep"}),
+    )
+    by_id = {(s.module_path, s.qualified_name): s for s in symbols}
+    assert by_id[("facade", "reexported_proxy")].kind == "constant"
+    assert by_id[("facade", "reexported_signal")].kind == "constant"
+    assert by_id[("facade", "reexported_function")].kind == "function"
+    assert by_id[("facade", "ReexportedClass")].kind == "class"
+    cls_sym = by_id[("facade", "ReexportedClass")]
+    member_qns = {m.qualified_name for m in cls_sym.members}
+    assert "ReexportedClass#method" in member_qns
+    assert "ReexportedClass#inherited_method" in member_qns  # only kept if origin_root (fakedep), not facade, is used
+    # signature-recoverable callable is deferred to #63, not captured
+    assert ("facade", "reexported_cfunc") not in by_id
+
+
+def test_scan_module_inert_without_followable_tops():
+    symbols = scanner.scan_module(_make_facade(), _package_root="facade")
+    ids = {(s.module_path, s.qualified_name) for s in symbols}
+    assert ("facade", "reexported_proxy") not in ids
+    assert ("facade", "ReexportedClass") not in ids

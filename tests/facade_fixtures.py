@@ -6,7 +6,15 @@ outside any scanned package.
 """
 
 
-class ReexportedClass:
+class _ReexportBase:
+    __module__ = "fakedep.base"
+
+    def inherited_method(self):
+        """A method inherited from a base in another dependency submodule."""
+        return 2
+
+
+class ReexportedClass(_ReexportBase):
     """A class re-exported from a dependency."""
 
     __module__ = "fakedep.core"

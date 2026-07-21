@@ -915,6 +915,7 @@ def scan_module(
     _visited: set | None = None,
     _package_root: str | None = None,
     _alias_records: list[_AliasRecord] | None = None,
+    _followable_tops: frozenset[str] | None = None,
 ) -> list[ScannedSymbol]:
     """Scan a module for symbols."""
     if _visited is None:
@@ -976,24 +977,32 @@ def scan_module(
             # Check if this symbol is defined in this module
             obj_module = getattr(obj, "__module__", None)
             if obj_module and obj_module != module_path:
-                # Re-exported symbol: documented at its definition site.
-                # If the origin is inside the scanned package, record the
-                # re-export as an alias on the canonical symbol; external
-                # origins stay skipped entirely.
-                if isinstance(obj_module, str) and (
-                    obj_module == _package_root
-                    or obj_module.startswith(_package_root + ".")
-                ):
-                    target_name = getattr(obj, "__name__", None)
-                    if isinstance(target_name, str):
-                        records.append(
-                            _AliasRecord(
-                                target_module=obj_module,
-                                target_name=target_name,
-                                alias_module=module_path,
-                                alias_name=name,
+                # Re-exported symbol, documented at its definition site.
+                if isinstance(obj_module, str):
+                    if obj_module == _package_root or obj_module.startswith(
+                        _package_root + "."
+                    ):
+                        # In-package origin: record the re-export as an alias
+                        # on the canonical symbol.
+                        target_name = getattr(obj, "__name__", None)
+                        if isinstance(target_name, str):
+                            records.append(
+                                _AliasRecord(
+                                    target_module=obj_module,
+                                    target_name=target_name,
+                                    alias_module=module_path,
+                                    alias_name=name,
+                                )
                             )
+                    elif _is_followable_reexport(obj_module, _followable_tops):
+                        # Foreign origin in a declared dependency: capture the
+                        # object at the facade (#67). The foreign package is
+                        # not scanned.
+                        captured = _capture_reexport(
+                            name, obj, module_path, include_private
                         )
+                        if captured is not None:
+                            symbols.append(captured)
                 continue
 
             if inspect.isclass(obj):
@@ -1156,6 +1165,7 @@ def scan_package(
     version = _get_package_version(package_name)
     visited: set = set()
     package_root = package_name.split(".")[0]
+    followable_tops = _followable_top_levels(package_root)
     alias_records: list[_AliasRecord] = []
 
     # Scan main module
@@ -1165,6 +1175,7 @@ def scan_package(
         visited,
         _package_root=package_root,
         _alias_records=alias_records,
+        _followable_tops=followable_tops,
     )
 
     # Scan submodules if it's a package
@@ -1177,6 +1188,7 @@ def scan_package(
                     visited,
                     _package_root=package_root,
                     _alias_records=alias_records,
+                    _followable_tops=followable_tops,
                 )
             )
 
