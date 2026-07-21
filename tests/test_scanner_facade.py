@@ -122,3 +122,27 @@ def test_scan_module_inert_without_followable_tops():
     ids = {(s.module_path, s.qualified_name) for s in symbols}
     assert ("facade", "reexported_proxy") not in ids
     assert ("facade", "ReexportedClass") not in ids
+
+
+def test_scan_package_follows_reexports_in_entry_module_only(monkeypatch):
+    import lcp.scanner as scanner_module
+
+    sentinel = frozenset({"sentinel"})
+    monkeypatch.setattr(scanner_module, "_followable_top_levels", lambda root: sentinel)
+
+    calls = []
+    real_scan_module = scanner_module.scan_module
+
+    def recording(module, include_private=False, _visited=None, _package_root=None,
+                  _alias_records=None, _followable_tops=None):
+        calls.append((module.__name__, _followable_tops))
+        return real_scan_module(module, include_private, _visited, _package_root,
+                                _alias_records, _followable_tops)
+
+    monkeypatch.setattr(scanner_module, "scan_module", recording)
+    scanner_module.scan_package("sample_package")
+
+    entry = [ft for name, ft in calls if name == "sample_package"]
+    subs = [ft for name, ft in calls if name != "sample_package"]
+    assert entry == [sentinel]          # entry module receives the computed set
+    assert subs and all(ft is None for ft in subs)  # every submodule is inert

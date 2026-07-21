@@ -1188,7 +1188,10 @@ def scan_package(
                     visited,
                     _package_root=package_root,
                     _alias_records=alias_records,
-                    _followable_tops=followable_tops,
+                    # Facade capture is scoped to the entry module: a package's
+                    # public re-export surface is the module the user scans, not
+                    # its internal submodules. See #67.
+                    _followable_tops=None,
                 )
             )
 
