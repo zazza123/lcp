@@ -32,6 +32,16 @@ def test_followable_top_levels_from_declared_deps(monkeypatch):
     assert _followable_top_levels("facade") == frozenset({"fakedep"})
 
 
+def test_followable_top_levels_handles_compatible_release_specifier(monkeypatch):
+    pkg_dists = {"facade": ["Facade-Dist"], "fakedep": ["Fake-Dep"]}
+    monkeypatch.setattr("importlib.metadata.packages_distributions", lambda: pkg_dists)
+    monkeypatch.setattr(
+        "importlib.metadata.requires",
+        lambda dist: ["fake-dep~=1.4"] if dist == "Facade-Dist" else [],
+    )
+    assert _followable_top_levels("facade") == frozenset({"fakedep"})
+
+
 def test_followable_top_levels_empty_when_dist_unknown(monkeypatch):
     monkeypatch.setattr("importlib.metadata.packages_distributions", lambda: {})
     assert _followable_top_levels("facade") == frozenset()

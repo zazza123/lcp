@@ -775,7 +775,7 @@ def _followable_top_levels(package_root: str) -> frozenset[str]:
         except Exception:
             reqs = []
         for req in reqs:
-            dep = re.split(r"[ ;<>=!\[\(]", req.strip())[0]
+            dep = re.split(r"[ ;<>=!~\[\(]", req.strip())[0]
             if dep:
                 declared.add(_normalize_dist(dep))
     if not declared:
