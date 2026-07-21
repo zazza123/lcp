@@ -49,6 +49,8 @@ The SDK follows a three-stage pipeline: **scan → generate → validate**
 4. **MCP Server** (`src/lcp/mcp_server.py`) - FastMCP-based server exposing LCP manifests to AI agents
 5. **AI DocGen** (`src/lcp/ai/`) - Optional module (`lcp[ai]`) that generates missing docstrings using LLM providers
 
+**When you change `scanner.py` or `generator.py`, measure the impact on real manifests before opening a PR.** The unit tests use synthetic fixtures, which reproduce the shape of a scanner change but not its scale — that gap has let regressions through review. `tools/corpus/` snapshots the manifests of a pinned corpus of real libraries (numpy, flask, google-cloud-firestore, …): snapshot `main`, snapshot your branch, diff the two. It is a measurement tool, never a gate. See `tools/corpus/README.md`.
+
 ### Module Responsibilities
 
 | Module | Purpose |

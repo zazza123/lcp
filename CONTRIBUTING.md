@@ -41,6 +41,28 @@ pytest tests/test_scanner.py::TestScanClass::test_scan_class
 pytest -v
 ```
 
+## Measuring scanner and generator changes
+
+When a change touches `scanner.py` or `generator.py`, the unit tests are not
+enough: they use synthetic fixtures, which reproduce the shape of a change but
+not its scale, and real regressions have slipped past that gap. Measure the
+impact on real manifests with the corpus diff tool — snapshot `main`, snapshot
+your branch, and diff the two:
+
+```bash
+git worktree add /tmp/lcp-before main
+tools/corpus/.venv/bin/python tools/corpus/snapshot.py \
+    --src /tmp/lcp-before/src -o tools/corpus/before.json --tier full
+tools/corpus/.venv/bin/python tools/corpus/snapshot.py \
+    --src ./src -o tools/corpus/after.json --tier full
+tools/corpus/.venv/bin/python tools/corpus/compare.py \
+    tools/corpus/before.json tools/corpus/after.json
+git worktree remove /tmp/lcp-before
+```
+
+It is a measurement tool, not a gate — read the report, don't expect a
+pass/fail. See `tools/corpus/README.md` for setup and how to read the output.
+
 ## Linting
 
 ```bash
