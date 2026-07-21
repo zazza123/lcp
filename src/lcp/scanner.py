@@ -6,6 +6,7 @@ import importlib
 import importlib.metadata
 import inspect
 import pkgutil
+import re
 import sys
 import typing
 from dataclasses import dataclass, field
@@ -727,6 +728,84 @@ def _is_constant(name: str, value: Any) -> bool:
         return False
     top_level = str(type(value).__module__ or "").split(".")[0]
     return top_level not in sys.stdlib_module_names
+
+
+def _normalize_dist(name: str) -> str:
+    """Normalise a distribution or top-level name for comparison.
+
+    Collapses runs of ``-``, ``_`` and ``.`` to a single ``-`` and lowercases,
+    so ``Fake_Dep.Name`` and ``fake-dep-name`` compare equal (PEP 503-style).
+
+    Args:
+        name: A distribution or import name.
+
+    Returns:
+        The normalised form.
+    """
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def _followable_top_levels(package_root: str) -> frozenset[str]:
+    """Top-level import names provided by ``package_root``'s declared deps.
+
+    Resolves ``package_root`` to its distribution(s), reads their declared
+    dependencies, and returns the set of top-level import names those
+    dependency distributions provide. A foreign re-export whose origin
+    top-level is in this set comes from a declared dependency and may be
+    followed (facade support, #67). Any failure yields an empty set, which
+    disables following rather than raising.
+
+    Args:
+        package_root: First dotted segment of the scanned package's import path.
+
+    Returns:
+        The followable top-level import names, or an empty set.
+    """
+    try:
+        pkg_dists = importlib.metadata.packages_distributions()
+    except Exception:
+        return frozenset()
+    dists = pkg_dists.get(package_root, [])
+    if not dists:
+        return frozenset()
+    declared: set[str] = set()
+    for dist in dists:
+        try:
+            reqs = importlib.metadata.requires(dist) or []
+        except Exception:
+            reqs = []
+        for req in reqs:
+            dep = re.split(r"[ ;<>=!\[\(]", req.strip())[0]
+            if dep:
+                declared.add(_normalize_dist(dep))
+    if not declared:
+        return frozenset()
+    return frozenset(
+        top
+        for top, tops_dists in pkg_dists.items()
+        if any(_normalize_dist(d) in declared for d in tops_dists)
+    )
+
+
+def _is_followable_reexport(
+    obj_module: str, followable_tops: frozenset[str] | None
+) -> bool:
+    """Whether a foreign re-export defined in ``obj_module`` should be followed.
+
+    Args:
+        obj_module: The ``__module__`` of the re-exported object.
+        followable_tops: Top-levels provided by declared deps, or ``None`` when
+            the feature is inert.
+
+    Returns:
+        ``True`` when the origin is a declared, non-stdlib dependency.
+    """
+    if not followable_tops:
+        return False
+    top = obj_module.split(".")[0]
+    if top in sys.stdlib_module_names:
+        return False
+    return top in followable_tops
 
 
 _MAX_CONSTANT_REPR = 60
