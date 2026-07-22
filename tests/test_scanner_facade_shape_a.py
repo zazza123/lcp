@@ -199,3 +199,96 @@ def test_capture_sibling_reexports_defers_cfunc():
         frozenset({"facadelib.impl.deferred"}), False,
     )
     assert captured == [] and synth == []  # deferred -> not captured, no module synthesized
+
+
+def _scan_facade(monkeypatch):
+    """Scan the fixture facade with the sibling distribution monkeypatched in."""
+    monkeypatch.setattr(
+        scanner,
+        "_own_distribution_modules",
+        lambda pkg: frozenset(
+            {"facadelib.facade", "facadelib.impl", "facadelib.impl.core",
+             "facadelib.impl.deferred"}
+        ),
+    )
+    return scanner.scan_package("facadelib.facade")
+
+
+def test_scan_package_captures_sibling_at_def_site_with_alias(monkeypatch):
+    sm = _scan_facade(monkeypatch)
+    by_key = {(s.module_path, s.qualified_name): s for s in sm.symbols}
+
+    thing = by_key[("facadelib.impl.core", "Thing")]
+    assert thing.kind == "class"
+    assert any(m.qualified_name == "Thing#method" for m in thing.members)
+    assert ("facadelib.facade", "Thing") in thing.aliases
+
+    func = by_key[("facadelib.impl.core", "thing_func")]
+    assert func.kind == "function"
+    assert ("facadelib.facade", "thing_func") in func.aliases
+
+
+def test_scan_package_captures_sibling_value_sentinel_at_facade(monkeypatch):
+    sm = _scan_facade(monkeypatch)
+    by_key = {(s.module_path, s.qualified_name): s for s in sm.symbols}
+    # a name-less sentinel from the sibling is captured at the facade id (no alias)
+    sentinel = by_key[("facadelib.facade", "SERVER_TS")]
+    assert sentinel.kind == "constant"
+    assert not sentinel.aliases
+    # it is NOT also placed at the sibling def-site
+    assert ("facadelib.impl.core", "SERVER_TS") not in by_key
+
+
+def test_scan_package_synthesizes_sibling_module_entry(monkeypatch):
+    sm = _scan_facade(monkeypatch)
+    module_syms = [s for s in sm.symbols if s.kind == "module"]
+    module_paths = {s.module_path for s in module_syms}
+    assert "facadelib.impl.core" in module_paths
+
+
+def test_scan_package_does_not_capture_foreign_or_deferred(monkeypatch):
+    sm = _scan_facade(monkeypatch)
+    keys = {(s.module_path, s.qualified_name) for s in sm.symbols}
+    # foreign top-level (otherlib) is dropped, never captured
+    assert ("otherlib.core", "Foreign") not in keys
+    assert not any(s.qualified_name == "Foreign" for s in sm.symbols)
+    # deferred C-style callable is not captured, and its module is not synthesized
+    assert ("facadelib.impl.deferred", "cfunc") not in keys
+    assert "facadelib.impl.deferred" not in {
+        s.module_path for s in sm.symbols if s.kind == "module"
+    }
+
+
+def test_scan_package_reports_deferred_as_unresolved(monkeypatch):
+    sm = _scan_facade(monkeypatch)
+    # the deferred cfunc's record stays dangling -> reported, collapsed to depth 2
+    # (package_name "facadelib.facade" has 2 segments, so
+    # "facadelib.impl.deferred" collapses to "facadelib.impl")
+    ancestors = {mod for mod, _names, _mods in sm.unresolved_reexports}
+    assert "facadelib.impl" in ancestors
+    # the captured names' module is NOT reported as lost (they resolved)
+    assert "facadelib.impl.core" not in ancestors
+
+
+def test_scan_package_generator_round_trip_carries_facade_alias(monkeypatch):
+    # Closes the spec's resolve_library verification cheaply: the facade alias id
+    # must reach the generated manifest, which is what LCPIndex.alias_to_canonical
+    # and preferred_alias are built from.
+    from lcp import generator
+
+    sm = _scan_facade(monkeypatch)
+    doc = generator.generate_lcp(sm)
+    thing = doc.symbols["facadelib.impl.core:Thing"]
+    assert "facadelib.facade:Thing" in (thing.aliases or [])
+
+
+def test_scan_package_inert_when_no_out_of_subtree_reexport(monkeypatch):
+    # sample_package re-exports only within itself; shape A must not fire and
+    # _own_distribution_modules must not even be consulted.
+    called = []
+    monkeypatch.setattr(
+        scanner, "_own_distribution_modules",
+        lambda pkg: called.append(pkg) or frozenset(),
+    )
+    scanner.scan_package("sample_package")
+    assert called == []  # guard skips the file-list walk for non-facade packages

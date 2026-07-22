@@ -14,5 +14,14 @@ def thing_func(x):
     return x
 
 
-#: A public value re-exported by the facade.
-THING_LIMIT = 100
+class _Sentinel:
+    """A module-level sentinel (models firestore's SERVER_TIMESTAMP)."""
+
+    def __repr__(self):
+        return "<sentinel>"
+
+
+#: A value re-exported by the facade whose class lives in the sibling but which
+#: has no __name__ (like SERVER_TIMESTAMP). scan_module drops it; the shape-A
+#: value post-pass captures it at the facade.
+SERVER_TS = _Sentinel()

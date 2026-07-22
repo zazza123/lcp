@@ -993,6 +993,79 @@ def _capture_sibling_reexports(
     return captured, synth
 
 
+def _capture_sibling_value_reexports(
+    module: ModuleType,
+    existing: list[ScannedSymbol],
+    package_name: str,
+    sibling_modules: frozenset[str],
+    include_private: bool,
+) -> list[ScannedSymbol]:
+    """Capture name-less value re-exports from a same-distribution sibling.
+
+    A module-level constant re-exported by a facade (e.g. a sentinel like
+    ``SERVER_TIMESTAMP``) is an instance with no ``__name__``, so ``scan_module``
+    creates no alias record for it and drops it. When such a value's
+    ``__module__`` resolves to a followable same-distribution sibling, capture it
+    at the facade (``package_name``) as a constant — there is no def-site
+    identity to alias to, and the facade path is idiomatic anyway. Entry module
+    only; deduped against symbols already captured. Name-bearing objects
+    (classes/functions) are handled by the alias-record path, not here.
+
+    Args:
+        module: The scanned facade (entry) module object.
+        existing: Symbols already captured (facade scan + sibling captures).
+        package_name: Import path of the scanned facade.
+        sibling_modules: Module paths the scanned distribution provides.
+        include_private: Whether to include private names.
+
+    Returns:
+        The captured constant symbols.
+    """
+    existing_keys = {(s.module_path, s.qualified_name) for s in existing}
+    captured: list[ScannedSymbol] = []
+    seen: set[str] = set()
+    try:
+        public_names = set(module.__all__) if hasattr(module, "__all__") else None
+    except Exception:
+        public_names = None
+    for name, obj in _safe_getmembers(module):
+        if not _is_public(name, include_private):
+            continue
+        if public_names is not None and name not in public_names:
+            continue
+        if name in seen or (package_name, name) in existing_keys:
+            continue
+        try:
+            if inspect.ismodule(obj):
+                continue
+            obj_module = getattr(obj, "__module__", None)
+            if not isinstance(obj_module, str):
+                continue
+            if not _is_sibling_module(obj_module, package_name, sibling_modules):
+                continue
+            # Name-bearing objects go through the alias-record path; only
+            # name-less values (sentinels) are captured here.
+            if isinstance(getattr(obj, "__name__", None), str):
+                continue
+            if not _is_constant(name, obj):
+                continue
+            captured.append(
+                ScannedSymbol(
+                    name=name,
+                    qualified_name=name,
+                    module_path=package_name,
+                    kind="constant",
+                    summary=_constant_summary(obj),
+                )
+            )
+            seen.add(name)
+        except KeyboardInterrupt:
+            raise
+        except Exception:
+            continue
+    return captured
+
+
 def _reexport_kind(name: str, obj: Any) -> str:
     """Classify a followed foreign re-export.
 
@@ -1379,6 +1452,31 @@ def scan_package(
                     _followable_tops=None,
                 )
             )
+
+    # Facade shape A (#68): a re-export pointing OUTSIDE the scanned subtree but
+    # sharing the top-level namespace is a sibling implementation package. If it
+    # belongs to the scanned distribution, capture the re-exported names at their
+    # def-site so the dangling alias records resolve. The guard keeps the
+    # file-list walk off the common path (no out-of-subtree re-exports).
+    has_out_of_subtree_reexport = any(
+        not (
+            rec.target_module == package_name
+            or rec.target_module.startswith(package_name + ".")
+        )
+        for rec in alias_records
+    )
+    if has_out_of_subtree_reexport:
+        sibling_modules = _own_distribution_modules(package_name)
+        if sibling_modules:
+            captured, synth_modules = _capture_sibling_reexports(
+                alias_records, symbols, package_name, sibling_modules, include_private
+            )
+            symbols.extend(synth_modules)
+            symbols.extend(captured)
+            value_captured = _capture_sibling_value_reexports(
+                module, symbols, package_name, sibling_modules, include_private
+            )
+            symbols.extend(value_captured)
 
     unresolved = _attach_aliases(symbols, alias_records, package_name)
     return ScannedModule(
