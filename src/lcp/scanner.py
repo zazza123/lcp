@@ -808,23 +808,22 @@ def _is_followable_reexport(
     return top in followable_tops
 
 
-def _distribution_module_paths(dist: Any) -> set[str]:
-    """Importable module paths a distribution provides, from its file list.
+def _distribution_module_paths(files: Any) -> set[str]:
+    """Importable module paths derived from a distribution's file list.
 
-    Derives dotted module paths from the distribution's ``.py`` files:
+    Derives dotted module paths from ``.py`` files:
     ``google/cloud/firestore_v1/client.py`` → ``google.cloud.firestore_v1.client``
-    and ``google/cloud/firestore_v1/__init__.py`` → ``google.cloud.firestore_v1``.
+    and ``.../__init__.py`` → the package path. Only pure-Python (``.py``)
+    files are recognized; compiled extension modules (``.so``/``.pyd``) are not.
 
     Args:
-        dist: An ``importlib.metadata.Distribution`` (or any object with a
-            ``files`` attribute of path-like entries).
+        files: The distribution's file list (path-like entries), or ``None``.
 
     Returns:
-        The set of importable module paths, or an empty set when the file list
-        is unavailable.
+        The set of importable module paths.
     """
     mods: set[str] = set()
-    for f in getattr(dist, "files", None) or []:
+    for f in files or []:
         parts = str(f).split("/")
         if not parts[-1].endswith(".py"):
             continue
@@ -864,9 +863,12 @@ def _own_distribution_modules(package_name: str) -> frozenset[str]:
         return frozenset()
     provided: set[str] = set()
     for dist in dists:
-        files = getattr(dist, "files", None) or []
-        if any(str(f).startswith(own_path) or str(f) == own_file for f in files):
-            provided |= _distribution_module_paths(dist)
+        try:
+            files = getattr(dist, "files", None) or []
+            if any(str(f).startswith(own_path) or str(f) == own_file for f in files):
+                provided |= _distribution_module_paths(files)
+        except Exception:
+            continue
     return frozenset(provided)
 
 

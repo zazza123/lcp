@@ -67,3 +67,33 @@ def test_is_sibling_module_rules():
     assert _is_sibling_module("google.cloud.firestore", pkg, siblings) is False
     # same distribution but not among the provided modules -> skip
     assert _is_sibling_module("google.auth.credentials", pkg, siblings) is False
+
+
+def test_own_distribution_modules_survives_bad_distribution(monkeypatch):
+    class _BadDist:
+        @property
+        def files(self):
+            raise RuntimeError("malformed RECORD")
+
+    monkeypatch.setattr(
+        "importlib.metadata.distributions",
+        lambda: [_BadDist(), _FakeDist(_FIRESTORE_FILES)],
+    )
+    mods = _own_distribution_modules("google.cloud.firestore")
+    # the bad distribution is skipped; the good one still resolves
+    assert "google.cloud.firestore_v1" in mods
+
+
+def test_own_distribution_modules_filters_non_py_and_non_identifier(monkeypatch):
+    files = [
+        "google/cloud/firestore/__init__.py",
+        "google/cloud/firestore/data.json",       # non-.py -> skipped
+        "google/cloud/firestore-extra/mod.py",    # 'firestore-extra' not an identifier -> skipped
+        "single_mod.py",                          # single top-level module
+    ]
+    monkeypatch.setattr("importlib.metadata.distributions", lambda: [_FakeDist(files)])
+    mods = _own_distribution_modules("google.cloud.firestore")
+    assert "google.cloud.firestore" in mods
+    assert "single_mod" in mods
+    assert not any("firestore-extra" in m for m in mods)
+    assert not any("json" in m for m in mods)
