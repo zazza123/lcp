@@ -1360,3 +1360,26 @@ class TestConstantSourceExpr:
 
     def test_missing_name_returns_none(self):
         assert _constant_source_expr(reprofix, "NOT_THERE") is None
+
+
+class TestConstantSummaryEnvDerived:
+    """#72: env-derived constants must not leak resolved paths."""
+
+    def test_env_constant_uses_symbolic_form(self):
+        symbols = scan_module(reprofix)
+        data_root = next(s for s in symbols if s.name == "DATA_ROOT")
+        assert data_root.summary == 'str constant: os.path.join(sys.prefix, "share", "data")'
+        assert sys.prefix not in data_root.summary
+
+    def test_plain_constant_unchanged(self):
+        symbols = scan_module(reprofix)
+        greeting = next(s for s in symbols if s.name == "GREETING")
+        assert greeting.summary == "str constant: 'GET'"
+        retries = next(s for s in symbols if s.name == "MAX_RETRIES")
+        assert retries.summary == "int constant: 3"
+
+    def test_env_constant_without_context_is_type_only(self):
+        from lcp.scanner import _constant_summary
+
+        leaked = os.path.join(sys.prefix, "share", "data")
+        assert _constant_summary(leaked) == "str constant."

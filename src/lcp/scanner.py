@@ -1303,14 +1303,16 @@ def _capture_reexport(
 _MAX_CONSTANT_REPR = 60
 
 
-def _constant_summary(value: Any) -> str:
+def _constant_summary(value: Any, module: Any = None, name: str | None = None) -> str:
     """Build the summary line for a constant symbol.
 
     Primitives carry their value; everything else carries only its type name.
-    The value is deliberately withheld for non-primitives: ``__repr__`` on an
-    arbitrary object can be enormous, expensive, or raise. Primitive
-    detection goes through ``_is_primitive`` rather than a bare
-    ``isinstance`` call, which is not safe on a hostile object.
+    When the value is environment-derived (an absolute path rooted in this
+    install — see :func:`_is_env_derived_str`) the resolved value is never
+    emitted: instead the defining source expression is recovered from the AST
+    (e.g. ``"str constant: certs.where()"``) when *module* and *name* are given
+    and the source is parseable, and otherwise the summary degrades to the
+    type-only form. This keeps the output reproducible across machines (#72).
 
     Two of the primitive types, ``tuple`` and ``frozenset``, are containers
     that can hold arbitrary objects, and ``str``/``bytes`` can be subclassed
@@ -1319,13 +1321,33 @@ def _constant_summary(value: Any) -> str:
     type-only form rather than letting the exception escape (which would
     otherwise drop the whole symbol from the scan).
 
+    The env-derived check is gated on ``type(value) is str`` (an exact-type
+    identity check, never an ``isinstance`` call) before ``_is_env_derived_str``
+    is invoked: that function's own ``isinstance(value, str)`` is not safe to
+    run on an arbitrary object, since a hostile ``__getattribute__`` can raise
+    on the ``__class__`` fallback isinstance takes when its fast path misses.
+    Gating on the exact type sidesteps that without touching the value itself.
+
     Args:
         value: The object bound to the constant's name.
+        module: The module object where the constant is defined, when known.
+            Enables symbolic recovery for env-derived values.
+        name: The constant's binding name, when known.
 
     Returns:
-        e.g. ``"int constant: 100"`` or ``"Sentinel constant."``.
+        e.g. ``"int constant: 100"``, ``"str constant: certs.where()"``, or
+        ``"Sentinel constant."``.
     """
     type_name = type(value).__name__
+    if type(value) is str and _is_env_derived_str(value):
+        expr = (
+            _constant_source_expr(module, name)
+            if module is not None and name is not None
+            else None
+        )
+        if expr is not None:
+            return f"{type_name} constant: {expr}"
+        return f"{type_name} constant."
     if not _is_primitive(value):
         return f"{type_name} constant."
     try:
@@ -1448,7 +1470,7 @@ def scan_module(
                         qualified_name=name,
                         module_path=module_path,
                         kind="constant",
-                        summary=_constant_summary(obj),
+                        summary=_constant_summary(obj, module=module, name=name),
                     )
                 )
             elif _is_c_function(name, obj):
