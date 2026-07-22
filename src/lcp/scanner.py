@@ -991,8 +991,9 @@ def _capture_sibling_reexports(
     and renamed re-exports, and already imported) and capture it at its
     def-site with :func:`_capture_reexport`, passing ``target_name`` so the
     canonical ``qualified_name`` matches the record and :func:`_attach_aliases`
-    can bind the facade alias. Deferred callables (#63) yield ``None`` and are
-    left dangling. Deduped by canonical ``(module, name)`` key.
+    can bind the facade alias.
+    ``None`` from an unclassifiable object is skipped; the record is left
+    dangling. Deduped by canonical ``(module, name)`` key.
 
     Args:
         records: Alias records observed during the facade scan.
@@ -1117,11 +1118,10 @@ def _capture_sibling_value_reexports(
 def _reexport_kind(name: str, obj: Any) -> str:
     """Classify a followed foreign re-export.
 
-    Returns ``"class"``, ``"function"``, ``"value"`` or ``"defer"``. ``"defer"``
-    marks a callable with a recoverable signature — it looks like a
-    C-implemented function and is left for #63 rather than mislabelled a
-    constant here. A callable whose ``signature()`` raises (e.g. a proxy read
-    outside its context) is a value object, not a function.
+    Returns ``"class"``, ``"function"`` or ``"value"``. A signature-recoverable
+    library callable is a C-implemented function (see :func:`_is_c_function`);
+    a callable whose ``signature()`` raises (e.g. a proxy read outside its
+    context) is a value object, not a function.
 
     Args:
         name: Attribute name the object is bound to at the facade.
@@ -1136,11 +1136,11 @@ def _reexport_kind(name: str, obj: Any) -> str:
         return "function"
     if _is_constant(name, obj):
         return "value"
-    try:
-        inspect.signature(obj)
-    except Exception:
-        return "value"
-    return "defer"
+    if _is_c_function(name, obj):
+        return "function"
+    # A callable whose signature cannot be built (a proxy read outside its
+    # context) is a value object, not a function.
+    return "value"
 
 
 def _capture_reexport(
@@ -1150,7 +1150,7 @@ def _capture_reexport(
 
     A re-exported class is scanned with its *origin* top-level as the package
     root, so its own methods are kept rather than filtered out by the facade's
-    root. A deferred callable (see :func:`_reexport_kind`) yields ``None``.
+    root.
 
     Args:
         name: Attribute name at the facade.
@@ -1159,7 +1159,7 @@ def _capture_reexport(
         include_private: Whether to include private members (classes).
 
     Returns:
-        The captured symbol, or ``None`` when deferred to #63.
+        The captured symbol, or ``None`` for an unclassifiable object.
     """
     kind = _reexport_kind(name, obj)
     if kind == "class":

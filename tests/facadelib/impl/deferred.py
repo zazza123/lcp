@@ -1,4 +1,4 @@
-"""Implementation module holding a C-function-like callable (deferred to #63)."""
+"""Implementation module holding a C-function-like callable (captured by #63)."""
 
 
 class _CFuncLike:
@@ -9,7 +9,6 @@ class _CFuncLike:
         return None
 
 
-#: Callable with a recoverable signature but classified "defer" (looks like a
-#: C function). Has __name__/__module__, so scan_module records it; shape A then
-#: defers capture to #63, leaving the record dangling (reported as unresolved).
+#: Callable with a recoverable signature (looks like a C function). Has
+#: __name__/__module__, so it is captured as a function at its def-site (#63).
 cfunc = _CFuncLike()

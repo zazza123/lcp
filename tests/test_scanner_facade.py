@@ -71,8 +71,9 @@ def test_reexport_kind_callable_signature_raises_is_value():
     assert _reexport_kind("reexported_proxy", fx.reexported_proxy) == "value"
 
 
-def test_reexport_kind_callable_with_signature_defers():
-    assert _reexport_kind("reexported_cfunc", fx.reexported_cfunc) == "defer"
+def test_reexport_kind_callable_with_signature_is_function():
+    # a signature-recoverable library callable is a C function (#63)
+    assert _reexport_kind("reexported_cfunc", fx.reexported_cfunc) == "function"
 
 
 def test_capture_reexport_value_is_constant():
@@ -90,11 +91,13 @@ def test_capture_reexport_class_keeps_own_methods():
     assert any(m.qualified_name == "ReexportedClass#method" for m in sym.members)
 
 
-def test_capture_reexport_defer_returns_none():
-    assert (
-        _capture_reexport("reexported_cfunc", fx.reexported_cfunc, "facade", False)
-        is None
-    )
+def test_capture_reexport_cfunc_is_function():
+    sym = _capture_reexport("reexported_cfunc", fx.reexported_cfunc, "facade", False)
+    assert sym is not None
+    assert sym.kind == "function"
+    assert sym.module_path == "facade"
+    assert sym.qualified_name == "reexported_cfunc"
+    assert sym.signature is not None
 
 
 def _make_facade():
@@ -123,8 +126,8 @@ def test_scan_module_follows_declared_reexports():
     member_qns = {m.qualified_name for m in cls_sym.members}
     assert "ReexportedClass#method" in member_qns
     assert "ReexportedClass#inherited_method" in member_qns  # only kept if origin_root (fakedep), not facade, is used
-    # signature-recoverable callable is deferred to #63, not captured
-    assert ("facade", "reexported_cfunc") not in by_id
+    # signature-recoverable library callable is captured as a function (#63)
+    assert by_id[("facade", "reexported_cfunc")].kind == "function"
 
 
 def test_scan_module_inert_without_followable_tops():

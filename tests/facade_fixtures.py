@@ -62,5 +62,5 @@ class _CFuncLike:
         return None
 
 
-#: Callable with a recoverable signature -> looks like a C function, deferred (#63).
+#: Callable with a recoverable signature -> a C function, captured as function (#63).
 reexported_cfunc = _CFuncLike()

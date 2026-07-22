@@ -187,7 +187,7 @@ def test_capture_sibling_reexports_skips_already_scanned():
     assert captured == [] and synth == []
 
 
-def test_capture_sibling_reexports_defers_cfunc():
+def test_capture_sibling_reexports_captures_cfunc():
     rec = scanner._AliasRecord(
         target_module="facadelib.impl.deferred",
         target_name="cfunc",
@@ -198,7 +198,12 @@ def test_capture_sibling_reexports_defers_cfunc():
         [rec], [], "facadelib.facade",
         frozenset({"facadelib.impl.deferred"}), False,
     )
-    assert captured == [] and synth == []  # deferred -> not captured, no module synthesized
+    # C-style callable is now captured as a function at its def-site (#63)
+    assert len(captured) == 1
+    assert captured[0].kind == "function"
+    assert captured[0].module_path == "facadelib.impl.deferred"
+    assert captured[0].qualified_name == "cfunc"
+    assert len(synth) == 1 and synth[0].module_path == "facadelib.impl.deferred"
 
 
 def _scan_facade(monkeypatch):
@@ -246,27 +251,24 @@ def test_scan_package_synthesizes_sibling_module_entry(monkeypatch):
     assert "facadelib.impl.core" in module_paths
 
 
-def test_scan_package_does_not_capture_foreign_or_deferred(monkeypatch):
+def test_scan_package_does_not_capture_foreign(monkeypatch):
     sm = _scan_facade(monkeypatch)
     keys = {(s.module_path, s.qualified_name) for s in sm.symbols}
     # foreign top-level (otherlib) is dropped, never captured
     assert ("otherlib.core", "Foreign") not in keys
     assert not any(s.qualified_name == "Foreign" for s in sm.symbols)
-    # deferred C-style callable is not captured, and its module is not synthesized
-    assert ("facadelib.impl.deferred", "cfunc") not in keys
-    assert "facadelib.impl.deferred" not in {
+    # C-style callable is now captured at its def-site and its module synthesized (#63)
+    assert ("facadelib.impl.deferred", "cfunc") in keys
+    assert "facadelib.impl.deferred" in {
         s.module_path for s in sm.symbols if s.kind == "module"
     }
 
 
-def test_scan_package_reports_deferred_as_unresolved(monkeypatch):
+def test_scan_package_resolves_cfunc_via_c_function_capture(monkeypatch):
     sm = _scan_facade(monkeypatch)
-    # the deferred cfunc's record stays dangling -> reported, collapsed to depth 2
-    # (package_name "facadelib.facade" has 2 segments, so
-    # "facadelib.impl.deferred" collapses to "facadelib.impl")
+    # the cfunc record now resolves (#63): its collapsed ancestor is not reported
     ancestors = {mod for mod, _names, _mods in sm.unresolved_reexports}
-    assert "facadelib.impl" in ancestors
-    # the captured names' module is NOT reported as lost (they resolved)
+    assert "facadelib.impl" not in ancestors
     assert "facadelib.impl.core" not in ancestors
 
 
