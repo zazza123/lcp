@@ -1389,3 +1389,35 @@ class TestConstantSummaryEnvDerived:
 
         leaked = os.path.join(sys.prefix, "share", "data")
         assert _constant_summary(leaked) == "str constant."
+
+
+class TestSignatureDefaultsEnvDerived:
+    """#72: env-derived signature defaults must not leak resolved paths."""
+
+    def test_env_default_becomes_expr(self):
+        from lcp.scanner import _ExprDefault
+
+        sig = _scan_signature(reprofix.connect)
+        exe = next(p for p in sig.params if p.name == "exe")
+        assert isinstance(exe.default, _ExprDefault)
+        assert exe.default.expr == "sys.executable"
+        cache = next(p for p in sig.params if p.name == "cache")
+        assert cache.default.expr == 'os.path.expanduser("~/.cache/app")'
+
+    def test_plain_default_unchanged(self):
+        sig = _scan_signature(reprofix.connect)
+        retries = next(p for p in sig.params if p.name == "retries")
+        assert retries.default == 3
+
+    def test_expr_default_round_trips(self):
+        from lcp.scanner import (
+            _ExprDefault,
+            _default_from_dict,
+            _default_to_dict,
+        )
+
+        d = _default_to_dict(_ExprDefault("sys.executable"))
+        assert d == {"kind": "expr", "expr": "sys.executable"}
+        restored = _default_from_dict(d)
+        assert isinstance(restored, _ExprDefault)
+        assert restored.expr == "sys.executable"

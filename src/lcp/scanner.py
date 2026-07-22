@@ -101,10 +101,30 @@ _COMPLEX_DEFAULT = _ComplexDefault()
 _PRIMITIVE_DEFAULT_TYPES = (str, int, float, bool)
 
 
+class _ExprDefault:
+    """Carries the source expression of an environment-derived default.
+
+    Round-trips ``ScannedParam.default`` across the subprocess boundary as an
+    ``expr`` descriptor. It is not ``inspect.Parameter.empty`` (so
+    ``has_default`` stays ``True``); the generator emits ``.expr`` verbatim
+    instead of a resolved, per-machine value (#72).
+    """
+
+    __slots__ = ("expr",)
+
+    def __init__(self, expr: str) -> None:
+        self.expr = expr
+
+    def __repr__(self) -> str:  # pragma: no cover - debugging aid
+        return f"<expr default: {self.expr}>"
+
+
 def _default_to_dict(default: Any) -> dict:
     """Encode a ``ScannedParam.default`` into a JSON-safe descriptor."""
     if default is inspect.Parameter.empty:
         return {"kind": "empty"}
+    if isinstance(default, _ExprDefault):
+        return {"kind": "expr", "expr": default.expr}
     if default is None or isinstance(default, _PRIMITIVE_DEFAULT_TYPES):
         return {"kind": "primitive", "value": default}
     return {"kind": "complex"}
@@ -115,6 +135,8 @@ def _default_from_dict(d: dict) -> Any:
     kind = d.get("kind", "empty")
     if kind == "primitive":
         return d.get("value")
+    if kind == "expr":
+        return _ExprDefault(d.get("expr", ""))
     if kind == "complex":
         return _COMPLEX_DEFAULT
     return inspect.Parameter.empty
@@ -557,18 +579,28 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
         hints = {}
 
     params = []
+    env_names = [
+        name
+        for name, param in sig.parameters.items()
+        if _is_env_derived_str(param.default)
+    ]
+    exprs = _symbolic_default_exprs(obj) if env_names else {}
     for name, param in sig.parameters.items():
         if name in ("self", "cls"):
             continue
 
         type_hint = hints.get(name, param.annotation)
+        default = param.default
+        if name in env_names:
+            expr = exprs.get(name)
+            default = _ExprDefault(expr) if expr is not None else _COMPLEX_DEFAULT
         params.append(
             ScannedParam(
                 name=name,
                 type_hint=_type_to_string(type_hint)
                 if type_hint is not inspect.Parameter.empty
                 else None,
-                default=param.default,
+                default=default,
                 kind=_get_param_kind(param),
             )
         )
