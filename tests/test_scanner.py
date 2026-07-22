@@ -1,24 +1,31 @@
 """Tests for the scanner module."""
 
 import inspect
+import os
+import sys
 import types
 
 import pytest
 from hostile_objects import Hostile, HostileProxy
 
+import tests.repro_fixture as reprofix
 from lcp.scanner import (
     ScannedModule,
     ScannedParam,
+    _constant_source_expr,
     _get_param_kind,
     _is_c_function,
     _is_constant,
+    _is_env_derived_str,
     _is_member_from_package,
     _is_public,
     _parse_docstring,
     _scan_class,
     _scan_function,
     _scan_signature,
+    _symbolic_default_exprs,
     _type_to_string,
+    _usable_expr,
     scan_module,
     scan_package,
 )
@@ -1290,3 +1297,66 @@ class TestConstantSummary:
 
         value = MyStr("hello")
         assert _constant_summary(value) == f"MyStr constant: {value!r}"
+
+
+class TestIsEnvDerivedStr:
+    """Tests for _is_env_derived_str."""
+
+    def test_sys_executable_is_env_derived(self):
+        assert _is_env_derived_str(sys.executable) is True
+
+    def test_path_under_prefix_is_env_derived(self):
+        assert _is_env_derived_str(os.path.join(sys.prefix, "share", "x")) is True
+
+    def test_path_under_home_is_env_derived(self):
+        assert _is_env_derived_str(os.path.expanduser("~/.cache/app")) is True
+
+    def test_plain_string_is_not_env_derived(self):
+        assert _is_env_derived_str("GET") is False
+
+    def test_url_path_is_not_env_derived(self):
+        assert _is_env_derived_str("/api/v1") is False
+
+    def test_non_string_is_not_env_derived(self):
+        assert _is_env_derived_str(200) is False
+        assert _is_env_derived_str(None) is False
+
+    def test_empty_string_is_not_env_derived(self):
+        assert _is_env_derived_str("") is False
+
+
+class TestUsableExpr:
+    """Tests for _usable_expr."""
+
+    def test_none_stays_none(self):
+        assert _usable_expr(None) is None
+
+    def test_short_expr_passes(self):
+        assert _usable_expr("sys.executable") == "sys.executable"
+
+    def test_overlong_expr_rejected(self):
+        assert _usable_expr("x" * 200) is None
+
+
+class TestSymbolicDefaultExprs:
+    """Tests for _symbolic_default_exprs."""
+
+    def test_recovers_env_and_plain_defaults(self):
+        exprs = _symbolic_default_exprs(reprofix.connect)
+        assert exprs["exe"] == "sys.executable"
+        assert exprs["cache"] == 'os.path.expanduser("~/.cache/app")'
+
+    def test_unparseable_object_fails_open(self):
+        assert _symbolic_default_exprs(len) == {}
+
+
+class TestConstantSourceExpr:
+    """Tests for _constant_source_expr."""
+
+    def test_recovers_assignment_rhs(self):
+        assert _constant_source_expr(reprofix, "DATA_ROOT") == (
+            'os.path.join(sys.prefix, "share", "data")'
+        )
+
+    def test_missing_name_returns_none(self):
+        assert _constant_source_expr(reprofix, "NOT_THERE") is None

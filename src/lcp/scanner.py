@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import ast
 import importlib
 import importlib.metadata
 import inspect
+import os
 import pkgutil
 import re
 import sys
+import tempfile
+import textwrap
 import typing
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -398,6 +402,124 @@ def _type_to_string(type_hint: Any) -> str | None:
         return type_hint.__name__
 
     return str(type_hint)
+
+
+_MAX_SYMBOLIC_EXPR = 80
+
+
+def _is_env_derived_str(value: object) -> bool:
+    """Return whether *value* is a string rooted in this install's environment.
+
+    True only when *value* is a non-empty ``str`` that starts with an
+    environment root (``sys.prefix``/``base_prefix``/``exec_prefix``, the user
+    home, or the temp dir) or equals ``sys.executable``. These are the values
+    that differ per machine and per install; a plain string such as ``"GET"`` or
+    a logical path like ``"/api/v1"`` is not env-derived.
+
+    Args:
+        value: Any object; only ``str`` can be env-derived.
+
+    Returns:
+        ``True`` if the value embeds this environment, else ``False``.
+    """
+    if not isinstance(value, str) or not value:
+        return False
+    if value == sys.executable:
+        return True
+    norm = os.path.normpath(value)
+    roots = (
+        sys.prefix,
+        sys.base_prefix,
+        sys.exec_prefix,
+        os.path.expanduser("~"),
+        tempfile.gettempdir(),
+    )
+    for root in roots:
+        if root and norm.startswith(os.path.normpath(root) + os.sep):
+            return True
+    return False
+
+
+def _usable_expr(seg: str | None) -> str | None:
+    """Return *seg* if it is a short, non-empty source expression, else None.
+
+    An over-long expression is not clearly more useful than omission, so it is
+    rejected (the caller then omits the value).
+    """
+    if seg is None:
+        return None
+    return seg if 0 < len(seg) <= _MAX_SYMBOLIC_EXPR else None
+
+
+def _symbolic_default_exprs(func: object) -> dict[str, str]:
+    """Recover the source expression of each of *func*'s defaults from the AST.
+
+    Fails open: returns ``{}`` when the source is unavailable or unparseable
+    (C callables, dynamically built signatures). Over-long expressions are
+    dropped by :func:`_usable_expr`.
+
+    Args:
+        func: The callable whose defaults to recover.
+
+    Returns:
+        A mapping ``{parameter_name: source_expression}``.
+    """
+    try:
+        src = textwrap.dedent(inspect.getsource(func))
+        tree = ast.parse(src)
+    except (OSError, TypeError, SyntaxError, ValueError):
+        return {}
+    fn = next(
+        (n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))),
+        None,
+    )
+    if fn is None:
+        return {}
+    args = fn.args
+    out: dict[str, str] = {}
+    posargs = args.posonlyargs + args.args
+    for arg, default in zip(posargs[len(posargs) - len(args.defaults):], args.defaults):
+        seg = _usable_expr(ast.get_source_segment(src, default))
+        if seg is not None:
+            out[arg.arg] = seg
+    for arg, default in zip(args.kwonlyargs, args.kw_defaults):
+        if default is not None:
+            seg = _usable_expr(ast.get_source_segment(src, default))
+            if seg is not None:
+                out[arg.arg] = seg
+    return out
+
+
+def _constant_source_expr(module: object, name: str) -> str | None:
+    """Recover the RHS source expression of a top-level ``name = ...`` in *module*.
+
+    Fails open: returns ``None`` when the module source is unavailable, the name
+    is not a top-level assignment, or the expression is over-long.
+
+    Args:
+        module: The module object where the constant is defined.
+        name: The constant's binding name.
+
+    Returns:
+        The source expression (e.g. ``"certs.where()"``) or ``None``.
+    """
+    try:
+        src = inspect.getsource(module)
+        tree = ast.parse(src)
+    except (OSError, TypeError, SyntaxError, ValueError):
+        return None
+    for node in tree.body:
+        targets: list[str] = []
+        value: ast.expr | None = None
+        if isinstance(node, ast.Assign):
+            targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
+            value = node.value
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            targets = [node.target.id]
+            value = node.value
+        if name in targets and value is not None:
+            return _usable_expr(ast.get_source_segment(src, value))
+    return None
 
 
 def _get_param_kind(param: inspect.Parameter) -> str:
