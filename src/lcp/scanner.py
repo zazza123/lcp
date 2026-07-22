@@ -416,13 +416,22 @@ def _is_env_derived_str(value: object) -> bool:
     that differ per machine and per install; a plain string such as ``"GET"`` or
     a logical path like ``"/api/v1"`` is not env-derived.
 
+    ``isinstance`` is not safe here, for the same reason it is unsafe in
+    :func:`_is_primitive`: its ``__class__`` fallback goes through a hostile
+    object's ``__getattribute__``/``__getattr__`` and a non-``AttributeError``
+    (e.g. ``RuntimeError`` from a ``flask.request``-shaped proxy) propagates
+    out of what reads like a pure predicate. The ``type(value) is str``
+    identity check settles the common case without touching the object at
+    all, so this function stays true to its fail-open contract for any
+    object, hostile or not.
+
     Args:
         value: Any object; only ``str`` can be env-derived.
 
     Returns:
         ``True`` if the value embeds this environment, else ``False``.
     """
-    if not isinstance(value, str) or not value:
+    if type(value) is not str or not value:
         return False
     if value == sys.executable:
         return True
@@ -1321,12 +1330,10 @@ def _constant_summary(value: Any, module: Any = None, name: str | None = None) -
     type-only form rather than letting the exception escape (which would
     otherwise drop the whole symbol from the scan).
 
-    The env-derived check is gated on ``type(value) is str`` (an exact-type
-    identity check, never an ``isinstance`` call) before ``_is_env_derived_str``
-    is invoked: that function's own ``isinstance(value, str)`` is not safe to
-    run on an arbitrary object, since a hostile ``__getattribute__`` can raise
-    on the ``__class__`` fallback isinstance takes when its fast path misses.
-    Gating on the exact type sidesteps that without touching the value itself.
+    ``_is_env_derived_str`` is hostile-safe on its own (it uses a
+    ``type(value) is str`` identity check rather than ``isinstance`` before
+    touching the value), so it is called directly here without a call-site
+    guard.
 
     Args:
         value: The object bound to the constant's name.
@@ -1339,7 +1346,7 @@ def _constant_summary(value: Any, module: Any = None, name: str | None = None) -
         ``"Sentinel constant."``.
     """
     type_name = type(value).__name__
-    if type(value) is str and _is_env_derived_str(value):
+    if _is_env_derived_str(value):
         expr = (
             _constant_source_expr(module, name)
             if module is not None and name is not None

@@ -1324,6 +1324,12 @@ class TestIsEnvDerivedStr:
     def test_empty_string_is_not_env_derived(self):
         assert _is_env_derived_str("") is False
 
+    def test_hostile_getattr_is_not_env_derived(self):
+        assert _is_env_derived_str(Hostile()) is False
+
+    def test_hostile_getattribute_is_not_env_derived(self):
+        assert _is_env_derived_str(HostileProxy()) is False
+
 
 class TestUsableExpr:
     """Tests for _usable_expr."""
