@@ -918,6 +918,9 @@ def _synth_module_symbol(module_path: str) -> ScannedSymbol:
         summary, description = _parse_docstring(mod.__doc__)
         docstring = _raw_docstring(mod.__doc__)
     except Exception:
+        # Fail-open: an unimportable module (or a non-string ``__doc__``) still
+        # yields a bare module entry via the ``summary or f"Module ..."`` default
+        # below, rather than dropping the symbol or aborting the scan.
         pass
     return ScannedSymbol(
         name=module_path,
