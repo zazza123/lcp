@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from .docstrings import DocstringExtras, extract_structured
@@ -23,7 +25,13 @@ from .models import (
     Symbol,
     SymbolKind,
 )
-from .scanner import ScannedModule, ScannedParam, ScannedSignature, ScannedSymbol
+from .scanner import (
+    ScannedModule,
+    ScannedParam,
+    ScannedSignature,
+    ScannedSymbol,
+    _ExprDefault,
+)
 
 
 def _param_kind_to_lcp(kind: str) -> ParamKind | None:
@@ -71,7 +79,9 @@ def _convert_param(param: ScannedParam, extras: DocstringExtras | None = None) -
     default_value: Any = None
     if param.has_default:
         # Try to represent the default value
-        if param.default is None:
+        if isinstance(param.default, _ExprDefault):
+            default_value = param.default.expr
+        elif param.default is None:
             default_value = None
         elif isinstance(param.default, (str, int, float, bool)):
             default_value = param.default
@@ -169,6 +179,32 @@ def _convert_symbol(scanned: ScannedSymbol) -> tuple[str, Symbol]:
     return symbol_id, symbol
 
 
+def _relativize_source_path(path: str) -> str:
+    """Return an environment-independent, package-relative source path.
+
+    Strips the absolute install prefix so the same symbol yields the same path
+    on any machine (#72): the tail after ``site-packages``/``dist-packages`` for
+    installed third-party code, or after the ``pythonX.Y`` component for the
+    stdlib. Unknown layouts fall back to the bare basename — an absolute path is
+    never emitted.
+
+    Args:
+        path: The absolute source file path from introspection.
+
+    Returns:
+        A ``/``-joined relative path, e.g. ``"requests/sessions.py"``.
+    """
+    parts = Path(path).parts
+    for marker in ("site-packages", "dist-packages"):
+        if marker in parts:
+            idx = len(parts) - 1 - parts[::-1].index(marker)
+            return "/".join(parts[idx + 1 :])
+    for i, part in enumerate(parts):
+        if re.fullmatch(r"python\d+\.\d+", part):
+            return "/".join(parts[i + 1 :])
+    return parts[-1] if parts else path
+
+
 def _build_detailed_index_entry(scanned: ScannedSymbol) -> DetailedIndexEntry | None:
     """Build detailed index entry for source location."""
     if not scanned.source_file:
@@ -178,7 +214,7 @@ def _build_detailed_index_entry(scanned: ScannedSymbol) -> DetailedIndexEntry | 
 
     return DetailedIndexEntry(
         implementation=Artifact(
-            path=scanned.source_file,
+            path=_relativize_source_path(scanned.source_file),
             lines=lines,
             availability="full",
         )
