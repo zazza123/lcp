@@ -897,6 +897,102 @@ def _is_sibling_module(
     )
 
 
+def _synth_module_symbol(module_path: str) -> ScannedSymbol:
+    """A minimal module-kind symbol for a captured sibling module.
+
+    Copies the real module's docstring when it imports cleanly (the module is
+    normally already imported to reach the captured object), else emits a bare
+    entry. Keeps the manifest's module listing describable — ``LCPIndex`` lists
+    a module for every symbol's ``module_path``, so a captured symbol's module
+    must have a module-kind entry like every other.
+
+    Args:
+        module_path: The def-site module path (e.g. ``google.cloud.firestore_v1.client``).
+
+    Returns:
+        A ``kind="module"`` ScannedSymbol.
+    """
+    summary = description = docstring = None
+    try:
+        mod = importlib.import_module(module_path)
+        summary, description = _parse_docstring(mod.__doc__)
+        docstring = _raw_docstring(mod.__doc__)
+    except Exception:
+        pass
+    return ScannedSymbol(
+        name=module_path,
+        qualified_name="",
+        module_path=module_path,
+        kind="module",
+        summary=summary or f"Module {module_path}",
+        description=description,
+        docstring=docstring,
+    )
+
+
+def _capture_sibling_reexports(
+    records: list[_AliasRecord],
+    existing: list[ScannedSymbol],
+    package_name: str,
+    sibling_modules: frozenset[str],
+    include_private: bool,
+) -> tuple[list[ScannedSymbol], list[ScannedSymbol]]:
+    """Capture facade re-exports that resolve to a same-distribution sibling.
+
+    For each dangling record whose target is a followable sibling
+    (:func:`_is_sibling_module`), re-fetch the object from the *observing*
+    module (``alias_module``/``alias_name`` — robust to nested ``__qualname__``
+    and renamed re-exports, and already imported) and capture it at its
+    def-site with :func:`_capture_reexport`, passing ``target_name`` so the
+    canonical ``qualified_name`` matches the record and :func:`_attach_aliases`
+    can bind the facade alias. Deferred callables (#63) yield ``None`` and are
+    left dangling. Deduped by canonical ``(module, name)`` key.
+
+    Args:
+        records: Alias records observed during the facade scan.
+        existing: Symbols already scanned (facade + its submodules).
+        package_name: Import path of the scanned facade.
+        sibling_modules: Module paths the scanned distribution provides.
+        include_private: Whether to include private class members.
+
+    Returns:
+        ``(captured_symbols, synthesized_module_symbols)``.
+    """
+    existing_keys = {(s.module_path, s.qualified_name) for s in existing}
+    captured: list[ScannedSymbol] = []
+    captured_keys: set[tuple[str, str]] = set()
+    def_modules: dict[str, None] = {}  # insertion-ordered set
+
+    for rec in records:
+        key = (rec.target_module, rec.target_name)
+        if key in existing_keys or key in captured_keys:
+            continue
+        if not _is_sibling_module(rec.target_module, package_name, sibling_modules):
+            continue
+        try:
+            obj = getattr(
+                importlib.import_module(rec.alias_module), rec.alias_name, None
+            )
+        except Exception:
+            obj = None
+        if obj is None:
+            continue
+        try:
+            sym = _capture_reexport(
+                rec.target_name, obj, rec.target_module, include_private
+            )
+        except Exception:
+            sym = None
+        if sym is None:
+            continue
+        captured.append(sym)
+        captured_keys.add(key)
+        def_modules[rec.target_module] = None
+
+    synth = [_synth_module_symbol(m) for m in def_modules]
+    return captured, synth
+
+
 def _reexport_kind(name: str, obj: Any) -> str:
     """Classify a followed foreign re-export.
 
