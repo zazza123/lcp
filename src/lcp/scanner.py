@@ -808,6 +808,93 @@ def _is_followable_reexport(
     return top in followable_tops
 
 
+def _distribution_module_paths(dist: Any) -> set[str]:
+    """Importable module paths a distribution provides, from its file list.
+
+    Derives dotted module paths from the distribution's ``.py`` files:
+    ``google/cloud/firestore_v1/client.py`` → ``google.cloud.firestore_v1.client``
+    and ``google/cloud/firestore_v1/__init__.py`` → ``google.cloud.firestore_v1``.
+
+    Args:
+        dist: An ``importlib.metadata.Distribution`` (or any object with a
+            ``files`` attribute of path-like entries).
+
+    Returns:
+        The set of importable module paths, or an empty set when the file list
+        is unavailable.
+    """
+    mods: set[str] = set()
+    for f in getattr(dist, "files", None) or []:
+        parts = str(f).split("/")
+        if not parts[-1].endswith(".py"):
+            continue
+        parts[-1] = parts[-1][:-3]
+        if parts[-1] == "__init__":
+            parts = parts[:-1]
+        if parts and all(p.isidentifier() for p in parts):
+            mods.add(".".join(parts))
+    return mods
+
+
+def _own_distribution_modules(package_name: str) -> frozenset[str]:
+    """Module paths provided by the distribution(s) owning ``package_name``.
+
+    Finds every installed distribution whose file list contains
+    ``package_name``'s import path, and returns the union of the importable
+    module paths those distributions provide — including sibling packages that
+    share the distribution but not the scanned package's subtree (e.g.
+    ``google.cloud.firestore_v1`` for a scan of ``google.cloud.firestore``).
+
+    This is a lookup on the *scanned* distribution's own files, so it does not
+    hit the shared-namespace ambiguity that ``packages_distributions()`` has for
+    ``google``. Any failure yields an empty set, disabling the feature rather
+    than raising.
+
+    Args:
+        package_name: Import path of the scanned package.
+
+    Returns:
+        The provided module paths, or an empty set.
+    """
+    own_path = package_name.replace(".", "/") + "/"
+    own_file = package_name.replace(".", "/") + ".py"
+    try:
+        dists = list(importlib.metadata.distributions())
+    except Exception:
+        return frozenset()
+    provided: set[str] = set()
+    for dist in dists:
+        files = getattr(dist, "files", None) or []
+        if any(str(f).startswith(own_path) or str(f) == own_file for f in files):
+            provided |= _distribution_module_paths(dist)
+    return frozenset(provided)
+
+
+def _is_sibling_module(
+    target_module: str, package_name: str, sibling_modules: frozenset[str]
+) -> bool:
+    """Whether ``target_module`` is a followable same-distribution sibling.
+
+    A sibling is a module that (1) lies outside the scanned package's own
+    subtree — so it is not a submodule that merely failed to import during the
+    walk — and (2) is provided by the scanned distribution's file list.
+
+    Args:
+        target_module: ``__module__`` of a dangling re-export target.
+        package_name: Import path of the scanned package.
+        sibling_modules: Module paths provided by the scanned distribution.
+
+    Returns:
+        ``True`` when ``target_module`` should be captured at its def-site.
+    """
+    if target_module == package_name or target_module.startswith(package_name + "."):
+        return False
+    return any(
+        target_module == m or target_module.startswith(m + ".")
+        for m in sibling_modules
+    )
+
+
 def _reexport_kind(name: str, obj: Any) -> str:
     """Classify a followed foreign re-export.
 
