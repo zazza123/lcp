@@ -1329,6 +1329,10 @@ def scan_module(
                         summary=_constant_summary(obj),
                     )
                 )
+            elif _is_c_function(name, obj):
+                # C-implemented function defined in this module (#63): a
+                # lowercase library-typed callable inspect.isfunction misses.
+                symbols.append(_scan_function(obj, module_path, name))
         except KeyboardInterrupt:
             raise
         except Exception:

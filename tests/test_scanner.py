@@ -1,6 +1,7 @@
 """Tests for the scanner module."""
 
 import inspect
+import types
 
 import pytest
 from hostile_objects import Hostile, HostileProxy
@@ -471,6 +472,48 @@ class TestScanModule:
         symbols = scan_module(sample_module, include_private=True)
         func_names = [s.name for s in symbols if s.kind == "function"]
         assert "_private_function" in func_names
+
+    def test_scan_module_captures_c_function(self):
+        """A module-level lowercase library-typed callable is a function (#63)."""
+
+        class _CFuncLike:
+            # __module__ matches the module below, so it is treated as defined
+            # here (not a re-export) and reaches classification.
+            __module__ = "cfuncmod"
+
+            def __call__(self, x, y):
+                return x + y
+
+        mod = types.ModuleType("cfuncmod")
+        mod.__doc__ = "A C-extension-like module."
+        mod.add = _CFuncLike()
+
+        symbols = scan_module(mod, _package_root="cfuncmod")
+        by_id = {(s.module_path, s.qualified_name): s for s in symbols}
+
+        assert ("cfuncmod", "add") in by_id
+        sym = by_id[("cfuncmod", "add")]
+        assert sym.kind == "function"
+        assert sym.signature is not None
+        assert [p.name for p in sym.signature.params] == ["x", "y"]
+
+    def test_scan_module_uppercase_callable_stays_constant(self):
+        """The reverse: an UPPER_CASE callable remains a constant, not a function."""
+
+        class _Sentinel:
+            __module__ = "cfuncmod"
+
+            def __call__(self, *args, **kwargs):
+                return None
+
+        mod = types.ModuleType("cfuncmod")
+        mod.__doc__ = "A module with an UPPER_CASE callable sentinel."
+        mod.INT = _Sentinel()
+
+        symbols = scan_module(mod, _package_root="cfuncmod")
+        by_id = {(s.module_path, s.qualified_name): s for s in symbols}
+
+        assert by_id[("cfuncmod", "INT")].kind == "constant"
 
 
 class TestScanPackage:
