@@ -1024,6 +1024,8 @@ def _capture_sibling_value_reexports(
     existing_keys = {(s.module_path, s.qualified_name) for s in existing}
     captured: list[ScannedSymbol] = []
     seen: set[str] = set()
+    # Defensive only: reaching this post-pass means scan_module already read
+    # module.__all__ during the main scan, so this cannot actually raise here.
     try:
         public_names = set(module.__all__) if hasattr(module, "__all__") else None
     except Exception:
