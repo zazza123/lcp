@@ -1343,6 +1343,12 @@ class TestUsableExpr:
     def test_overlong_expr_rejected(self):
         assert _usable_expr("x" * 200) is None
 
+    def test_expr_at_max_length_kept(self):
+        assert _usable_expr("x" * 80) == "x" * 80
+
+    def test_expr_one_over_max_length_rejected(self):
+        assert _usable_expr("x" * 81) is None
+
 
 class TestSymbolicDefaultExprs:
     """Tests for _symbolic_default_exprs."""

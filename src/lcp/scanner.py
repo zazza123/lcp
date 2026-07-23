@@ -498,27 +498,27 @@ def _symbolic_default_exprs(func: object) -> dict[str, str]:
     try:
         src = textwrap.dedent(inspect.getsource(func))
         tree = ast.parse(src)
-    except (OSError, TypeError, SyntaxError, ValueError):
-        return {}
-    fn = next(
-        (n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))),
-        None,
-    )
-    if fn is None:
-        return {}
-    args = fn.args
-    out: dict[str, str] = {}
-    posargs = args.posonlyargs + args.args
-    for arg, default in zip(posargs[len(posargs) - len(args.defaults):], args.defaults):
-        seg = _usable_expr(ast.get_source_segment(src, default))
-        if seg is not None:
-            out[arg.arg] = seg
-    for arg, default in zip(args.kwonlyargs, args.kw_defaults):
-        if default is not None:
+        fn = next(
+            (n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))),
+            None,
+        )
+        if fn is None:
+            return {}
+        args = fn.args
+        out: dict[str, str] = {}
+        posargs = args.posonlyargs + args.args
+        for arg, default in zip(posargs[len(posargs) - len(args.defaults):], args.defaults):
             seg = _usable_expr(ast.get_source_segment(src, default))
             if seg is not None:
                 out[arg.arg] = seg
-    return out
+        for arg, default in zip(args.kwonlyargs, args.kw_defaults):
+            if default is not None:
+                seg = _usable_expr(ast.get_source_segment(src, default))
+                if seg is not None:
+                    out[arg.arg] = seg
+        return out
+    except (OSError, TypeError, SyntaxError, ValueError):
+        return {}
 
 
 def _constant_source_expr(module: object, name: str) -> str | None:
@@ -537,20 +537,20 @@ def _constant_source_expr(module: object, name: str) -> str | None:
     try:
         src = inspect.getsource(module)
         tree = ast.parse(src)
+        for node in tree.body:
+            targets: list[str] = []
+            value: ast.expr | None = None
+            if isinstance(node, ast.Assign):
+                targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
+                value = node.value
+            elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+                targets = [node.target.id]
+                value = node.value
+            if name in targets and value is not None:
+                return _usable_expr(ast.get_source_segment(src, value))
+        return None
     except (OSError, TypeError, SyntaxError, ValueError):
         return None
-    for node in tree.body:
-        targets: list[str] = []
-        value: ast.expr | None = None
-        if isinstance(node, ast.Assign):
-            targets = [t.id for t in node.targets if isinstance(t, ast.Name)]
-            value = node.value
-        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
-            targets = [node.target.id]
-            value = node.value
-        if name in targets and value is not None:
-            return _usable_expr(ast.get_source_segment(src, value))
-    return None
 
 
 def _get_param_kind(param: inspect.Parameter) -> str:
