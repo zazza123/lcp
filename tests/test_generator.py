@@ -550,3 +550,18 @@ class TestReproducibilityInvariant:
         del first["manifest"]["generation"]["date"]
         del second["manifest"]["generation"]["date"]
         assert first == second
+
+    def test_frozenset_constant_is_sorted(self):
+        symbols = scan_module(reprofix)
+        schemes = next(s for s in symbols if s.name == "SCHEMES")
+        assert schemes.summary == "frozenset constant: frozenset({'ftp', 'http', 'https'})"
+
+    def test_computed_string_defaults_are_symbolic(self):
+        # The resolved timestamp / resolved os.linesep must not be emitted;
+        # the source expressions must be.
+        d = json.loads(self._manifest_json())
+        make_tmp = d["symbols"]["tests.repro_fixture:make_tmp"]
+        params = {p["name"]: p.get("default") for p in make_tmp["signatures"][0]["params"]}
+        assert params["stamp"] == 'datetime.now().strftime("%Y%m%d")'
+        assert params["sep"] == "os.linesep"
+        assert params["label"] == "run"
