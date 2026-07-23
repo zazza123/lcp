@@ -1464,6 +1464,31 @@ class TestStringDefaultLiteralRule:
         assert retries.default == 3
 
 
+class TestNumericDefaultLiteralRule:
+    """#72: computed numeric defaults are symbolic; numeric literals keep value."""
+
+    def test_computed_numeric_default_is_expr(self):
+        from lcp.scanner import _ExprDefault
+
+        sig = _scan_signature(reprofix.budget)
+        created = next(p for p in sig.params if p.name == "created_at")
+        assert isinstance(created.default, _ExprDefault)
+        assert created.default.expr == "time.time()"
+
+    def test_negative_literal_default_keeps_int_value(self):
+        sig = _scan_signature(reprofix.budget)
+        retries = next(p for p in sig.params if p.name == "retries")
+        assert retries.default == -1
+        assert type(retries.default) is int  # NOT the string "-1"
+
+    def test_float_and_bool_literals_kept(self):
+        sig = _scan_signature(reprofix.budget)
+        factor = next(p for p in sig.params if p.name == "factor")
+        flag = next(p for p in sig.params if p.name == "flag")
+        assert factor.default == 2.0
+        assert flag.default is False
+
+
 class TestFrozensetRendering:
     """#72 follow-up: frozenset constants must render deterministically."""
 

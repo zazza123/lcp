@@ -482,15 +482,34 @@ def _usable_expr(seg: str | None) -> str | None:
     return seg if 0 < len(seg) <= _MAX_SYMBOLIC_EXPR else None
 
 
+def _is_literal_default(node: ast.expr) -> bool:
+    """Whether an AST default node is a reproducible literal.
+
+    ``ast.Constant`` covers bare literals; a signed numeric literal such as
+    ``-1`` or ``+3.14`` parses as ``ast.UnaryOp`` over a ``Constant`` and must
+    also count as a literal (otherwise it would be emitted as a source
+    expression instead of its value).
+    """
+    if isinstance(node, ast.Constant):
+        return True
+    return (
+        isinstance(node, ast.UnaryOp)
+        and isinstance(node.op, (ast.UAdd, ast.USub))
+        and isinstance(node.operand, ast.Constant)
+    )
+
+
 def _default_ast_info(func: object) -> dict[str, tuple[bool, str | None]]:
     """Map each of *func*'s defaults to ``(is_literal, usable_source_expr)``.
 
-    ``is_literal`` is ``True`` when the default's AST node is an ``ast.Constant``
-    — a reproducible literal whose resolved value can be trusted. The expression
-    is the usable source segment (``None`` when over-long, per
-    :func:`_usable_expr`). A parameter appears in the map only when its default's
-    AST node was found; absence means the source was unavailable or unparseable.
-    Fails open to ``{}`` (C callables, dynamically built signatures).
+    ``is_literal`` is ``True`` when the default's AST node is a reproducible
+    literal per :func:`_is_literal_default` — a bare ``ast.Constant`` or a
+    signed numeric literal (``-1``, ``+3.14``) — whose resolved value can be
+    trusted. The expression is the usable source segment (``None`` when
+    over-long, per :func:`_usable_expr`). A parameter appears in the map only
+    when its default's AST node was found; absence means the source was
+    unavailable or unparseable. Fails open to ``{}`` (C callables, dynamically
+    built signatures).
 
     Args:
         func: The callable whose defaults to inspect.
@@ -512,13 +531,13 @@ def _default_ast_info(func: object) -> dict[str, tuple[bool, str | None]]:
         posargs = args.posonlyargs + args.args
         for arg, default in zip(posargs[len(posargs) - len(args.defaults):], args.defaults):
             out[arg.arg] = (
-                isinstance(default, ast.Constant),
+                _is_literal_default(default),
                 _usable_expr(ast.get_source_segment(src, default)),
             )
         for arg, default in zip(args.kwonlyargs, args.kw_defaults):
             if default is not None:
                 out[arg.arg] = (
-                    isinstance(default, ast.Constant),
+                    _is_literal_default(default),
                     _usable_expr(ast.get_source_segment(src, default)),
                 )
         return out
@@ -584,19 +603,19 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
         hints = {}
 
     params = []
-    str_default_names = [
+    primitive_default_names = [
         name
         for name, param in sig.parameters.items()
-        if type(param.default) is str
+        if type(param.default) in (str, int, float, bool)
     ]
-    info = _default_ast_info(obj) if str_default_names else {}
+    info = _default_ast_info(obj) if primitive_default_names else {}
     for name, param in sig.parameters.items():
         if name in ("self", "cls"):
             continue
 
         type_hint = hints.get(name, param.annotation)
         default = param.default
-        if name in str_default_names:
+        if name in primitive_default_names:
             ast_info = info.get(name)
             if ast_info is None:
                 # AST unrecoverable: never emit a leaked env-derived path.
