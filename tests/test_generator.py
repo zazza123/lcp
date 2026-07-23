@@ -1,6 +1,10 @@
 """Tests for the generator module."""
 
+import json
+import os
+import sys
 
+import tests.repro_fixture as reprofix
 from lcp.generator import (
     _build_detailed_index_entry,
     _build_symbol_id,
@@ -23,6 +27,7 @@ from lcp.scanner import (
     ScannedSignature,
     ScannedSymbol,
     _ExprDefault,
+    scan_module,
     scan_package,
 )
 
@@ -517,3 +522,31 @@ class TestRelativizeSourcePath:
         )
         entry = _build_detailed_index_entry(scanned)
         assert entry.implementation.path == "requests/sessions.py"
+
+
+class TestReproducibilityInvariant:
+    """#72: no generated manifest string may embed an environment root."""
+
+    def _manifest_json(self):
+        symbols = scan_module(reprofix)
+        scanned = ScannedModule(
+            name="repro_fixture", version="0.0.0", symbols=symbols
+        )
+        doc = generate_lcp(scanned)
+        return doc.model_dump_json()
+
+    def test_no_env_roots_in_manifest(self):
+        blob = self._manifest_json()
+        for root in (sys.prefix, sys.base_prefix, os.path.expanduser("~")):
+            assert root not in blob, f"environment root leaked: {root}"
+        assert sys.executable not in blob
+
+    def test_two_scans_are_identical(self):
+        # generation.date is a live wall-clock timestamp (datetime.now(UTC) in
+        # generator.py), not an environment root — exclude it so this checks
+        # content determinism, the invariant this test targets.
+        first = json.loads(self._manifest_json())
+        second = json.loads(self._manifest_json())
+        del first["manifest"]["generation"]["date"]
+        del second["manifest"]["generation"]["date"]
+        assert first == second
