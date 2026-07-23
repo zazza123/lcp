@@ -1489,6 +1489,23 @@ class TestNumericDefaultLiteralRule:
         assert flag.default is False
 
 
+class TestSubclassPrimitiveDefault:
+    """#72: an int-subclass sentinel default is emitted symbolically, not as its int value."""
+
+    def test_int_subclass_sentinel_is_symbolic(self):
+        from lcp.scanner import _ExprDefault
+
+        sig = _scan_signature(reprofix.with_sentinel)
+        original = next(p for p in sig.params if p.name == "original")
+        assert isinstance(original.default, _ExprDefault)
+        assert original.default.expr == "_NO_HISTORY"
+
+    def test_plain_literal_alongside_sentinel_kept(self):
+        sig = _scan_signature(reprofix.with_sentinel)
+        n = next(p for p in sig.params if p.name == "n")
+        assert n.default == 5
+
+
 class TestFrozensetRendering:
     """#72 follow-up: frozenset constants must render deterministically."""
 

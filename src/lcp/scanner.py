@@ -606,7 +606,7 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
     primitive_default_names = [
         name
         for name, param in sig.parameters.items()
-        if type(param.default) in _PRIMITIVE_DEFAULT_TYPES
+        if isinstance(param.default, _PRIMITIVE_DEFAULT_TYPES)
     ]
     info = _default_ast_info(obj) if primitive_default_names else {}
     for name, param in sig.parameters.items():

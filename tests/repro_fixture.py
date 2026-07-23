@@ -32,3 +32,18 @@ def make_tmp(stamp=datetime.now().strftime("%Y%m%d"), sep=os.linesep, label="run
 def budget(created_at=time.time(), retries=-1, factor=2.0, flag=False):
     """Computed numeric default, a negative literal, a float literal, a bool literal."""
     return created_at, retries, factor, flag
+
+
+class _Sentinel(int):
+    """An int-subclass sentinel, like sqlalchemy's symbol()."""
+
+    def __repr__(self):  # pragma: no cover
+        return "sentinel"
+
+
+_NO_HISTORY = _Sentinel(12345)
+
+
+def with_sentinel(original=_NO_HISTORY, n=5):
+    """A default that is an int-subclass sentinel (computed Name), plus a literal."""
+    return original, n
