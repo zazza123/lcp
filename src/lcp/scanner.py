@@ -1344,6 +1344,30 @@ def _capture_reexport(
 _MAX_CONSTANT_REPR = 60
 
 
+def _render_frozenset(value: frozenset, type_name: str) -> str:
+    """Render a frozenset deterministically, elements sorted by ``repr``.
+
+    ``frozenset`` iteration order is ``PYTHONHASHSEED``-dependent, so ``repr()``
+    varies between processes and breaks reproducibility (#72 follow-up).
+    Sorting the element reprs yields a stable order, and building the string
+    here — rather than calling the value's own ``__repr__`` — makes
+    ``frozenset`` subclasses with a custom repr (e.g. polars ``DataTypeGroup``)
+    deterministic too. The value's type name is used so the rendered form keeps
+    parity with the current output.
+
+    Args:
+        value: The frozenset (or subclass instance) to render.
+        type_name: ``type(value).__name__``.
+
+    Returns:
+        e.g. ``"frozenset({'a', 'b', 'c'})"`` or ``"frozenset()"`` when empty.
+    """
+    elements = sorted(map(repr, value))
+    if not elements:
+        return f"{type_name}()"
+    return f"{type_name}({{{', '.join(elements)}}})"
+
+
 def _constant_summary(value: Any, module: Any = None, name: str | None = None) -> str:
     """Build the summary line for a constant symbol.
 
@@ -1390,7 +1414,10 @@ def _constant_summary(value: Any, module: Any = None, name: str | None = None) -
     if not _is_primitive(value):
         return f"{type_name} constant."
     try:
-        rendered = repr(value)
+        if isinstance(value, frozenset):
+            rendered = _render_frozenset(value, type_name)
+        else:
+            rendered = repr(value)
     except Exception:
         return f"{type_name} constant."
     if len(rendered) > _MAX_CONSTANT_REPR:

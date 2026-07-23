@@ -13,6 +13,7 @@ from lcp.scanner import (
     ScannedModule,
     ScannedParam,
     _constant_source_expr,
+    _constant_summary,
     _get_param_kind,
     _is_c_function,
     _is_constant,
@@ -1427,3 +1428,40 @@ class TestSignatureDefaultsEnvDerived:
         restored = _default_from_dict(d)
         assert isinstance(restored, _ExprDefault)
         assert restored.expr == "sys.executable"
+
+
+class TestFrozensetRendering:
+    """#72 follow-up: frozenset constants must render deterministically."""
+
+    def test_render_sorted_by_repr(self):
+        from lcp.scanner import _render_frozenset
+
+        # natural iteration order is hash-dependent; output must be sorted
+        assert _render_frozenset(frozenset({"banana", "apple", "cherry"}), "frozenset") == (
+            "frozenset({'apple', 'banana', 'cherry'})"
+        )
+
+    def test_render_empty(self):
+        from lcp.scanner import _render_frozenset
+
+        assert _render_frozenset(frozenset(), "frozenset") == "frozenset()"
+
+    def test_render_uses_type_name_for_subclass(self):
+        from lcp.scanner import _render_frozenset
+
+        class DataTypeGroup(frozenset):
+            pass
+
+        assert _render_frozenset(DataTypeGroup({"c", "a", "b"}), "DataTypeGroup") == (
+            "DataTypeGroup({'a', 'b', 'c'})"
+        )
+
+    def test_constant_summary_frozenset_is_sorted(self):
+        # end-to-end through _constant_summary
+        s = _constant_summary(frozenset({"z", "y", "x"}))
+        assert s == "frozenset constant: frozenset({'x', 'y', 'z'})"
+
+    def test_constant_summary_frozenset_order_independent(self):
+        a = _constant_summary(frozenset(["one", "two", "three"]))
+        b = _constant_summary(frozenset(["three", "one", "two"]))
+        assert a == b
