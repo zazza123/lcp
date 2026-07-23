@@ -101,6 +101,32 @@ _COMPLEX_DEFAULT = _ComplexDefault()
 _PRIMITIVE_DEFAULT_TYPES = (str, int, float, bool)
 
 
+def _is_primitive_default(value: object) -> bool:
+    """Whether *value* is (an instance of) a primitive the generator emits verbatim.
+
+    Mirrors :func:`_is_primitive`'s hostile-safe shape: a ``type(...) in`` fast
+    path that never touches the object, then a guarded ``isinstance`` fallback so
+    a primitive **subclass** (e.g. a sentinel like sqlalchemy's ``symbol`` — an
+    ``int`` subclass) is still recognised. The fallback reads ``__class__``, which
+    a hostile proxy can make raise, so it is wrapped: any failure returns
+    ``False`` rather than escaping (which would drop the whole symbol from the
+    scan). The set matches ``_PRIMITIVE_DEFAULT_TYPES`` — exactly what
+    ``_convert_param``/``_default_to_dict`` emit as a value.
+
+    Args:
+        value: The default object to classify.
+
+    Returns:
+        ``True`` when *value* is a str/int/float/bool (or subclass instance).
+    """
+    if type(value) in _PRIMITIVE_DEFAULT_TYPES:
+        return True
+    try:
+        return isinstance(value, _PRIMITIVE_DEFAULT_TYPES)
+    except Exception:
+        return False
+
+
 class _ExprDefault:
     """Carries the source expression of an environment-derived default.
 
@@ -606,7 +632,7 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
     primitive_default_names = [
         name
         for name, param in sig.parameters.items()
-        if isinstance(param.default, _PRIMITIVE_DEFAULT_TYPES)
+        if _is_primitive_default(param.default)
     ]
     info = _default_ast_info(obj) if primitive_default_names else {}
     for name, param in sig.parameters.items():

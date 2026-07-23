@@ -1541,3 +1541,24 @@ class TestFrozensetRendering:
         a = _constant_summary(frozenset(["one", "two", "three"]))
         b = _constant_summary(frozenset(["three", "one", "two"]))
         assert a == b
+
+
+class TestScanSignatureHostileDefault:
+    """#72: a hostile default must not crash or drop the signature scan."""
+
+    def test_hostile_class_property_default_is_safe(self):
+        class _Hostile:
+            @property
+            def __class__(self):
+                raise RuntimeError("working outside of request context")
+
+        def f(x=_Hostile(), n=5):
+            return x, n
+
+        # must not raise, and must still return the signature with both params
+        sig = _scan_signature(f)
+        assert sig is not None
+        names = {p.name for p in sig.params}
+        assert names == {"x", "n"}
+        # the plain literal is unaffected
+        assert next(p for p in sig.params if p.name == "n").default == 5
