@@ -482,18 +482,21 @@ def _usable_expr(seg: str | None) -> str | None:
     return seg if 0 < len(seg) <= _MAX_SYMBOLIC_EXPR else None
 
 
-def _symbolic_default_exprs(func: object) -> dict[str, str]:
-    """Recover the source expression of each of *func*'s defaults from the AST.
+def _default_ast_info(func: object) -> dict[str, tuple[bool, str | None]]:
+    """Map each of *func*'s defaults to ``(is_literal, usable_source_expr)``.
 
-    Fails open: returns ``{}`` when the source is unavailable or unparseable
-    (C callables, dynamically built signatures). Over-long expressions are
-    dropped by :func:`_usable_expr`.
+    ``is_literal`` is ``True`` when the default's AST node is an ``ast.Constant``
+    — a reproducible literal whose resolved value can be trusted. The expression
+    is the usable source segment (``None`` when over-long, per
+    :func:`_usable_expr`). A parameter appears in the map only when its default's
+    AST node was found; absence means the source was unavailable or unparseable.
+    Fails open to ``{}`` (C callables, dynamically built signatures).
 
     Args:
-        func: The callable whose defaults to recover.
+        func: The callable whose defaults to inspect.
 
     Returns:
-        A mapping ``{parameter_name: source_expression}``.
+        ``{parameter_name: (is_literal, usable_source_expr)}``.
     """
     try:
         src = textwrap.dedent(inspect.getsource(func))
@@ -505,17 +508,19 @@ def _symbolic_default_exprs(func: object) -> dict[str, str]:
         if fn is None:
             return {}
         args = fn.args
-        out: dict[str, str] = {}
+        out: dict[str, tuple[bool, str | None]] = {}
         posargs = args.posonlyargs + args.args
         for arg, default in zip(posargs[len(posargs) - len(args.defaults):], args.defaults):
-            seg = _usable_expr(ast.get_source_segment(src, default))
-            if seg is not None:
-                out[arg.arg] = seg
+            out[arg.arg] = (
+                isinstance(default, ast.Constant),
+                _usable_expr(ast.get_source_segment(src, default)),
+            )
         for arg, default in zip(args.kwonlyargs, args.kw_defaults):
             if default is not None:
-                seg = _usable_expr(ast.get_source_segment(src, default))
-                if seg is not None:
-                    out[arg.arg] = seg
+                out[arg.arg] = (
+                    isinstance(default, ast.Constant),
+                    _usable_expr(ast.get_source_segment(src, default)),
+                )
         return out
     except (OSError, TypeError, SyntaxError, ValueError):
         return {}
@@ -579,21 +584,28 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
         hints = {}
 
     params = []
-    env_names = [
+    str_default_names = [
         name
         for name, param in sig.parameters.items()
-        if _is_env_derived_str(param.default)
+        if type(param.default) is str
     ]
-    exprs = _symbolic_default_exprs(obj) if env_names else {}
+    info = _default_ast_info(obj) if str_default_names else {}
     for name, param in sig.parameters.items():
         if name in ("self", "cls"):
             continue
 
         type_hint = hints.get(name, param.annotation)
         default = param.default
-        if name in env_names:
-            expr = exprs.get(name)
-            default = _ExprDefault(expr) if expr is not None else _COMPLEX_DEFAULT
+        if name in str_default_names:
+            ast_info = info.get(name)
+            if ast_info is None:
+                # AST unrecoverable: never emit a leaked env-derived path.
+                if _is_env_derived_str(default):
+                    default = _COMPLEX_DEFAULT
+            else:
+                is_literal, expr = ast_info
+                if not is_literal:
+                    default = _ExprDefault(expr) if expr is not None else _COMPLEX_DEFAULT
         params.append(
             ScannedParam(
                 name=name,

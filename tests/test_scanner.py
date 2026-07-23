@@ -24,7 +24,6 @@ from lcp.scanner import (
     _scan_class,
     _scan_function,
     _scan_signature,
-    _symbolic_default_exprs,
     _type_to_string,
     _usable_expr,
     scan_module,
@@ -1351,16 +1350,21 @@ class TestUsableExpr:
         assert _usable_expr("x" * 81) is None
 
 
-class TestSymbolicDefaultExprs:
-    """Tests for _symbolic_default_exprs."""
+class TestDefaultAstInfo:
+    """AST literal-ness + source expr per default (#72 follow-up)."""
 
-    def test_recovers_env_and_plain_defaults(self):
-        exprs = _symbolic_default_exprs(reprofix.connect)
-        assert exprs["exe"] == "sys.executable"
-        assert exprs["cache"] == 'os.path.expanduser("~/.cache/app")'
+    def test_reports_literal_and_computed(self):
+        from lcp.scanner import _default_ast_info
+
+        info = _default_ast_info(reprofix.connect)
+        assert info["exe"] == (False, "sys.executable")
+        assert info["cache"] == (False, 'os.path.expanduser("~/.cache/app")')
+        assert info["retries"] == (True, "3")
 
     def test_unparseable_object_fails_open(self):
-        assert _symbolic_default_exprs(len) == {}
+        from lcp.scanner import _default_ast_info
+
+        assert _default_ast_info(len) == {}
 
 
 class TestConstantSourceExpr:
@@ -1428,6 +1432,36 @@ class TestSignatureDefaultsEnvDerived:
         restored = _default_from_dict(d)
         assert isinstance(restored, _ExprDefault)
         assert restored.expr == "sys.executable"
+
+
+class TestStringDefaultLiteralRule:
+    """#72 follow-up: computed string defaults are symbolic; literals keep value."""
+
+    def test_computed_call_default_is_expr(self):
+        from lcp.scanner import _ExprDefault
+
+        sig = _scan_signature(reprofix.make_tmp)
+        stamp = next(p for p in sig.params if p.name == "stamp")
+        assert isinstance(stamp.default, _ExprDefault)
+        assert stamp.default.expr == 'datetime.now().strftime("%Y%m%d")'
+
+    def test_computed_attribute_default_is_expr(self):
+        from lcp.scanner import _ExprDefault
+
+        sig = _scan_signature(reprofix.make_tmp)
+        sep = next(p for p in sig.params if p.name == "sep")
+        assert isinstance(sep.default, _ExprDefault)
+        assert sep.default.expr == "os.linesep"
+
+    def test_literal_string_default_keeps_value(self):
+        sig = _scan_signature(reprofix.make_tmp)
+        label = next(p for p in sig.params if p.name == "label")
+        assert label.default == "run"
+
+    def test_int_default_unchanged(self):
+        sig = _scan_signature(reprofix.connect)
+        retries = next(p for p in sig.params if p.name == "retries")
+        assert retries.default == 3
 
 
 class TestFrozensetRendering:
