@@ -38,13 +38,25 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-lint-${{ hashFiles('pyproject.toml') }}
+          # The workflow file is part of the key because the ruff pin lives
+          # here, not in pyproject.toml: keyed on pyproject alone, a cache
+          # hit skips the install step and silently keeps whatever ruff
+          # version the cache already holds, making the pin a no-op.
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-lint-${{ hashFiles('pyproject.toml', '.github/workflows/tests.yml') }}
 
       - name: install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip
-          pip install ruff
+          # Pinned deliberately. Unpinned, a ruff release that adds or
+          # promotes rules turns this job red on every open PR without a
+          # line of code changing: 0.16.0 did exactly that, flagging 78
+          # pre-existing findings in src/lcp and 53 in tests, so main went
+          # from green on 2026-07-23 to failing on work that never touched
+          # those files. 0.15.22 is the newest release clean on both trees.
+          # Bump this on purpose, in its own PR, together with whatever
+          # fixes the new rules demand -- never as a side effect.
+          pip install "ruff==0.15.22"
           pip install -e ".[dev]"
 
       - name: lint src
