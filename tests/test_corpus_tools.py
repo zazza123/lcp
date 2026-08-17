@@ -71,6 +71,23 @@ class TestSnapshot:
         assert symbols["tinylib:hello"]["kind"] == "function"
         assert symbols["tinylib:MAX"]["kind"] == "constant"
 
+    def test_records_signature_type_fields(self, tiny_corpus, tmp_path):
+        """Type fields are recorded per signature, keyed by field id (#77)."""
+        snapshot = _load("snapshot.py")
+        sys.path.insert(0, str(tiny_corpus["site"]))
+        try:
+            result = snapshot.build_snapshot(
+                src=str(REPO_ROOT / "src"),
+                libraries_path=tiny_corpus["libraries"],
+                tier="core",
+            )
+        finally:
+            sys.path.remove(str(tiny_corpus["site"]))
+
+        types = result["libraries"]["tinylib"]["symbols"]["tinylib:hello"]["types"]
+        assert types["sig0.param[name]"] == "str"
+        assert types["sig0.returns"] == "str"
+
     def test_records_an_error_instead_of_aborting(self, tmp_path):
         snapshot = _load("snapshot.py")
         libraries = tmp_path / "libraries.txt"
@@ -314,8 +331,17 @@ def _snap(libraries, tier="core"):
     }
 
 
-def _sym(kind="constant", summary="Box constant.", module="rich"):
-    return {"kind": kind, "module": module, "summary": summary}
+def _sym(kind="constant", summary="Box constant.", module="rich", types=None):
+    """A recorded symbol. ``types`` defaults to an empty mapping, not to a
+    missing key: an absent ``types`` key means the snapshot predates type
+    recording, which compare.py treats as "not comparable" rather than as
+    zero type changes."""
+    return {
+        "kind": kind,
+        "module": module,
+        "summary": summary,
+        "types": {} if types is None else types,
+    }
 
 
 class TestCompare:
@@ -419,6 +445,85 @@ class TestCompare:
         assert diff["added"] == []
         assert diff["kind_changed"] == []
         assert diff["summary_changed"] == []
+
+    def test_detects_type_change_without_touching_other_sections(self):
+        compare = _load("compare.py")
+        before = _snap({"anyio": {"symbols": {"anyio:A": _sym(
+            module="anyio", types={"sig0.param[encoding]": "dataclasses.InitVar[str]"}
+        )}}})
+        after = _snap({"anyio": {"symbols": {"anyio:A": _sym(
+            module="anyio", types={"sig0.param[encoding]": "InitVar[str]"}
+        )}}})
+
+        diff = compare.diff_snapshots(before, after)
+
+        assert diff["type_changed"] == [
+            {
+                "library": "anyio",
+                "id": "anyio:A",
+                "field": "sig0.param[encoding]",
+                "before": "dataclasses.InitVar[str]",
+                "after": "InitVar[str]",
+            }
+        ]
+        assert diff["removed"] == []
+        assert diff["added"] == []
+        assert diff["kind_changed"] == []
+        assert diff["module_changed"] == []
+        assert diff["summary_changed"] == []
+
+    def test_type_changed_section_sits_between_module_changed_and_summary_changed(self):
+        compare = _load("compare.py")
+        before = _snap({"rich": {"symbols": {"rich:A": _sym(
+            types={"sig0.returns": "str"}
+        )}}})
+        after = _snap({"rich": {"symbols": {"rich:A": _sym(
+            types={"sig0.returns": "bytes"}
+        )}}})
+
+        rendered = compare.render(compare.diff_snapshots(before, after))
+
+        assert (
+            rendered.index("MODULE CHANGED")
+            < rendered.index("TYPE CHANGED")
+            < rendered.index("SUMMARY CHANGED")
+        )
+
+    def test_a_returns_only_change_is_reported(self):
+        compare = _load("compare.py")
+        before = _snap({"c": {"symbols": {"c:f": _sym(
+            module="c", types={"sig0.returns": "<c._Shim object>"}
+        )}}})
+        after = _snap({"c": {"symbols": {"c:f": _sym(
+            module="c", types={"sig0.returns": "DHPrivateNumbers"}
+        )}}})
+
+        diff = compare.diff_snapshots(before, after)
+
+        assert [d["field"] for d in diff["type_changed"]] == ["sig0.returns"]
+
+    def test_old_snapshot_without_types_is_not_reported_as_zero_type_changes(self):
+        """A snapshot predating type recording must not read as "no impact".
+
+        Reporting ``TYPE CHANGED (0)`` there would recreate the exact false
+        reassurance this section exists to remove: before types were
+        recorded, a scanner change that moved only type hints produced a
+        wholly empty report.
+        """
+        compare = _load("compare.py")
+        legacy = {"kind": "function", "module": "rich", "summary": "A box."}
+        before = _snap({"rich": {"symbols": {"rich:A": legacy}}})
+        after = _snap({"rich": {"symbols": {"rich:A": _sym(
+            kind="function", summary="A box.", types={"sig0.returns": "str"}
+        )}}})
+
+        diff = compare.diff_snapshots(before, after)
+        rendered = compare.render(diff)
+
+        assert diff["types_recorded"] is False
+        assert diff["type_changed"] == []
+        assert "TYPE CHANGED (not comparable)" in rendered
+        assert "TYPE CHANGED (0)" not in rendered
 
     def test_symbol_with_several_changed_fields_appears_in_each_section_once(self):
         compare = _load("compare.py")

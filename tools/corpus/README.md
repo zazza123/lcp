@@ -91,7 +91,7 @@ often the actual explanation for a diff below it (a library upgraded
 between the two snapshots looks exactly like a scanner change unless you
 know the corpus itself moved).
 
-Below that, `compare.py` prints five sections, in this order:
+Below that, `compare.py` prints six sections, in this order:
 
 1. **REMOVED** — symbols present before and gone after. Almost always a
    regression: something the scanner used to find, it no longer does.
@@ -100,12 +100,27 @@ Below that, `compare.py` prints five sections, in this order:
 3. **MODULE CHANGED** — a symbol survived but its recorded `module`
    changed, grouped by library with up to three sample symbol ids. Usually
    points at an attribution regression in `generator.py`.
-4. **SUMMARY CHANGED** — a symbol survived but its `summary` text changed,
+4. **TYPE CHANGED** — a symbol survived but one of its signature type
+   fields changed: a parameter's `type` or a signature's `returns`,
+   grouped by library with up to three sample symbol ids. Field ids read
+   `sig0.param[name]` / `sig0.returns`, so an overload is localised rather
+   than the whole symbol being flagged. This is where a change to
+   annotation resolution in `scanner.py` shows up; nothing else in the
+   report sees it, which is why #76 measured completely clean against
+   `main` on every other section while moving 18 type fields.
+
+   A snapshot taken before this section existed carries no type data. That
+   is reported as `TYPE CHANGED (not comparable)` rather than as zero
+   changes — a scanner change that moves only types would otherwise read
+   as "no impact" against an old snapshot, which is exactly the false
+   reassurance the section removes. Retake both snapshots to compare.
+
+5. **SUMMARY CHANGED** — a symbol survived but its `summary` text changed,
    grouped the same way. Usually points at a regression in docstring
    extraction (`docstrings.py`). A library-wide spike here — most or all
    of a library's symbols changing at once — is the signature of a broad
    summary-extraction regression, not of many small, independent doc edits.
-5. **ADDED** — symbols present after that weren't before, grouped by
+6. **ADDED** — symbols present after that weren't before, grouped by
    library and object type. Additions are usually an intended
    improvement, not a regression, but a spike in one specific object
    type (e.g. every new addition being a `constant` when the change was
@@ -127,9 +142,12 @@ every symbol. The section is omitted entirely when there are no such
 libraries.
 
 The ordering — removals, then kind changes, then module changes, then
-summary changes, then additions — is deliberate: it puts the most
-suspicious category first, since a scanner change that removes symbols
-needs the fastest attention, while an addition usually just needs reading.
+type changes, then summary changes, then additions — is deliberate: it
+puts the most suspicious category first, since a scanner change that
+removes symbols needs the fastest attention, while an addition usually
+just needs reading. Type changes rank above summary changes because a
+published type is part of the API contract while a summary is prose
+about it.
 
 An empty run — every section at `(0)`, no coverage section, no
 provenance banner — is the expected result of comparing two snapshots of

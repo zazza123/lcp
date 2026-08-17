@@ -106,6 +106,46 @@ def _lcp_sha(src: str) -> str:
         return "unknown"
 
 
+def _render_type(value: Any) -> str | None:
+    """Render one ``type``/``returns`` field as a comparable string.
+
+    The field is typed ``TypeRef | str | None``, so a plain string is kept as
+    is, a ``TypeRef`` is flattened through its JSON dump, and a missing
+    annotation stays ``None`` — distinct from the string ``"None"``, which is
+    what an explicit ``-> None`` annotation renders as.
+    """
+    if value is None or isinstance(value, str):
+        return value
+    dump = getattr(value, "model_dump", None)
+    return json.dumps(dump(mode="json"), sort_keys=True) if dump else str(value)
+
+
+def type_fields(symbol: Any) -> dict[str, str | None]:
+    """Flatten a symbol's signature type fields into a comparable mapping.
+
+    Keys are stable field ids (``"sig0.param[name]"``, ``"sig0.returns"``) so
+    ``compare.py`` can report *which* field of *which* overload moved, not
+    merely that a symbol's signatures differ somewhere.
+
+    Only the type-bearing fields are recorded. ``default``, ``required``,
+    ``kind`` and ``description`` are deliberately left out: they inflate the
+    snapshot without adding signal the other sections do not already carry.
+
+    Attributes are read through ``getattr`` rather than directly: this runs
+    outside ``scan_one``'s try block, so a model shape it did not expect would
+    abort a whole multi-minute run instead of being recorded as one library's
+    error. A symbol carrying no signatures simply yields an empty mapping.
+    """
+    fields: dict[str, str | None] = {}
+    for index, signature in enumerate(getattr(symbol, "signatures", None) or []):
+        for param in getattr(signature, "params", None) or []:
+            fields[f"sig{index}.param[{param.name}]"] = _render_type(param.type)
+        fields[f"sig{index}.returns"] = _render_type(
+            getattr(signature, "returns", None)
+        )
+    return fields
+
+
 def scan_one(import_name: str) -> dict[str, Any]:
     """Scan a single library into its snapshot entry.
 
@@ -143,6 +183,7 @@ def scan_one(import_name: str) -> dict[str, Any]:
             "kind": symbol.kind.value,
             "module": symbol.module,
             "summary": symbol.semantics.summary,
+            "types": type_fields(symbol),
         }
         for symbol_id, symbol in document.symbols.items()
     }

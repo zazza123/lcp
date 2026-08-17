@@ -2,14 +2,16 @@
 """Diff two corpus snapshots into a report ordered by likely significance.
 
 Sections are printed removals first, then kind changes, then module
-changes, then summary changes, then additions. That ordering is the whole
-point: a scanner change that removes symbols is almost always a
-regression, while additions usually need reading rather than alarm. In
-#61 a regression appeared as removals and a mislabelling risk appeared as
-additions of one specific object type. Module and summary changes sit
-between kind changes and additions because a silent attribution or
-docstring-extraction regression is more suspicious than a new symbol but
-less than a recategorisation or a removal.
+changes, then type changes, then summary changes, then additions. That
+ordering is the whole point: a scanner change that removes symbols is
+almost always a regression, while additions usually need reading rather
+than alarm. In #61 a regression appeared as removals and a mislabelling
+risk appeared as additions of one specific object type. Module, type and
+summary changes sit between kind changes and additions because a silent
+attribution, signature or docstring-extraction regression is more
+suspicious than a new symbol but less than a recategorisation or a
+removal. Type changes rank above summary changes because a published type
+is part of the API contract while a summary is prose about it.
 
 A PROVENANCE DIFFERENCES banner, when the two snapshots' library or Python
 versions differ, prints above the whole report — that drift is often the
@@ -43,6 +45,26 @@ def _object_type(summary: str | None) -> str | None:
     return None
 
 
+def _records_types(libraries: dict[str, Any]) -> bool:
+    """Whether *libraries* came from a snapshot that recorded type fields.
+
+    Snapshots taken before ``types`` existed have no such key on any symbol.
+    Treating that as "no type changes" would report a clean TYPE CHANGED
+    section for a change that moved nothing else — the false reassurance the
+    section was added to remove — so it is detected and reported instead.
+
+    A scanned library with zero symbols carries no evidence either way and is
+    skipped; the answer is ``True`` only if at least one symbol proves the
+    field is being written.
+    """
+    for entry in libraries.values():
+        if not entry or "error" in entry:
+            continue
+        for symbol in entry.get("symbols", {}).values():
+            return "types" in symbol
+    return True
+
+
 def diff_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:
     """Compare two snapshot documents.
 
@@ -51,13 +73,20 @@ def diff_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, A
     deltas at all. Conflating a crashed scan with a total loss of symbols
     is the fastest way to read a crash as a regression.
 
-    Every symbol present on both sides is checked for all three recorded
-    fields — ``kind``, ``module`` and ``summary`` — independently. A symbol
-    whose kind *and* summary both changed appears in both ``kind_changed``
-    and ``summary_changed``; the checks are not exclusive of one another,
-    because a change to the docstring extractor and a change to kind
-    classification are different bugs even when they land on the same
-    symbol in the same run.
+    Every symbol present on both sides is checked for all four recorded
+    fields — ``kind``, ``module``, ``summary`` and the ``types`` mapping —
+    independently. A symbol whose kind *and* summary both changed appears in
+    both ``kind_changed`` and ``summary_changed``; the checks are not
+    exclusive of one another, because a change to the docstring extractor and
+    a change to kind classification are different bugs even when they land on
+    the same symbol in the same run.
+
+    ``types`` was added after the first snapshots were taken, so a snapshot
+    predating it carries no such field. That case is reported as
+    ``types_recorded: False`` rather than as zero type changes — a scanner
+    change that moves only type hints would otherwise read as "no impact"
+    against an old snapshot, which is the failure mode the section exists to
+    remove.
 
     Args:
         before: Snapshot taken before the change.
@@ -65,7 +94,8 @@ def diff_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, A
 
     Returns:
         A dict with ``removed``, ``kind_changed``, ``module_changed``,
-        ``summary_changed``, ``added`` and ``coverage``.
+        ``type_changed``, ``summary_changed``, ``added``, ``coverage`` and
+        ``types_recorded``.
     """
     before_libs = before.get("libraries", {})
     after_libs = after.get("libraries", {})
@@ -73,9 +103,11 @@ def diff_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, A
     removed: list[dict[str, Any]] = []
     kind_changed: list[dict[str, Any]] = []
     module_changed: list[dict[str, Any]] = []
+    type_changed: list[dict[str, Any]] = []
     summary_changed: list[dict[str, Any]] = []
     added: list[dict[str, Any]] = []
     coverage: list[dict[str, str]] = []
+    types_recorded = _records_types(before_libs) and _records_types(after_libs)
 
     for library in sorted(set(before_libs) | set(after_libs)):
         b = before_libs.get(library)
@@ -135,6 +167,20 @@ def diff_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, A
                         "after": a_entry.get("module"),
                     }
                 )
+            if types_recorded:
+                b_types = b_entry.get("types") or {}
+                a_types = a_entry.get("types") or {}
+                for field in sorted(set(b_types) & set(a_types)):
+                    if b_types[field] != a_types[field]:
+                        type_changed.append(
+                            {
+                                "library": library,
+                                "id": symbol_id,
+                                "field": field,
+                                "before": b_types[field],
+                                "after": a_types[field],
+                            }
+                        )
             if b_entry.get("summary") != a_entry.get("summary"):
                 summary_changed.append(
                     {
@@ -149,9 +195,11 @@ def diff_snapshots(before: dict[str, Any], after: dict[str, Any]) -> dict[str, A
         "removed": removed,
         "kind_changed": kind_changed,
         "module_changed": module_changed,
+        "type_changed": type_changed,
         "summary_changed": summary_changed,
         "added": added,
         "coverage": coverage,
+        "types_recorded": types_recorded,
     }
 
 
@@ -195,6 +243,16 @@ def render(diff: dict[str, Any]) -> str:
     lines.append("")
 
     lines.extend(_render_changed_field("MODULE CHANGED", diff["module_changed"]))
+
+    if diff.get("types_recorded", True):
+        lines.extend(_render_changed_field("TYPE CHANGED", diff["type_changed"]))
+    else:
+        lines.append("TYPE CHANGED (not comparable)")
+        lines.append(
+            "  one snapshot predates type recording — retake it to compare types"
+        )
+        lines.append("")
+
     lines.extend(_render_changed_field("SUMMARY CHANGED", diff["summary_changed"]))
 
     lines.append(f"ADDED ({len(diff['added'])})")
