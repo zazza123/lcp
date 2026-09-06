@@ -418,6 +418,13 @@ def _parse_docstring(docstring: str | None) -> tuple[str | None, str | None]:
     return summary, description if description else None
 
 
+# CPython's default ``object.__repr__`` embeds the object's ``id()`` as a
+# memory address (``<pkg.Cls object at 0x10868f980>``), which changes on every
+# process. Strip that volatile fragment so any fallback repr stays stable and
+# environment-independent across scans (#75).
+_OBJECT_ADDRESS_RE = re.compile(r" at 0x[0-9a-fA-F]+(?=>)")
+
+
 def _type_to_string(type_hint: Any) -> str | None:
     """Convert a type hint to a string representation."""
     if type_hint is None or type_hint is inspect.Parameter.empty:
@@ -449,7 +456,58 @@ def _type_to_string(type_hint: Any) -> str | None:
     if hasattr(type_hint, "__name__"):
         return type_hint.__name__
 
-    return str(type_hint)
+    # The hint is neither a class, a typing construct, nor a string. This
+    # happens when get_type_hints() resolves a forward reference to a live
+    # *instance* instead of a class -- e.g. a module-level deprecation shim
+    # (cryptography 50.0.0 resolves 'DHPrivateNumbers' to a
+    # cryptography.utils._DeprecatedValue instance). Such an instance has no
+    # __name__ and falls back to object.__repr__, whose embedded memory address
+    # changes on every scan and breaks manifest determinism (#75). Strip the
+    # address so the fallback is stable and environment-independent.
+    return _OBJECT_ADDRESS_RE.sub("", str(type_hint))
+
+
+def _is_opaque_instance(hint: Any) -> bool:
+    """True when ``hint`` is a live object with only the default repr.
+
+    This is exactly the case that reaches the ``str()`` fallback in
+    ``_type_to_string()``: not ``None``/``Parameter.empty``, not a string, not
+    a ``typing`` construct, without a ``__name__``, and using
+    ``object.__repr__``. It is what ``get_type_hints()`` yields when it
+    collapses a forward reference to a module-level instance (e.g.
+    cryptography 50.0.0's ``_DeprecatedValue`` deprecation shim) instead of a
+    class. Instances with an informative custom repr (such as
+    ``dataclasses.InitVar[str]``) retain that representation.
+    """
+    return (
+        hint is not None
+        and hint is not inspect.Parameter.empty
+        and not isinstance(hint, str)
+        and typing.get_origin(hint) is None
+        and not hasattr(hint, "__name__")
+        and type(hint).__repr__ is object.__repr__
+    )
+
+
+def _prefer_raw_annotation(resolved: Any, raw: Any) -> Any:
+    """Recover the symbolic name when ``get_type_hints()`` erases it (#75).
+
+    ``get_type_hints()`` can collapse a forward reference to an opaque
+    instance with no ``__name__`` (a deprecation shim), which would otherwise
+    serialize to an ``id()``-bearing repr. When that happens and
+    ``inspect.signature`` still holds the untouched *raw* string annotation,
+    prefer the raw string so the published name matches what earlier registry
+    versions emitted (e.g. cryptography 48.0.1/49.0.0's ``'DHPrivateNumbers'``)
+    and cross-version diffs stay clean.
+
+    When no raw string is recoverable (``Parameter.empty`` or the annotation is
+    itself a live object), the resolved value is returned unchanged and the
+    ``_OBJECT_ADDRESS_RE`` backstop in ``_type_to_string()`` keeps the
+    never-emit-an-``id()`` invariant total rather than best-effort.
+    """
+    if isinstance(raw, str) and _is_opaque_instance(resolved):
+        return raw
+    return resolved
 
 
 _MAX_SYMBOLIC_EXPR = 80
@@ -639,7 +697,9 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
         if name in ("self", "cls"):
             continue
 
-        type_hint = hints.get(name, param.annotation)
+        type_hint = _prefer_raw_annotation(
+            hints.get(name, param.annotation), param.annotation
+        )
         default = param.default
         if name in primitive_default_names:
             ast_info = info.get(name)
@@ -662,7 +722,9 @@ def _scan_signature(obj: Any) -> ScannedSignature | None:
             )
         )
 
-    return_hint = hints.get("return", sig.return_annotation)
+    return_hint = _prefer_raw_annotation(
+        hints.get("return", sig.return_annotation), sig.return_annotation
+    )
     return_type = (
         _type_to_string(return_hint)
         if return_hint is not inspect.Parameter.empty
