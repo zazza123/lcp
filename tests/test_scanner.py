@@ -4,6 +4,8 @@ import inspect
 import os
 import sys
 import types
+from dataclasses import InitVar
+from typing import get_type_hints
 
 import pytest
 from hostile_objects import Hostile, HostileProxy
@@ -102,6 +104,30 @@ class TestTypeToString:
         from typing import Union
         result = _type_to_string(Union[str, int])
         assert "str" in result or "Union" in result
+
+    def test_instance_hint_does_not_leak_memory_address(self):
+        """A hint resolved to an instance must not bake a memory address in (#75).
+
+        When ``get_type_hints()`` resolves a forward reference to a live
+        *instance* rather than a class (e.g. cryptography 50.0.0 resolves
+        ``'DHPrivateNumbers'`` to a module-level ``_DeprecatedValue`` shim
+        instance), the fallback used ``str()``, whose default
+        ``object.__repr__`` ("<... object at 0x...>") embeds ``id()`` and so
+        changes on every scan — breaking manifest determinism.
+        """
+
+        class _Shim:  # default object.__repr__ -> "<... object at 0x...>"
+            pass
+
+        result = _type_to_string(_Shim())
+
+        assert result is not None
+        # No per-process memory address may survive into the manifest.
+        assert "0x" not in result
+        assert "object at" not in result
+        # Determinism: a second instance of the same class serializes
+        # identically (output must not depend on id()).
+        assert _type_to_string(_Shim()) == result
 
 
 class TestIsPublic:
@@ -340,6 +366,21 @@ class TestScannedParam:
         assert param_normal.is_variadic is False
 
 
+class _DeprecatedValueShim:  # opaque: no __name__, default object.__repr__
+    """Mimics cryptography 50.0.0's module-level ``_DeprecatedValue`` shim (#75)."""
+
+
+# Bound to the exact name a forward reference resolves to, at module scope so
+# that get_type_hints() collapses the annotation to this opaque instance via the
+# probe's __globals__ -- reproducing the cryptography 50.0.0 shape with no
+# external dependency.
+DHPrivateNumbers = _DeprecatedValueShim()
+
+
+def _dh_private_numbers_probe(arg: "DHPrivateNumbers") -> "DHPrivateNumbers":
+    """Forward ref get_type_hints() collapses to the opaque shim instance (#75)."""
+
+
 class TestScanSignature:
     """Tests for _scan_signature function."""
 
@@ -376,6 +417,59 @@ class TestScanSignature:
         sig = _scan_signature(func)
         assert len(sig.params) == 2
         assert sig.params[0].type_hint is None
+
+    def test_forward_reference_to_instance_keeps_symbolic_name(self):
+        """A forward ref collapsed to an opaque instance keeps its name (#75).
+
+        cryptography 48.0.1 / 49.0.0 publish ``"DHPrivateNumbers"`` for
+        ``DHPrivateKey#private_numbers``. In 50.0.0, ``get_type_hints()``
+        resolves that same forward reference to a module-level
+        ``_DeprecatedValue`` shim *instance* (no ``__name__``), which would
+        erase the symbolic name and — after the address is stripped — publish
+        ``"<... _DeprecatedValue object>"`` instead, spuriously flagging an API
+        change on symbols whose public API did not change. ``inspect.signature``
+        still holds the raw ``'DHPrivateNumbers'`` string, so the symbolic name
+        must survive on both the parameter and the return call sites.
+
+        ``_dh_private_numbers_probe`` (module scope) reproduces that shape
+        hermetically: its forward reference resolves, via the module globals,
+        to ``DHPrivateNumbers`` — an opaque shim instance, no external dep.
+        """
+        func = _dh_private_numbers_probe
+
+        # Precondition: verify the problematic get_type_hints() shape.
+        # Python 3.11+ collapses the forward ref to the opaque instance (no
+        # __name__), reproducing the cryptography 50.0.0 shape.  Python 3.10
+        # raises TypeError instead ("Forward references must evaluate to types")
+        # because it enforces type-ness at hint-resolution time — a stricter
+        # variant of the same problem: get_type_hints() is unreliable, so the
+        # scanner must fall back to the raw annotation on both code paths.
+        try:
+            resolved = get_type_hints(func)
+            assert not hasattr(resolved["return"], "__name__")
+        except TypeError:
+            # Python 3.10: get_type_hints() raises rather than returning the
+            # opaque instance.  The scanner's fallback path is exercised below.
+            pass
+
+        sig = _scan_signature(func)
+        assert sig is not None
+        # The symbolic name from the raw annotation is preferred over the shim.
+        assert sig.params[0].type_hint == "DHPrivateNumbers"
+        assert sig.return_type == "DHPrivateNumbers"
+        # And no id()-bearing repr leaked on either call site.
+        assert "0x" not in sig.params[0].type_hint
+        assert "0x" not in sig.return_type
+
+    def test_forward_reference_to_custom_repr_keeps_resolved_value(self):
+        """An informative instance repr is not replaced by the raw string."""
+
+        def func(value: "InitVar[str]") -> None:
+            pass
+
+        sig = _scan_signature(func)
+        assert sig is not None
+        assert sig.params[0].type_hint == "dataclasses.InitVar[str]"
 
 
 class TestScanFunction:
