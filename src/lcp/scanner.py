@@ -6,6 +6,7 @@ import ast
 import importlib
 import importlib.metadata
 import inspect
+import linecache
 import os
 import pkgutil
 import re
@@ -779,11 +780,101 @@ def _is_public(name: str, include_private: bool = False) -> bool:
     return not name.startswith("_")
 
 
+# Below Python 3.13, inspect locates a class's source by re-parsing its whole
+# file and walking the tree for the qualname, once per class. On generated SDK
+# code (hundreds of classes per multi-MB file) that is quadratic and turns a
+# scan into tens of minutes (#80). Index every class of a file in one parse
+# instead; 3.13+ reads ``cls.__firstlineno__`` and needs no index. Entries
+# hold the linecache line list they were built from, so a file that linecache
+# reloads is re-indexed rather than served stale.
+_CLASS_LINE_INDEX: dict[str, tuple[list[str], dict[str, int]]] = {}
+_CLASS_LINE_INDEX_MAX_FILES = 256
+
+
+class _ClassLineIndexer(ast.NodeVisitor):
+    """Map every class qualname in a module to its 0-based start line.
+
+    Mirrors ``inspect._ClassFinder`` (CPython 3.10-3.12) so the result is
+    identical to ``inspect.getsourcelines``: the same traversal order, a
+    ``<locals>`` segment for function scopes, the first decorator's line when
+    the class is decorated, and the first definition winning when a qualname
+    repeats.
+    """
+
+    def __init__(self) -> None:
+        self.stack: list[str] = []
+        self.start_lines: dict[str, int] = {}
+
+    def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        self.stack.append(node.name)
+        self.stack.append("<locals>")
+        self.generic_visit(node)
+        self.stack.pop()
+        self.stack.pop()
+
+    visit_AsyncFunctionDef = visit_FunctionDef
+
+    def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        self.stack.append(node.name)
+        first = node.decorator_list[0] if node.decorator_list else node
+        self.start_lines.setdefault(".".join(self.stack), first.lineno - 1)
+        self.generic_visit(node)
+        self.stack.pop()
+
+
+def _class_line_index(file: str, lines: list[str]) -> dict[str, int]:
+    """Return the class start-line index for ``file``, building it once."""
+    cached = _CLASS_LINE_INDEX.get(file)
+    if cached is not None and cached[0] is lines:
+        return cached[1]
+    indexer = _ClassLineIndexer()
+    indexer.visit(ast.parse("".join(lines)))
+    if len(_CLASS_LINE_INDEX) >= _CLASS_LINE_INDEX_MAX_FILES:
+        _CLASS_LINE_INDEX.pop(next(iter(_CLASS_LINE_INDEX)))
+    _CLASS_LINE_INDEX[file] = (lines, indexer.start_lines)
+    return indexer.start_lines
+
+
+def _class_sourcelines(cls: type) -> tuple[list[str], int]:
+    """Return ``inspect.getsourcelines(cls)``, parsing each file only once.
+
+    Follows ``inspect.findsource`` step for step (source file, linecache
+    lines, qualname lookup) but resolves the qualname through
+    ``_class_line_index`` instead of a fresh parse per class (#80). Anything
+    the fast path does not model — Python 3.13+, ``__wrapped__`` classes,
+    sources not backed by a file — goes to ``inspect`` unchanged.
+
+    Raises:
+        OSError: If the source cannot be retrieved or the class is not found.
+        TypeError: If ``cls`` has no source file (for example, a builtin).
+    """
+    if sys.version_info >= (3, 13) or inspect.unwrap(cls) is not cls:
+        return inspect.getsourcelines(cls)
+    file = inspect.getsourcefile(cls)
+    if not file:
+        return inspect.getsourcelines(cls)
+    linecache.checkcache(file)
+    module = inspect.getmodule(cls, file)
+    if module:
+        lines = linecache.getlines(file, module.__dict__)
+    else:
+        lines = linecache.getlines(file)
+    if not lines:
+        raise OSError("could not get source code")
+    start = _class_line_index(file, lines).get(cls.__qualname__)
+    if start is None:
+        raise OSError("could not find class definition")
+    return inspect.getblock(lines[start:]), start + 1
+
+
 def _get_source_info(obj: Any) -> tuple[str | None, tuple[int, int] | None]:
     """Get source file and line numbers for an object."""
     try:
         source_file = inspect.getfile(obj)
-        source_lines = inspect.getsourcelines(obj)
+        if inspect.isclass(obj):
+            source_lines = _class_sourcelines(obj)
+        else:
+            source_lines = inspect.getsourcelines(obj)
         start_line = source_lines[1]
         end_line = start_line + len(source_lines[0]) - 1
         return source_file, (start_line, end_line)
