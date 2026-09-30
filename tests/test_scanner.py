@@ -14,9 +14,11 @@ import tests.repro_fixture as reprofix
 from lcp.scanner import (
     ScannedModule,
     ScannedParam,
+    _class_sourcelines,
     _constant_source_expr,
     _constant_summary,
     _get_param_kind,
+    _get_source_info,
     _is_c_function,
     _is_constant,
     _is_env_derived_str,
@@ -536,6 +538,119 @@ class TestScanClass:
         )
         member_names = [m.name for m in symbol.members]
         assert "_private_method" in member_names
+
+
+def _fixture_classes() -> list[type]:
+    import asyncio
+
+    import tests.class_source_fixture as fx
+
+    return [
+        fx.Plain,
+        fx.Decorated,
+        fx.DoublyDecorated,
+        fx.Outer,
+        fx.Outer.Inner,
+        fx.Outer.Inner.Deepest,
+        fx.Local,
+        asyncio.run(fx._async_factory()),
+        fx.FirstRedefined,
+        fx.Redefined,
+        fx.MultiLine,
+    ]
+
+
+class TestClassSourceLines:
+    """Class source lookup matches inspect and parses each file once (#80)."""
+
+    def test_parses_each_file_once(self, monkeypatch):
+        import ast
+
+        classes = _fixture_classes()
+        real_parse = ast.parse
+        calls = []
+
+        def counting_parse(*args, **kwargs):
+            calls.append(1)
+            return real_parse(*args, **kwargs)
+
+        monkeypatch.setattr(ast, "parse", counting_parse)
+        for cls in classes:
+            source_file, source_lines = _get_source_info(cls)
+            assert source_file is not None
+            assert source_lines is not None
+
+        # Python 3.13+ reads __firstlineno__ and never parses; below 3.13
+        # the whole fixture file is parsed once, not once per class.
+        assert len(calls) <= 1
+
+    @pytest.mark.parametrize(
+        "cls", _fixture_classes(), ids=lambda cls: cls.__qualname__
+    )
+    def test_matches_inspect(self, cls):
+        assert _class_sourcelines(cls) == inspect.getsourcelines(cls)
+
+    def test_matches_inspect_across_stdlib(self):
+        import argparse
+        import dataclasses
+        import email.message
+        import enum
+        import json.decoder
+        import logging
+        import typing as typing_module
+        import unittest.case
+
+        checked = 0
+        for module in (
+            argparse,
+            dataclasses,
+            email.message,
+            enum,
+            json.decoder,
+            logging,
+            typing_module,
+            unittest.case,
+        ):
+            for obj in vars(module).values():
+                if not inspect.isclass(obj) or obj.__module__ != module.__name__:
+                    continue
+                try:
+                    expected = inspect.getsourcelines(obj)
+                except (OSError, TypeError) as exc:
+                    with pytest.raises(type(exc)):
+                        _class_sourcelines(obj)
+                    continue
+                assert _class_sourcelines(obj) == expected, obj.__qualname__
+                checked += 1
+        assert checked > 50
+
+    def test_wrapped_class_follows_inspect(self):
+        import tests.class_source_fixture as fx
+
+        class Wrapper:
+            pass
+
+        Wrapper.__wrapped__ = fx.Plain
+        assert _class_sourcelines(Wrapper) == inspect.getsourcelines(Wrapper)
+
+    def test_edited_source_file_is_reindexed(self, tmp_path, monkeypatch):
+        import importlib
+
+        module_file = tmp_path / "reindexed_fixture.py"
+        module_file.write_text("class Target:\n    pass\n")
+        monkeypatch.syspath_prepend(str(tmp_path))
+        module = importlib.import_module("reindexed_fixture")
+        try:
+            assert _class_sourcelines(module.Target)[1] == 1
+
+            module_file.write_text("import os\n\n\nclass Target:\n    x = 1\n")
+            module = importlib.reload(module)
+            assert _class_sourcelines(module.Target) == inspect.getsourcelines(
+                module.Target
+            )
+            assert _class_sourcelines(module.Target)[1] == 4
+        finally:
+            sys.modules.pop("reindexed_fixture", None)
 
 
 class TestScanModule:
